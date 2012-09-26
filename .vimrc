@@ -249,10 +249,12 @@
     autocmd FileType html setlocal shiftwidth=2 tabstop=2  
 
     autocmd FileType sh setlocal shiftwidth=2 tabstop=2  
+
     autocmd FileType vim setlocal shiftwidth=2 tabstop=2  
 
-    "au! Syntax python source $HOME/.vim/syntax/python.vim
+    au FileType cpp nnoremap <buffer> <F6> :! glutcomprun % 1<CR>
 
+    "au! Syntax python source $HOME/.vim/syntax/python.vim
 
     " latex
       au FileType tex setlocal shiftwidth=2 tabstop=2  

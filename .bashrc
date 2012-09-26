@@ -3,14 +3,7 @@
 
 #osx color terminal
 export CLICOLOR=1
-# don't put duplicate lines in the history. See bash(1) for more options
-# don't overwrite GNU Midnight Commander's setting of `ignorespace'.
-HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
-# ... or force ignoredups and ignorespace
-HISTCONTROL=ignoreboth
 
-# append to the history file, don't overwrite it
-shopt -s histappend
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -167,6 +160,7 @@ parse_svn_repository_root() {
   svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
 }
 set -o emacs
+
 export EDITOR="$vim"
 export GIT_EDITOR="$vim"
 
@@ -175,20 +169,73 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
 #ciro
 
-# normally, sudo cannot see your personal path variable. now it can.
-alias sudo='sudo env PATH=$PATH'
+#bash history
 
-PROGRAM_DIR="~/backup/noshare/program"
+shopt -s histappend # append to the history file, don't overwrite it
+HISTCONTROL=ignoreboth
+HISTSIZE=10000
+HISTFILESIZE=10000
 
-BASH_DIR="$PROGRAM_DIR/bash"
-PYTHON_DIR="$PROGRAM_DIR/python"
+#normally, sudo cannot see your personal path variable. now it can.
 
-NOBACKUP_DIR="~/nobackup"
+#define directory structure
+
+ROOT_DIR=~/ciro
+
+BAK_DIR="$ROOT_DIR/bak"
+NOBACKUP_DIR="~/kab"
+BIN_DIR="~/bin"
+
+PROGRAM_DIR="$BAK_DIR/noshare/program"
+
+BASH_DIR="$PROGRAM_DIR/bash/bin"
+PYTHON_DIR="$PROGRAM_DIR/python/bin"
+LATEX_BIN_DIR="$PROGRAM_DIR/latex"
+
+SHARE_DIR="$BAK_DIR/share"
+NOSHARE_DIR="$BAK_DIR/noshare"
+
+MUSIC_DIR="$SHARE_DIR/music"
+GAME_DIR="$SHARE_DIR/game"
+
+CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
 
 TEST_DIR="$NOBACKUP_DIR/test"
 
-alias cdpy="cd $PYTHON_DIR"
-alias cdba="cd $BASH_DIR"
-alias cdtst="cd $TEST_DIR"
+#append to path
 
-#/ciro
+PATH="$PATH:$BIN_DIR"
+PATH="$PATH:$PYTHON_DIR"
+PATH="$PATH:$BASH_DIR"
+PATH="$PATH:$LATEX_BIN_DIR"
+
+#aliases
+
+  alias sudo='sudo env PATH=$PATH'
+
+  function cdls {
+    cd "$1"
+    tput rmam;
+    ls --color -h1 --group-directories-first
+    tput smam;
+  }
+
+  alias cl="cdls"
+
+  #directories
+    alias cdpy='cdls "$PYTHON_DIR"'
+    alias cdba='cdls "$BASH_DIR"'
+    alias cdtst='cdls "$TEST_DIR"'
+
+    alias cdctm='cdls "$CHINESE_MUSIC_DIR"'
+    alias cdgm='cdls "$GAME_DIR"'
+
+  #apt-get
+    alias sagi="sudo apt-get install"
+
+  #git
+    alias gcam="git commit -am"
+    alias gpgm="git push github master"
+    alias gcpg="git-commit-push-github"
+
+  #/ciro
