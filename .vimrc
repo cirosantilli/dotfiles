@@ -295,6 +295,10 @@
   " accelerate vertical scroll down
   nnoremap <C-E> 5<C-E>
 
+  vnoremap R "zy:%s/<C-r>z//g<left><left>
+  " select what to replace, type replacement, hit enter
+  " detroys Z register
+
   " tab navigation in normal mode
   " in terminal, alt tab is not possible, 
   " but should be used in gvim instead.

@@ -1,3 +1,5 @@
+#source ~/.profile # changes made to ~/.profile apply immediately without having to log out and in again.
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -27,7 +29,6 @@ xterm*|rxvt*)
 *)
     ;;
 esac
-
 
 # Set up TERM variables.
 # vt100 and xterm have no color in vim (at least on unixs), but if we call them xterm-color, they will.
@@ -167,75 +168,38 @@ export GIT_EDITOR="$vim"
 # Add git and svn branch names
 export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
-#ciro
+#<ciro>
 
-#bash history
+  export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
 
-shopt -s histappend # append to the history file, don't overwrite it
-HISTCONTROL=ignoreboth
-HISTSIZE=10000
-HISTFILESIZE=10000
+  #aliases
 
-#normally, sudo cannot see your personal path variable. now it can.
+    alias sudo='sudo env PATH=$PATH'
+    #normally, sudo cannot see your personal path variable. now it can.
 
-#define directory structure
+    function cdls {
+      cd "$1" && \
+      tput rmam && \
+      ls --color -h1 --group-directories-first && \
+      tput smam;
+    }
 
-ROOT_DIR=~/ciro
+    alias cl="cdls"
 
-BAK_DIR="$ROOT_DIR/bak"
-NOBACKUP_DIR="~/kab"
-BIN_DIR="~/bin"
+    #directories
+      alias cdpy='cdls "$PYTHON_DIR"'
+      alias cdba='cdls "$BASH_DIR"'
+      alias cdtst='cdls "$TEST_DIR"'
 
-PROGRAM_DIR="$BAK_DIR/noshare/program"
+      alias cdctm='cdls "$CHINESE_MUSIC_DIR"'
+      alias cdgm='cdls "$GAME_DIR"'
 
-BASH_DIR="$PROGRAM_DIR/bash/bin"
-PYTHON_DIR="$PROGRAM_DIR/python/bin"
-LATEX_BIN_DIR="$PROGRAM_DIR/latex"
+    #aptitude
+      alias sai="sudo aptitude install"
 
-SHARE_DIR="$BAK_DIR/share"
-NOSHARE_DIR="$BAK_DIR/noshare"
+    #git
+      alias gcam="git-commit"
+      alias gpgm="git push github master"
+      alias gcpg="git-commit-push-github"
 
-MUSIC_DIR="$SHARE_DIR/music"
-GAME_DIR="$SHARE_DIR/game"
-
-CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
-
-TEST_DIR="$NOBACKUP_DIR/test"
-
-#append to path
-
-PATH="$PATH:$BIN_DIR"
-PATH="$PATH:$PYTHON_DIR"
-PATH="$PATH:$BASH_DIR"
-PATH="$PATH:$LATEX_BIN_DIR"
-
-#aliases
-
-  alias sudo='sudo env PATH=$PATH'
-
-  function cdls {
-    cd "$1"
-    tput rmam;
-    ls --color -h1 --group-directories-first
-    tput smam;
-  }
-
-  alias cl="cdls"
-
-  #directories
-    alias cdpy='cdls "$PYTHON_DIR"'
-    alias cdba='cdls "$BASH_DIR"'
-    alias cdtst='cdls "$TEST_DIR"'
-
-    alias cdctm='cdls "$CHINESE_MUSIC_DIR"'
-    alias cdgm='cdls "$GAME_DIR"'
-
-  #apt-get
-    alias sagi="sudo apt-get install"
-
-  #git
-    alias gcam="git commit -am"
-    alias gpgm="git push github master"
-    alias gcpg="git-commit-push-github"
-
-  #/ciro
+#</ciro>
