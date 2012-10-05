@@ -29,13 +29,6 @@ export LC_COLLATE="en_US.UTF-8"
 
   export EDITOR=vim
 
-  #bash history
-    shopt -s histappend # append to the history file, don't overwrite it
-    export HISTCONTROL=ignoreboth
-    export HISTSIZE=10000
-    export HISTFILESIZE=10000
-    export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
-
   #directory structure
 
     export ROOT_DIR="$HOME/ciro" #add indirection for when i'm inside a folder in someone else's computer
@@ -53,12 +46,18 @@ export LC_COLLATE="en_US.UTF-8"
     export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
 
     export PROGRAM_DIR="$NOSHARE_DIR/program"
+    export HOMEFILES_DIR="$NOSHARE_DIR/homefiles"
      
     export BASH_BIN_DIR="$PROGRAM_DIR/bash/bin"
     export PYTHON_BIN_DIR="$PROGRAM_DIR/python/bin"
     export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
 
+    export DJANGO_DIR="$PYTHON_BIN_DIR/django"
+    export DJANGO_TEMPLATES_DIR="$DJANGO_TEMPLATES_DIR/templates"
+
     export TEST_DIR="$NOBACKUP_DIR/test"
+
+    export PIP_DIR = /usr/local/lib/python2.7/dist-packages/
 
   #append to path
 

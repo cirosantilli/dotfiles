@@ -170,7 +170,12 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
 #<ciro>
 
-  export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
+  #bash history
+    shopt -s histappend # append to the history file, don't overwrite it
+    export HISTCONTROL=ignoreboth
+    export HISTSIZE=10000
+    export HISTFILESIZE=10000
+    export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
 
   #aliases
 
@@ -187,15 +192,23 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias cl="cdls"
 
     #directories
-      alias cdpy='cdls "$PYTHON_DIR"'
-      alias cdba='cdls "$BASH_DIR"'
-      alias cdtst='cdls "$TEST_DIR"'
 
-      alias cdctm='cdls "$CHINESE_MUSIC_DIR"'
-      alias cdgm='cdls "$GAME_DIR"'
+      #this will open krusader where I want.
+      #use this from the embedded terminal emulator
+      #must have "single instance mode on", or new windows will be opened
+      alias krprg='krusader "$PROGRAM_DIR"'
+      alias krpy='krusader "$PYTHON_BIN_DIR"'
+      alias krba='krusader "$BASH_BIN_DIR"'
+
+      alias krtst='krusader "$TEST_DIR"'
+
+      alias krmsc='krusader "$MUSIC_DIR"'
+      alias krctm='krusader "$CHINESE_MUSIC_DIR"'
+
+      alias krgm='krusader "$GAME_DIR"'
 
     #aptitude
-      alias sai="sudo aptitude install"
+      alias saii="sudo aptitude install"
 
     #git
       alias gcam="git-commit"
