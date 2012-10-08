@@ -57,7 +57,7 @@ export LC_COLLATE="en_US.UTF-8"
 
     export TEST_DIR="$NOBACKUP_DIR/test"
 
-    export PIP_DIR = /usr/local/lib/python2.7/dist-packages/
+    export PIP_DIR="/usr/local/lib/python2.7/dist-packages/"
 
   #append to path
 

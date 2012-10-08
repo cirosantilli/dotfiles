@@ -133,8 +133,6 @@
     "visual block only replace
     "select then :B s/a/b/g. replace acts only on selected block
     Bundle 'taku-o/vim-vis'
-
-
 "general
   "allows vim to detect the filetype and use different behaviours
   "accordingly
@@ -187,7 +185,7 @@
   set number
 
   "line wrapping
-  set nowrap
+  set wrap
   set linebreak
   set nolist
   set textwidth=0
@@ -233,6 +231,7 @@
     set foldlevel=3         "this is just what i use
 
   "conceal: the thing that renders greek, underline, etc
+    "g:tex_conceal=""
     "stop it!!
     set cole=0
 
@@ -288,6 +287,18 @@
       endfunction
       au FileType tex noremap <buffer> <F6> :call SyncTexForwardOkular()<CR> 
 
+    "latex
+      au FileType tex setlocal shiftwidth=2 tabstop=2  
+
+      function! SyncTexForward()
+        let execstr = "silent !okular --unique %:p:r.pdf\#src:".line(".")."%:p &"
+        exec execstr
+      endfunction
+
+      "compile
+      "let linenumber = line(".")
+      au FileType tex noremap <buffer> <F6> <Esc>:w<CR><Esc>:! latex-pdf-okular %:t<CR>
+
 "key bindings
   "Here I put every mapping that I have made.
   "sorted by key order so that it is easy to find
@@ -304,9 +315,24 @@
   "nerd tree
   noremap <F2> :NERDTreeToggle<CR>
 
+  inoremap <C-tab> <ESC>:tabnext<cr>
+  nnoremap <C-tab> :tabnext<cr>
+  vnoremap <C-tab> <ESC>:tabnext<cr>
+
+  inoremap <C-S-tab> <ESC>:tabprevious<cr>
+  nnoremap <C-S-tab> :tabprevious<cr>
+  vnoremap <C-S-tab> <ESC>:tabprevious<cr>
+
+  inoremap <C-S-w> <ESC>:tabclose<cr>
+  nnoremap <C-S-w> :tabclose<cr>
+  vnoremap <C-S-w> <ESC>:tabclose<cr>
+
   "accelerate vertical scroll down
   nnoremap <C-E> 5<C-E>
 
+  "accelerate vertical scroll up
+  nnoremap <C-Y> 5<C-Y>
+  
   vnoremap R "zy:%s/<C-r>z//g<left><left>
   "select what to replace, type replacement, hit enter
   "detroys Z register
@@ -321,6 +347,9 @@
   nnoremap tn :tabnew<CR>
   nnoremap tm :tabm<Space>
 
+  "copy line to system clipboard
+  nnoremap yY ^v$"+y
+  
   "accelerate vertical scroll up
   nnoremap <C-Y> 5<C-Y>
 
@@ -342,6 +371,9 @@
   nnoremap <silent> s :<C-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<CR>
   nnoremap <silent> S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<CR>
 
+  "cut line to clipboard
+  nnoremap dD ^v$"+ygv
+  
   "select Go to last Pasted text (to indent, or delete for example)
   nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
@@ -373,28 +405,18 @@
   "cut to system clipboard
   vnoremap X "+ygvd
 
-  "cut line to clipboard
-  nnoremap dD ^v$"+ygvd
-
   "cut to system clipboard
-  "
-  "analogy to copy.
   vnoremap X "+ygvd
 
-  "copy to system clipboard
-  "
-  "cannot c-c interminal because that is interrupt process.
+  "copy to system clipboard  "
   vnoremap C "+y
-
-  "copy line to system clipboard
-  nnoremap yY ^v$"+y
 
   "toggle coMMent
   nnoremap <C-M> <plugin>NERDComToggleComment<CR>
 
   "keep selected after shift in visual mode
-  vnoremap > >gv
   vnoremap < <gv
+  vnoremap > >gv
 
   inoremap <Down> <C-o>gj
   inoremap <Up> <C-o>g
