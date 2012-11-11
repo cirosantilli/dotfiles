@@ -31,6 +31,8 @@ export LC_COLLATE="en_US.UTF-8"
 
   #directory structure
 
+    MYID=cirosantilli
+
     export ROOT_DIR="$HOME/ciro" #add indirection for when i'm inside a folder in someone else's computer
      
     export BAK_DIR="$ROOT_DIR/bak"
@@ -47,13 +49,18 @@ export LC_COLLATE="en_US.UTF-8"
 
     export PROGRAM_DIR="$NOSHARE_DIR/program"
     export HOMEFILES_DIR="$NOSHARE_DIR/homefiles"
-     
+
+    export PYTHON_DIR="$PROGRAM_DIR/python"
     export BASH_BIN_DIR="$PROGRAM_DIR/bash/bin"
-    export PYTHON_BIN_DIR="$PROGRAM_DIR/python/bin"
+    export CPP_BIN_DIR="$PROGRAM_DIR/cpp/bin"
     export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
+    export WEBDEV_DIR="$PROGRAM_DIR/web"
+
+    export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath" #userena project here
+    export PYTHON_BIN_DIR="$PYTHON_DIR/cirosantilli/bin" #my stuff goes here
 
     export DJANGO_DIR="$PYTHON_BIN_DIR/django"
-    export DJANGO_TEMPLATES_DIR="$DJANGO_TEMPLATES_DIR/templates"
+    export DJANGO_TEMPLATES_DIR="$DJANGO_DIR/templates"
 
     export TEST_DIR="$NOBACKUP_DIR/test"
 
@@ -66,5 +73,13 @@ export LC_COLLATE="en_US.UTF-8"
     PATH="$PATH:$BASH_BIN_DIR"
     PATH="$PATH:$LATEX_BIN_DIR"
     export PATH 
+
+    PYTHONPATH="$PYTHONPATH:$PYTHON_BIN_DIR"
+    PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR"
+    #adding to path is the only way I found to dev most modules with git
+    #because the module often is a subdir of the git root and you can;t
+    #clone modify commit subdirs in git.
+
+    export PYTHONPATH
 
 #</ciro>

@@ -90,8 +90,6 @@ if $TERM_IS_COLOR && ( dircolors --help && ls --color ) &> /dev/null; then
     [[ -f "$POSSIBLE_DIR_COLORS" ]] && [[ -r "$POSSIBLE_DIR_COLORS" ]] && eval `dircolors -b "$POSSIBLE_DIR_COLORS"` && break
   done
 
-  alias ls="ls --color=auto"
-  alias ll="ls --color=auto -l"
   alias grep='grep --color=auto'
   alias fgrep='fgrep --color=auto'
   alias egrep='egrep --color=auto'
@@ -178,20 +176,37 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
 
   #aliases
+    #aliases don't work inside scripts! intercactive console only.
 
     alias sudo='sudo env PATH=$PATH'
     #normally, sudo cannot see your personal path variable. now it can.
 
-    function cdls {
-      cd "$1" && \
-      tput rmam && \
-      ls --color -h1 --group-directories-first && \
-      tput smam;
-    }
+    #dirs
 
-    alias cl="cdls"
+      LC_COLLATE=C
+      export LC_COLLATE
+      #dot will come first!
 
-    #directories
+      alias ls='ls -1 --color=auto --group-directories-first'
+      alias lsa='ls -A'
+      alias ll="ls -h -l"
+      alias lls="ls -h -l | sort -k5hr" #by Size
+      alias lla="ll -A"
+      alias llas="ls -a -h -l | sort -k5hr" #by Size
+
+      function cdls {
+        cd "$1" && \
+        tput rmam && \
+        ls --color -h1 --group-directories-first && \
+        tput smam;
+      }
+
+      alias cd="cdls"
+
+      alias dush="du -sh * | sort -hr 1>&2"
+      alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File
+
+    #my krusader bookmarks
 
       #this will open krusader where I want.
       #use this from the embedded terminal emulator
@@ -199,6 +214,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias krprg='krusader "$PROGRAM_DIR"'
       alias krpy='krusader "$PYTHON_BIN_DIR"'
       alias krba='krusader "$BASH_BIN_DIR"'
+      alias krcp='krusader "$CPP_BIN_DIR"'
 
       alias krtst='krusader "$TEST_DIR"'
 
@@ -207,12 +223,40 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
       alias krgm='krusader "$GAME_DIR"'
 
+    #my bins
+      alias fbr="find_basename_res.py"
+
     #aptitude
       alias saii="sudo aptitude install"
+      alias sair="sudo aptitude remove"
+      alias acse="apt-cache search"
+      alias acsh="apt-cache show"
+
+      alias spii="sudo pip install"
+      alias spir="sudo pip remove"
+      alias pise="pip search"
 
     #git
       alias gcam="git-commit"
       alias gpgm="git push github master"
       alias gcpg="git-commit-push-github"
+
+    #mysql
+      alias murp="mysql -u root -p"
+
+    #django
+      alias dmrs="./manage.py runserver" #Django Manage.py RunSever
+      alias dmds="./manage.py dbshell" #Django Manage.py RunSever
+      alias dmcs="echo "yes" | ./manage.py collectstatic" #Django Manage.py RunSever
+
+
+      #south
+        alias dmscts="./manage.py convert_to_south"
+        alias dmssi="./manage.py schemamigration --initial"
+        alias dmssa="./manage.py schemamigration --auto"
+
+    alias ack="ack-grep"
+
+    alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
 
 #</ciro>

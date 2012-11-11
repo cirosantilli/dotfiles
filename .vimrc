@@ -33,7 +33,7 @@
 
   "nerdtree
     Bundle 'scrooloose/nerdtree'
-    let NERDTreeKeepTreeInNewTab=0
+    "let NERDTreeKeepTreeInNewTab=0
     "let loaded_nerd_tree=1  "stop opening nerd tree.
 
   "vim-session
@@ -185,7 +185,7 @@
   set number
 
   "line wrapping
-  set wrap
+  set nowrap
   set linebreak
   set nolist
   set textwidth=0
@@ -202,13 +202,18 @@
   "at the right bottom I can see line, column and percentage of current file
   set ruler
 
-  "The current buffer can be put to the background without writing to disk
-  "When a background buffer becomes current again, marks and undo-history are remembered.
-  "from http://items.sjbach.com/319/configuring-vim-right
-  set hidden
+  "buffers
+    "The current buffer can be put to the background without writing to disk
+    "When a background buffer becomes current again, marks and undo-history are remembered.
+    "from http://items.sjbach.com/319/configuring-vim-right
+    "set hidden
+    "too dangerous!
+    "
+    ":au BufAdd,BufNewFile,BufRead * nested tab sball
 
-  set guitablabel=%N)\ %t\ %M
-  "format tab titles
+  "tabs
+    set guitablabel=%N)\ %t\ %M
+    "format tab titles
 
 "editing
   "allow backspacing over everything in insert mode
@@ -216,8 +221,8 @@
 
   "indentation
     set expandtab   "insert spaces instead of tabs
-    set tabstop=4   "a tab is four spaces
-    set shiftwidth=4  "number of spaces to use for autoindenting
+    set tabstop=2   "a tab is four spaces
+    set shiftwidth=2  "number of spaces to use for autoindenting
     set autoindent  "always set autoindenting on
     set copyindent  "copy the previous indentation on autoindenting
     set shiftround  "use multiple of shiftwidth when indenting with '<' and '>'
@@ -257,15 +262,15 @@
     "ftplugin.after is read after ftplugin, so you are sure that your
     "settings will be left after the distro's default
 
-    autocmd FileType html setlocal shiftwidth=2 tabstop=2  
+    autocmd FileType html setlocal shiftwidth=4 tabstop=4
 
     autocmd FileType sh setlocal shiftwidth=2 tabstop=2  
 
     autocmd FileType vim setlocal shiftwidth=2 tabstop=2  
 
-    au FileType cpp nnoremap <buffer> <F6> :! glutcomprun % 1<CR>
-
     "au! Syntax python source $HOME/.vim/syntax/python.vim
+    
+    autocmd FileType python setlocal shiftwidth=4 tabstop=4  
 
     "latex
       au FileType tex setlocal shiftwidth=2 tabstop=2  
@@ -287,19 +292,16 @@
       endfunction
       au FileType tex noremap <buffer> <F6> :call SyncTexForwardOkular()<CR> 
 
-    "latex
-      au FileType tex setlocal shiftwidth=2 tabstop=2  
 
-      function! SyncTexForward()
-        let execstr = "silent !okular --unique %:p:r.pdf\#src:".line(".")."%:p &"
-        exec execstr
-      endfunction
+    "c and cpp
+      au FileType c,cpp setlocal shiftwidth=2 tabstop=2  
 
-      "compile
-      "let linenumber = line(".")
-      au FileType tex noremap <buffer> <F6> <Esc>:w<CR><Esc>:! latex-pdf-okular %:t<CR>
+      au FileType c,cpp noremap <buffer> <F5> :make<CR>
+      au FileType c,cpp noremap <buffer> <F6> :!./%:r.out<CR>
+      au FileType c,cpp noremap <buffer> <F7> :cnext<CR>
+      au FileType c,cpp noremap <buffer> <F8> :cprevious<CR>
 
-"key bindings
+"key bindings for all languages
   "Here I put every mapping that I have made.
   "sorted by key order so that it is easy to find
   "
@@ -323,9 +325,9 @@
   nnoremap <C-S-tab> :tabprevious<cr>
   vnoremap <C-S-tab> <ESC>:tabprevious<cr>
 
-  inoremap <C-S-w> <ESC>:tabclose<cr>
-  nnoremap <C-S-w> :tabclose<cr>
-  vnoremap <C-S-w> <ESC>:tabclose<cr>
+  inoremap <C-w> <ESC>:tabclose<cr>
+  nnoremap <C-w> :tabclose<cr>
+  vnoremap <C-w> <ESC>:tabclose<cr>
 
   "accelerate vertical scroll down
   nnoremap <C-E> 5<C-E>
@@ -370,6 +372,9 @@
   endfunction
   nnoremap <silent> s :<C-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<CR>
   nnoremap <silent> S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<CR>
+
+  cnoremap <C-S> <C-A>
+  "type bd *.xml<C-S> to delete all xml buffers
 
   "cut line to clipboard
   nnoremap dD ^v$"+ygv
@@ -420,3 +425,18 @@
 
   inoremap <Down> <C-o>gj
   inoremap <Up> <C-o>g
+
+  nnoremap <C-left> <C-w>h
+  nnoremap <C-right> <C-w>l
+  nnoremap <C-up> <C-w>k
+  nnoremap <C-down> <C-w>j
+
+"cheatsheet
+  " :ls " list buffers
+  " :badd f1.txt " add buffer without loading it
+  "
+  " :bd f1.txt " delete buffer by filename
+  " :bd 12 " delete buffer by number
+  "
+  " :bd 3 4 5
+  " :3,5bd "delete from 3 to 5
