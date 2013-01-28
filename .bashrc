@@ -178,8 +178,29 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
   #aliases
     #aliases don't work inside scripts! intercactive console only.
 
+    alias ack="ack-grep"
+    alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
+    alias dush="du -sh * | sort -hr 1>&2"
+    alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File
+    alias fbr="find_basename_res.py"
+    alias fmmmr="find-music-make-m3u -r ."
+
+    alias mvr="move_regex.py"
+    alias mkcl='make clean'
+
+    alias pdc='pandoc'
+
+    alias rbul="rename_basename_unidecode_lowercase.py"
+    alias rifr="replace_in_files_regex.py"
+
     alias sudo='sudo env PATH=$PATH'
-    #normally, sudo cannot see your personal path variable. now it can.
+      #normally, sudo cannot see your personal path variable. now it can.
+    alias tipy='touch __init__.py'
+
+    alias vrmm='vim readme.md'
+
+    alias xar="xargs -0I'{}'" 
+    alias xselc="xsel --clipboard" 
 
     #dirs
 
@@ -194,25 +215,14 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias lla="ll -A"
       alias llas="ls -a -h -l | sort -k5hr" #by Size
 
-      function cdls {
-        cd "$1" && \
-        tput rmam && \
-        ls --color -h1 --group-directories-first && \
-        tput smam;
-      }
-
-      alias cd="cdls"
-
-      alias dush="du -sh * | sort -hr 1>&2"
-      alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File
-
-    #my krusader bookmarks
+    #krusader bookmarks
 
       #this will open krusader where I want.
       #use this from the embedded terminal emulator
       #must have "single instance mode on", or new windows will be opened
       alias krprg='krusader "$PROGRAM_DIR"'
       alias krpy='krusader "$PYTHON_BIN_DIR"'
+      alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
       alias krba='krusader "$BASH_BIN_DIR"'
       alias krcp='krusader "$CPP_BIN_DIR"'
 
@@ -223,23 +233,25 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
       alias krgm='krusader "$GAME_DIR"'
 
-    #my bins
-      alias fbr="find_basename_res.py"
 
     #aptitude
-      alias saii="sudo aptitude install"
-      alias sair="sudo aptitude remove"
       alias acse="apt-cache search"
       alias acsh="apt-cache show"
+      alias afse="apt-file search"
+      alias afsh="apt-file show"
+      alias dplg="dpkg -l | grep -i"
+      alias saii="sudo aptitude install"
+      alias sair="sudo aptitude remove"
 
+    #pip
       alias spii="sudo pip install"
       alias spir="sudo pip remove"
       alias pise="pip search"
 
     #git
       alias gcam="git-commit"
-      alias gpgm="git push github master"
-      alias gcpg="git-commit-push-github"
+      alias gpgm="git push origin master"
+      alias gcpo="git-commit-push-origin"
 
     #mysql
       alias murp="mysql -u root -p"
@@ -254,9 +266,5 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias dmscts="./manage.py convert_to_south"
         alias dmssi="./manage.py schemamigration --initial"
         alias dmssa="./manage.py schemamigration --auto"
-
-    alias ack="ack-grep"
-
-    alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
 
 #</ciro>

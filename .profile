@@ -56,8 +56,9 @@ export LC_COLLATE="en_US.UTF-8"
     export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
     export WEBDEV_DIR="$PROGRAM_DIR/web"
 
-    export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath" #userena project here
-    export PYTHON_BIN_DIR="$PYTHON_DIR/cirosantilli/bin" #my stuff goes here
+    export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"     #developement stuff
+    export PYTHON_BIN_DIR="$PYTHON_DIR/cirosantilli/bin" #my small stuff
+    export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
     export DJANGO_DIR="$PYTHON_BIN_DIR/django"
     export DJANGO_TEMPLATES_DIR="$DJANGO_DIR/templates"
