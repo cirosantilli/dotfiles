@@ -361,6 +361,9 @@
 
     "au! Syntax python source $HOME/.vim/syntax/python.vim
     
+    "sh
+      au FileType sh noremap <buffer> <F6> :w<CR><ESC>:! ./%<CR>
+    
     "python
       au FileType python setlocal shiftwidth=4 tabstop=4  
       au FileType python noremap <buffer> <F6> <ESC>:! ./%<CR>
