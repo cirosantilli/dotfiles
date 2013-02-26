@@ -1,7 +1,8 @@
-.Xmodmap
+.ackrc
 .bashrc
 .gitconfig
 .inputrc
 .profile
 .vimrc
 .xinitrc
+.Xmodmap

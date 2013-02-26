@@ -1,3 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-xmodmap ~/.swap_esc_capslock
+xmodmap ~/.Xmodmap
+
+xbacklight -set 70

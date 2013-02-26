@@ -168,14 +168,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
 #<ciro>
 
-  #bash history
-    shopt -s histappend # append to the history file, don't overwrite it
-    export HISTCONTROL=ignoreboth
-    export HISTSIZE=10000
-    export HISTFILESIZE=10000
-    export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
-
   #aliases
+
     #aliases don't work inside scripts! intercactive console only.
 
     alias ack="ack-grep"
@@ -183,7 +177,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias dush="du -sh * | sort -hr 1>&2"
     alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File
     alias fbr="find_basename_res.py"
-    alias fmmmr="find-music-make-m3u -r ."
+    alias fmmmr="find-music-make-m3u ."
+    alias golly="env UBUNTU_MENUPROXY=0 golly"
 
     alias mvr="move_regex.py"
     alias mkcl='make clean'
@@ -192,8 +187,10 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
     alias rbul="rename_basename_unidecode_lowercase.py"
     alias rifr="replace_in_files_regex.py"
+    alias wgetm="wget -E -k -l inf -np -p -r"
+      #wget Mirror. my favorite mirror command
 
-    alias sudo='sudo env PATH=$PATH'
+    #alias sudo='sudo env PATH=$PATH'
       #normally, sudo cannot see your personal path variable. now it can.
     alias tipy='touch __init__.py'
 
@@ -206,7 +203,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
       LC_COLLATE=C
       export LC_COLLATE
-      #dot will come first!
+        #dot will come first!
 
       alias ls='ls -1 --color=auto --group-directories-first'
       alias lsa='ls -A'
@@ -221,10 +218,12 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       #use this from the embedded terminal emulator
       #must have "single instance mode on", or new windows will be opened
       alias krprg='krusader "$PROGRAM_DIR"'
+      alias krba='krusader "$MY_BASH_DIR"'
+      alias kras='krusader "$ASSEMBLER_DIR"'
+      alias krc='krusader "$C_DIR"'
+      alias krcp='krusader "$CPP_DIR"'
       alias krpy='krusader "$PYTHON_BIN_DIR"'
       alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
-      alias krba='krusader "$BASH_BIN_DIR"'
-      alias krcp='krusader "$CPP_BIN_DIR"'
 
       alias krtst='krusader "$TEST_DIR"'
 
@@ -260,7 +259,6 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias dmrs="./manage.py runserver" #Django Manage.py RunSever
       alias dmds="./manage.py dbshell" #Django Manage.py RunSever
       alias dmcs="echo "yes" | ./manage.py collectstatic" #Django Manage.py RunSever
-
 
       #south
         alias dmscts="./manage.py convert_to_south"

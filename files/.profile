@@ -29,11 +29,30 @@ export LC_COLLATE="en_US.UTF-8"
 
   export EDITOR=vim
 
+  #history
+
+    #whenever you stop a shell, it dumps all the commands you did into ~/.bash_history
+    #these options customize how that is done
+
+    #<UP> <DOWN>: first goes back on commands you did
+    #in current section, and then goes back on ~/.bash_history
+
+    shopt -s histappend # append to the history file, don't overwrite it
+    export HISTCONTROL=ignoreboth #ignores both whitespace only commands and dupes
+    export HISTSIZE=10000
+    export HISTFILESIZE=100000
+    #export HISTFILE=~/.new_bash_history
+    export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S  '
+    export HISTIGNORE='ls:cd*:[bf]g:exit:history'
+      #expressions that match will not be put on ~/.bash_history
+      #and will not reappear on current bash session after <UP>
+    #export PROMPT_COMMAND='history -a' #this command is executed once when shell is ready
+
   #directory structure
 
     MYID=cirosantilli
 
-    export ROOT_DIR="$HOME/ciro" #add indirection for when i'm inside a folder in someone else's computer
+    export ROOT_DIR="$HOME"
      
     export BAK_DIR="$ROOT_DIR/bak"
     export NOBACKUP_DIR="$ROOT_DIR/kab"
@@ -51,16 +70,20 @@ export LC_COLLATE="en_US.UTF-8"
     export HOMEFILES_DIR="$NOSHARE_DIR/homefiles"
 
     export PYTHON_DIR="$PROGRAM_DIR/python"
-    export BASH_BIN_DIR="$PROGRAM_DIR/bash/bin"
-    export CPP_BIN_DIR="$PROGRAM_DIR/cpp/bin"
+    export MY_BASH_DIR="$PROGRAM_DIR/bash/$MYID"
+    export MY_BASH_BIN_DIR="$PROGRAM_DIR/bash/$MYID/bin"
+    export ASSEMBLER_DIR="$PROGRAM_DIR/assembler/$MYID/"
+    export C_DIR="$PROGRAM_DIR/c/$MYID/"
+    export CPP_DIR="$PROGRAM_DIR/c/$MYID/"
     export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
     export WEBDEV_DIR="$PROGRAM_DIR/web"
 
     export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"     #developement stuff
-    export PYTHON_BIN_DIR="$PYTHON_DIR/cirosantilli/bin" #my small stuff
+    export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin" #my small stuff
+    export MY_PYTHON_MOD_DIR="$PYTHON_DIR/$MYID/$MYID" #my small stuff
     export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
-    export DJANGO_DIR="$PYTHON_BIN_DIR/django"
+    export DJANGO_DIR="$MY_PYTHON_MOD_DIR/django"
     export DJANGO_TEMPLATES_DIR="$DJANGO_DIR/templates"
 
     export TEST_DIR="$NOBACKUP_DIR/test"
@@ -70,12 +93,12 @@ export LC_COLLATE="en_US.UTF-8"
   #append to path
 
     PATH="$PATH:$BIN_DIR"
-    PATH="$PATH:$PYTHON_BIN_DIR"
-    PATH="$PATH:$BASH_BIN_DIR"
+    PATH="$PATH:$MY_PYTHON_BIN_DIR"
+    PATH="$PATH:$MY_BASH_BIN_DIR"
     PATH="$PATH:$LATEX_BIN_DIR"
     export PATH 
 
-    PYTHONPATH="$PYTHONPATH:$PYTHON_BIN_DIR"
+    PYTHONPATH="$PYTHONPATH:$MY_PYTHON_MOD_DIR"
     PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR"
     #adding to path is the only way I found to dev most modules with git
     #because the module often is a subdir of the git root and you can;t
