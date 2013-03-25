@@ -382,34 +382,39 @@
     "allows to define project specific mappings for example
     "this comes after FileType, and thus has higher precedence
 
-  "language speficif.
-    "
+  "#language speficif
+    
     "to be split up into ftplugin if gest too large.
     "ftplugin.after is read after ftplugin, so you are sure that your
     "settings will be left after the distro's default
 
-    "html
+    "#html
       au FileType html setlocal shiftwidth=4 tabstop=4
+      au BufEnter,BufRead *.html cal MapAllBuff( '<F6>', ':w<CR>:sil ! firefox %<CR>' )
 
-    "md
+    "#md
       "au FileType *.md setlocal shiftwidth=4 tabstop=4
-      au BufRead,BufNewFile *.md setlocal shiftwidth=4 tabstop=4
-      au BufRead,BufNewFile *.md setlocal filetype=text
-      au BufRead,BufNewFile *.md noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<CR>
+      au BufEnter,BufRead *.md setlocal shiftwidth=4 tabstop=4
+      au BufEnter,BufRead *.md setlocal filetype=text
+      "au BufRead,BufNewFile *.md noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<CR>
+      au BufEnter,BufRead *.md cal MapAllBuff( '<F5>', 'w<CR>:sil ! make<CR>' )
+      au BufEnter,BufRead *.md cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<CR>:w<CR>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<CR>:d<CR>:w<CR>:silent ! firefox _out/%<.html\#VIMHERE<CR>' )
+      au BufEnter,BufRead *.md cal MapAllBuff( '<F7>', ':sil ! make firefox RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
+      au BufEnter,BufRead *.md cal MapAllBuff( '<F8>', ':sil ! make okular  RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
 
     "au! Syntax python source $HOME/.vim/syntax/python.vim
     
-    "sh
+    "#sh
       au FileType sh cal MapAllBuff( '<F6>', ':w<CR>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<CR>' )
     
-    "python
+    "#python
       au FileType python setlocal shiftwidth=4 tabstop=4  
       au FileType sh cal MapAllBuff( '<F6>', ':w<CR>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<CR>' )
 
-    "latex
+    "#latex
       au FileType tex setlocal shiftwidth=2 tabstop=2  
 
-      "goes to tex file
+      "opens okular at given line
       fu! SyncTexForward()
         let execstr = "silent !okular --unique %:p:r.pdf\#src:".line(".")."%:p &"
         exe execstr
@@ -419,7 +424,7 @@
       "compile
       "let linenumber = line(".")
       fu! SyncTexForwardOkular()
-        let execstr = "silent !okular --unique -p $(synctex-forward \"%:t:r\"".line(".").") \"%:t:r.pdf\"; wmctrl -a \"Okular\""
+        let execstr = "silent !okular --unique -p $(synctex-forward \"%:t:r\"" . line(".") . ") \"%:t:r.pdf\"; wmctrl -a \"Okular\""
         exe execstr
       endf
       au FileType tex noremap <buffer> <F6> :cal SyncTexForwardOkular()<CR> 
@@ -433,7 +438,7 @@
 
       au FileType asm cal FileTypeASM()
 
-    "c and cpp
+    "c, cpp, fortran
  
       fu! FileTypeCCpp()
         setlocal shiftwidth=4 tabstop=4  
@@ -449,7 +454,7 @@
         cal MapAllBuff( '<S-F9>', ':w<CR>:! make assembler<CR>' )
       endf
 
-      au FileType c,cpp cal FileTypeCCpp()
+      au FileType c,cpp,f cal FileTypeCCpp()
 
     "vimscript
  
@@ -791,12 +796,6 @@
 ":! ls ; ls
 "  "exec bash command
 "
-":r file.md
-"   "inserts file here
-":r !ls
-"!! ls
-"  "inserts stdout in current line (read)
-"
 ""redir any *vim command* (ex :ls) output (for stdout (:! ls), use :r )
 "
 "  redir @a
@@ -891,22 +890,35 @@
 ""editing commands
 
 "  :p
-"    "prints lines
+"    "prints lines to command line
+"    
+"  :pu='abc'
+"    "inserts abc on a new line after current line
+"  :pu a
+"    "inserts content of register a
+"  :pu! a
+"    "before cur line
+"
+"  :r file.md
+"     "inserts file here
+"  :r !ls
+"    "inserts stdout in current line (read)
 "  
 "  :d
 "    "delete cur line, put it on register
 "  
 "  :y
 "    "yank
+"  :y a
+"    "yank to register a
 "  
-"  :s/re/sub
-"    "sub
-"  
-"  :g/re/p
-"    "global if line matches re
-"  
-"  :g/^pattern/s/$/mytext
-"    "do s in each line that matches pattern
+"  :s
+"    :s/re/sub
+"      "sub
+"    :s/re/sub/g
+"      "global
+"    :s/re/sub/c
+"      "confirm before
 "  
 "  :3t5
 "    "copy line 3 to line 5
@@ -914,6 +926,11 @@
 "  :3m5
 "    "move line 3 to line 5
 "  
+"  :g/re/p
+"    "global if line matches re
+"  
+"  :g/^pattern/s/$/mytext
+"    "do s in each line that matches pattern
 "  
 "  "ranges
 "  
@@ -976,7 +993,7 @@
 "  :ec expand('%:r')
 "   "@% 	dir/a.vim 	directory/name of file
 "   "%:p  /usr/dir/a.vim
-"     "path
+"     "full path
 " 	"%:h	/usr/dir
 "     "head
 "     "but may be relative to ~
@@ -1004,6 +1021,7 @@
 "  "escape to be literal:
 "    ".      wildcard
 "    "a*     repetition
+"    "a\{-}  non greedy repeat
 "    "[abc]  char classes
 "    "^      begin
 "    "$      end
@@ -1027,17 +1045,17 @@
 "    \_$ 	the end of a line (zero width)
 "    \_. 	any character including a newline 
 "  
-"  subsitute
-"  "s/\(a\)/\1b
-"    "refer to capture group on replace
-"  :s/.*/\u&
-"    "Sets first letter of each line to uppercase
-"  :s/.*/\l&
-"    "Sets first letter of each line to lowercase
-"  :%s/\r//g
-"    "Delete DOS carriage returns (^M)
-"  :%s/\r/\r/g
-"   "Transform DOS carriage returns in returns
+"  subsitute:
+"    "s/\(a\)/\1b
+"      "refer to capture group on replace
+"    :s/.*/\u&
+"      "Sets first letter of each line to uppercase
+"    :s/.*/\l&
+"      "Sets first letter of each line to lowercase
+"    :%s/\r//g
+"      "Delete DOS carriage returns (^M)
+"    :%s/\r/\r/g
+"     "Transform DOS carriage returns in returns
 "
 ""quickfix 
 "  :make    creates the error list

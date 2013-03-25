@@ -65,6 +65,7 @@ export LC_COLLATE="en_US.UTF-8"
     export GAME_DIR="$SHARE_DIR/game"
 
     export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
+    export JAZZ_MUSIC_DIR="$MUSIC_DIR/instrumental jazz fusion rock"
 
     export PROGRAM_DIR="$NOSHARE_DIR/program"
     export HOMEFILES_DIR="$NOSHARE_DIR/homefiles"
@@ -79,8 +80,8 @@ export LC_COLLATE="en_US.UTF-8"
     export WEBDEV_DIR="$PROGRAM_DIR/web"
 
     export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"     #developement stuff
+    export MY_PYTHON_MOD_DIR="$PYTHON_DIR/$MYID" #my small stuff
     export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin" #my small stuff
-    export MY_PYTHON_MOD_DIR="$PYTHON_DIR/$MYID/$MYID" #my small stuff
     export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
     export DJANGO_DIR="$MY_PYTHON_MOD_DIR/django"
@@ -90,7 +91,7 @@ export LC_COLLATE="en_US.UTF-8"
 
     export PIP_DIR="/usr/local/lib/python2.7/dist-packages/"
 
-  #append to path
+  ##environment
 
     PATH="$PATH:$BIN_DIR"
     PATH="$PATH:$MY_PYTHON_BIN_DIR"
@@ -98,12 +99,13 @@ export LC_COLLATE="en_US.UTF-8"
     PATH="$PATH:$LATEX_BIN_DIR"
     export PATH 
 
-    PYTHONPATH="$PYTHONPATH:$MY_PYTHON_MOD_DIR"
     PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR"
-    #adding to path is the only way I found to dev most modules with git
-    #because the module often is a subdir of the git root and you can;t
-    #clone modify commit subdirs in git.
-
+      #adding to path is the only way I found to dev most modules with git
+      #because the module often is a subdir of the git root and you can't
+      #clone modify commit subdirs in git.
     export PYTHONPATH
+
+    export LFS=/media/lfs/
+      #linux from scratch home
 
 #</ciro>

@@ -168,14 +168,18 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
 #<ciro>
 
-  #aliases
+  ##aliases
 
-    #aliases don't work inside scripts! intercactive console only.
+    #aliases are not exported to subshells!
+
+    #therefore, those will only work if this file gets sourced,
+    #whih only happens on interactive shells, and not when executing
+    #scripts with ``bash -c`` or ``./``
 
     alias ack="ack-grep"
     alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
     alias dush="du -sh * | sort -hr 1>&2"
-    alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File
+    alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File and stdout
     alias fbr="find_basename_res.py"
     alias fmmmr="find-music-make-m3u ."
     alias golly="env UBUNTU_MENUPROXY=0 golly"
@@ -190,6 +194,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias wgetm="wget -E -k -l inf -np -p -r"
       #wget Mirror. my favorite mirror command
 
+    alias robots="robots -ta`for i in {1..1000}; do echo -n n; done`"
     #alias sudo='sudo env PATH=$PATH'
       #normally, sudo cannot see your personal path variable. now it can.
     alias tipy='touch __init__.py'
@@ -199,7 +204,18 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias xar="xargs -0I'{}'" 
     alias xselc="xsel --clipboard" 
 
-    #dirs
+    ##aptitude
+
+      alias acse="apt-cache search"
+      alias acde="apt-cache depends"
+      alias acsh="apt-cache show"
+      alias afse="apt-file search"
+      alias afsh="apt-file show"
+      alias dplg="dpkg -l | grep -i"
+      alias saii="sudo aptitude install"
+      alias sair="sudo aptitude remove"
+
+    ##dirs
 
       LC_COLLATE=C
       export LC_COLLATE
@@ -212,57 +228,64 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias lla="ll -A"
       alias llas="ls -a -h -l | sort -k5hr" #by Size
 
-    #krusader bookmarks
+      ##bookmarks
 
-      #this will open krusader where I want.
-      #use this from the embedded terminal emulator
-      #must have "single instance mode on", or new windows will be opened
-      alias krprg='krusader "$PROGRAM_DIR"'
-      alias krba='krusader "$MY_BASH_DIR"'
-      alias kras='krusader "$ASSEMBLER_DIR"'
-      alias krc='krusader "$C_DIR"'
-      alias krcp='krusader "$CPP_DIR"'
-      alias krpy='krusader "$PYTHON_BIN_DIR"'
-      alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
+        #this will open krusader where I want.
+        #use this from the embedded terminal emulator
+        #must have "single instance mode on", or new windows will be opened
+        alias krprg='krusader "$PROGRAM_DIR"'
+        alias krba='krusader "$MY_BASH_DIR"'
+        alias kras='krusader "$ASSEMBLER_DIR"'
+        alias krc='krusader "$C_DIR"'
+        alias krcp='krusader "$CPP_DIR"'
+        alias krpy='krusader "$PYTHON_BIN_DIR"'
+        alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
 
-      alias krtst='krusader "$TEST_DIR"'
+        alias krtst='krusader "$TEST_DIR"'
 
-      alias krmsc='krusader "$MUSIC_DIR"'
-      alias krctm='krusader "$CHINESE_MUSIC_DIR"'
+        alias krmsc='krusader "$MUSIC_DIR"'
+        alias krctm='krusader "$CHINESE_MUSIC_DIR"'
 
-      alias krgm='krusader "$GAME_DIR"'
+        alias krgm='krusader "$GAME_DIR"'
 
+    ##django
 
-    #aptitude
-      alias acse="apt-cache search"
-      alias acsh="apt-cache show"
-      alias afse="apt-file search"
-      alias afsh="apt-file show"
-      alias dplg="dpkg -l | grep -i"
-      alias saii="sudo aptitude install"
-      alias sair="sudo aptitude remove"
+      alias dmrs="./manage.py runserver" #Django Manage Run Server
+      alias dmds="./manage.py dbshell" #Db Shell
+      alias dmsd="./manage.py syncdb" #Sync Db
+      alias dmcs="echo "yes" | ./manage.py collectstatic" #Collect Static
 
-    #pip
-      alias spii="sudo pip install"
-      alias spir="sudo pip remove"
-      alias pise="pip search"
+      ##south
 
-    #git
+        alias dmscts="./manage.py convert_to_south"
+        alias dmssi="./manage.py schemamigration --initial"
+        alias dmssa="./manage.py schemamigration --auto"
+
+    ##git
+
       alias gcam="git-commit"
       alias gpgm="git push origin master"
       alias gcpo="git-commit-push-origin"
 
-    #mysql
+    ##mysql
+
       alias murp="mysql -u root -p"
 
-    #django
-      alias dmrs="./manage.py runserver" #Django Manage.py RunSever
-      alias dmds="./manage.py dbshell" #Django Manage.py RunSever
-      alias dmcs="echo "yes" | ./manage.py collectstatic" #Django Manage.py RunSever
+    ##music
 
-      #south
-        alias dmscts="./manage.py convert_to_south"
-        alias dmssi="./manage.py schemamigration --initial"
-        alias dmssa="./manage.py schemamigration --auto"
+      alias tctm="nohup totem \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
+      alias tjfr="nohup totem \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
+
+    ##pip
+
+      alias spii="sudo pip install"
+      alias spir="sudo pip remove"
+      alias pise="pip search"
+
+    ##services
+
+      alias ssar="sudo service apache2 restart"
+      alias sslr="sudo service lightdm restart"
+
 
 #</ciro>

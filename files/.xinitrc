@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 xmodmap ~/.Xmodmap
 
-xbacklight -set 70
+xbacklight -set 60
