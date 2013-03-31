@@ -107,12 +107,12 @@
 
   "newcomplcache. hardcore autocompletion.
     Bundle 'Shougo/neocomplcache'
-    let g:neocomplcache_enable_at_startup = 1
-    let g:neocomplcache_enable_camel_case_completion = 1
-    let g:neocomplcache_enable_smart_case = 1
-    let g:neocomplcache_enable_underbar_completion = 1
-    let g:neocomplcache_min_syntax_length = 3
-    let g:neocomplcache_enable_auto_delimiter = 1
+    let g:neocomplcache_enable_at_startup             = 1
+    let g:neocomplcache_enable_camel_case_completion  = 1
+    let g:neocomplcache_enable_smart_case             = 1
+    let g:neocomplcache_enable_underbar_completion    = 1
+    let g:neocomplcache_min_syntax_length             = 3
+    let g:neocomplcache_enable_auto_delimiter         = 1
 
   "vim-markdown
     "syntax highlight
@@ -387,58 +387,58 @@
     "to be split up into ftplugin if gest too large.
     "ftplugin.after is read after ftplugin, so you are sure that your
     "settings will be left after the distro's default
+    
+    "#data languages
 
     "#html
+      
       au FileType html setlocal shiftwidth=4 tabstop=4
       au BufEnter,BufRead *.html cal MapAllBuff( '<F6>', ':w<CR>:sil ! firefox %<CR>' )
 
-    "#md
-      "au FileType *.md setlocal shiftwidth=4 tabstop=4
-      au BufEnter,BufRead *.md setlocal shiftwidth=4 tabstop=4
-      au BufEnter,BufRead *.md setlocal filetype=text
-      "au BufRead,BufNewFile *.md noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<CR>
-      au BufEnter,BufRead *.md cal MapAllBuff( '<F5>', 'w<CR>:sil ! make<CR>' )
-      au BufEnter,BufRead *.md cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<CR>:w<CR>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<CR>:d<CR>:w<CR>:silent ! firefox _out/%<.html\#VIMHERE<CR>' )
-      au BufEnter,BufRead *.md cal MapAllBuff( '<F7>', ':sil ! make firefox RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
-      au BufEnter,BufRead *.md cal MapAllBuff( '<F8>', ':sil ! make okular  RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
+    "#compile to data languages
 
-    "au! Syntax python source $HOME/.vim/syntax/python.vim
+      "#md, rst, latex
+        
+        "au FileType *.md setlocal shiftwidth=4 tabstop=4
+        au BufEnter,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
+        au BufEnter,BufRead *.{md,rst} setlocal filetype=text
+        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F5>', 'w<CR>:sil ! make<CR>' )
+
+        au BufEnter,BufRead *.md  cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<CR>:w<CR>:sil ! make<CR>:d<CR>:w<CR>:sil ! make firefox RUN_NOEXT="%:r" ID="\#VIMHERE"<CR>' )
+        "au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<CR>:w<CR>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<CR>:d<CR>:w<CR>:silent ! firefox _out/%<.html\#VIMHERE<CR>' )
+        "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<CR>
+        
+        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':sil ! make<CR>:sil ! make firefox RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
+        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':sil ! make<CR>:sil ! make okular  RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
+
+      "#latex
+
+        au FileType tex setlocal shiftwidth=2 tabstop=2  
+
+        "opens okular at given line
+        fu! SyncTexForward()
+          let execstr = "silent !okular --unique %:p:r.pdf\#src:".line(".")."%:p &"
+          exe execstr
+        endf
+        au FileType tex nnoremap <buffer> <Leader>lf :cal SyncTexForward()
+
+        "compile
+        "let linenumber = line(".")
+        fu! SyncTexForwardOkular()
+          let execstr = "silent !okular --unique -p $(synctex-forward \"%:t:r\"" . line(".") . ") \"%:t:r.pdf\"; wmctrl -a \"Okular\""
+          exe execstr
+        endf
+        au FileType tex noremap <buffer> <F6> :cal SyncTexForwardOkular()<CR> 
     
-    "#sh
-      au FileType sh cal MapAllBuff( '<F6>', ':w<CR>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<CR>' )
-    
-    "#python
+    "#interpreted languages
+
       au FileType python setlocal shiftwidth=4 tabstop=4  
-      au FileType sh cal MapAllBuff( '<F6>', ':w<CR>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<CR>' )
 
-    "#latex
-      au FileType tex setlocal shiftwidth=2 tabstop=2  
+      au FileType python,sh cal MapAllBuff( '<F6>', ':w<CR>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<CR>' )
 
-      "opens okular at given line
-      fu! SyncTexForward()
-        let execstr = "silent !okular --unique %:p:r.pdf\#src:".line(".")."%:p &"
-        exe execstr
-      endf
-      au FileType tex nnoremap <buffer> <Leader>lf :cal SyncTexForward()
-
-      "compile
-      "let linenumber = line(".")
-      fu! SyncTexForwardOkular()
-        let execstr = "silent !okular --unique -p $(synctex-forward \"%:t:r\"" . line(".") . ") \"%:t:r.pdf\"; wmctrl -a \"Okular\""
-        exe execstr
-      endf
-      au FileType tex noremap <buffer> <F6> :cal SyncTexForwardOkular()<CR> 
-
-    "asm
-      fu! FileTypeASM()
-        setlocal shiftwidth=4 tabstop=4  
-        cal MapAllBuff( '<F5>'  , ':w<CR>:make<CR>' ) "vim make quickfix
-        cal MapAllBuff( '<F6>'  , ':cal RedirStdoutNewTabSingle("make run")<CR>' )
-      endf
-
-      au FileType asm cal FileTypeASM()
-
-    "c, cpp, fortran
+    "#compile to executable languages
+    
+      "c, cpp, fortran, asm
  
       fu! FileTypeCCpp()
         setlocal shiftwidth=4 tabstop=4  
@@ -454,9 +454,9 @@
         cal MapAllBuff( '<S-F9>', ':w<CR>:! make assembler<CR>' )
       endf
 
-      au FileType c,cpp,f cal FileTypeCCpp()
+      au FileType c,cpp,f,asm cal FileTypeCCpp()
 
-    "vimscript
+    "#vimscript
  
       "reaload all visible buffers. TODO: multiple windows per tabpage.
       fu! ReloadVisible()
@@ -470,9 +470,11 @@
       "buffers so that changes in vimrc are applied
       au FileType vim noremap <buffer> <F5> :wa<CR>:so %<CR>:sil cal ReloadVisible()<CR>
 
-"key bindings for all languages
-  "Here I put every mapping that I have made.
-  "sorted by key order so that it is easy to find
+"#key bindings
+  
+  "here I put every mapping that I have made
+  "that is not language specific
+  "sorted by qwert order so that it is easy to find:
   "
   "Esc F1-F12
   "1234567890
@@ -604,6 +606,9 @@
   
   "select Go to last Pasted text (to indent, or delete for example)
   nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+  "i use J for something else:
+  nnoremap <C-j> J 
 
   "I would rather have the capital H and L to go to
   "beginning or end of line
@@ -960,7 +965,13 @@
 "    "http://vim.wikia.com/wiki/Ranges
 
 "autocommand au
+"
 "  <http://www.ibm.com/developerworks/linux/library/l-vim-script-5/index.html>
+"  
+"  patterns:
+"   *.py
+"   *.py,*.pl
+"   *.{py,pl}
 "
 "map
 "  map
@@ -1056,6 +1067,13 @@
 "      "Delete DOS carriage returns (^M)
 "    :%s/\r/\r/g
 "     "Transform DOS carriage returns in returns
+"    :%s/a/a/c
+"     "confirm each match replace
+"     "y: yes
+"     "n: no
+"     "a: replace all remaining
+"     "q: quit
+"     "l: last. yes and quit
 "
 ""quickfix 
 "  :make    creates the error list

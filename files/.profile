@@ -55,7 +55,6 @@ export LC_COLLATE="en_US.UTF-8"
     export ROOT_DIR="$HOME"
      
     export BAK_DIR="$ROOT_DIR/bak"
-    export NOBACKUP_DIR="$ROOT_DIR/kab"
     export BIN_DIR="$ROOT_DIR/bin"
      
     export SHARE_DIR="$BAK_DIR/share"
@@ -70,7 +69,6 @@ export LC_COLLATE="en_US.UTF-8"
     export PROGRAM_DIR="$NOSHARE_DIR/program"
     export HOMEFILES_DIR="$NOSHARE_DIR/homefiles"
 
-    export PYTHON_DIR="$PROGRAM_DIR/python"
     export MY_BASH_DIR="$PROGRAM_DIR/bash/$MYID"
     export MY_BASH_BIN_DIR="$PROGRAM_DIR/bash/$MYID/bin"
     export ASSEMBLER_DIR="$PROGRAM_DIR/assembler/$MYID/"
@@ -78,18 +76,17 @@ export LC_COLLATE="en_US.UTF-8"
     export CPP_DIR="$PROGRAM_DIR/c/$MYID/"
     export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
     export WEBDEV_DIR="$PROGRAM_DIR/web"
+    export MY_LINUX_DIR="$PROGRAM_DIR/linux/$MYID"
 
-    export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"     #developement stuff
-    export MY_PYTHON_MOD_DIR="$PYTHON_DIR/$MYID" #my small stuff
-    export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin" #my small stuff
+    export PYTHON_DIR="$PROGRAM_DIR/python"
+    export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"
+    export MY_PYTHON_DIR="$PYTHON_DIR/$MYID/"
+    export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin"
     export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
-    export DJANGO_DIR="$MY_PYTHON_MOD_DIR/django"
-    export DJANGO_TEMPLATES_DIR="$DJANGO_DIR/templates"
+    export TEST_DIR="~/test"
 
-    export TEST_DIR="$NOBACKUP_DIR/test"
 
-    export PIP_DIR="/usr/local/lib/python2.7/dist-packages/"
 
   ##environment
 
@@ -99,7 +96,7 @@ export LC_COLLATE="en_US.UTF-8"
     PATH="$PATH:$LATEX_BIN_DIR"
     export PATH 
 
-    PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR"
+    PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR:/var/www/django/devpath"
       #adding to path is the only way I found to dev most modules with git
       #because the module often is a subdir of the git root and you can't
       #clone modify commit subdirs in git.

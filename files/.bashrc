@@ -238,7 +238,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias kras='krusader "$ASSEMBLER_DIR"'
         alias krc='krusader "$C_DIR"'
         alias krcp='krusader "$CPP_DIR"'
-        alias krpy='krusader "$PYTHON_BIN_DIR"'
+        alias krli='krusader "$MY_LINUX_DIR"'
+        alias krpy='krusader "$MY_PYTHON_DIR"'
         alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
 
         alias krtst='krusader "$TEST_DIR"'
