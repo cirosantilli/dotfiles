@@ -13,12 +13,12 @@
         exe "tabnew" . a:newt
       else
         %d
-      endif
+      en
       exe "silent r !" . a:cmd
       set nomodified
     endf
     "command! -nargs=+ -complete=command TabMessage cal TabMessage(<q-args>)
-    
+
     "map on all modes
     fu! MapAll(keys, rhs)
         exe 'noremap' a:keys a:rhs
@@ -48,7 +48,7 @@
             "create new tab
           let g:guakeTab = substitute( system('guake -g 2>/dev/null'), '[\n\r]', '', 'g' )
             "store its number
-        endif
+        en
         exe 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
           "execute command on the new tab
     endf
@@ -57,7 +57,7 @@
       if ! filereadable(expand('%:p'))
         ec expand('%:p')
         bd expand('%:p')
-      endif
+      en
     endf
 
 "plugins
@@ -65,7 +65,7 @@
   "
   "to install plugin, place line Bundle 'gitrepouser/reponame' and run
   "BundleInstall
- 
+
   filetype off
     "required!
 
@@ -114,11 +114,6 @@
     let g:neocomplcache_min_syntax_length             = 3
     let g:neocomplcache_enable_auto_delimiter         = 1
 
-  "vim-markdown
-    "syntax highlight
-    "code folding
-    Bundle 'plasticboy/vim-markdown'
-
     "AutoComplPop like behavior.
     let g:neocomplcache_enable_auto_select = 0
 
@@ -154,8 +149,8 @@
 
     "Enable heavy omni completion.
     if !exists('g:neocomplcache_omni_patterns')
-    let g:neocomplcache_omni_patterns = {}
-    endif
+      let g:neocomplcache_omni_patterns = {}
+    en
     let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
     "au FileType ruby setlocal omnifunc=rubycomplete#Complete
     let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
@@ -164,8 +159,14 @@
 
     "For snippet_complete marker.
     if has('conceal')
-    set conceallevel=2 concealcursor=i
-    endif 
+      set conceallevel=2 concealcursor=i
+    en
+
+  "vim-markdown
+    "syntax highlight
+    "code folding
+    Bundle 'plasticboy/vim-markdown'
+
 
   "msanders/snipmate.vim
     "allow you to define snippets: inster pieces of code, and then jump to
@@ -258,7 +259,7 @@
   set noswapfile
 
   "automatically load files that were modified externally
-  :set autoread 
+  :set autoread
 
   "stop those enter to continue useless messages
   set shortmess=atI
@@ -301,7 +302,7 @@
     "match OverLength /\%81v.\+/
     augroup vimrc_aus
       au BufEnter * highlight OverLength ctermbg=darkgrey guibg=#101010
-      au BufEnter * match OverLength /\%75v.*/ 
+      au BufEnter * match OverLength /\%75v.*/
     augroup END
 
   set ruler
@@ -374,7 +375,7 @@
   func! SoIfReadable(f)
     if filereadable(a:f)
       exe "so " . a:f
-    endif
+    en
   endf
 
   au BufRead,BufNewFile * cal SoIfReadable('so.vim')
@@ -383,66 +384,74 @@
     "this comes after FileType, and thus has higher precedence
 
   "#language speficif
-    
+
     "to be split up into ftplugin if gest too large.
     "ftplugin.after is read after ftplugin, so you are sure that your
     "settings will be left after the distro's default
-    
+
     "#data languages
 
     "#html
-      
+
       au FileType html setlocal shiftwidth=4 tabstop=4
       au BufEnter,BufRead *.html cal MapAllBuff( '<F6>', ':w<CR>:sil ! firefox %<CR>' )
 
-    "#compile to data languages
+    "#compilable markup
 
-      "#md, rst, latex
-        
+      "#md #rst
+
         "au FileType *.md setlocal shiftwidth=4 tabstop=4
         au BufEnter,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
         au BufEnter,BufRead *.{md,rst} setlocal filetype=text
         au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F5>', 'w<CR>:sil ! make<CR>' )
 
         au BufEnter,BufRead *.md  cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<CR>:w<CR>:sil ! make<CR>:d<CR>:w<CR>:sil ! make firefox RUN_NOEXT="%:r" ID="\#VIMHERE"<CR>' )
+        "TODO this is broken still:
+        au BufEnter,BufRead *.rst cal MapAllBuff( '<F6>', 'o<CR><ESC>k:pu=''.. _vimhere:''<CR>:w<CR>:sil ! make<CR>k:d<CR>:d<CR>:d<CR>:w<CR>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<CR>' )
         "au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<CR>:w<CR>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<CR>:d<CR>:w<CR>:silent ! firefox _out/%<.html\#VIMHERE<CR>' )
         "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<CR>
-        
-        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':sil ! make<CR>:sil ! make firefox RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
-        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':sil ! make<CR>:sil ! make okular  RUN_NOEXT="' . expand('%:r')  . '"<CR>' )
+
+        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':w<CR>:sil ! make<CR>:sil ! make firefox RUN_NOEXT="%:r"<CR>' )
+        au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':w<CR>:sil ! make<CR>:sil ! make okular  RUN_NOEXT="%:r"<CR>' )
 
       "#latex
 
-        au FileType tex setlocal shiftwidth=2 tabstop=2  
 
-        "opens okular at given line
-        fu! SyncTexForward()
-          let execstr = "silent !okular --unique %:p:r.pdf\#src:".line(".")."%:p &"
-          exe execstr
-        endf
-        au FileType tex nnoremap <buffer> <Leader>lf :cal SyncTexForward()
+        au FileType tex setlocal shiftwidth=2 tabstop=2
 
-        "compile
-        "let linenumber = line(".")
-        fu! SyncTexForwardOkular()
-          let execstr = "silent !okular --unique -p $(synctex-forward \"%:t:r\"" . line(".") . ") \"%:t:r.pdf\"; wmctrl -a \"Okular\""
-          exe execstr
+        au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<CR>:! make<CR>' )
+        au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<CR>:sil ! make clean<CR>' )
+        au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<CR>:exe '':sil ! make run VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''<CR>' )
+
+        "this works
+        "but the problem is: in which dir is the output file?
+        "this is something only the makefile knows about.
+        fu! LatexForwardOkular(pdfdir)
+          let pdf = a:pdfdir . expand('%:r') . '.pdf'
+          let synctex_out = system( 'synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"' )
+          let page = 1
+          for l in split( synctex_out, '\n' )
+            if l =~ '^Page:'
+              let page = substitute( l, '^Page:\(\d\+\)$', '\1', '' )
+            en
+          endfor
+          exe 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
         endf
-        au FileType tex noremap <buffer> <F6> :cal SyncTexForwardOkular()<CR> 
-    
+        "au BufEnter,BufRead *.tex cal MapAllBuff( '<F4>', ':cal LatexForwardOkular("_out/")<CR>' )
+
     "#interpreted languages
 
-      au FileType python setlocal shiftwidth=4 tabstop=4  
+      au FileType python setlocal shiftwidth=4 tabstop=4
 
       au FileType python,sh cal MapAllBuff( '<F6>', ':w<CR>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<CR>' )
 
     "#compile to executable languages
-    
-      "c, cpp, fortran, asm
- 
+
+      "c, cpp, lex, y, fortran, asm
+
       fu! FileTypeCCpp()
-        setlocal shiftwidth=4 tabstop=4  
         cal MapAllBuff( '<F5>'  , ':w<CR>:make<CR>' ) "vim make quickfix
+        cal MapAllBuff( '<S-F5>', ':w<CR>:sil ! make clean<CR>' )
         cal MapAllBuff( '<F6>'  , ':cal RedirStdoutNewTabSingle("make run")<CR>' )
           "make run, stdout to a new file
           "stdout is only seen when program stops.
@@ -454,10 +463,16 @@
         cal MapAllBuff( '<S-F9>', ':w<CR>:! make assembler<CR>' )
       endf
 
-      au FileType c,cpp,f,asm cal FileTypeCCpp()
+      au FileType c,cpp,fortran,asm cal FileTypeCCpp()
+
+      au FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
+      au BufEnter,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+
+      "because fortran has a max line length...
+      au FileType fortran setlocal shiftwidth=2 tabstop=2
 
     "#vimscript
- 
+
       "reaload all visible buffers. TODO: multiple windows per tabpage.
       fu! ReloadVisible()
         set noconfirm
@@ -465,13 +480,13 @@
         set confirm
       endfu
 
-      au FileType vim setlocal shiftwidth=2 tabstop=2  
+      au FileType vim setlocal shiftwidth=2 tabstop=2
       "this will write all buffers, source this vimrc, and reaload open
       "buffers so that changes in vimrc are applied
       au FileType vim noremap <buffer> <F5> :wa<CR>:so %<CR>:sil cal ReloadVisible()<CR>
 
 "#key bindings
-  
+
   "here I put every mapping that I have made
   "that is not language specific
   "sorted by qwert order so that it is easy to find:
@@ -493,10 +508,10 @@
     "macro saved on a register
   "noremap @@
     "redo last used macro
-  
+
   "noremap #
     "noremap * backwards
-  
+
   "noremap *
     "search for word under cursor
     "# for backwards
@@ -521,7 +536,7 @@
 
   nnoremap <C-Y> 5<C-Y>
     "accelerate vertical scroll up
-  
+
     "select what to replace, type replacement, hit enter
     "detroys Z register
 
@@ -535,7 +550,7 @@
     "replacement starts as current word (W) under cursor
   vnoremap <C-R> "zy:%s/<C-r>z/<C-r>z/g<left><left>
     "replacement starts as current selection
- 
+
   nnoremap tf :tabfirst<CR>
   nnoremap tl :tablast<CR>
   nnoremap tt :tabedit<Space>
@@ -543,23 +558,23 @@
   nnoremap tn :tabnew<CR>
   nnoremap tm :tabm<Space>
     "tab navigation in normal mode
-    "in terminal, alt tab is not possible, 
+    "in terminal, alt tab is not possible,
     "but should be used in gvim instead.
 
   nnoremap yY ^v$"+y
     "copy line to system clipboard
-  
+
   nnoremap <C-Y> 5<C-Y>
     "accelerate vertical scroll up
-    
+
   "vnoremap u
     "to lowercase
   "vnoremap U
     "to uppecase
-  
+
   "nnoremap <C-i>
     "inverse
-           
+
   "inoremap <C-o>:
     "do one normal command and return
   "nnoremap <C-o>
@@ -569,7 +584,7 @@
 
   "{       previous
   "} go to next     latex paragraph (double newline)
-    
+
   "<C-A>
     "Increment number under the cursor
   cnoremap <C-A> <C-R>+
@@ -578,7 +593,7 @@
   vnoremap <C-A> d"+P`[v`]
     "pAste from system clipboard before cursor (in the same place as you would edit with 'i')
     "the pasted item is selected in viusal mode if you want to indent it
-    "so if you want to append to a Line to to insert mode first, 'A' to append and then <C-A> 
+    "so if you want to append to a Line to to insert mode first, 'A' to append and then <C-A>
     "does not affect vim local register
     "A not to conflict with c-v visual block mode or with terminal shortcuts
     "and is left hand only, allowing you to keep your right hand is no the mouse
@@ -595,7 +610,7 @@
 
   "cut line to clipboard
   nnoremap dD ^v$"+ygv
-  
+
   "gf
     "takes word under cursor
     "open in turrent window a file with same name as that word
@@ -603,12 +618,12 @@
     "  help path
     "looks in cur dir by default
     "usage: view header/inlcluded files
-  
+
   "select Go to last Pasted text (to indent, or delete for example)
   nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
   "i use J for something else:
-  nnoremap <C-j> J 
+  nnoremap <C-k> J
 
   "I would rather have the capital H and L to go to
   "beginning or end of line
@@ -675,410 +690,556 @@
       "ggn  first
       "GN   last
 
-"cheatsheet
-"
+"#sources
+
+"- <http://andrewscala.com/vimscript/>
+
+  "a few good straight to the point, important vimscript tips
+
 "- http://www.ibm.com/developerworks/linux/library/l-vim-script-1/index.html
-"
-"   amazing begginner tutorials on vimscript
-"
-"vars
-"
-"  :ec "asdf"
-"  
-"  let a = 2
-"  ec a
-"  "a = 3
-"    "ERROR
-"    "must use let always
-" 
-"  
-"  let a = "asdf"
-"  ec a
-"  
-"  variable scopes
-"    g: varname 	The variable is global
-"    s: varname 	The variable is local to the current script file
-"    w: varname 	The variable is local to the current editor window
-"    t: varname 	The variable is local to the current editor tab
-"    b: varname 	The variable is local to the current editor buffer
-"    l: varname 	The variable is local to the current function
-"    a: varname 	The variable is a parameter of the current function
-"    v: varname 	The variable is one that Vim predefines 
-""list
-"
-"  :filter(mylist, 'v:val =~ "KEEP"')
-"    "done in place
-"  :let theCopy = filter(copy(mylist), 'v:val =~ "KEEP"')
-"    "copy to make new copy
-"
-""functions
-"  "must start uppercase
-"
-"  fu! Foo(bar, ...)
-"    if a:0 > 0
-"      let xyzzy = a:1
-"    else
-"      let xyzzy = 0
-"    end
-"  endf
-"  
-"| pipe chain commands
-" :so % | :e
-"
-"math
-"
-" ec 1+1
-"  "2
-"
-""string
-"
-"  ec "as" . "df"
-"    "asdf
-"    "concat
-"  
-"  :ec 'That''s enough.'
-"  :ec '\"'
-"    "exactly \ and "
-"    the only escape inside single quotes is '' for '
-"  
-"  :ec 10 + "10.10"
-"    "20. dropped anything after . when coercing
-"
-"  if "as" == "df"
-"    ec "asdf"
-"  endif
-"  
-"  if 'abc' =~ 'a.c'
-"      echom "abc"
-"  endif
-"    "regex match
-"
-"  ec len("abc")
-     "3
-"  ec split("a,b,c", ",")
-     "['c', 'b', 'c']"
-"  ec join(["a", "b", "c"], "...")
-     "abc
-"  let a = "abc"
-"  let a = substitute(a, "b", "B", "g")
-"  ec a
-     "aBc
-"   
-"
-""if
-"  
-"  if 10 == 11
-"      echom "first"
-"  elseif 10 == 10
-"      echom "second"
-"  endif
-"
-"exec "ls"
-"exec "!ls"
-"exec "ls" "ls"
-"  "multiple args separated by space
-"exec "ls"."ls"
-"  "to avoid space, concatenate
-"
+
+   "begginner tuts on vimscript
+
+"#comments
+
+  "start with '"'
+
+"#spaces
+
+  "are ignored like in c, except for newlines:
+
+    "ec 1
+    "ec 2
+
+"#multiline commands
+
+  "you can use the pipe char '|' to replace *some*, *but not all* newlines
+
+    "ec 1 | ec 2
+
+  "does not work for function definitions for example:
+
+    ""fu F() | ec 1 | endf
+
+"#scope
+
+  "- g: varname 	The variable is global
+  "- s: varname 	The variable is local to the current script file
+  "- w: varname 	The variable is local to the current editor window
+  "- t: varname 	The variable is local to the current editor tab
+  "- b: varname 	The variable is local to the current editor buffer
+  "- l: varname 	The variable is local to the current function
+  "- a: varname 	The variable is a parameter of the current function
+  "- v: varname 	The variable is one that Vim predefines
+
+"#vars
+
+  "must use let always:
+
+    "let a = 2 | if a != 2 | ec 'fail' | en
+
+  "can redefine:
+
+    "let a = "abc"
+    "let a = 1
+
+"#list
+
+  "let a = [ 1, 2, 3 ]
+
+  "equality:
+
+    if [1,2] != [1,2] | ec 'fail' | en
+    if [1,2] == [2,1] | ec 'fail' | en
+
+  "range:
+  
+    if range(3) != [ 0, 1, 2 ] | ec 'fail' | en
+
+  "#filter
+
+    "done in place:
+
+      "a = range(4)
+      "filter( a, 'v:val > 1' )
+      "if a != [2,3] | ec 'fail' | en
+
+    "copy:
+
+      "a = range(4)
+      "let b = filter( filter( a, 'v:val > 1' ) )
+      "if a != range(4) | ec 'fail' | en
+      "if b != [2,3]    | ec 'fail' | en
+
+"#dict
+
+"#string
+
+  "escape
+
+  ":ec 'That''s enough.'
+  ":ec '\"'
+    "exactly \ and "
+    "the only escape inside single quotes is '' for '
+
+  "concat:
+
+    "if "ab" . "cd" != 'abcd' | ec 'fail' | en
+
+  "string to int:
+
+    "if 10  + "10"    != 20   | ec 'fail' | en
+    "if 10  + "10.10" != 20   | ec 'fail' | en
+    "if 1.1 + "1.1"   != 2.1  | ec 'fail' | en
+
+  "equality:
+
+    "if "ab" != "ab" | ec "fail" | en
+
+  "length:
+
+    "if len("abc") != 3 | ec 'fail' | en
+
+  "split:
+
+    "if split( "a,b,c", "," ) != [ 'a', 'b', 'c' ] | ec 'fail' | en
+
+  "join:
+
+    "if join( ["a", "b", "c"], "," ) != 'a,b,c' | ec 'fail' | en
+
+"#if
+
+    "if 0
+      "ec 0
+    "elseif 1
+      "ec 1
+    "en
+
+  "single line:
+
+    "if 0 | ec 0 | elseif 1 | ec 1 | else | ec 2 | en
+
+"#for
+
+  "for i in [1,3,2] | ec i | endfor
+
+"#function
+
+  "must start with uppercase char
+
+  "'!' means can override existing func
+
+  "cannot use | for single line
+
+    fu! F( a, b )
+      retu a:a + a:b
+    endf
+
+    if F( 1, 2 ) != 3 | ec 'fail' | en
+
+  "nargs:
+
+    fu! F( a, b, ... )
+      for i in range( a:0 )
+        ec a:{i}
+      endfor
+    endf
+
+  "a:0 contains the number of args
+  "a:1 contains the first arg
+  "...
+
+  "#cal
+
+    "command to call function
+
+    "ignores return value
+
+    "only side effects can be useful therefore
+
+"#exe
+
+  "execute string as a vim command
+
+    "exe "let a = 10"
+    "if
+
+  "multiple args separated by space:
+
+    "exe "ec 1 |" "ec 1"
+
 ":browse
-"  "open default system file browser popup
-"
-":sil ls
-":sil idontexist
-"  "silent, but shows vim errors
-"
-":sil! ls
-":sil! idontexist
-"  "silent, don't show errors
-"
-":sil ! ls
-":sil ! idontexist
-"  "vim command ``!`` worked well, will not show shell errors
-"
-":sil! ! ls
-":sil! ! idontexist
-"
-":! ls ; ls
-"  "exec bash command
-"
-""redir any *vim command* (ex :ls) output (for stdout (:! ls), use :r )
-"
-"  redir @a
-"  set all
-"  redir END
-"    "redir to register a
-"
-"  redir @a
-"  !ls
-"  redir END
-"    "redir to register a
-"    "a contains:
-"    "
-"    "!ls
-"    "
-"    "a b c d e
-"
-"  redir =>a
-"    "redir to var a
-"  redir =>>a
-"    "append 
-"
-""system
-"
-"  let a = system('ec asdf')
-"  ec a
-"    "asdf
-"
-"  let a = system('sort',"b\na")
-"  ec a
-"    "a
-"    "b
-"
-"  :ec v:shell_error
-"    "constains return status of last command executed by shell after
-"    "- ``:!``
-"    "- ``:r !``
-"    "- calling ``system()`` 
-"
-"let a="adsf"
-"put=a
-"  "paste variable into buffer
-"
+  "open default system file browser popup
+
+"#sil
+
+  ":sil ls
+  ":sil idontexist
+    "silent, but shows vim errors
+
+  ":sil! ls
+  ":sil! idontexist
+    "silent, don't show errors
+
+  "there must be no space between '!' and sil!! otherwise sh command:
+
+    ":sil ! ls
+    ":sil ! idontexist
+
+  ":sil! ! ls
+  ":sil! ! idontexist
+
+"#redir
+
+  "redirect output of any *vim command* (ex :ec 1) output (for sh stdout (:! ls), use <#:r> )
+
+  "redir to var a:
+
+    "redir =>a | ec 1 | redir END
+    "if a != 1 | ec 'fail' | en
+
+  "append ro var a:
+
+    "redir =>>a
+
+  "redir to register a:
+
+    "redir @a
+      "ec 1
+    "redir END
+
+  "redir @a
+  "!ls
+  "redir END
+    "redir to register a
+    "a contains:
+    "
+    "!ls
+    "
+    "a b c d e
+
+"#shell
+
+  "exclamation mark:
+
+    "! ls; ls
+
+  "#pass vim variable to bash command:
+
+    "let a = 1
+    "exe "! echo " . a
+
+  "#system
+
+    "exec sh command and get stdout
+
+    "let a = system( 'ec asdf' )
+    "ec a
+      "asdf
+
+    "let a = system( 'sort', "b\na" )
+    "ec a
+      "a
+      "b
+
+    ":ec v:shell_error
+      "constains return status of last command executed by shell after
+      "- ``:!``
+      "- ``:r !``
+      "- calling ``system()``
+
+"let a = "adsf"
+"put = a
+  "paste variable into buffer
+
 ":find
 ":sfind
 ":tabfind
-"  "find in vim path var, and edit here, split, new tab
-"
-""file operations
-"
-"  :q
-"    "close cur buffer
-"    "doew not delete it from buffer list
-"  :qa
-"    "close all windows
-"
-"  :on
-"    "close all windows except cur one
-"
-"  :w
-"    "save cur buffer
-"    "if file doew not exit, create it
-"
-"  "buffers
-"
-"    :ls 
-"      "list buffers
-"  
-"    :b 2
-"      "load buffer 2
-"    :b file.txt
-"      "load buffer file.txt
-"      "tab complete matches in middle
-"  
-"    :sb 1
-"      "same as b, but split
-"  
-"    :badd f1.txt
-"      "add buffer without loading it
-"    
-"    :bd f1.txt
-"       "delete buffer by filename
-"    :bd 12
-"       "delete buffer by number
-"    :bd 3 4 5
-"    :3,5bd
-"      "delete from 3 to 5
-"
-":norm dd
-"  "executes normal mode commands
-"
-""editing commands
+  "find in vim path var, and edit here, split, new tab
 
-"  :p
-"    "prints lines to command line
-"    
-"  :pu='abc'
-"    "inserts abc on a new line after current line
-"  :pu a
-"    "inserts content of register a
-"  :pu! a
-"    "before cur line
-"
-"  :r file.md
-"     "inserts file here
-"  :r !ls
-"    "inserts stdout in current line (read)
-"  
-"  :d
-"    "delete cur line, put it on register
-"  
-"  :y
-"    "yank
-"  :y a
-"    "yank to register a
-"  
-"  :s
-"    :s/re/sub
-"      "sub
-"    :s/re/sub/g
-"      "global
-"    :s/re/sub/c
-"      "confirm before
-"  
-"  :3t5
-"    "copy line 3 to line 5
-"  
-"  :3m5
-"    "move line 3 to line 5
-"  
-"  :g/re/p
-"    "global if line matches re
-"  
-"  :g/^pattern/s/$/mytext
-"    "do s in each line that matches pattern
-"  
-"  "ranges
-"  
-"    :1,2d
-"    "deletes lines 1 and 2
-"    
-"    .+1,$
-"    "cur line to end
-"    
-"    :1,.-1d
-"    "delete all lines before the current line 
-"    
-"    %d
-"    "same as 1,$
-"    
-"    :'a,'bd
-"    "delete lines from mark a to mark b, inclusive 
-"    
-"    /pattern/ 	next line where pattern matches
-"    ?pattern? 	previous line where pattern matches
-"    \/ 	next line where the previously used search pattern matches
-"    \? 	previous line where the previously used search pattern matches
-"    \& 	next line where the previously used substitute pattern matches
-"    0;/that 	first line containing "that" (also matches in the first line)
-"    1;/that 	first line after line 1 containing "that" 
-"    
-"    "http://vim.wikia.com/wiki/Ranges
+"#file operations
+
+  ":q
+    "close cur buffer
+    "does not delete it from buffer list
+
+  ":qa
+    "close all windows
+
+  ":on
+
+    "close all windows except cur one
+
+  ":w
+    "save cur buffer
+    "if file does not exit, create it
+
+  "#buffers
+
+    ":ls
+      "list buffers
+
+    ":b 2
+      "load buffer 2
+    ":b file.txt
+      "load buffer file.txt
+      "tab complete matches in middle
+
+    ":sb 1
+      "same as b, but split
+
+    ":badd f1.txt
+      "add buffer without loading it
+
+    ":bd f1.txt
+       "delete buffer by filename
+    ":bd 12
+       "delete buffer by number
+    ":bd 3 4 5
+    ":3,5bd
+      "delete from 3 to 5
+
+"execute normal mode commands:
+
+  ":norm dd
+
+"editing commands
+
+  ":p
+    "prints lines to command line
+
+  ":pu='abc'
+    "inserts abc on a new line after current line
+  ":pu a
+    "inserts content of register a
+  ":pu! a
+    "before cur line
+
+  ":r file.md
+     "inserts file here
+  ":r !ls
+    "inserts stdout in current line (read)
+
+  ":d
+    "delete cur line, put it on register
+
+  ":y
+    "yank
+  ":y a
+    "yank to register a
+
+  ":s
+    ":s/re/sub
+      "sub
+    ":s/re/sub/g
+      "global
+    ":s/re/sub/c
+      "confirm before
+
+  ":3t5
+    "copy line 3 to line 5
+
+  ":3m5
+    "move line 3 to line 5
+
+  ":g/re/p
+    "global if line matches re
+
+  ":g/^pattern/s/$/mytext
+    "do s in each line that matches pattern
+
+  "#ranges
+
+    ":1,2d
+    "deletes lines 1 and 2
+
+    ".+1,$
+    "cur line to end
+
+    ":1,.-1d
+    "delete all lines before the current line
+
+    "%d
+    "same as 1,$
+
+    ":'a,'bd
+    "delete lines from mark a to mark b, inclusive
+
+    "/pattern/ 	next line where pattern matches
+    "?pattern? 	previous line where pattern matches
+    "\/ 	next line where the previously used search pattern matches
+    "\? 	previous line where the previously used search pattern matches
+    "\& 	next line where the previously used substitute pattern matches
+    "0;/that 	first line containing "that" (also matches in the first line)
+    "1;/that 	first line after line 1 containing "that"
+
+    "http://vim.wikia.com/wiki/Ranges
 
 "autocommand au
-"
-"  <http://www.ibm.com/developerworks/linux/library/l-vim-script-5/index.html>
-"  
-"  patterns:
-"   *.py
-"   *.py,*.pl
-"   *.{py,pl}
-"
-"map
-"  map
-"     "command creates a key map that works in normal, visual, select and operator pending modes.
-"  map!
-"     "command creates a key map that works in insert and command-line mode. 
-"
-":bufdo, :tabdo, :windo
-"  "do a command on all *
-"
-":set nomodified
-"  "as if the buffer hadn't been modified
-"
-"command! -nargs=+ -complete=command Func call Func(<q-args>)
-"  "define a user command from a function
-"  "now you can cal  Func as df
 
-""built-in functions
-"
-"  if filereadable("SpecificFile")
-"      ec "SpecificFile exists"
-"  endif
-"  
-"  line(".")
-"  "cur line number
-"  
-"  so %
-"  "the current file name
-"  
-"  :ec expand('%:r')
-"   "@% 	dir/a.vim 	directory/name of file
-"   "%:p  /usr/dir/a.vim
-"     "full path
-" 	"%:h	/usr/dir
-"     "head
-"     "but may be relative to ~
-" 	"%:t	a.vim
-"     "tail
-" 	"%:r	a
-"     "root
-" 	"%:e	.vim
-"     "ext
-" 	"%:p:h	/usr/dir
-"     "head
-"     "absolute
-" 	"%:p:h:t	dir
-"   "map a :ec expand('%')<CR>
-"     "always expands ``.vimrc``!
-"     "no use
-"   "fu! E()
-"   "  exe ':ec expand('%')'
+  "<http://www.ibm.com/developerworks/linux/library/l-vim-script-5/index.html>
 
-""regex
-"  "not pearl like... =(
-"  "must escape some chars for them *to be* magic
-"  "but not others...
-" 
-"  "escape to be literal:
-"    ".      wildcard
-"    "a*     repetition
-"    "a\{-}  non greedy repeat
-"    "[abc]  char classes
-"    "^      begin
-"    "$      end
-"    "
-"  "escape to be magic:
-"    "a\+
-"    "a\(b\|c\)
-"    "a\|b
-"    "a\{1,3}
-"    "\< 	      word boundary left
-"    "\> 	      word boundary right
-"    "\1 	      mathing group 1. can be used on search
-"      /\(\w\)\1
-"        "search equal adjacent chars
-"
-"  classes:
-"    \w   alpha (a-zA-z)
-"    \n 	a newline character (line ending)
-"    \_s 	a whitespace (space or tab) or newline character
-"    \_^ 	the beginning of a line (zero width)
-"    \_$ 	the end of a line (zero width)
-"    \_. 	any character including a newline 
-"  
-"  subsitute:
-"    "s/\(a\)/\1b
-"      "refer to capture group on replace
-"    :s/.*/\u&
-"      "Sets first letter of each line to uppercase
-"    :s/.*/\l&
-"      "Sets first letter of each line to lowercase
-"    :%s/\r//g
-"      "Delete DOS carriage returns (^M)
-"    :%s/\r/\r/g
-"     "Transform DOS carriage returns in returns
-"    :%s/a/a/c
-"     "confirm each match replace
-"     "y: yes
-"     "n: no
-"     "a: replace all remaining
-"     "q: quit
-"     "l: last. yes and quit
-"
-""quickfix 
-"  :make    creates the error list
-"  :copen   open error list in window
-"  :cc      see the current error
-"  :cn      next error
-"  :cp      previous error
-"  :clist   list all errors
+  "patterns:
+   "*.py
+   "*.py,*.pl
+   "*.{py,pl}
+
+"#map
+
+  "map
+     "command creates a key map that works in normal, visual, select and operator pending modes.
+  "map!
+     "command creates a key map that works in insert and command-line mode.
+
+"#bufdo #tabdo #windo
+  "do a command on all *
+
+"#set
+
+  "- nomodified
+    "as if the buffer hadn't been modified
+
+"#built-in functions
+
+  "if filereadable("SpecificFile")
+      "ec "SpecificFile exists"
+  "en
+
+  "#line
+
+    "cur line number
+
+      "a = line(".")
+
+  "#expand
+
+    ":ec expand('%:r')
+    "@% 	dir/a.vim 	directory/name of file
+    "%:p  /usr/dir/a.vim
+      "full path
+    "%:h	/usr/dir
+      "head
+      "but may be relative to ~
+    "%:t	a.vim
+      "tail
+    "%:r	a
+      "root
+    "%:e	.vim
+      "ext
+    "%:p:h	/usr/dir
+      "head
+      "absolute
+    "%:p:h:t	dir
+    "map a :ec expand('%')<CR>
+      "always expands ``.vimrc``!
+      "no use
+    "fu! E()
+    "  exe ':ec expand('%')'
+
+    "this works, don't know why:
+
+      "so %
+
+"#regex
+
+  "pearl like but...
+  "must escape some chars for them *to be* magic but not others...
+
+  "#perldo
+
+    "if compiled with perl support (`vim --version | grep perl`),
+    "you can use perld for replacements
+
+    "ex:
+
+      ":pe $a = 'b'
+      ":perldo s/$a(.)/c\1/g
+
+    "so you get perl regexes
+
+  "special chars
+
+    "\r newline
+
+  "escape to be literal:
+
+  "- .      wildcard
+  "- a*     repetition
+  "- a\{-}  non greedy repeat
+  "- [abc]  char classes
+  "- ^      begin
+  "- $      end
+
+  "escape to be magic:
+
+  "- a\+
+  "- a\(b\|c\)
+  "- a\|b
+  "- a\{1,3}
+  "- \< 	      word boundary left
+  "- \> 	      word boundary right
+  "- \1 	      mathing group 1. can be used on search
+  "- /\(\w\)\1  search equal adjacent chars
+
+  "classes:
+
+  "- \w   alpha (a-zA-z)
+  "- \n 	a newline character (line ending)
+  "- \s   whitespace except newline
+  "- \S   non-whitespace
+  "- \_s 	a whitespace (space or tab) or newline character
+  "- \_^ 	the beginning of a line (zero width)
+  "- \_$ 	the end of a line (zero width)
+  "- \_. 	any character including a newline
+
+  "#s
+
+    ":s/\(a\)/\1b
+      "refer to capture group on replace
+    ":s/.*/\u&
+      "Sets first letter of each line to uppercase
+    ":s/.*/\l&
+      "Sets first letter of each line to lowercase
+    ":%s/\r//g
+      "Delete DOS carriage returns (^M)
+    ":%s/\r/\r/g
+      "Transform DOS carriage returns in returns
+    ":%s/a/a/c
+      "confirm each match replace
+      "y: yes
+      "n: no
+      "a: replace all remaining
+      "q: quit
+      "l: last. yes and quit
+
+  "#substitute
+
+    "regex replace in vimscript
+
+      "if substitute( 'abc', 'a\(.\)c', '\1', '' ) != 'b' | ec 'fail' | en
+
+  "check if string matches regex:
+
+    "if 'abc' =~ 'a.c' | | else | ec 'fail' | en
+    "if 'abc' !~ 'a.c' |          ec 'fail' | en
+
+"#quickfix
+
+  "- :make    creates the error list
+  "- :copen   open error list in window
+  "- :cc      see the current error
+  "- :cn      next error
+  "- :cp      previous error
+  "- :clist   list all errors
+
+"#command
+
+  "view existing and create new commands
+
+  "`!` creates new. must start uppercase
+  "command! -nargs=+ -complete=command Func call Func(<q-args>)
+  "define a user command from a function
+  "now you can cal  Func as df
+
+  "com! -nargs=1 Pd :perldo

@@ -64,6 +64,7 @@ export LC_COLLATE="en_US.UTF-8"
     export GAME_DIR="$SHARE_DIR/game"
 
     export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
+    export INDIAN_MUSIC_DIR="$MUSIC_DIR/indian classical"
     export JAZZ_MUSIC_DIR="$MUSIC_DIR/instrumental jazz fusion rock"
 
     export PROGRAM_DIR="$NOSHARE_DIR/program"
@@ -85,8 +86,6 @@ export LC_COLLATE="en_US.UTF-8"
     export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
     export TEST_DIR="~/test"
-
-
 
   ##environment
 

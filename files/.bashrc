@@ -185,7 +185,6 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias golly="env UBUNTU_MENUPROXY=0 golly"
 
     alias mvr="move_regex.py"
-    alias mkcl='make clean'
 
     alias pdc='pandoc'
 
@@ -197,6 +196,10 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias robots="robots -ta`for i in {1..1000}; do echo -n n; done`"
     #alias sudo='sudo env PATH=$PATH'
       #normally, sudo cannot see your personal path variable. now it can.
+
+
+    alias py='python'
+    alias tree='tree --charset=ascii'
     alias tipy='touch __init__.py'
 
     alias vrmm='vim readme.md'
@@ -214,6 +217,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias dplg="dpkg -l | grep -i"
       alias saii="sudo aptitude install"
       alias sair="sudo aptitude remove"
+      alias saiu="sudo aptitude update"
+      alias saip="sudo aptitude purge"
 
     ##dirs
 
@@ -246,8 +251,11 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         alias krmsc='krusader "$MUSIC_DIR"'
         alias krctm='krusader "$CHINESE_MUSIC_DIR"'
+        alias kritm='krusader "$INDIAN_MUSIC_DIR"'
 
         alias krgm='krusader "$GAME_DIR"'
+
+        alias krusd='krusader "/usr/share/doc/"'
 
     ##django
 
@@ -265,8 +273,17 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     ##git
 
       alias gcam="git-commit"
-      alias gpgm="git push origin master"
       alias gcpo="git-commit-push-origin"
+      alias gpgm="git push origin master"
+      alias gst="git status"
+      alias glg="git log"
+      alias gco="git checkout"
+
+    ##makefile
+      alias mk='make'
+      alias mkr='make run'
+      alias mkt='make test'
+      alias mkc='make clean'
 
     ##mysql
 
@@ -274,6 +291,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
     ##music
 
+      alias titm="nohup totem \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
       alias tctm="nohup totem \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
       alias tjfr="nohup totem \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
 
@@ -287,6 +305,5 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
       alias ssar="sudo service apache2 restart"
       alias sslr="sudo service lightdm restart"
-
 
 #</ciro>
