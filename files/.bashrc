@@ -203,6 +203,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias tipy='touch __init__.py'
 
         alias vrmm='vim readme.md'
+        #Ubuntu 1 Public url to Clipboard
+        function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
 
         alias xar="xargs -0I'{}'" 
         alias xselc="xsel --clipboard" 
@@ -273,14 +275,16 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         ##git
 
-            alias gcm="git-commit"
+            alias gcm="git commit"
+            alias gcam="git commit -am"
             alias gco="git checkout"
-            alias gcp="git-commit-push-origin"
+            function gcp { git commit --allow-empty-message -am "$1"; git push origin master; }
             alias glo="git log"
             alias gpu="git push origin master"
             alias gst="git status"
 
         ##makefile
+
             alias mk='make'
             alias mkr='make run'
             alias mkt='make test'

@@ -1,4 +1,4 @@
-"my functions
+"#my functions
 
         "executes shell cmd and redirects output to a new tab
         "focus is given to the new tab
@@ -16,7 +16,7 @@
                 %d
             en
             exe "silent r !" . a:cmd
-            set nomodified
+            se nomodified
         endf
         "command! -nargs=+ -complete=command TabMessage cal TabMessage(<q-args>)
 
@@ -65,82 +65,65 @@
 
     "#vundle
     
-      "plugin manager
+        "plugin manager
 
-      "use this! easy plugin updating via git!
+        "use this! easy plugin updating via git!
 
-      "view all avaliable bundles (searches github?):
+        "view all avaliable bundles (searches github?):
 
-          "Bundles
-      
-      "#install plugin
-      
-          "add:
-            
-              "`Bundle 'gitrepouser/reponame'`
-          
-          "to `.vimrc` and run:
-          
-              "`BundleInstall`
-      
-      "update all installed plugins:
-      
-          "BundleInstall!
-
-      "remove a plugin
-
-      "required:
-      filetype off
-
-      set rtp+=~/.vim/bundle/vundle/
-      cal vundle#rc()
-
-      "let Vundle manage Vundle:
-
-            Bundle 'gmarik/vundle'
-
-    "#fugitive
-
-        "git vim interface
-
-        Bundle 'tpope/vim-fugitive'
-
-    "#easymotion.
-
-        "to understand this, do <leader><leader>w ...
-
-        Bundle 'Lokaltog/vim-easymotion'
-
-    Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-
-    "Bundle 'tpope/vim-rails.git'
+            "Bundles
         
-    "#nerdcommenter
-    
-        "does the right type of comment for each recognized language
+        "#install plugin
+        
+            "add:
+                
+                "`Bundle 'gitrepouser/reponame'`
+            
+            "to `.vimrc` and run:
+            
+                "`BundleInstall`
+        
+        "update all installed plugins:
+        
+            "BundleInstall!
 
-        Bundle 'scrooloose/nerdcommenter'
+        "remove a plugin:
 
-        "toogle comment on current/selected lines:
+        "required:
+        filetype off
 
-            "<leader>c<space>
+        se rtp+=~/.vim/bundle/vundle/
+        cal vundle#rc()
 
-    "#nerdtree
+        "let Vundle manage Vundle:
 
-        Bundle 'scrooloose/nerdtree'
-        "let NERDTreeKeepTreeInNewTab=0
-        "let loaded_nerd_tree=1  "stop opening nerd tree.
+                Bundle 'gmarik/vundle'
 
-        "delete all bookmarks: ``rm ~/.NERDtreebookmarks``
+        "#inner workings
 
-    "#vim-session
+            "Vundle adds each plugin        to runpath, before ~/.vim/after
+            "                 plugin/after            , after              
 
-        "allows me to load last session automatically...
+        "#overriding mappings
 
-        Bundle 'xolox/vim-session'
-        let g:session_default_to_last = 1
-        let g:session_autosave = 'yes'
-        let g:session_autoload = 'yes'
+            "using the default path maintained by vundle you can override
+
+            "ftplugin mappings by:
+            
+            "- putting the mapping as an au in your vimrc:
+
+                "au FileType FT nn <buffer> a b
+
+            "- putting the mapping inside ~/.vim/ftplugin/FT_something.vim
+
+                "nn <buffer> a b
+
+            "- putting the mapping inside ~/.vim/after/ftplugin/FT_something.vim
+
+            "I don't think `ftplugin/after` mappings can be overriden
+
+            "TODO
+
 
     "#neocomplcache
     
@@ -158,13 +141,13 @@
         let g:neocomplcache_enable_auto_select = 0
 
         "SuperTab like snippets behavior.
-        imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)": pumvisible() ? "\<C-n>": "\<TAB>"
+        imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)": pumvisible() ? "\<c-n>": "\<TAB>"
 
         "Plugin key-mappings.
-        imap <C-k>     <Plug>(neocomplcache_snippets_expand)
-        smap <C-k>     <Plug>(neocomplcache_snippets_expand)
-        inoremap <expr><C-g>     neocomplcache#undo_completion()
-        inoremap <expr><C-l>     neocomplcache#complete_common_string()
+        imap <c-k>     <Plug>(neocomplcache_snippets_expand)
+        smap <c-k>     <Plug>(neocomplcache_snippets_expand)
+        inoremap <expr><c-g>     neocomplcache#undo_completion()
+        inoremap <expr><c-l>     neocomplcache#complete_common_string()
 
 
         "<cr>: close popup
@@ -172,13 +155,13 @@
         inoremap <expr><cr>  pumvisible() ? neocomplcache#close_popup() : "\<cr>"
         inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup() "\<cr>": "\<cr>"
         "<TAB>: completion.
-        inoremap <expr><TAB>  pumvisible() ? "\<C-n>": "\<TAB>"
+        inoremap <expr><TAB>  pumvisible() ? "\<c-n>": "\<TAB>"
 
-        "<C-h>, <BS>: close popup and delete backword char.
-        inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-        inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-        inoremap <expr><C-y>  neocomplcache#close_popup()
-        inoremap <expr><C-e>  neocomplcache#cancel_popup()
+        "<c-h>, <BS>: close popup and delete backword char.
+        inoremap <expr><c-h> neocomplcache#smart_close_popup()."\<c-h>"
+        inoremap <expr><BS> neocomplcache#smart_close_popup()."\<c-h>"
+        inoremap <expr><c-y>  neocomplcache#close_popup()
+        inoremap <expr><c-e>  neocomplcache#cancel_popup()
 
         "Enable omni completion.
         au FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -199,31 +182,79 @@
 
         "For snippet_complete marker.
         if has('conceal')
-            set conceallevel=2 concealcursor=i
+            se conceallevel=2 concealcursor=i
         en
 
-    "#vim-markdown
-        "syntax highlight
-        "code folding
-        Bundle 'plasticboy/vim-markdown'
+    "#fugitive
+
+        "git vim interface
+
+        Bundle 'tpope/vim-fugitive'
+
+    "#easymotion
+
+        "list on place all possitions and jump to them with a single key stroke
+
+        "very fast for non structured moves!
+
+        "- <leader><leader>w        beginnings  of words and lines
+        "- <leader><leader>W                       Words          
+        "- <leader><leader>e        ends           words          
+        "- <leader><leader>E        ends           Words          
+        "- <leader><leader>f{char}  given chars 
+        "- <leader><leader>j        lines down
+        "- <leader><leader>n        last search down
+
+            "h easymotion
+
+        Bundle 'Lokaltog/vim-easymotion'
+
+    "#nerdcommenter
+    
+        "does the right type of comment for each recognized language
+
+        Bundle 'scrooloose/nerdcommenter'
+
+        "toogle comment on current/selected lines:
+
+            "<leader>c<space>
+
+    "#nerdtree
+
+        "file manager
+
+        Bundle 'scrooloose/nerdtree'
+
+        "let NERDTreeKeepTreeInNewTab=0
+        "let loaded_nerd_tree=1  "stop opening nerd tree.
+
+        "delete all bookmarks: `rm ~/.NERDtreebookmarks`
+
+    "#vim-session
+
+        "manage sessions
+        
+        "in particular, can load last session automatically...
+
+        Bundle 'xolox/vim-session'
+        let g:session_default_to_last = 1
+        let g:session_autosave = 'yes'
+        let g:session_autoload = 'yes'
 
     "#msanders/snipmate.vim
+
         "allow you to define snippets: inster pieces of code, and then jump to
         "the point you want with tab. Also allows to force several placeholders
         "to be equal.
         Bundle 'msanders/snipmate.vim'
 
     "#vim-scripts repos
+
         Bundle 'L9'
         Bundle 'FuzzyFinder'
 
-    "vim latex
-        "Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
-        "Bundle 'jcf/vim-latex'
-        "could not install with vundle or vim. next best option then
-        "set runtimepath+=$HOME/.vim/plugin/vim-latex
+    "#tpope/vim-surround
 
-    "tpope/vim-surround
         "https://github.com/tpope/vim-surround
         "Intelligent ''', '"', and html tags conversion
         "ds": delete surrouding
@@ -240,16 +271,14 @@
 
         Bundle 'tpope/vim-surround'
 
-    "vim-vis
+    "#vim-vis
+
         "visual block only replace
         "select then :B s/a/b/g. replace acts only on selected block
         Bundle 'taku-o/vim-vis'
 
-    "rope-vim
-        "python refactoring
-        Bundle 'klen/rope-vim'
+    "#conque-term
 
-    "conque-term
         "- runs terminal inside vim
         "- hit esc and you can edit history as a vim buffer
         "    hit i, and you're back to terminal mode
@@ -276,70 +305,128 @@
         Bundle 'rosenfeld/conque-term'
         "github mirror of the google code main
 
-"general
+    "#vim-markdown
 
-    "allows vim to detect the filetype and use different behaviours
-    "accordingly
-    syntax on
-    filetype on
-    filetype plugin on
-    filetype indent on
+        "syntax highlight
+        "code folding
+
+        Bundle 'plasticboy/vim-markdown'
+
+        "disable folding
+
+            let g:vim_markdown_folding_disabled=1
+
+        "Bundle 'tpope/vim-markdown'
+
+    "#sparkup
+
+        "html mappings
+
+        Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+    "#vim latex
+
+        "Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
+        "Bundle 'jcf/vim-latex'
+        "could not install with vundle or vim. next best option then
+        "se runtimepath+=$HOME/.vim/plugin/vim-latex
+
+    "#rope-vim
+
+        "python refactoring
+
+        Bundle 'klen/rope-vim'
+
+"#general
+
+    "leave vi compatibility:
+    se nocompatible
+
+    "#filetype
+
+        "se autodetect filetype and se it for buffers:
+        filetype on
+
+        "this allows the following to work properly:
+
+        "- plugins for given filetypes
+        filetype plugin on
+
+        "- syntax highlighting
+        syntax on
+
+        "- indent for specific filetypes
+        filetype indent on
+
+    "#search
+
+        "control parameters of `/` search
+
+            se hlsearch    "highlight search terms
+            se incsearch   "show search matches as you type
+            se ignorecase  "ignore case when searching
+            se smartcase   "ignore case if search pattern is all lowercase,
+                            " case-sensitive otherwise
+            se showmatch   "se show matching parenthesis
+            set wrapscan  " wrap around end of document (default)
+            "set nowrapscan " do not wrap around
+
+        "stop current highlighting:
+
+            "noh
+
+        "will be automatically turned back on on next search
 
     "working directory is always the same as the file being edited
-    set autochdir
+    se autochdir
 
-    "leave vi compatibility
-    set nocompatible
-
-    "use the mouse
-    set mouse=a
+    "allow to use the mouse:
+    se mouse=a
 
     "stop creating backup files
-    set nobackup
-    set noswapfile
+    se nobackup
+    se noswapfile
 
     "automatically load files that were modified externally
-    :set autoread
+    se autoread
 
-    "stop those enter to continue useless messages
-    set shortmess=atI
+    "stop those enter to continue useless messages:
+    se shortmess=atI
 
-    "see many possibilities on a tab at command mode
-    set wildmenu
-    set wildmode=list:longest
-    set history=1000
+    "tab completion
+    se wildmenu
+    se wildmode=list:longest
+    se history=1000
 
     "maintains at least 4 lines in view from the cursor
-    set scrolloff=4
+    se scrolloff=4
 
-    "see trailling whitespace
+    "highlight trailling whitespace TODO broken
     highlight ExtraWhitespace ctermbg=red guibg=red
     match ExtraWhitespace /\s\+\%#\@<!$/
 
-    "normally, pressing alt focoses on the menu in gvim, but vim NEEDS no menu,
+    "normally, pressing alt focuses on the menu in gvim, but vim NEEDS no menu,
     "vim only needs vimrc!!
-    set winaltkeys=no
-
-"gui
+    se winaltkeys=no
 
     "colorscheme
     colorscheme vividchalk
 
     "font size
-    set guifont=9
+    se guifont=9
 
-    "line numbers
+    "line numbers on right of page
 
-        "set nonumber
-        set number
+        "se nonumber
+        se number
 
     "#wrapping
 
-        set nowrap
-        set linebreak
-        set nolist
-        set textwidth=0
-        set wrapmargin=0
+        se nowrap
+        se linebreak
+        se nolist
+        se textwidth=0
+        se wrapmargin=0
         let &showbreak='>'.repeat(' ', 8)
         "slights highlights chars after 80
         "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
@@ -356,57 +443,46 @@
         "in the same space for commands
         "that is the ruler
 
-        set ruler
-        "set noruler
+        se ruler
+        "se noruler
 
-    "buffers
-
-        "The current buffer can be put to the background without writing to disk
-        "When a background buffer becomes current again, marks and undo-history are remembered.
-        "from http://items.sjbach.com/319/configuring-vim-right
-        "set hidden
-        "too dangerous!
-        
-        ":au BufAdd,BufNewFile,BufRead * nested tab sball
-
-    "#tabs
+    "#tabwindow
 
         "format tab titles:
 
-            set guitablabel=%N)\ %t\ %M
+            se guitablabel=%N)\ %t\ %M
 
         "%N: tab number from left to right
         "%t: basename of loaded buffer
         "%M: modify status ( a '+' if modified )
 
-    "#gvim specific
+    "allow backspacing over everything in insert mode:
 
-        set guioptions-=m  "remove menu bar
-        set guioptions-=T  "remove toolbar
-        set guioptions-=r  "remove right-hand scroll bar
-        set guioptions-=b  "remove right-hand scroll bar
+        se backspace=indent,eol,start
 
+    "#tab
 
-    "allow backspacing over everything in insert mode
-
-        set backspace=indent,eol,start
-
-    "#indentation
-
-        set expandtab     "insert spaces instead of tabs
-        set tabstop=4     "a tab is four spaces
-        set shiftwidth=4  "number of spaces to use for autoindenting
-        set autoindent    "always set autoindenting on
-        set copyindent    "copy the previous indentation on autoindenting
-        set shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
-        set smarttab      "insert tabs on the start of a line according to
+        se expandtab     "insert spaces instead of tabs
+        se tabstop=4     "a tab is four spaces
+        se shiftwidth=4  "number of spaces to use for autoindenting
+        se autoindent    "always se autoindenting on
+        se copyindent    "copy the previous indentation on autoindenting
+        se shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
+        se smarttab      "insert tabs on the start of a line according to
                                             " shiftwidth, not tabstop
     "#folding
 
-        set foldmethod=indent   "fold based on indent
-        set foldnestmax=3       "deepest fold level
-        set nofoldenable        "dont fold by default
-        set foldlevel=3         "this is just what i use
+        se foldmethod=indent   "fold based on indent
+        se foldnestmax=3       "deepest fold level
+        se nofoldenable        "dont fold by default
+        se foldlevel=3         "this is just what i use
+
+    "#gvim specific
+
+        se guioptions-=m  "remove menu bar
+        se guioptions-=T  "remove toolbar
+        se guioptions-=r  "remove right-hand scroll bar
+        se guioptions-=b  "remove right-hand scroll bar
 
     "#conceal
     
@@ -414,18 +490,7 @@
 
         "g:tex_conceal=""
 
-        set cole=0
-
-    "#search
-
-        "control parameters of `/` search
-
-            set hlsearch    "highlight search terms
-            set incsearch   "show search matches as you type
-            set ignorecase  "ignore case when searching
-            set smartcase   "ignore case if search pattern is all lowercase,
-                            " case-sensitive otherwise
-            set showmatch   "set show matching parenthesis
+        se cole=0
 
     "allows '%' to jump between open 'if' 'else', 'do', 'done', etc instead
     "of just parenthesis like chars
@@ -434,9 +499,9 @@
         runtime macros/matchit.vim
 
     "autocompletion. leave to distro default
-    "set ofu=syntaxcomplete#Complete
+    "se ofu=syntaxcomplete#Complete
 
-    "#autosource files named so.vim
+    "#autosource files named so.vim in same dir as files
 
         "allows to define project specific mappings for example
         "this comes after FileType, and thus has higher precedence
@@ -450,110 +515,108 @@
 
         au BufRead,BufNewFile * cal SoIfReadable('so.vim')
 
-    "#language speficif
+"#language speficif
 
-        "to be split up into ftplugin if gest too large.
-        "ftplugin.after is read after ftplugin, so you are sure that your
-        "settings will be left after the distro's default
+    "the right place for those is in a ftplugin, but I'm lazy to put such small settings in files...
 
-        "#data languages
+    "#data languages
 
-        "#html
+    "#html
 
-            au FileType html setlocal shiftwidth=4 tabstop=4
-            au BufEnter,BufRead *.html cal MapAllBuff( '<F6>', ':w<cr>:sil ! firefox %<cr>' )
+        au FileType html setlocal shiftwidth=4 tabstop=4
+        au BufEnter,BufRead *.html cal MapAllBuff( '<F6>', ':w<cr>:sil ! firefox %<cr>' )
 
-        "#compilable markup
+    "#compilable markup
 
-            "#md #rst
+        "#md #rst
+            
+            "au FileType *.md setlocal shiftwidth=4 tabstop=4
+            au BufEnter,BufRead *.{md,rst} setl shiftwidth=4 tabstop=4
+            "au BufEnter,BufRead *.{md,rst} setl filetype=text
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F5>', 'w<cr>:sil ! make<cr>' )
 
-                "au FileType *.md setlocal shiftwidth=4 tabstop=4
-                au BufEnter,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
-                au BufEnter,BufRead *.{md,rst} setlocal filetype=text
-                au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F5>', 'w<cr>:sil ! make<cr>' )
+            au BufEnter,BufRead *.md  cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:sil ! make<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#VIMHERE"<cr>' )
+            "TODO this is broken still:
+            au BufEnter,BufRead *.rst cal MapAllBuff( '<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>' )
+            "au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<cr>:d<cr>:w<cr>:silent ! firefox _out/%<.html\#VIMHERE<cr>' )
+            "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<cr>
 
-                au BufEnter,BufRead *.md  cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:sil ! make<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#VIMHERE"<cr>' )
-                "TODO this is broken still:
-                au BufEnter,BufRead *.rst cal MapAllBuff( '<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>' )
-                "au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<cr>:d<cr>:w<cr>:silent ! firefox _out/%<.html\#VIMHERE<cr>' )
-                "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<cr>
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>' )
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>' )
 
-                au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>' )
-                au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>' )
-
-            "#latex
+        "#latex
 
 
-                au FileType tex setlocal shiftwidth=2 tabstop=2
+            au FileType tex setlocal shiftwidth=2 tabstop=2
 
-                au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<cr>:! make<cr>' )
-                au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
-                au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! make run VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<cr>:! make<cr>' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! make run VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
 
-                "this works
-                "but the problem is: in which dir is the output file?
-                "this is something only the makefile knows about.
-                fu! LatexForwardOkular(pdfdir)
-                    let pdf = a:pdfdir . expand('%:r') . '.pdf'
-                    let synctex_out = system( 'synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"' )
-                    let page = 1
-                    for l in split( synctex_out, '\n' )
-                        if l =~ '^Page:'
-                            let page = substitute( l, '^Page:\(\d\+\)$', '\1', '' )
-                        en
-                    endfor
-                    exe 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
-                endf
-                "au BufEnter,BufRead *.tex cal MapAllBuff( '<F4>', ':cal LatexForwardOkular("_out/")<cr>' )
-
-        "#interpreted languages #python #bash
-
-            au FileType python setlocal shiftwidth=4 tabstop=4
-
-            au FileType python,sh cal MapAllBuff( '<F6>', ':w<cr>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<cr>' )
-
-        "#compile to executable languages
-
-            "#c #cpp #lex #y #fortran #asm
-
-            fu! FileTypeCCpp()
-                cal MapAllBuff( '<F5>'  , ':w<cr>:make<cr>' ) "vim make quickfix
-                cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
-                cal MapAllBuff( '<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>' )
-                    "make run, stdout to a new file
-                    "stdout is only seen when program stops.
-                cal MapAllBuff( '<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>' )
-                    "same as above, but may pas command line args
-                cal MapAllBuff( '<F7>'  , ':cnext<cr>' )
-                cal MapAllBuff( '<F8>'  , ':cprevious<cr>' )
-                cal MapAllBuff( '<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>' )
-                cal MapAllBuff( '<S-F9>', ':w<cr>:! make assembler<cr>' )
+            "this works
+            "but the problem is: in which dir is the output file?
+            "this is something only the makefile knows about.
+            fu! LatexForwardOkular(pdfdir)
+                let pdf = a:pdfdir . expand('%:r') . '.pdf'
+                let synctex_out = system( 'synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"' )
+                let page = 1
+                for l in split( synctex_out, '\n' )
+                    if l =~ '^Page:'
+                        let page = substitute( l, '^Page:\(\d\+\)$', '\1', '' )
+                    en
+                endfor
+                exe 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
             endf
+            "au BufEnter,BufRead *.tex cal MapAllBuff( '<F4>', ':cal LatexForwardOkular("_out/")<cr>' )
 
-            au FileType c,cpp,fortran,asm cal FileTypeCCpp()
+    "#interpreted languages #python #bash
 
-            au FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
-            au BufEnter,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+        au FileType python setlocal shiftwidth=4 tabstop=4
 
-            "because fortran has a max line length...
-            au FileType fortran setlocal shiftwidth=2 tabstop=2
+        au FileType python,sh cal MapAllBuff( '<F6>', ':w<cr>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<cr>' )
 
-        "#vimscript
+    "#compile to executable languages
 
-            "reaload all visible buffers.
-            "TODO: multiple windows per tabpage.
-            fu! ReloadVisible()
-                set noconfirm
-                tabdo e
-                set confirm
-            endfu
+        "#c #cpp #lex #y #fortran #asm
 
-            au FileType vim setlocal shiftwidth=4 tabstop=4
-            "this will write all buffers, source this vimrc, and reaload open
-            "buffers so that changes in vimrc are applied
-            au FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:sil cal ReloadVisible()<cr>
+        fu! FileTypeCCpp()
+            cal MapAllBuff( '<F5>'  , ':w<cr>:make<cr>' ) "vim make quickfix
+            cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
+            cal MapAllBuff( '<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>' )
+                "make run, stdout to a new file
+                "stdout is only seen when program stops.
+            cal MapAllBuff( '<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>' )
+                "same as above, but may pas command line args
+            cal MapAllBuff( '<F7>'  , ':cnext<cr>' )
+            cal MapAllBuff( '<F8>'  , ':cprevious<cr>' )
+            cal MapAllBuff( '<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>' )
+            cal MapAllBuff( '<S-F9>', ':w<cr>:! make assembler<cr>' )
+        endf
 
-"#key bindings
+        au FileType c,cpp,fortran,asm cal FileTypeCCpp()
+
+        au FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
+        au BufEnter,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+
+        "because fortran has a max line length...
+        au FileType fortran setlocal shiftwidth=2 tabstop=2
+
+    "#vimscript
+
+        "reaload all visible buffers.
+        "TODO: multiple windows per tabpage.
+        fu! ReloadVisible()
+            se noconfirm
+            tabdo e
+            se confirm
+        endfu
+
+        au FileType vim setlocal shiftwidth=4 tabstop=4
+        "this will write all buffers, source this vimrc, and reaload open
+        "buffers so that changes in vimrc are applied
+        au FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:sil cal ReloadVisible()<cr>
+
+"#maps
 
     "here are all the:
 
@@ -569,53 +632,18 @@
         "zxcvbnm,./
         "^<v>
 
-    "view docs on default mappings:
-
-        "h index
-
     "language specific mappings may be in language specific sections
-
-    "rationale: leave `<c-` commands to commands that must be done repeatedly several times
-
-    "#mappable keys
-
-        "vim is designed to work on terminals without X server.
-
-        "therefore
-        
-        "- only stuff that has a standard representation can have mappings in vim.
-
-            "examples:
-
-                "a, s-a, c-a, ...
-
-            "non-examples:
-
-                "c-s-a
-
-            "those non-examples are dealt with in other programs by detecting that
-            "one key is pressed while the other is down
-
-            "however terminals cannot detect key up/down i think!
-
-        "- only stuff that has no control flow meaning in terminals is mappable!
-
-            "non-examples:
-
-            "- c-c: terminate process
-            "- c-z: put process on background
-            "- c-q:
 
     "#leader
 
-        "set the current leader:
+        "se the current leader:
 
             "let mapleader = ','
             let mapleader = '\'
 
         "use current leader:
 
-            "nnoremap <leader>a b
+            "nn <leader>a b
 
         "redefining it after changing a mapping has no effect on already defined
         "maps, but will affect commands that are defined afterwards:
@@ -629,15 +657,15 @@
 
     "#f keys
 
-            cal MapAll('<F2>',':NERDTreeToggle<cr>')
-            cal MapAll('<F3>',':cal GuakeNewTabHere()<cr>')
-            cal MapAll('<S-F3>',':ConqueTermTab bash<cr>')
+            cal MapAll( '<F2>',     ':NERDTreeToggle<cr>')
+            cal MapAll( '<F3>',     ':cal GuakeNewTabHere()<cr>')
+            cal MapAll( '<S-F3>',   ':ConqueTermTab bash<cr>')
 
     "#~
 
         "invert selection case:
 
-            "vnoremap ~
+            "vn ~
 
     "#@
 
@@ -655,6 +683,32 @@
 
             "noremap #
 
+    "#%
+
+        "goes between open close pairs
+        
+            "nn %
+
+            "h %
+
+        "pairs are defind by:
+
+            "se mps?
+
+        "very useful command
+
+        "individual pairs and more can be done with `[`
+
+    "#^
+    
+        "go to first non whitespace char of line:
+
+            "unmap ^
+        
+        "toogle between current and alternate file:
+
+            "unmap c-^
+
     "#*
 
         "search for word under cursor
@@ -665,7 +719,18 @@
         "replacement starts as current word (w) under cursor
         "(analogy to `*` which searches for word under cursor):
 
-            nnoremap <leader>* bve"zy:%s/<C-r>z/<C-r>z/g<left><left>
+            nn <leader>* bve"zy:%s/<c-r>z/<c-r>z/g<left><left>
+
+    "#(
+
+        "- ( previous sentence
+        "- ) next
+
+        "what is a sentence?
+
+        "something that ends in '.', '?' or '!'
+
+           "h sentence 
 
     "#tab
 
@@ -678,18 +743,18 @@
 
         "start/end recording commands in register a:
 
-            "nnoremap qa
+            "nn qa
 
         "enter ex mode:
 
-            "nnoremap Q
+            "nn Q
 
         "same as command mode, except you can do several ex commands
         "without exiting ex command mode
 
         "visual block mode:
 
-            "nnoremap c-q
+            "nn c-q
 
         "same as `c-v` in gvim, but used for terminal control
     
@@ -702,9 +767,9 @@
             "<c-w>k
             "<c-w>l
 
-        "rationale: see <c-up>
+        "rationale: better with a direct control key mapping.
 
-        "close buffers:
+        "close windows:
 
             "cal MapAll( '<c-w>', ':tabclose<cr>' )
             cal MapAll( '<c-w>', ':q<cr>' )
@@ -714,113 +779,150 @@
 
         "scrol up one line (don't move cursor (unless it would go out of view)):
 
-            "nnoremap <c-e>
+            "nn <c-e>
 
         "mnemonic: Extra lines!!
 
         "accelerate vertical scroll down:
 
-            nnoremap <C-E> 5<C-E>
+            "nn <c-E> 5<c-E>
 
     "#r
 
         "replace mode (insert but overwritting)
         "a bit useless
 
-            "nnoremap R
+            "nn R
 
         "redo:
 
-            "nnoremap <C-R>
+            "nn <c-R>
 
     "#t
 
         "like `f`, but stops right before char.
 
-            "nnoremap t
+            "nn t
 
         "repeated uses do nothing
 
-        "a bit useless
-
         "mnemonic: unTill
+
+        "major use: delete untill char, but don't delete char. Ex:
+
+        "buffer:
+
+            "f(a,b,c,d)
+            "  ^   
+
+        "you want to delete up to `d`, but keep the `)`
+
+        "solution: `dt)`
 
         "tab navigation in normal mode
         "in terminal, alt tab is not possible,
         "but should be used in gvim instead.
 
-            nnoremap tf :tabfirst<cr>
-            nnoremap tl :tablast<cr>
-            nnoremap tt :tabedit<Space>
-            nnoremap tT :tabclose<cr>
-            nnoremap tn :tabnew<cr>
-            nnoremap tm :tabm<Space>
+            nn <leader>tt :tabe<space>
+            nn <leader>tb :tabe<cr>:b<space>
+            nn <leader>tm :tabm<space>
+
+            "currently usint another shortcut for this:
+
+                "nn <leader>tT :tabclose<cr>
 
     "#y
 
         "same as c-e, upwards:
 
-            "nnoremap <c-y>
+            "nn <c-y>
 
-        "mnemonic: ?
+        "mnemonic: close to c-u (on qwertyu)
 
         "same as yy:
 
-            "nnoremap Y
+            "nn Y
 
         "accelerate vertical scroll up
         
-            nnoremap <C-Y> 5<C-Y>
+            "nn <c-Y> 5<c-Y>
 
         "copy line to system clipboard:
 
-            nnoremap yY ^v$"+y
+            nn yY ^v$"+y
 
     "#u
 
         "selection to lowercase:
 
-            "vnoremap u
+            "vn u
 
         "selection to uppecase:
 
-            "vnoremap U
+            "vn U
 
         "half page Up:
 
-            "nnoremap <c-u>
+            "nn <c-u>
 
     "#i
 
         "inverse of <c-0>
 
-        "nnoremap <c-i>
+        "nn <c-i>
 
     "#o
 
-        "do one normal command and return to insert mode
+        "do one normal command and return to insert mode:
 
-            "inoremap <C-o>:
+            "inoremap <c-o>:
 
         "go to last location you were at before jumping with commands lik `/` (:h jumplist)
         "may change buffers in cur window
 
-    "#{
+            "nn <c-o>
 
-        "{       previous
-        "} go to next     latex paragraph (double newline)
+        "go to the other stremity of visual selection:
+
+            "vn o
+            "vn O
+
+    "#[
+
+        "miscelaneous commands, mostly section motions
+
+        "- } go to next     latex paragraph (double newline)
+        "- {       previous
+
+        "- ] go to next     section
+        "- [       previous
+
+        "what is a section? defined by `se sects?`.
+
+            "h sect
+
+        "- c-] go to location of link under cursor used in vim docs TODO how to make one of those?
+
+        "- [( last unmatched open par. Same for ),[,],{,}.=, but not for <>
+        "- [z fold move
+    
+    "#|
+
+        "go to column number:
+
+            "unmap \n|
 
     "#a
 
         "Increment integer number under the cursor!
 
-            "<C-A>
+            "<c-A>
 
         "pAste from system clipboard before cursor (in the same place as you would edit with 'i')
         
         "the pasted item is left selected in viusal mode if you want to indent it
 
-        "so if you want to append to a Line to to insert mode first, 'A' to append and then <C-A>
+        "so if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
 
         "does not affect any vim local register
 
@@ -832,34 +934,34 @@
         
         "- the default <c-a> command is not that useful
 
-            cnoremap <C-A> <C-R>+
-            inoremap <C-A> <ESC>"+p`[v`]
-            nnoremap <C-A> "+P`[v`]
-            vnoremap <C-A> d"+P`[v`]
+            cnoremap <c-A> <c-R>+
+            inoremap <c-A> <ESC>"+p`[v`]
+            nn <c-A> "+P`[v`]
+            vn <c-A> d"+P`[v`]
 
     "#s
 
         "same as cl:
 
-            "nnoremap
+            "nn
 
         "useless.
 
         "substitude starting with selection/selection/:
 
-            vnoremap s "zy:%s/<C-r>z/<C-r>z/g<left><left>
+            vn s "zy:%s/<c-r>z/<c-r>z/g<left><left>
 
         "substitude starting with selection//
 
-            vnoremap S "zy:%s/<C-r>z//g<left><left>
+            vn S "zy:%s/<c-r>z//g<left><left>
 
         "substitute on all file very magic:
 
-            nnoremap <leader><leader>s :%s/\v/g<left><left>
+            nn <leader><leader>s :%s/\v/g<left><left>
 
         "substitute on all file very non-magic:
         
-            nnoremap <leader><leader>S :%s/\V/g<left><left>
+            nn <leader><leader>S :%s/\V/g<left><left>
 
         "insert single char
         "can be repeated with `.`
@@ -867,17 +969,17 @@
             fu! RepeatChar(char, count)
                 return repeat(a:char, a:count)
             endfu
-            nnoremap <silent> s :<C-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<cr>
-            nnoremap <silent> S :<C-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<cr>
+            nn <silent> s :<c-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<cr>
+            nn <silent> S :<c-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<cr>
 
-        "type bd *.xml<C-S> to delete all xml buffers
+        "type bd *.xml<c-S> to delete all xml buffers
 
-            "cnoremap <C-S> <C-A>
+            "cnoremap <c-S> <c-A>
     "#d
 
         "cut line to system clipboard:
 
-            nnoremap dD ^v$"+ygv
+            nn dD ^v$"+ygv
 
         "takes word under cursor
         "open in turrent window a file with same name as that word
@@ -886,54 +988,118 @@
         "looks in cur dir by default
         "usage: view header/inlcluded files
 
-            "nnoremap gf
+            "nn gf
 
-    "select Go to last Pasted text (to indent, or delete for example)
+    "#f
 
-        nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+        "one screen Forward:
+
+            "nn <c-f>
+    
+    "#g
+
+        "leader for lots of miscelaneous commands
+
+        "- gg: go to first line
+        "- G:  go to last line
+        "- {num}G:  go to line num
+        "- ge: go to end of last word!
+        "- gE: 
+        "- gv: go to visual mode and reselect previous visual selection.
+
+            "also restores visual mode type (char, bloc, line)
+
+            "you can also set that selection programatically:
+
+                "call setpos("'<", [0, 2, 1])
+                "call setpos("'>", [0, 3, 2])
+                "normal! gv
+        
+        "- {num}gt: go to tab num 1 based.
+
+        "select Go to last Pasted text (to indent, or delete for example)
+
+            nn <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+        "show current file name and position:
+        
+            "nunmap <c-g>
+
+        "useless if you have `se ruler`
 
     "I would rather have the capital H and L to go to
     "beginning or end of line
     "and J, K to jump 5 lines instead.
     "Also, I prefer to move along visual lines
     "rather than real lines ( thus the remap )
+    
+        "nn H ^
+        "vn H ^
 
-    nnoremap H ^
-    vnoremap H ^
-    nnoremap j gj
-    vnoremap j gj
-    nnoremap J 4gj
-    vnoremap J 4gj
+    "#j
+
+        "use screen lines instead of real lines:
+
+            nn j gj
+            vn j gj
+
+        "accelerate down
+    
+            nn J 5j
+            vn J 5j
+
+        "join lines:
+
+            "unmap J
+
+        "same as j:
+
+            "nn <c-j> j 
+
+        "therefore useless.
 
     "#k
 
-        nnoremap k gk
-        vnoremap k gk
-        nnoremap K 4gk
-        vnoremap K 4gk
+        "use screen lines instead of real lines:
 
-        "i use J for something else:
+            nn k gk
+            vn k gk
 
-            nnoremap <C-k> J
+        "accelerate up
+
+            nn K 5k
+            vn K 5k
+
+        "search word under cursor using a given program:
+
+            "unmap K
+
+        "default is `man`
+
+        "not *very* useful
+
+        "nop:
+
+            "map <c-k> <nop>
 
     "#l
 
-        nnoremap L $
-        vnoremap L $
+        "nn L $
+        "vn L $
 
     "#:
 
         "repeat last f, F, t or T (like n,N)
 
-            "nnoremap ;
+            "nn ;
 
         "enter command mode:
 
-            "nnoremap :
+            "nn :
 
         "swap ';' and ':', dispensing shift to start commands:
-            nnoremap ; :
-            nnoremap : ;
+            nn ; :
+            nn : ;
 
         "noremap <c-;> asd
 
@@ -941,28 +1107,57 @@
 
         "remove useless zl that does single horizontal scroll:
         
-            nnoremap zl zL
-            nnoremap zh zH
+            nn zl zL
+            nn zh zH
+
+        "open close fold under cursor:
+
+            "unmap zo
+            "unmap zc
+
+        "recursivelly:
+
+            "unmap zO
+            "unmap zC
+
+        "toogle fold:
+
+            "unmap za
+            "unmap zA
+
+        "all folds (m more, M max, r reduce, R min)
+
+            "unmap zm
+            "unmap zM
+            "unmap zr
+            "unmap zR
+
+        "move over folds:
+
+            "unmap [z       "start  of current
+            "unmap ]z       "end    of current
+            "unmap zj       "start  of next
+            "unmap zk       "end    of next
 
     "#x
 
         "decrement number under cursor (oposite of <c-a>)
 
-            "nnoremap <C-X>
+            "nn <c-X>
 
         "cut to system clipboard
 
-            vnoremap X "+ygvd
+            vn X "+ygvd
 
     "#c
 
         "copy to system clipboard:
 
-            vnoremap C "+y
+            vn C "+y
 
     "#m
 
-        nnoremap <C-M> <plugin>NERDComToggleComment<cr>
+        nn <c-M> <plugin>NERDComToggleComment<cr>
             "toggle coMMent
 
         "make mark a on cur buf
@@ -978,30 +1173,30 @@
 
         "keep selected after shift in visual mode
 
-            vnoremap < <gv
-            vnoremap > >gv
+            vn < <gv
+            vn > >gv
 
     "#/
 
         "search forwards:
 
-            "nnoremap /
+            "nn /
 
         "very magic is more useful than normal:
 
-            nnoremap / /\v
+            nn / /\v
 
     "#directionals
 
-            inoremap <Down> <C-o>gj
-            inoremap <Up> <C-o>g
+            inoremap <down> <c-o>gj
+            inoremap <up> <c-o>g
 
         "move across windows:
 
-            nnoremap <C-left> <C-w>h
-            nnoremap <C-right> <C-w>l
-            nnoremap <C-up> <C-w>k
-            nnoremap <C-down> <C-w>j
+            nn <c-left> <c-w>h
+            nn <c-right> <c-w>l
+            nn <c-up> <c-w>k
+            nn <c-down> <c-w>j
 
         "rationale:
 
@@ -1009,6 +1204,13 @@
         "- c-w is a bit useless, remap it to something better
 
 "#sources
+
+"#h
+
+    "the most important of all commands
+
+        "h
+        "h map
 
 "- <http://andrewscala.com/vimscript/>
 
@@ -1087,10 +1289,18 @@
 
 "#spaces
 
-    "are ignored like in c, except for newlines:
+    "are mostly ignored like in c, except for newlines!
 
         "ec 1
         "ec 2
+
+    "therefore, you don't need `;` everythwere, but you need to get newlines
+    "right
+
+    "multiline commands in script: start *next* line with `\` backslash:
+
+        "ec
+        "\ 1
 
 "#multiline commands
 
@@ -1104,14 +1314,33 @@
 
 "#scope
 
-    "- g: varname     The variable is global
-    "- s: varname     The variable is local to the current script file
-    "- w: varname     The variable is local to the current editor window
-    "- t: varname     The variable is local to the current editor tab
-    "- b: varname     The variable is local to the current editor buffer
-    "- l: varname     The variable is local to the current function
-    "- a: varname     The variable is a parameter of the current function
-    "- v: varname     The variable is one that Vim predefines
+"- g: global
+"- s:       local to current    script file
+"- w:                           editor window
+"- t:                           editor tab
+"- b:                           editor buffer
+"- l:                           function
+"- a: a parameter of the current function
+"- v: vim predefined
+
+    "#sid
+
+        "make helper functions or variables that are unique to the script
+        "and cannot be called from outside
+
+        "example, in a plugin:
+
+            "fu! s:F()
+                "retu 1
+            "endf
+
+            "nn <buffer> cal <SID>F()
+
+        "now F can only be called as a helper inside the plugin
+        "and not directly to users of the plugin.
+
+        "the advantage of this is that you can make unique short names
+        "for script only functions
 
 "#vars
 
@@ -1136,7 +1365,12 @@
 
         "some environment variables are given default values if undefined at startup:
 
+        "shared root:
+
             "ec $VIM
+    
+        "TODO:
+
             "ec $VIMRUNTIME
 
         "can also be changed:
@@ -1153,6 +1387,24 @@
 
         if [1,2] != [1,2] | ec 'fail' | en
         if [1,2] == [2,1] | ec 'fail' | en
+
+    "find item:
+
+        if (index( [1,2], 1) != 0) | ec 'fail' | end
+        if (index( [2,1], 1) != 1) | ec 'fail' | end
+        if (index( [1,2], 3) >= 0) | ec 'fail' | end
+
+    "contains:
+
+        if (index( [1,2], 3) >= 0) | ec 'fail' | end
+
+    "unpack (like python tuples):
+
+        "let [a,b] = [1,2]
+        "if a != 1 | ec 'fail' | en
+        "if b != 2 | ec 'fail' | en
+
+    "can be used to return multiple values from function
 
     "range:
     
@@ -1184,6 +1436,34 @@
         "exactly \ and "
         "the only escape inside single quotes is '' for '
 
+    "special chars
+
+        "clike:
+
+            "ec "\n"
+
+        "control chars:
+
+            "ec "\<s-v>"
+
+        "appear like ^V
+
+        "must use double quotes:
+
+            "ec '\n'
+
+        "outputs literal '\n'
+
+    "compare:
+
+        "note the insanity:
+
+            "abc" ==# "Abc"	  "evaluates to 0
+            "abc" ==? "Abc"	  "evaluates to 1
+            "abc" == "Abc"	  "evaluates to 1 if 'ignorecase' is set, 0 otherwise
+
+        "therefore: **always use either ==# or ==? when comparing strings!!**
+
     "concat:
 
         "if "ab" . "cd" != 'abcd' | ec 'fail' | en
@@ -1193,6 +1473,14 @@
         "if 10  + "10"    != 20   | ec 'fail' | en
         "if 10  + "10.10" != 20   | ec 'fail' | en
         "if 1.1 + "1.1"   != 2.1  | ec 'fail' | en
+
+    "substring
+
+        "let a = 'abc'
+        "if a[0]     != 'a'  | ec 'fail' | en
+        "if a[0:1]   != 'ab' | ec 'fail' | en
+        "if a[1:]    != 'bc' | ec 'fail' | en
+        "if a[-1]    != 'c'  | ec 'fail' | en
 
     "equality:
 
@@ -1222,6 +1510,17 @@
 
         "if 0 | ec 0 | elseif 1 | ec 1 | else | ec 2 | en
 
+    "#boolean operations
+
+
+        "all that matters is =0 or !=0:
+
+            "if !0     != 1 | ec 'fail' | en
+            "if !1     != 0 | ec 'fail' | en
+            "if !-1    != 0 | ec 'fail' | en
+            "if 0 && 1 != 0 | ec 'fail' | en
+            "if 0 || 1 != 1 | ec 'fail' | en
+
 "#for
 
     "for i in [1,3,2] | ec i | endfor
@@ -1234,19 +1533,19 @@
 
     "cannot use | for single line
 
-        fu! F( a, b )
-            retu a:a + a:b
-        endf
+        "fu! F( a, b )
+            "retu a:a + a:b
+        "endf
 
-        if F( 1, 2 ) != 3 | ec 'fail' | en
+        "if F( 1, 2 ) != 3 | ec 'fail' | en
 
     "nargs:
 
-        fu! F( a, b, ... )
-            for i in range( a:0 )
-                ec a:{i}
-            endfor
-        endf
+        "fu! F( a, b, ... )
+            "for i in range( a:0 )
+                "ec a:{i}
+            "endfor
+        "endf
 
     "a:0 contains the number of args
     "a:1 contains the first arg
@@ -1260,6 +1559,81 @@
 
         "only side effects can be useful therefore
 
+    "#multiple return values
+
+        "fu! F()
+            "retu [1,2]
+        "endf
+
+        "let [a,b] = F()
+        "if [a,b] != [1,2] | ec 'fail' | en
+
+    "no return val returns 0:
+
+        "fu! F()
+        "endf
+
+        "if F() != 0 | ec 'fail' | en
+
+    "#default values
+
+        "concept does not exist in the language.
+
+        "possible solution:
+
+            "fu! F(a, ...)
+
+                "if a:0 > 0
+                    "let b = a:1
+                "el
+                    "let b = 0
+                "en
+
+                "if a:0 > 1
+                    "let c = a:2
+                "el
+                    "let c = 0
+                "en
+
+            "endf
+
+    "#assign function to a variable
+
+        "must use the `function` function:
+
+            "fu! F()
+                "ret 1
+            "endf
+
+            "let A = function('F')
+            
+            ""ERROR: must be capital
+                ""let a = function('F')
+
+            "if A() != 1 | ec 'fail' | en
+
+        "also works:
+
+            "ec function('F')()
+            "cal function('F')()
+
+"#exceptions
+
+    "throw:
+        
+        "th 'abc'
+
+    "try catch finnaly:
+
+        "try:
+            "th 'abc'
+        "cat: /a./
+            "ec 'a.'
+        "cat:
+            "ec 'default'
+        "fina:
+            "ec 'finnally'
+        "endt
 "#exe
 
     "execute string as a vim command
@@ -1271,26 +1645,45 @@
 
         "exe "ec 1 |" "ec 1"
 
+"#so
+
+    "exe from given file (Source)
+    
+    "source this file:
+    
+        "so %
+
+    "any vim output (ex `ec 1`) done in that file will be interpreted as an error.
+
+    "#fini
+
+        "stop sourcing script
+
+            "fini
+            "ec 1
+
 "#sil
 
     "ommit messages
 
     "multiline messages automatically require you to press enter:
 
-        fu! F()
-            ec 1
-        endf
+    "no need for enter:
 
-        cal F()
-            "no enter
+        "fu! F()
+            "ec 1
+        "endf
 
-        fu! F2()
-            ec 1
-            ec 2
-        endf
+        "cal F()
 
-        cal F2()
-            "enter
+    "needs enter:
+
+        "fu! F2()
+            "ec 1
+            "ec 2
+        "endf
+
+        "cal F2()
 
     "to ommite messages, use can use sil:
 
@@ -1341,7 +1734,7 @@
 
 "#shell commands
 
-    "excecute shell command:
+    "excecute shell commands:
 
         "! ls; ls
 
@@ -1422,17 +1815,35 @@
 
     "#b
 
-        "load buffer 2 and make it visible in cur window:
+        "load buffer in the buffer list and make it visible in cur window
+
+        "does not however add new buffers to the buffer list.
+
+        "by number 2:
 
             "b 2
 
-        "load buffer `file.txt`:
+        "by path:
 
             "b file.txt
 
         "tab complete matches in middle of file paths.
 
         "if there is a single match for a substring of path, <enter> opens it.
+
+    "#e
+
+        "edit a file in current window
+        
+        "tab complete only shows file in current directory, not the buffer
+        "list.
+
+        "if a file is not already in a loaded buffer, it is added to the
+        "buffer list and loaded
+
+        "if a file is already on a loaded buffer and that buffer has no
+        "changes, updates the buffers to match disk (in case for example that
+        "the file was modified externally of vim)
 
     "#sb
 
@@ -1482,6 +1893,18 @@
         
         "if file does not exit, create it.
 
+    "#alternate file
+
+        "then you open a buffer on top of another on a window,
+        "for example with `:b`,
+        "the old buffer is remembered and is called the *alternate file*
+
+        "you can toogle between the current and alternate file with <c-*>
+
+            ":b
+
+        "this behaviour can be orverriden with `keepalt`.
+        
     "wipe all buffers without corresponding existing files:
 
         fu! s:WipeBuffersWithoutFiles()
@@ -1495,6 +1918,10 @@
                 exe 'bw' join(bufs)
             en
         endf
+
+        "call it at every startup (TODO does not work)
+
+            "cal s:WipeBuffersWithoutFiles()
 
         "command WBWF call s:WipeBuffersWithoutFiles()
 
@@ -1532,6 +1959,39 @@
     "execute normal mode command:
 
         "norm dd
+
+    "this does *not* leave current mode and goes to normal mode, unless you
+    "tell it too
+    "but has all the effects of useing the commnad on normal mode
+
+    "
+
+    "with [!] execute normal mode command without mappings activated:
+
+        "map a b
+
+    "b:
+
+        "norm a
+
+    "a:
+
+        "norm! a
+
+    "**always use this!!** unless you really want to use the user commands...
+    "which is a rare case
+
+    "multiple commands:
+
+        "norm! jj
+
+    "goes twice down
+
+    "special chars:
+
+        "exe "norm! \<s-v>"
+
+    "goes to line visual mode
 
 "#editing commands
 
@@ -1595,6 +2055,10 @@
     ":3m5
         "move line 3 to line 5
 
+    "join current and next line:
+
+        ":j
+
     ":g/re/p
         "global if line matches re
 
@@ -1643,11 +2107,45 @@
 
     "<http://www.ibm.com/developerworks/linux/library/l-vim-script-5/index.html>
 
-    "patterns:
+    "execute command automatically on an event.
+
+    "#events
+
+        "list events:
+
+            "h event
+
+        "two important events:
+
+            "au BufEnter,BufRead *.c noremap a b
+
+        "with those two, you can define mappings, options, functions or variables to any c file
     
-    "- *.py
-    "- *.py,*.pl
-    "- *.{py,pl}
+    "#order
+
+        "autocommands are always executed on the order that they are set thus:
+
+            "au BufEnter,BufRead * noremap a b
+            "au BufEnter,BufRead * noremap a c
+
+        "will only map a to c but:
+            
+            "au BufEnter,BufRead * noremap a c
+            "au BufEnter,BufRead * noremap a b
+        
+        "will only map a to b but.
+
+    "#patterns
+
+        "for many events except FileType, you can use the following patterns:
+        
+        "- *.py
+        "- *.py,*.pl
+        "- *.{py,pl}
+
+        "for FileType, just enter enter the filetypes (`:se ft?`) comma separated:
+
+            "au FileType c,cpp noremap a b
 
 "#map #noremap #nmap #nnoremap
 
@@ -1705,6 +2203,8 @@
             "map! a b
             "map! a c
 
+        "just like `unmap`, **must** use the same version to override!
+
     "#unmap
 
         "rever a map to its vim default:
@@ -1712,8 +2212,16 @@
             "map a b
             "unmap a
 
+        "**must** use same version to set/unset:
+
             "map! a b
             "unmap! a
+
+            "inoremap a b
+            "iunmap a
+
+            "map <buffer> a b
+            "map <buffer> a b
 
     "#map to nothing
 
@@ -1738,30 +2246,327 @@
 
             "default: 1000ms
 
-            "set timeoutlen = 10
-            "set timeoutlen = 3000
+            "se timeoutlen = 10
+            "se timeoutlen = 3000
+
+    "#options
+    
+        "- <buffer>: only map on cur buffer. Should always be used on ftplugins.
+        
+        "- <silent>: don't print the input command to screen. Command output is
+            "still visible
+
+                "fu! F()
+                    "ec 1
+                "endf
+
+                "map            a :cal F()<cr>
+                "map <silent>   a :cal F()<cr>
+
+        "- <expr>: evaluate rhs and map to result
+
+            "ex:
+
+                "map <expr> x 'a' . 'b'
+
+            "is the same as:
+
+                "map <expr> x ab
+
+    "#which keys can be mapped
+
+        "TODO check and understand all of this... very confusing.
+
+        "vim is designed to work on terminals without X server.
+
+        "#must have standard terminal representation
+        
+            "only stuff that has a standard terminal representation can have mappings in vim
+        
+            "of course, it is up to your terminal to determine what maps to
+            "what, but usually ^X is achieved via c-x (except for c-@)
+
+            "#has standard terminal representation
+
+                "- alpha (numbers are reserved for repeating motions)
+                "- s-alphanum
+
+                "- control
+
+                    "- c-{alpha}
+                    "- ^@
+                    "- ^[
+                    "- ^\
+                    "- ^]
+                    "- ^^[j]
+                    "- ^_
+                    "- ^?
+
+                    "note: c-[ is the same as esc, but can be remapped.
+
+                "- {F keys}
+                "- s-{F keys}
+
+                "- alt-{alphanum} Also called meta key.
+
+                    "a, s-a, c-a, c-@...
+
+            "#does not have standard terminal representation
+
+                "those non-examples are dealt with in GUI programs by detecting that
+                "one key is pressed while the other is down
+
+                "however terminals cannot detect key up/down TODO confirm
+
+                "- c-s-{key}
+                "- c-a-{key}
+
+        "#must not be a terminal control character
+
+            "non-examples:
+
+            "- c-c: terminate process
+            "- c-s: stop foreground process
+            "- c-q: resume after c-s
+            "- c-z: stop foreground process and put it on background
+            "- c-d: eof
+            "- c-v c-X: enter a literal control char
+
+    "#which keys are a good idea to map
+
+        "very useful manual section:
+
+            "h map-which-keys
+
+        "summary:
+
+        "- use `<c-` or `<s-` for commands that must be done repeatedly several times
+
+            "instead of two key combinations like `<leaders>a`
+
 
 "#bufdo #tabdo #windo
     "do a command on all *
 
 "#set
 
-    "controls several vim options
+    "control and view several vim options
+
+        "h options
+
+    "view value:
+
+        "se ft?
+
+    "set value:
+
+        "se ft=vim
+
+    "toogle value (if applicable, often between no* and * versions):
+
+        "se wrapscan!
+
+    "get value of option programatically:
+
+        "ec &ft
+
+    "just add ampersand.
 
     "- nomodified
+
         "as if the buffer hadn't been modified
 
-"#built-in functions
+    "#setl
+    
+        "sets option only for cur buffer
+
+        "only some options can have local values.
+
+        "should always be used instead of `:se` in ftplugin files.
+
+"#builtin functions
 
     "if filereadable("SpecificFile")
             "ec "SpecificFile exists"
     "en
 
-    "#line
+    "#position
 
-        "cur line number
+        "get cur line number:
 
-            "a = line(".")
+            "ec line(".")
+
+        "get last line in buffer:
+
+            "ec line("$")
+
+        "get cur column
+
+            "ec column(".")
+
+        "get cur line number, column, buffer
+
+            "getpos():
+
+        "returns:
+
+            "[bufnum, lnum, col, off]
+
+        "setpos() with same args to set (last can be ommitted):
+
+            "setpos (0,2,3)
+
+        "if buf number 0 means in current buffer
+
+        "another way to set position:
+
+            "cursor(line,col)
+
+        "get initial position while on visual mode:
+
+            "getpos("'<")
+
+        "set visual selection position from function:
+
+            ""put user in visual mode and set the visual selection
+            ""
+            ""if arguments are not valid, nothing is changed, and raises an exception
+            ""
+            "":param 1:
+            ""
+            ""    Visual mode to leave user in.
+            ""
+            ""    must be either one of:
+            ""
+            ""    - 'v' for visual (default)
+            ""    - "\<s-v>" for line visual
+            ""    - "\<c-v>" for block visual
+            "":type 1: string
+            ""
+            "":returns: 0
+            ""
+            "":raises: bad mode argument, bad position argument
+            ""
+            "fu! SetSelection( x, y, x2, y2, ... )
+                "let valid_mode_strings = ["v","\<s-v>","\<c-v>"]
+
+                "if a:0 > 0
+                    "if index( valid_mode_strings, a:1 ) >= 0
+                        "let mode = a:1
+                    "el
+                        "th 'bad mode argument: ' . a:1 . ' valid options: ' . join( valid_mode_strings, ', ' )
+                    "en
+                "el
+                    "let mode = 'v'
+                "en
+
+                "let oldpos = getpos('.')
+
+                "if setpos( '.', [0,a:x,a:y] ) != 0
+                    "exe "norm! \<esc>"
+                    "th 'bad position argument: ' . a:x . ' ' . a:y . ' ' . a:x2 . ' ' . a:y2
+                "en
+
+                "exe 'norm! ' . mode
+
+                "if setpos( '.', [0,a:x2,a:y2] ) != 0
+                    "exe "norm! \<esc>"
+                    "cal setpos( '.', oldpos )
+                    "th 'bad position argument: ' . a:x . ' ' . a:y . ' ' . a:x2 . ' ' . a:y2
+                "en
+            "endf
+
+    "#buffer content
+
+        "get content of cur line:
+
+            "ec getline(".")
+
+        "get all lines from to:
+
+            "ec getline(1,3)
+
+        "returns a list of lines
+
+    "#mode()
+
+        "get current mode representation string:
+
+            "ec mode()
+
+        "set mode: TODO is this the best way?
+
+            "exe "norm! " . mode()
+
+    "#visualmode()
+
+        "get string representing type of last visual mode on cur buffer:
+
+        "- v:   charcter
+        "- V:   line
+        "- ^V:  block
+
+        "this can be used with `norm` to set back to last visual mode:
+
+            "exe 'norm! ' . visualmode()
+
+    "#search
+
+        "same as '\' but:
+        
+        "- is a function
+        "- does not set last jump mark (for use with `<c-o>` for example)
+
+        "returns:
+        
+        "- line number if match
+        "- 0 if no match
+
+        "it is therefore preferable in vimscript.
+
+            "cal search('a')
+            "cal search('\va')
+
+        "don't move cursor:
+
+            "cal search( 'a', 'n' )
+
+        "backwards:
+
+            "cal search('a','b')
+
+        "wrap around end (default):
+
+            "cal search('a','w')
+
+        "don't wrap around end:
+
+            "cal search('a','W')
+
+        "end of match:
+
+            "cal search('ab','e')
+
+        "stops at 'b' instead of 'a'
+
+        "start search from under cursor
+            
+            "cal search('a','c')
+
+        "by default, if you are over an 'a' char and to search a,
+        "you will move to next match. But not with 'c'.
+
+        "get column too:
+
+            "searchpos('a')
+
+        "get line and pos of match start and end:
+
+            "TODO
+
+        "search for pairs like 'if' 'else':
+
+            "searchpair(TODO)
 
     "#expand
 
@@ -1918,6 +2723,24 @@
 
             "if substitute( 'abc', 'a\(.\)c', '\1', '' ) != 'b' | ec 'fail' | en
 
+        "todo: how to use magic
+
+            "if substitute( '\vabc', 'a(.)c', '\1', '' ) != 'b' | ec 'fail' | en
+
+    "#match
+
+        "get start of match index:
+
+            "if match( 'abc', '\v.c' ) != 1 | ec 'fail' | en
+            "if match( 'abc', '\v.b' ) != 0 | ec 'fail' | en
+
+    "#matchstr
+
+        "get matching string
+
+            "if matchstr( 'abc', '\v.c' ) != 'bc' | ec 'fail' | en
+            "if matchstr( 'abc', '\v.b' ) != 'ab' | ec 'fail' | en
+
     "check if string matches regex:
 
         "if 'abc' =~ 'a.c' | | else | ec 'fail' | en
@@ -2008,14 +2831,14 @@
 
     "multiline python code:
 
-py << EOF
-def f():
-    print 1
-EOF
+"py << EOF
+"def f():
+    "print 1
+"EOF
 
-    fu! PythonTest()
-        py f()
-    endf
+    "fu! PythonTest()
+        "py f()
+    "endf
 
 "#vim configuration
 
@@ -2029,38 +2852,145 @@ EOF
 
         ":scriptnames
 
-    "order:
+    "#verb
 
-    "- ~/.vimrc
-    "- ~/.vim/plugin/
+        "verbose info on commands
 
-    "note that:
+        "often shows which file last set something!
 
-    "- ~/.vimrc comes before the plugins! So plugins may override stuff you put in your .vimrc.
+        "very useful to debug.
 
-    "#plugin
+        "maps:
 
-        "plugins sourced for all file types
+                "verb map a
 
-        "*nix location: ~/.vim/plugin/
+        "options:
 
-        "all files ending in .vim will be sourced at startup
+                "verb se ft?
 
-    "#ftplugin
+    "#plugins
 
-        "plugin that sources scripts only for particular types
+        "one very important thing that is executed **after** reading `.vimrc`:
 
-        "*nix location:  ~/.vim/ftplugin
+            ":runtime! plugin/**/*.vim
 
-        "all .vim in this directory and subdirectories will be sourced on Buf enters
+        "this is how plugins are loaded automatically.
 
-        "sourced on c files:
+    "#runtimepath #rtp
+
+            "se rtp?
+
+        "a vim source path
+
+        "comma separated list of palces where TODO
+
+        "important stuff that is there by default on linux:
+
+        "- `/usr/share/vim` and some subdirs. Installation default.
+        "- `~/.vim/`.       User managed.
+        "- `~/.vim/after/`. User managed. Comes after plugins.
+
+        "#ru
+
+            "- search in rtp
+            "- so all files found
+            "- no error if non found
+            "- wildcards work:
+
+                ":ru plutin/*.vim
+
+"#ftplugin
+
+    "plugins that au sources only for particular types of files
+
+        "h ftplugin
+
+    "for those to work, you must first detect the type of file:
+
+    "#detect filetype manually
+
+        "typical methods:
+        
+        "- by extension
+        "- by file contents (shebangs tipically)
+
+        "get current filetype:
+
+            "se ft?
+
+        "obviously, this is a local option.
+
+        "se current filetype:
+
+            "setl ft=python
+
+        "this is typically done as an `au BufNewFile,BufRead`, but you could to it manually to to test.
+
+    "#default filetype detection
+
+        "vim does detection for a bunch of file types by default.
+
+        "show detection, plugin and indent status:
+
+            "filet
+
+        "turn on filetype detection:
+
+            "filet on
+
+        "this ources $VIMRUNTIME/filetype.vim, which in short does lots of
+        "au for lots of known file types.
+
+        "detect filetype for current file again using the default scripts:
+
+            "filetype detect
+
+    "#create new filetype
+
+        "very well explained here:
+
+            "h new-filetype
+
+    "#default ftplugin sourcing
+
+        "vim comes with good defaults for loading plugins only for given filetypes.
+
+        "turn on ftplugins detection:
+
+            "ftplugin on
+
+        "this ources $VIMRUNTIME/ftplugin.vim
+        "which in short executes all files inside
+
+            ":ru! /ftplugin/
+
+        "with vim extensions .vim in this directory and subdirectories
+
+        "when the buffer of the right filetype enters.
+
+        "for example for `c` files the following would all be sourced (in alphabetical path order)
 
             "c.vim
             "c_extra.vim
             "c/settings.vim
 
         "'_' is required to separate c form the arbitrary rest of the name
+
+        "as explained in the help:
+
+        "- always use setlocal      instead of set
+        "-            map <buffer>             map
+
+    "#override defaults
+
+        "the simplest way is to  create an ftplugin file and put it inside
+        "after/ftplugin
+
+        "this however is a pain because you have to keep many separate files.
+
+    "#default indent sourcing
+
+        "exact same idea as ftplugin, but replace plugin by indent.
 
 "#find
 
