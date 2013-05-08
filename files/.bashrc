@@ -187,6 +187,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias mvr="move_regex.py"
 
         alias pdc='pandoc'
+        alias pingg='ping google.com'
 
         alias rbul="rename_basename_unidecode_lowercase.py"
         alias rifr="replace_in_files_regex.py"
@@ -197,10 +198,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         #alias sudo='sudo env PATH=$PATH'
             #normally, sudo cannot see your personal path variable. now it can.
 
-
-        alias py='python'
+        alias pe='perl'
         alias tree='tree --charset=ascii'
-        alias tipy='touch __init__.py'
 
         alias vrmm='vim readme.md'
         #Ubuntu 1 Public url to Clipboard
@@ -240,11 +239,10 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                 #this will open krusader where I want.
                 #use this from the embedded terminal emulator
                 #must have "single instance mode on", or new windows will be opened
-                
-                alias krprg='krusader "$PROGRAM_DIR"'
+
+                alias krpr='krusader "$PROGRAM_DIR"'
                 alias krba='krusader "$MY_BASH_DIR"'
                 alias kras='krusader "$ASSEMBLER_DIR"'
-                alias krc='krusader "$C_DIR"'
                 alias krcp='krusader "$CPP_DIR"'
                 alias krli='krusader "$MY_LINUX_DIR"'
                 alias krpy='krusader "$MY_PYTHON_DIR"'
@@ -260,28 +258,36 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
                 alias krusd='krusader "/usr/share/doc/"'
 
-        ##django
+        ##python
 
-            alias dmrs="./manage.py runserver" #Django Manage Run Server
-            alias dmds="./manage.py dbshell" #Db Shell
-            alias dmsd="./manage.py syncdb" #Sync Db
-            alias dmcs="echo "yes" | ./manage.py collectstatic" #Collect Static
+            alias py='python'
+            alias ipy='ipython'
+            alias tipy='touch __init__.py'
 
-            ##south
+            ##django
 
-                alias dmscts="./manage.py convert_to_south"
-                alias dmssi="./manage.py schemamigration --initial"
-                alias dmssa="./manage.py schemamigration --auto"
+                alias dmrs="./manage.py runserver" #Django Manage Run Server
+                alias dmds="./manage.py dbshell" #Db Shell
+                alias dmsd="./manage.py syncdb" #Sync Db
+                alias dmcs="echo "yes" | ./manage.py collectstatic" #Collect Static
+
+                ##south
+
+                    alias dmscts="./manage.py convert_to_south"
+                    alias dmssi="./manage.py schemamigration --initial"
+                    alias dmssa="./manage.py schemamigration --auto"
 
         ##git
 
-            alias gcm="git commit"
+            alias gcl="git clone --recursive"
+            alias gcm="git commit --allow-empty-message -am"
             alias gcam="git commit -am"
             alias gco="git checkout"
-            function gcp { git commit --allow-empty-message -am "$1"; git push origin master; }
+            function gcp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
             alias glo="git log"
-            alias gpu="git push origin master"
+            alias gpu="git push --tags -u origin master"
             alias gst="git status"
+            alias lngp="latex-new-github-project.sh cirosantilli"
 
         ##makefile
 
@@ -303,8 +309,9 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         ##pip
 
             alias spii="sudo pip install"
-            alias spir="sudo pip remove"
+            alias spiu="sudo pip uninstall"
             alias pise="pip search"
+            alias pifr="pip freeze"
 
         ##services
 

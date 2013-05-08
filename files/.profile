@@ -53,10 +53,10 @@ export LC_COLLATE="en_US.UTF-8"
         MYID=cirosantilli
 
         export ROOT_DIR="$HOME"
-          
+
         export BAK_DIR="$ROOT_DIR/bak"
         export BIN_DIR="$ROOT_DIR/bin"
-          
+
         export SHARE_DIR="$BAK_DIR/share"
         export NOSHARE_DIR="$BAK_DIR/noshare"
 
@@ -93,7 +93,7 @@ export LC_COLLATE="en_US.UTF-8"
         PATH="$PATH:$MY_PYTHON_BIN_DIR"
         PATH="$PATH:$MY_BASH_BIN_DIR"
         PATH="$PATH:$LATEX_BIN_DIR"
-        export PATH 
+        export PATH
 
         PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR:/var/www/django/devpath"
             #adding to path is the only way I found to dev most modules with git

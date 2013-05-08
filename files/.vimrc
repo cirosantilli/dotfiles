@@ -223,12 +223,41 @@
 
         "file manager
 
-        Bundle 'scrooloose/nerdtree'
+            Bundle 'scrooloose/nerdtree'
 
         "let NERDTreeKeepTreeInNewTab=0
         "let loaded_nerd_tree=1  "stop opening nerd tree.
+        
+        "- ?: help
 
-        "delete all bookmarks: `rm ~/.NERDtreebookmarks`
+        "- u: root up a dir
+        "- C: change root to selected dir
+        "- o: toogle open close dir
+        "- x: close current level
+
+        "- - t: open in new tab and to to it
+             "For file,  opens normal buffer
+             "For dir,   opens another nerdtree with root there
+        "- T: same as t but stay on current nerd tree
+
+        "- - p: go to parent of current
+        "- P: go to root
+        "- K: first   sibling current level
+        "- J: last    sibling current level
+        "- <c-k>: previous sibling
+        "- <c-j>: next sibling
+
+        "- m: enter a menu that allows you to: copy, delete, etc. selected node. <esc> to exit this menu
+
+        "- A: toogle maximize
+
+        "- B: show bookmark list and move cursor to first one
+        "- o: move root to selected bookmark
+        "- D: delete selected bookmark
+        "
+        "the following commands can only be used from inside NERDTree:
+        "- :Bookmark <name>: create bookmark at current node with given name
+        "- :BookmarkToRoot <name>: move root to bookmark with given name
 
     "#vim-session
 
@@ -401,10 +430,6 @@
     "maintains at least 4 lines in view from the cursor
     se scrolloff=4
 
-    "highlight trailling whitespace TODO broken
-    highlight ExtraWhitespace ctermbg=red guibg=red
-    match ExtraWhitespace /\s\+\%#\@<!$/
-
     "normally, pressing alt focuses on the menu in gvim, but vim NEEDS no menu,
     "vim only needs vimrc!!
     se winaltkeys=no
@@ -428,13 +453,16 @@
         se textwidth=0
         se wrapmargin=0
         let &showbreak='>'.repeat(' ', 8)
-        "slights highlights chars after 80
-        "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-        "match OverLength /\%81v.\+/
-        augroup vimrc_aus
-            au BufEnter * highlight OverLength ctermbg=darkgrey guibg=#101010
-            au BufEnter * match OverLength /\%75v.*/
-        augroup END
+
+        aug highlight_line_too_long
+            au BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
+            au BufEnter * match LineTooLong /\%75v.*/
+        aug END
+
+    aug highlight_trailling_whitespace
+        au BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
+        au BufEnter * match TraillingWhitespace /\s\+$/
+    aug END
 
     "#ruler
 
@@ -551,7 +579,7 @@
 
             au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<cr>:! make<cr>' )
             au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! make run VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! make run VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''' )
 
             "this works
             "but the problem is: in which dir is the output file?
@@ -569,11 +597,10 @@
             endf
             "au BufEnter,BufRead *.tex cal MapAllBuff( '<F4>', ':cal LatexForwardOkular("_out/")<cr>' )
 
-    "#interpreted languages #python #bash
+    "#interpreted languages #python #bash #perl
 
-        au FileType python setlocal shiftwidth=4 tabstop=4
-
-        au FileType python,sh cal MapAllBuff( '<F6>', ':w<cr>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<cr>' )
+        au FileType sh,python,perl setlocal shiftwidth=4 tabstop=4
+        au FileType sh,python,perl cal MapAllBuff( '<F6>', ':w<cr>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<cr>' )
 
     "#compile to executable languages
 
@@ -2125,15 +2152,15 @@
 
         "autocommands are always executed on the order that they are set thus:
 
-            "au BufEnter,BufRead * noremap a b
-            "au BufEnter,BufRead * noremap a c
+            "au BufEnter,BufRead * echo 1
+            "au BufEnter,BufRead * echo 2
 
-        "will only map a to c but:
+        "will always echo 1 and then 2
             
-            "au BufEnter,BufRead * noremap a c
-            "au BufEnter,BufRead * noremap a b
+            "au BufEnter,BufRead * echo 2
+            "au BufEnter,BufRead * echo 1
         
-        "will only map a to b but.
+        "will always echo 2 and then 1
 
     "#patterns
 
@@ -2146,6 +2173,27 @@
         "for FileType, just enter enter the filetypes (`:se ft?`) comma separated:
 
             "au FileType c,cpp noremap a b
+
+    "#aug
+    
+        "groups autocomands
+
+        "you can later execute autocommands from a single chosen group afterwards
+        "with `:do` or `:doautoall`
+
+        "`au`s in a group are stil executed by default when the file is sourced
+
+        "example: TODO get working
+
+            "aug A
+                "au BufEnter,BufRead * echo 1
+                "au BufEnter,BufRead * echo 2
+            "aug END
+            "au BufEnter * echo 3
+
+        "to do only groupa A use:
+
+            "do A
 
 "#map #noremap #nmap #nnoremap
 
@@ -2998,3 +3046,19 @@
     ":sfind
     ":tabfind
     "find in vim path var, and edit here, split, new tab
+
+"#ftp
+
+    "vim has built-in ftp! =)
+
+    "open file browser:
+    
+        "vim ftp://username@host:port/
+
+    "you will be asked for password
+
+    "navigate file browser (TODO):
+
+    "open file:
+
+        "vim ftp://username@host:port/path/to/file.html
