@@ -16,7 +16,7 @@
                 %d
             en
             exe "silent r !" . a:cmd
-            se nomodified
+            set nomodified
         endf
         "command! -nargs=+ -complete=command TabMessage cal TabMessage(<q-args>)
 
@@ -61,10 +61,71 @@
             en
         endf
 
+        " transforms well formated selected line commented code to markdown
+        "
+        " well formated for languages that don't have fixed indentation:
+        "
+        " - use exact md, except that instead of header levels use 4 spaces for indentation
+        "     and always a single `#`
+        "
+        " for languages that have fixed inedentation (python):
+        "
+        " - always add a space after each comment, except for the code
+        "
+        "     this way, you can simply uncomment to try stuff out
+        "
+        "     not yet implemented
+        "
+        " this is only an heuristic, as nested lists are hard to tokenize
+        "
+        " :param comment: the regex that starts the line comment.
+        "
+        "     ex: `#` in python, `"` in vim
+        "
+        " :param comment: regexp that starts a comment
+        " :type comment: string
+        "
+        fu! CodeToMd(comment)
+
+            "for each removed indent, add a header level
+            let a:find = '\v^(\s*)    (' . a:comment . '#+)'
+            for a:n in range( line("'<"), line("'>") )
+                let a:l = getline(a:n)
+                while a:l =~ a:find
+                    exe string(a:n) . 's/' . a:find . '/\1#\2/'
+                    let a:l = getline(a:n)
+                endwhile
+            endfor
+
+            silent! exe '''<,''>s/\v^\s*' . a:comment . '([^#])/\1/'
+            "silent! exe '''<,''>s/\v^(#+)([^#])/\1 \2/'
+            silent! exe '''<,''>s/\v^\s+([^#])/    \1/'
+        endfunction
+
+        "reduces level of all selected markdown headers
+        "
+        "operates linewise even if the cursor is not a the beginning of a line
+        "
+        "if there is a level one header at already level one,
+        "raises an exception and does nothing
+        "
+        fu! MdReduceLevel()
+            for a:n in range( line("'<"), line("'>") )
+                if getline(a:n) =~ '^#[^#]'
+                    throw 'one of the headers is already at level one. Operation aborted'
+                endif
+            endfor
+            exe '''<,''>s/\v^(#+)#/\1/'
+        endf
+
+        fu! MdIncreaseLevel()
+            exe '''<,''>s/\v^(#+)/\1#/'
+        endf
+
 "#plugins
 
     "#vundle
-    
+
         "plugin manager
 
         "use this! easy plugin updating via git!
@@ -72,19 +133,19 @@
         "view all avaliable bundles (searches github?):
 
             "Bundles
-        
+
         "#install plugin
-        
+
             "add:
-                
+
                 "`Bundle 'gitrepouser/reponame'`
-            
+
             "to `.vimrc` and run:
-            
+
                 "`BundleInstall`
-        
+
         "update all installed plugins:
-        
+
             "BundleInstall!
 
         "remove a plugin:
@@ -92,7 +153,7 @@
         "required:
         filetype off
 
-        se rtp+=~/.vim/bundle/vundle/
+        set rtp+=~/.vim/bundle/vundle/
         cal vundle#rc()
 
         "let Vundle manage Vundle:
@@ -102,14 +163,14 @@
         "#inner workings
 
             "Vundle adds each plugin        to runpath, before ~/.vim/after
-            "                 plugin/after            , after              
+            "                 plugin/after            , after
 
         "#overriding mappings
 
             "using the default path maintained by vundle you can override
 
             "ftplugin mappings by:
-            
+
             "- putting the mapping as an au in your vimrc:
 
                 "au FileType FT nn <buffer> a b
@@ -126,7 +187,7 @@
 
 
     "#neocomplcache
-    
+
         "hardcore autocompletion. VERY GOOD PLUGIN!!!
 
         Bundle 'Shougo/neocomplcache'
@@ -182,7 +243,7 @@
 
         "For snippet_complete marker.
         if has('conceal')
-            se conceallevel=2 concealcursor=i
+            set conceallevel=2 concealcursor=i
         en
 
     "#fugitive
@@ -198,10 +259,10 @@
         "very fast for non structured moves!
 
         "- <leader><leader>w        beginnings  of words and lines
-        "- <leader><leader>W                       Words          
-        "- <leader><leader>e        ends           words          
-        "- <leader><leader>E        ends           Words          
-        "- <leader><leader>f{char}  given chars 
+        "- <leader><leader>W                       Words
+        "- <leader><leader>e        ends           words
+        "- <leader><leader>E        ends           Words
+        "- <leader><leader>f{char}  given chars
         "- <leader><leader>j        lines down
         "- <leader><leader>n        last search down
 
@@ -210,7 +271,7 @@
         Bundle 'Lokaltog/vim-easymotion'
 
     "#nerdcommenter
-    
+
         "does the right type of comment for each recognized language
 
         Bundle 'scrooloose/nerdcommenter'
@@ -225,9 +286,11 @@
 
             Bundle 'scrooloose/nerdtree'
 
+            "h nerdtree
+
         "let NERDTreeKeepTreeInNewTab=0
         "let loaded_nerd_tree=1  "stop opening nerd tree.
-        
+
         "- ?: help
 
         "- u: root up a dir
@@ -247,7 +310,8 @@
         "- <c-k>: previous sibling
         "- <c-j>: next sibling
 
-        "- m: enter a menu that allows you to: copy, delete, etc. selected node. <esc> to exit this menu
+        "- m: enter a menu that allows you to: copy, delete, etc.
+            "selected node. <esc> to exit this menu
 
         "- A: toogle maximize
 
@@ -256,19 +320,44 @@
         "- D: delete selected bookmark
         "
         "the following commands can only be used from inside NERDTree:
-        "- :Bookmark <name>: create bookmark at current node with given name
+        "- :Bookmark <name>: create bookmark at node under cursor with given name
         "- :BookmarkToRoot <name>: move root to bookmark with given name
+        "- :ClearBookmark <name>: delete bookmark
 
     "#vim-session
 
         "manage sessions
-        
+
         "in particular, can load last session automatically...
 
+        "help:
+
+            "h session
+
+        "list all sessions:
+
+            "OpenSession <tab>
+
+        "save session:
+
+            "SaveSession <session_name>
+
+        "delete session:
+
+            "DeleteSession <session_name>
+
         Bundle 'xolox/vim-session'
-        let g:session_default_to_last = 1
+
         let g:session_autosave = 'yes'
-        let g:session_autoload = 'yes'
+
+        "open last used session instead of the session called default (which
+        "is the default behaviour):
+
+            let g:session_default_to_last = 1
+
+        "autoload session at startup as specified by `g:session_default_to_last`:
+
+            let g:session_autoload = 'yes'
 
     "#msanders/snipmate.vim
 
@@ -358,7 +447,7 @@
         "Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
         "Bundle 'jcf/vim-latex'
         "could not install with vundle or vim. next best option then
-        "se runtimepath+=$HOME/.vim/plugin/vim-latex
+        "set runtimepath+=$HOME/.vim/plugin/vim-latex
 
     "#rope-vim
 
@@ -369,11 +458,11 @@
 "#general
 
     "leave vi compatibility:
-    se nocompatible
+    set nocompatible
 
     "#filetype
 
-        "se autodetect filetype and se it for buffers:
+        "set autodetect filetype and set it for buffers:
         filetype on
 
         "this allows the following to work properly:
@@ -391,12 +480,12 @@
 
         "control parameters of `/` search
 
-            se hlsearch    "highlight search terms
-            se incsearch   "show search matches as you type
-            se ignorecase  "ignore case when searching
-            se smartcase   "ignore case if search pattern is all lowercase,
+            set hlsearch    "highlight search terms
+            set incsearch   "show search matches as you type
+            set ignorecase  "ignore case when searching
+            set smartcase   "ignore case if search pattern is all lowercase,
                             " case-sensitive otherwise
-            se showmatch   "se show matching parenthesis
+            set showmatch   "set show matching parenthesis
             set wrapscan  " wrap around end of document (default)
             "set nowrapscan " do not wrap around
 
@@ -407,51 +496,51 @@
         "will be automatically turned back on on next search
 
     "working directory is always the same as the file being edited
-    se autochdir
+    set autochdir
 
     "allow to use the mouse:
-    se mouse=a
+    set mouse=a
 
     "stop creating backup files
-    se nobackup
-    se noswapfile
+    set nobackup
+    set noswapfile
 
     "automatically load files that were modified externally
-    se autoread
+    set autoread
 
     "stop those enter to continue useless messages:
-    se shortmess=atI
+    set shortmess=atI
 
     "tab completion
-    se wildmenu
-    se wildmode=list:longest
-    se history=1000
+    set wildmenu
+    set wildmode=list:longest
+    set history=1000
 
     "maintains at least 4 lines in view from the cursor
-    se scrolloff=4
+    set scrolloff=4
 
     "normally, pressing alt focuses on the menu in gvim, but vim NEEDS no menu,
     "vim only needs vimrc!!
-    se winaltkeys=no
+    set winaltkeys=no
 
     "colorscheme
     colorscheme vividchalk
 
     "font size
-    se guifont=9
+    set guifont=9
 
     "line numbers on right of page
 
-        "se nonumber
-        se number
+        "set nonumber
+        set number
 
     "#wrapping
 
-        se nowrap
-        se linebreak
-        se nolist
-        se textwidth=0
-        se wrapmargin=0
+        set nowrap
+        set linebreak
+        set nolist
+        set textwidth=0
+        set wrapmargin=0
         let &showbreak='>'.repeat(' ', 8)
 
         aug highlight_line_too_long
@@ -459,6 +548,7 @@
             au BufEnter * match LineTooLong /\%75v.*/
         aug END
 
+    "highlight tralling whitestpace
     aug highlight_trailling_whitespace
         au BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
         au BufEnter * match TraillingWhitespace /\s\+$/
@@ -471,14 +561,14 @@
         "in the same space for commands
         "that is the ruler
 
-        se ruler
-        "se noruler
+        set ruler
+        "set noruler
 
     "#tabwindow
 
         "format tab titles:
 
-            se guitablabel=%N)\ %t\ %M
+            set guitablabel=%N)\ %t\ %M
 
         "%N: tab number from left to right
         "%t: basename of loaded buffer
@@ -486,39 +576,39 @@
 
     "allow backspacing over everything in insert mode:
 
-        se backspace=indent,eol,start
+        set backspace=indent,eol,start
 
     "#tab
 
-        se expandtab     "insert spaces instead of tabs
-        se tabstop=4     "a tab is four spaces
-        se shiftwidth=4  "number of spaces to use for autoindenting
-        se autoindent    "always se autoindenting on
-        se copyindent    "copy the previous indentation on autoindenting
-        se shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
-        se smarttab      "insert tabs on the start of a line according to
+        set expandtab     "insert spaces instead of tabs
+        set tabstop=4     "a tab viewed as 8 spaces
+        set shiftwidth=4  "number of spaces to use for autoindenting
+        set autoindent    "always set autoindenting on
+        set copyindent    "copy the previous indentation on autoindenting
+        set shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
+        set smarttab      "insert tabs on the start of a line according to
                                             " shiftwidth, not tabstop
     "#folding
 
-        se foldmethod=indent   "fold based on indent
-        se foldnestmax=3       "deepest fold level
-        se nofoldenable        "dont fold by default
-        se foldlevel=3         "this is just what i use
+        set foldmethod=indent   "fold based on indent
+        set foldnestmax=3       "deepest fold level
+        set nofoldenable        "dont fold by default
+        set foldlevel=3         "this is just what i use
 
     "#gvim specific
 
-        se guioptions-=m  "remove menu bar
-        se guioptions-=T  "remove toolbar
-        se guioptions-=r  "remove right-hand scroll bar
-        se guioptions-=b  "remove right-hand scroll bar
+        set guioptions-=m  "remove menu bar
+        set guioptions-=T  "remove toolbar
+        set guioptions-=r  "remove right-hand scroll bar
+        set guioptions-=b  "remove right-hand scroll bar
 
     "#conceal
-    
+
         "the thing that renders greek, underline, etc in latex for example
 
         "g:tex_conceal=""
 
-        se cole=0
+        set cole=0
 
     "allows '%' to jump between open 'if' 'else', 'do', 'done', etc instead
     "of just parenthesis like chars
@@ -527,21 +617,44 @@
         runtime macros/matchit.vim
 
     "autocompletion. leave to distro default
-    "se ofu=syntaxcomplete#Complete
+    "set ofu=syntaxcomplete#Complete
 
-    "#autosource files named so.vim in same dir as files
+    "#autosource project files
 
         "allows to define project specific mappings for example
         "this comes after FileType, and thus has higher precedence
 
-        "sources file if it is readable
-        fu! SoIfReadable(f)
-            if filereadable(a:f)
-                exe "so " . a:f
-            en
+        " if there is a file named `so.vim` in current dir, source it
+        "
+        "fu! SoCurDir(f)
+            "if filereadable(a:f)
+                "exe "so " . a:f
+            "en
+        "endf
+
+        "au BufRead,BufNewFile * cal SoCurDir('so.vim')
+
+        " if there is a file named `so.vim` in current dir or any of its
+        " parent dirs, source it
+        "
+        fu! FindSourceUp(filename)
+            let a:parent = fnamemodify( '.', ":p:h")
+            let a:path = a:parent . '/' . a:filename
+            let a:found = 1
+            while ! filereadable( a:path )
+                if a:parent ==# '/'
+                    let a:found = 0
+                    break
+                endif
+                let a:parent = fnamemodify( a:parent, ":h") 
+                let a:path = a:parent . '/' . a:filename
+            endwhile
+            if a:found
+                exe "so " . a:path
+            endif
         endf
 
-        au BufRead,BufNewFile * cal SoIfReadable('so.vim')
+        au BufRead,BufNewFile * cal FindSourceUp('so.vim')
 
 "#language speficif
 
@@ -557,7 +670,7 @@
     "#compilable markup
 
         "#md #rst
-            
+
             "au FileType *.md setlocal shiftwidth=4 tabstop=4
             au BufEnter,BufRead *.{md,rst} setl shiftwidth=4 tabstop=4
             "au BufEnter,BufRead *.{md,rst} setl filetype=text
@@ -566,20 +679,25 @@
             au BufEnter,BufRead *.md  cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:sil ! make<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#VIMHERE"<cr>' )
             "TODO this is broken still:
             au BufEnter,BufRead *.rst cal MapAllBuff( '<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>' )
-            "au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p _out; pandoc -s --toc % -o _out/%<.html<cr>:d<cr>:w<cr>:silent ! firefox _out/%<.html\#VIMHERE<cr>' )
+
+            "make and open with firefox on curent point without a makefile
+            let s:out_dir = '_out'
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>' )
             "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<cr>
 
             au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>' )
+
+            "clean default output dir
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>' )
             au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>' )
 
         "#latex
 
+            au FileType tex setlocal shiftwidth=4 tabstop=4
 
-            au FileType tex setlocal shiftwidth=2 tabstop=2
-
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<cr>:! make<cr>' )
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! make run VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>' )
+            au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
 
             "this works
             "but the problem is: in which dir is the output file?
@@ -604,7 +722,7 @@
 
     "#compile to executable languages
 
-        "#c #cpp #lex #y #fortran #asm
+        "#c #c++ #cpp #lex #y #fortran #asm #s
 
         fu! FileTypeCCpp()
             cal MapAllBuff( '<F5>'  , ':w<cr>:make<cr>' ) "vim make quickfix
@@ -620,7 +738,7 @@
             cal MapAllBuff( '<S-F9>', ':w<cr>:! make assembler<cr>' )
         endf
 
-        au FileType c,cpp,fortran,asm cal FileTypeCCpp()
+        au FileType c,cpp,fortran,asm,s cal FileTypeCCpp()
 
         au FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
         au BufEnter,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
@@ -633,9 +751,9 @@
         "reaload all visible buffers.
         "TODO: multiple windows per tabpage.
         fu! ReloadVisible()
-            se noconfirm
+            set noconfirm
             tabdo e
-            se confirm
+            set confirm
         endfu
 
         au FileType vim setlocal shiftwidth=4 tabstop=4
@@ -663,7 +781,7 @@
 
     "#leader
 
-        "se the current leader:
+        "set the current leader:
 
             "let mapleader = ','
             let mapleader = '\'
@@ -697,7 +815,7 @@
     "#@
 
         "do macro saved on a register:
-        
+
             "noremap @a
 
         "redo last used macro:
@@ -713,25 +831,25 @@
     "#%
 
         "goes between open close pairs
-        
+
             "nn %
 
             "h %
 
         "pairs are defind by:
 
-            "se mps?
+            "set mps?
 
         "very useful command
 
         "individual pairs and more can be done with `[`
 
     "#^
-    
+
         "go to first non whitespace char of line:
 
             "unmap ^
-        
+
         "toogle between current and alternate file:
 
             "unmap c-^
@@ -757,7 +875,7 @@
 
         "something that ends in '.', '?' or '!'
 
-           "h sentence 
+           "h sentence
 
     "#tab
 
@@ -784,7 +902,7 @@
             "nn c-q
 
         "same as `c-v` in gvim, but used for terminal control
-    
+
     "#w
 
         "move across windows:
@@ -840,7 +958,7 @@
         "buffer:
 
             "f(a,b,c,d)
-            "  ^   
+            "  ^
 
         "you want to delete up to `d`, but keep the `)`
 
@@ -871,7 +989,7 @@
             "nn Y
 
         "accelerate vertical scroll up
-        
+
             "nn <c-Y> 5<c-Y>
 
         "copy line to system clipboard:
@@ -909,10 +1027,13 @@
 
             "nn <c-o>
 
-        "go to the other stremity of visual selection:
+        "go to the other extremity of visual selection:
 
             "vn o
             "vn O
+
+        "on block visual mode, toogle up down corner with `o` and toogle left
+        "right corner with `O`
 
     "#[
 
@@ -932,7 +1053,7 @@
 
         "- [( last unmatched open par. Same for ),[,],{,}.=, but not for <>
         "- [z fold move
-    
+
     "#|
 
         "go to column number:
@@ -946,7 +1067,7 @@
             "<c-A>
 
         "pAste from system clipboard before cursor (in the same place as you would edit with 'i')
-        
+
         "the pasted item is left selected in viusal mode if you want to indent it
 
         "so if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
@@ -958,7 +1079,7 @@
         "- c-A not to conflict with c-v visual block mode or with terminal shortcuts
 
         "- is left hand only, allowing you to keep your right hand is no the mouse
-        
+
         "- the default <c-a> command is not that useful
 
             cnoremap <c-A> <c-R>+
@@ -987,7 +1108,7 @@
             nn <leader><leader>s :%s/\v/g<left><left>
 
         "substitute on all file very non-magic:
-        
+
             nn <leader><leader>S :%s/\V/g<left><left>
 
         "insert single char
@@ -1022,7 +1143,7 @@
         "one screen Forward:
 
             "nn <c-f>
-    
+
     "#g
 
         "leader for lots of miscelaneous commands
@@ -1031,7 +1152,7 @@
         "- G:  go to last line
         "- {num}G:  go to line num
         "- ge: go to end of last word!
-        "- gE: 
+        "- gE:
         "- gv: go to visual mode and reselect previous visual selection.
 
             "also restores visual mode type (char, bloc, line)
@@ -1041,7 +1162,7 @@
                 "call setpos("'<", [0, 2, 1])
                 "call setpos("'>", [0, 3, 2])
                 "normal! gv
-        
+
         "- {num}gt: go to tab num 1 based.
 
         "select Go to last Pasted text (to indent, or delete for example)
@@ -1049,7 +1170,7 @@
             nn <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
         "show current file name and position:
-        
+
             "nunmap <c-g>
 
         "useless if you have `se ruler`
@@ -1059,7 +1180,7 @@
     "and J, K to jump 5 lines instead.
     "Also, I prefer to move along visual lines
     "rather than real lines ( thus the remap )
-    
+
         "nn H ^
         "vn H ^
 
@@ -1071,7 +1192,7 @@
             vn j gj
 
         "accelerate down
-    
+
             nn J 5j
             vn J 5j
 
@@ -1081,7 +1202,7 @@
 
         "same as j:
 
-            "nn <c-j> j 
+            "nn <c-j> j
 
         "therefore useless.
 
@@ -1133,7 +1254,7 @@
     "#z
 
         "remove useless zl that does single horizontal scroll:
-        
+
             nn zl zL
             nn zh zH
 
@@ -1250,23 +1371,23 @@
 "#vimscript
 
     "is the built-in language for scripting vim
-  
+
 "#ex command
 
     "is anything that can come after you type ':'
-    "therefore anything that can be done in vimscript 
-    
+    "therefore anything that can be done in vimscript
+
     "in `.vim` files, you don't need to add the ':'
-    
+
     "examples: `:w`, `:d`, `:let`, `:cal`, `:norm`, etc.
 
     "non-examples:
-    
+
     "- `h` (move left). This is called aa *normal mode command*. It can however be
             "accessed from a vimscript via the <#norm> command
 
     "- variables
-    
+
             "let a = 1
 
         "a is not a command, but a variable. but you can use a inside of other commands:
@@ -1274,7 +1395,7 @@
             "ec a
 
     "- functions
-    
+
             "fu! F()
                 "ec 1
             "endf
@@ -1369,7 +1490,7 @@
         "the advantage of this is that you can make unique short names
         "for script only functions
 
-"#vars
+"#variables
 
     "must use let always:
 
@@ -1380,31 +1501,31 @@
         "let a = "abc"
         "let a = 1
 
-    "#environment
+"#environment variables
 
-        "just add a dollar `$`.
+    "just add a dollar `$`.
 
-        "home variable, inherited from the calling environment:
+    "home variable, inherited from the calling environment:
 
-            "ec $HOME
+        "ec $HOME
 
-        "empty if not defined
+    "empty if not defined
 
-        "some environment variables are given default values if undefined at startup:
+    "some environment variables are given default values if undefined at startup:
 
-        "shared root:
+    "shared root:
 
-            "ec $VIM
-    
-        "TODO:
+        "ec $VIM
 
-            "ec $VIMRUNTIME
+    "TODO:
 
-        "can also be changed:
+        "ec $VIMRUNTIME
 
-            "let $a = b
-            "ec $a
-            "!echo $a
+    "can also be changed:
+
+        "let $a = b
+        "ec $a
+        "!echo $a
 
 "#list
 
@@ -1434,7 +1555,7 @@
     "can be used to return multiple values from function
 
     "range:
-    
+
         if range(3) != [ 0, 1, 2 ] | ec 'fail' | en
 
     "#filter
@@ -1513,6 +1634,10 @@
 
         "if "ab" != "ab" | ec "fail" | en
 
+    "test regex match:
+
+        "if "ab" !~ "a." | ec "fail" | en
+
     "length:
 
         "if len("abc") != 3 | ec 'fail' | en
@@ -1539,7 +1664,6 @@
 
     "#boolean operations
 
-
         "all that matters is =0 or !=0:
 
             "if !0     != 1 | ec 'fail' | en
@@ -1550,7 +1674,17 @@
 
 "#for
 
-    "for i in [1,3,2] | ec i | endfor
+        "for i in [1,3,2] | ec i | endfor
+
+"#while
+
+        "let i = 0
+        "while i < 3
+            "ec i
+            "let i = i + 1
+        "endwhile
+
+    "there is no do-while loop
 
 "#function
 
@@ -1633,7 +1767,7 @@
             "endf
 
             "let A = function('F')
-            
+
             ""ERROR: must be capital
                 ""let a = function('F')
 
@@ -1647,7 +1781,7 @@
 "#exceptions
 
     "throw:
-        
+
         "th 'abc'
 
     "try catch finnaly:
@@ -1661,23 +1795,12 @@
         "fina:
             "ec 'finnally'
         "endt
-"#exe
-
-    "execute string as a vim command
-
-        "exe "let a = 10"
-        "if
-
-    "multiple args separated by space:
-
-        "exe "ec 1 |" "ec 1"
-
 "#so
 
     "exe from given file (Source)
-    
+
     "source this file:
-    
+
         "so %
 
     "any vim output (ex `ec 1`) done in that file will be interpreted as an error.
@@ -1818,7 +1941,7 @@
         "if a buffer is open on some window it is visible
 
         "a buffer may be loaded without being visible. It is called a *hidden buffer*
-    
+
     "#buffer list
 
         "is a list of buffers vim knows of! =)
@@ -1861,7 +1984,7 @@
     "#e
 
         "edit a file in current window
-        
+
         "tab complete only shows file in current directory, not the buffer
         "list.
 
@@ -1879,9 +2002,9 @@
             "sb 1
 
     "#bunload
-    
+
         "unload current but don't remove it from buffer list.
-            
+
             ":bunload
 
         "closes *all* windows in which it was visible.
@@ -1893,7 +2016,7 @@
         "closes *all* windows in which it was visible
 
         "current:
-            
+
             "bd
 
         "by filename:
@@ -1917,7 +2040,7 @@
         "save cur buffer to disk:
 
             "w
-        
+
         "if file does not exit, create it.
 
     "#alternate file
@@ -1931,7 +2054,7 @@
             ":b
 
         "this behaviour can be orverriden with `keepalt`.
-        
+
     "wipe all buffers without corresponding existing files:
 
         fu! s:WipeBuffersWithoutFiles()
@@ -1965,12 +2088,12 @@
         ":q
 
     "does not delete its buffer from buffer list.
-    
+
     "if this was the last visible window of the buffer,
     "also unloads the buffer.
 
     "close all windows and quit vim:
-    
+
         ":qa
 
     ":on
@@ -1980,6 +2103,19 @@
 "#tab
 
     "a tab is a collection of split windows
+
+"#exe
+
+    "execute string as a vim command
+
+        "exe "let a = 10"
+        "if
+
+    "multiple args are concatenated separated by space:
+
+        "exe "ec 1 |" "ec 1"
+
+    "application: pass parameters to functions
 
 "#norm
 
@@ -2025,7 +2161,7 @@
     "prints lines to command line
 
         "#p
-    
+
     "#pu
 
       "insert abc on a new line after current line:
@@ -2108,8 +2244,8 @@
 
         ":1,.-1p
 
-    "all lines: 
-    
+    "all lines:
+
         "%p
 
         "1,$p
@@ -2147,7 +2283,7 @@
             "au BufEnter,BufRead *.c noremap a b
 
         "with those two, you can define mappings, options, functions or variables to any c file
-    
+
     "#order
 
         "autocommands are always executed on the order that they are set thus:
@@ -2156,16 +2292,16 @@
             "au BufEnter,BufRead * echo 2
 
         "will always echo 1 and then 2
-            
+
             "au BufEnter,BufRead * echo 2
             "au BufEnter,BufRead * echo 1
-        
+
         "will always echo 2 and then 1
 
     "#patterns
 
         "for many events except FileType, you can use the following patterns:
-        
+
         "- *.py
         "- *.py,*.pl
         "- *.{py,pl}
@@ -2175,7 +2311,7 @@
             "au FileType c,cpp noremap a b
 
     "#aug
-    
+
         "groups autocomands
 
         "you can later execute autocommands from a single chosen group afterwards
@@ -2237,9 +2373,9 @@
 
             "noremap  a b
             "noremap! a b
-        
+
         "but cannot use exclamation with mode also:
-            
+
             "noremap! a b
 
         "makes no sense
@@ -2294,13 +2430,13 @@
 
             "default: 1000ms
 
-            "se timeoutlen = 10
-            "se timeoutlen = 3000
+            "set timeoutlen = 10
+            "set timeoutlen = 3000
 
     "#options
-    
+
         "- <buffer>: only map on cur buffer. Should always be used on ftplugins.
-        
+
         "- <silent>: don't print the input command to screen. Command output is
             "still visible
 
@@ -2328,9 +2464,9 @@
         "vim is designed to work on terminals without X server.
 
         "#must have standard terminal representation
-        
+
             "only stuff that has a standard terminal representation can have mappings in vim
-        
+
             "of course, it is up to your terminal to determine what maps to
             "what, but usually ^X is achieved via c-x (except for c-@)
 
@@ -2404,15 +2540,23 @@
 
     "view value:
 
-        "se ft?
+        "set ft?
 
-    "set value:
+    "set value on non boolean option:
 
-        "se ft=vim
+        "set ft=vim
 
-    "toogle value (if applicable, often between no* and * versions):
+    "set value of boolean option to true:
 
-        "se wrapscan!
+        "set expandtab
+
+    "set value of boolean option to false:
+
+        "set expandtab
+
+    "toogle value (only applicable to boolean options):
+
+        "set wrapscan!
 
     "get value of option programatically:
 
@@ -2425,7 +2569,7 @@
         "as if the buffer hadn't been modified
 
     "#setl
-    
+
         "sets option only for cur buffer
 
         "only some options can have local values.
@@ -2434,9 +2578,44 @@
 
 "#builtin functions
 
-    "if filereadable("SpecificFile")
-            "ec "SpecificFile exists"
-    "en
+    "#file operations
+
+        "check file exists and is radable:
+
+            "if filereadable("SpecificFile")
+                    "ec "SpecificFile exists"
+            "en
+
+        "dirname
+
+            "for a file or directory not enting in slash:
+
+                "if fnamemodify( '/a/b', ':h') != '/a' | ec 'fail' | endif
+                "if fnamemodify( '/a/b/', ':h') != '/a/b' | ec 'fail' | endif
+
+            "whatch out for trailling slashes since that changes the meaning...
+
+            "don't use `:p` since this makes no sense and does not work if the path does not exists!
+
+        "ls path
+
+            ":echo globpath(path, '*')
+
+        "find .:
+
+            ":echo split(globpath('.', '**'), '\n')
+
+        "os path join: vim autoconverts `/` in paths to the correct os separator (ex Windows `\`)
+
+    "#expand
+
+        "ec expand('%:r')
+
+        "see:
+
+            "h filename-modifiers
+
+        "for the possible things you can expand
 
     "#position
 
@@ -2447,6 +2626,14 @@
         "get last line in buffer:
 
             "ec line("$")
+
+        "get first line of last visual selection:
+
+            "ec line("'<")
+
+        "last one:
+
+            "ec line("'>")
 
         "get cur column
 
@@ -2524,18 +2711,6 @@
                 "en
             "endf
 
-    "#buffer content
-
-        "get content of cur line:
-
-            "ec getline(".")
-
-        "get all lines from to:
-
-            "ec getline(1,3)
-
-        "returns a list of lines
-
     "#mode()
 
         "get current mode representation string:
@@ -2558,15 +2733,31 @@
 
             "exe 'norm! ' . visualmode()
 
+    "#buffer content
+
+        "get content of cur line:
+
+            "ec getline(".")
+
+        "get all lines from to:
+
+            "ec getline(1,3)
+
+        "get all lines of buffer:
+
+            "ec getline(1, line("$"))
+
+        "returns a list of lines
+
     "#search
 
         "same as '\' but:
-        
+
         "- is a function
         "- does not set last jump mark (for use with `<c-o>` for example)
 
         "returns:
-        
+
         "- line number if match
         "- 0 if no match
 
@@ -2598,7 +2789,7 @@
         "stops at 'b' instead of 'a'
 
         "start search from under cursor
-            
+
             "cal search('a','c')
 
         "by default, if you are over an 'a' char and to search a,
@@ -2616,34 +2807,12 @@
 
             "searchpair(TODO)
 
-    "#expand
+    "#getreg
 
-        ":ec expand('%:r')
-        "@%     dir/a.vim     directory/name of file
-        "%:p  /usr/dir/a.vim
-            "full path
-        "%:h    /usr/dir
-            "head
-            "but may be relative to ~
-        "%:t    a.vim
-            "tail
-        "%:r    a
-            "root
-        "%:e    .vim
-            "ext
-        "%:p:h    /usr/dir
-            "head
-            "absolute
-        "%:p:h:t    dir
-        "map a :ec expand('%')<cr>
-            "always expands ``.vimrc``!
-            "no use
-        "fu! E()
-        "  exe ':ec expand('%')'
+        "get value of a register into vimscript
 
-        "this works, don't know why:
-
-            "so %
+        "norm '"ay'
+        "ec getreg('a')
 
 "#regex
 
@@ -2661,7 +2830,9 @@
     "I only recommend using very magic and very non-magic for you own sanity
     "since in those modes it is easy to remember what is what.
 
-    ":h regex for explanations
+    "for explanations
+
+        ":h regex
 
     "#very non magic
 
@@ -2698,40 +2869,40 @@
 
         "would break too may plugings
 
-    "special chars
+    "#classes
 
-        "\r newline
+        "- \w   alpha (a-zA-z)
+        "- \n     a newline character (line ending)
+        "- \s   whitespace except newline
+        "- \S   non-whitespace
+        "- \_s     a whitespace (space or tab) or newline character
+        "- \_^     the beginning of a line (zero width)
+        "- \_$     the end of a line (zero width)
+        "- \_.     any character including a newline
 
-    "escape to be literal:
+    "# escaping in default mode
 
-    "- .      wildcard
-    "- a*     repetition
-    "- a\{-}  non greedy repeat
-    "- [abc]  char classes
-    "- ^      begin
-    "- $      end
+        "if you really use default mode, here the escape list follows.
 
-    "escape to be magic:
+        "escape to be literal:
 
-    "- a\+
-    "- a\(b\|c\)
-    "- a\|b
-    "- a\{1,3}
-    "- \<           word boundary left
-    "- \>           word boundary right
-    "- \1           mathing group 1. can be used on search
-    "- /\(\w\)\1  search equal adjacent chars
+        "- .      wildcard
+        "- a*     repetition
+        "- a\{-}  non greedy repeat
+        "- [abc]  char classes
+        "- ^      begin
+        "- $      end
 
-    "classes:
+        "escape to be magic:
 
-    "- \w   alpha (a-zA-z)
-    "- \n     a newline character (line ending)
-    "- \s   whitespace except newline
-    "- \S   non-whitespace
-    "- \_s     a whitespace (space or tab) or newline character
-    "- \_^     the beginning of a line (zero width)
-    "- \_$     the end of a line (zero width)
-    "- \_.     any character including a newline
+        "- a\+
+        "- a\(b\|c\)
+        "- a\|b
+        "- a\{1,3}
+        "- \<           word boundary left
+        "- \>           word boundary right
+        "- \1           mathing group 1. can be used on search
+        "- /\(\w\)\1  search equal adjacent chars
 
     "#perldo
 
@@ -2747,23 +2918,39 @@
 
     "#s
 
-        ":s/\(a\)/\1b
-            "refer to capture group on replace
-        ":s/.*/\u&
-            "Sets first letter of each line to uppercase
-        ":s/.*/\l&
-            "Sets first letter of each line to lowercase
-        ":%s/\r//g
-            "Delete DOS carriage returns (^M)
-        ":%s/\r/\r/g
-            "Transform DOS carriage returns in returns
-        ":%s/a/a/c
-            "confirm each match replace
-            "y: yes
-            "n: no
-            "a: replace all remaining
-            "q: quit
-            "l: last. yes and quit
+        "capture group:
+
+            ":s/\(a\)/\1/
+
+        "set first letter of each line to uppercase:
+
+            ":s/.*/\u&
+
+        "sets first letter of each line to lowercase:
+
+            ":s/.*/\l&
+
+        "#multiline
+
+            "`\n` vs `\r` confusion: <http://stackoverflow.com/questions/71417/why-is-r-a-newline-for-vim>
+
+            "when searching `\n` is a newline char, `\r` <CR>
+
+            "when replacing `\n` is the null byte and `\r` a newline char
+
+            "replace two or more newlinews for two newlines:
+
+                ":%s/\n\n+/\r\r/
+
+        "confirm each match replace before doing it:
+
+            ":%s/a/a/c
+
+        "- y: yes
+        "- n: no
+        "- a: replace all remaining
+        "- q: quit
+        "- l: last == yes and quit
 
     "#substitute
 
@@ -2814,7 +3001,7 @@
     "- :cp      previous error
     "- :clist   list all errors
 
-"#script vim with python
+"#python vim scripting
 
     "you can script vim with python instead of vimscript!!!
 
@@ -2861,9 +3048,9 @@
         ":py del b[n:m]                     "deletes a number of lines
         ":py del b[n:m]                     "deletes a number of lines
 
-    "#vim.eval
+    "#vim to python
 
-        "evaluate a vim expression and get its result
+        "evaluate a vim expression and get its result into python
 
         "returns:
 
@@ -2876,6 +3063,10 @@
             ":let a = 1
             ":py a = int( vim.eval('a') )
             ":py assert a + 1 == 2
+
+    "#python to vim
+
+        "
 
     "multiline python code:
 
@@ -2910,11 +3101,11 @@
 
         "maps:
 
-                "verb map a
+            "verb map a
 
         "options:
 
-                "verb se ft?
+            "verb set ft?
 
     "#plugins
 
@@ -2926,7 +3117,7 @@
 
     "#runtimepath #rtp
 
-            "se rtp?
+            "set rtp?
 
         "a vim source path
 
@@ -2958,17 +3149,17 @@
     "#detect filetype manually
 
         "typical methods:
-        
+
         "- by extension
         "- by file contents (shebangs tipically)
 
         "get current filetype:
 
-            "se ft?
+            "set ft?
 
         "obviously, this is a local option.
 
-        "se current filetype:
+        "set current filetype:
 
             "setl ft=python
 
@@ -3052,7 +3243,7 @@
     "vim has built-in ftp! =)
 
     "open file browser:
-    
+
         "vim ftp://username@host:port/
 
     "you will be asked for password
@@ -3062,3 +3253,49 @@
     "open file:
 
         "vim ftp://username@host:port/path/to/file.html
+
+"#tags
+
+    "<http://vim.wikia.com/wiki/Browsing_programs_with_tags>
+
+    "List and jump to definitions of functions or variables.
+
+    "#generate tags
+
+        "Before jumping to tags, you have to generate them with an external program.
+
+        "tags must be placed in a file called tags in the current directory (TODO check)
+
+        "`tags` is a POSIX possibility. `exuberant-ctags` is more complete non standard possibility
+
+        "Generate tags in all subdirs POSIX 7 compliant:
+
+            "for d in `find . -type d`; do cd $d && ctags *.h; done
+
+        "TODO write an append code for this that puts tags on current dir.
+
+        "Using gnu ctags:
+
+            "ctags -R
+
+        "Will generate a t
+
+    "Jump to first tag whose name is the same as the word currently under the cursor:
+
+        "<c-]>
+
+    "Note that there may be multiple tags with the same name, in special the
+    "definition and other declarations.
+
+    "Jump to next or previous tag found with last jump command:
+
+        ":tn
+        ":tp
+
+    "If there is more than one tag, show a tag list, else jump:
+
+        "g <c-]>
+
+    "Jump to tag with given name:
+
+        ":ta dentry

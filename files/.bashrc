@@ -179,12 +179,14 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias ack="ack-grep"
         alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
         alias dush="du -sh * | sort -hr 1>&2"
-        alias dushf="du -sh * | sort -hr | tee .dush`timestamp` 1>&2" #to File and stdout
+        alias dushf='du -sh * | sort -hr | tee .dush`timestamp` 1>&2' #to File and stdout
         alias fbr="find_basename_res.py"
         alias fmmmr="find-music-make-m3u ."
         alias golly="env UBUNTU_MENUPROXY=0 golly"
 
         alias mvr="move_regex.py"
+        alias mupen="mupen64plus --fullscreen"
+        alias ods='od -Ax -tx1'
 
         alias pdc='pandoc'
         alias pingg='ping google.com'
@@ -288,13 +290,25 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias gpu="git push --tags -u origin master"
             alias gst="git status"
             alias lngp="latex-new-github-project.sh cirosantilli"
+            alias vgig="vim .gitignore"
+
+            alias lngp="latex-new-github-project.sh cirosantilli"
 
         ##makefile
 
-            alias mk='make'
-            alias mkr='make run'
-            alias mkt='make test'
-            alias mkc='make clean'
+                alias  mk='make'
+                alias mkc='make clean'
+                alias mkd='make dist'
+                alias mkr='make run'
+                alias mkt='make test'
+
+            #commands from git root:
+
+                alias  gmk='cd `git rev-parse --show-toplevel` && make'
+                alias gmkc='cd `git rev-parse --show-toplevel` && make clean'
+                alias gmkd='cd `git rev-parse --show-toplevel` && make dist'
+                alias gmkr='cd `git rev-parse --show-toplevel` && make run'
+                alias gmkt='cd `git rev-parse --show-toplevel` && make test'
 
         ##mysql
 
@@ -302,9 +316,9 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         ##music
 
-            alias titm="nohup totem \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
-            alias tctm="nohup totem \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
-            alias tjfr="nohup totem \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
+            alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
+            alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
+            alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
 
         ##pip
 

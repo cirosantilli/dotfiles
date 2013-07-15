@@ -70,6 +70,7 @@ export LC_COLLATE="en_US.UTF-8"
         export PROGRAM_DIR="$NOSHARE_DIR/program"
         export HOMEFILES_DIR="$NOSHARE_DIR/homefiles"
 
+        export DEVBIN="$PROGRAM_DIR/devbin"
         export MY_BASH_DIR="$PROGRAM_DIR/bash/$MYID"
         export MY_BASH_BIN_DIR="$PROGRAM_DIR/bash/$MYID/bin"
         export ASSEMBLER_DIR="$PROGRAM_DIR/assembler/$MYID/"
@@ -85,14 +86,21 @@ export LC_COLLATE="en_US.UTF-8"
         export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin"
         export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
+        export ANDROID_DIR="$PROGRAM_DIR/android"
+        export ANDROID_ADT_DIR="$ANDROID_DIR/adt"
+        export MY_ANDROID_DIR="$ANDROID_DIR/$MYID/"
+
         export TEST_DIR="~/test"
 
     ##environment
 
-        PATH="$PATH:$BIN_DIR"
+        PATH="$DEVBIN:$PATH"
         PATH="$PATH:$MY_PYTHON_BIN_DIR"
         PATH="$PATH:$MY_BASH_BIN_DIR"
         PATH="$PATH:$LATEX_BIN_DIR"
+        PATH="$DEVBIN:$PATH"
+        PATH="$ANDROID_ADT_DIR/tools/:$PATH"
+        PATH="$ANDROID_ADT_DIR/platform-tools/:$PATH"
         export PATH
 
         PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR:/var/www/django/devpath"
