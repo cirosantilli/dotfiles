@@ -101,7 +101,7 @@ fi
 
 # Alias definitions.
 if [ -f ~/.bash_aliases ]; then
-        . ~/.bash_aliases
+    . ~/.bash_aliases
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -127,19 +127,19 @@ fi
 
 venwrap=`type -P virtualenvwrapper.sh`
 if [ "$venwrap" != "" ]; then
-        source $venwrap
+    source $venwrap
 fi
 
 vim=`type -P vim`
 if [ "$vim" == "" ]; then
-        vim="gvim -v"
+    vim="gvim -v"
 fi
 
 alias vim="$vim"
 
 # osx vim
 if [ -x "/Applications/MacVim.app/Contents/MacOS/Vim" ]; then
-        PATH=/Applications/MacVim.app/Contents/MacOS/:$PATH
+    PATH=/Applications/MacVim.app/Contents/MacOS/:$PATH
 fi
 
 PYTHONSTARTUP=~/.pythonrc.py
@@ -177,11 +177,14 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         #scripts with ``bash -c`` or ``./``
 
         alias ack="ack-grep"
+        alias cla11="clang++ -std=c++11"
         alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
+        function dpx { dropbox puburl "$1" | xsel --clipboard; }
         alias dush="du -sh * | sort -hr 1>&2"
         alias dushf='du -sh * | sort -hr | tee .dush`timestamp` 1>&2' #to File and stdout
         alias fbr="find_basename_res.py"
         alias fmmmr="find-music-make-m3u ."
+
         alias golly="env UBUNTU_MENUPROXY=0 golly"
 
         alias mvr="move_regex.py"
@@ -208,7 +211,14 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
 
         alias xar="xargs -0I'{}'" 
-        alias xselc="xsel --clipboard" 
+        alias xselb="xsel --clipboard" 
+
+        ##power management
+
+            alias pmhi="sudo ps-hibernate"
+            alias pmsh="sudo shutdown"
+            alias pmsu="sudo ps-suspend"
+            alias pmre="sudo reboot"
 
         ##aptitude
 
@@ -222,6 +232,12 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias sair="sudo aptitude remove"
             alias saiu="sudo aptitude update"
             alias saip="sudo aptitude purge"
+
+        ##ctags
+
+            alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
+            function ctag { grep "^$1" tags; } #CTAgs Grep
+            function rctag { cd `git rev-parse --show-toplevel` && grep "^$1" tags; } #Root CTAgs Gre
 
         ##dirs
 
@@ -285,6 +301,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias gcm="git commit --allow-empty-message -am"
             alias gcam="git commit -am"
             alias gco="git checkout"
+            alias gdi="git diff"
             function gcp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
             alias glo="git log"
             alias gpu="git push --tags -u origin master"
@@ -301,6 +318,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                 alias mkd='make dist'
                 alias mkr='make run'
                 alias mkt='make test'
+                alias mkv='make view'
 
             #commands from git root:
 
@@ -312,13 +330,15 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         ##mysql
 
-            alias murp="mysql -u root -p"
+            alias myr="mysql -u root -p"
+            alias myt="mysql -u test -h localhost -ppass test"
 
         ##music
 
             alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
             alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
             alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
+            alias mroc="nohup vlc \"$MUSIC_DIR/rock/all.m3u\" >/dev/null &"
 
         ##pip
 

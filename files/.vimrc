@@ -455,6 +455,12 @@
 
         Bundle 'klen/rope-vim'
 
+    "#sovim
+
+        "let g:sovim_basename = 'asdf.vim'
+
+        Bundle 'cirosantilli/sovim'
+
 "#general
 
     "leave vi compatibility:
@@ -634,28 +640,6 @@
 
         "au BufRead,BufNewFile * cal SoCurDir('so.vim')
 
-        " if there is a file named `so.vim` in current dir or any of its
-        " parent dirs, source it
-        "
-        fu! FindSourceUp(filename)
-            let a:parent = fnamemodify( '.', ":p:h")
-            let a:path = a:parent . '/' . a:filename
-            let a:found = 1
-            while ! filereadable( a:path )
-                if a:parent ==# '/'
-                    let a:found = 0
-                    break
-                endif
-                let a:parent = fnamemodify( a:parent, ":h") 
-                let a:path = a:parent . '/' . a:filename
-            endwhile
-            if a:found
-                exe "so " . a:path
-            endif
-        endf
-
-        au BufRead,BufNewFile * cal FindSourceUp('so.vim')
-
 "#language speficif
 
     "the right place for those is in a ftplugin, but I'm lazy to put such small settings in files...
@@ -674,9 +658,8 @@
             "au FileType *.md setlocal shiftwidth=4 tabstop=4
             au BufEnter,BufRead *.{md,rst} setl shiftwidth=4 tabstop=4
             "au BufEnter,BufRead *.{md,rst} setl filetype=text
-            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F5>', 'w<cr>:sil ! make<cr>' )
+            au BufEnter,BufRead *.rst cal MapAllBuff( '<F5>', 'w<cr>:sil ! make<cr>' )
 
-            au BufEnter,BufRead *.md  cal MapAllBuff( '<F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:sil ! make<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#VIMHERE"<cr>' )
             "TODO this is broken still:
             au BufEnter,BufRead *.rst cal MapAllBuff( '<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>' )
 
@@ -691,13 +674,14 @@
             au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>' )
             au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>' )
 
-        "#latex
+        "#latex #tex
 
             au FileType tex setlocal shiftwidth=4 tabstop=4
 
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>' )
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>' )
-            au BufEnter,BufRead *.tex cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
+            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>' )
+            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>' )
+            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
+            "au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
 
             "this works
             "but the problem is: in which dir is the output file?
@@ -722,7 +706,7 @@
 
     "#compile to executable languages
 
-        "#c #c++ #cpp #lex #y #fortran #asm #s
+        "#c #c++ #cpp #lex #y #fortran #asm #s #java
 
         fu! FileTypeCCpp()
             cal MapAllBuff( '<F5>'  , ':w<cr>:make<cr>' ) "vim make quickfix
@@ -738,7 +722,7 @@
             cal MapAllBuff( '<S-F9>', ':w<cr>:! make assembler<cr>' )
         endf
 
-        au FileType c,cpp,fortran,asm,s cal FileTypeCCpp()
+        au FileType c,cpp,fortran,asm,s,java cal FileTypeCCpp()
 
         au FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
         au BufEnter,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
@@ -802,9 +786,9 @@
 
     "#f keys
 
-            cal MapAll( '<F2>',     ':NERDTreeToggle<cr>')
-            cal MapAll( '<F3>',     ':cal GuakeNewTabHere()<cr>')
-            cal MapAll( '<S-F3>',   ':ConqueTermTab bash<cr>')
+            cal MapAll( '<F2>',     ':cal GuakeNewTabHere()<cr>')
+            cal MapAll( '<S-F2>',   ':ConqueTermTab bash<cr>')
+            cal MapAll( '<F3>',     ':NERDTreeToggle<cr>')
 
     "#~
 
@@ -1297,6 +1281,20 @@
 
             vn X "+ygvd
 
+    "#v
+
+        "Enter block visual mode:
+
+            "nn <c-v>
+
+        "Next entered character will be literal (like in a terminal)
+
+            "in <c-v>
+
+        "Useful for example to insert a literal tab character if tabexpand is on:
+
+            "<c-v><tab>
+
     "#c
 
         "copy to system clipboard:
@@ -1500,6 +1498,12 @@
 
         "let a = "abc"
         "let a = 1
+
+    "check if variable is set or not:
+
+        "if !exists('asdf')
+        "    let asdf = 'qwer'
+        "endif
 
 "#environment variables
 
@@ -3079,7 +3083,7 @@
         "py f()
     "endf
 
-"#vim configuration
+"#configuration
 
     "<http://www.22ideastreet.com/debug/vim-directory-structure/>
 
@@ -3087,7 +3091,7 @@
 
         ":h startup
 
-    "show all scripts that are run and their order:
+    "show all scripts that are run at startup and their order:
 
         ":scriptnames
 
