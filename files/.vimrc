@@ -1,55 +1,60 @@
 "#my functions
 
-        "executes shell cmd and redirects output to a new tab
-        "focus is given to the new tab
-        "if the new tab alreay exists (recognized by name and at the side of current
-        "tab), it is reused
-        "only outputs at once when command returs
-            "threfore no user input possible
+        " Executes shell cmd and redirects output to a new unnammed buffer in
+        " a new tab next to the current one.
+        "
         fu! RedirStdoutNewTabSingle(cmd)
-            let a:newt= expand('%:p') . ".out.tmp"
             tabnext
-            if expand('%:p') != a:newt
+            if expand('%:p') != ""
                 tabprevious
-                exe "tabnew" . a:newt
-            else
-                %d
-            en
-            exe "silent r !" . a:cmd
+                exe "tabnew"
+            end
+            setlocal buftype=nofile
+            setlocal bufhidden=wipe
+            setlocal noswapfile
+            exe "silent read !" . a:cmd
             set nomodified
         endf
         "command! -nargs=+ -complete=command TabMessage cal TabMessage(<q-args>)
 
-        "map on all modes
+        " Map on all modes
+        "
         fu! MapAll(keys, rhs)
             exe 'noremap' a:keys a:rhs
             exe 'noremap!' a:keys '<ESC>'.a:rhs
         endf
 
-        "map on all modes in current buffer
+        " Map on all modes in current buffer
+        "
         fu! MapAllBuff(keys, rhs)
             exe 'noremap <buffer>' a:keys a:rhs
             exe 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
         endf
 
-        "open new Guake tab in cur dir
+        " Open new Guake tab in cur dir
+        "
         fu! GuakeNewTabHere()
             exe ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
         endf
 
-        "run cmd in guake tab.
-        "if done once already, reuses same tab for other cmds
-        "this tab is named GVIM
-        "number of this tab is stored in g:guakeTab
-        "if the tab gets closed, there is currently no way simple to detect it, and this method breaks
+        " Run cmd in guake tab.
+        "
+        " If done once already, reuses same tab for other cmds.
+        "
+        " This tab is named GVIM.
+        "
+        " Number of this tab is stored in g:guakeTab
+        "
+        " If the tab gets closed, there is currently no way simple to detect it, and this method breaks.
+        "
         let g:guakeTab = ""
         fu! GuakeSingleTabCmdHere(cmd)
             if g:guakeTab == ""
                 sil ! guake -n ~; guake -r "GVIM"
                     "create new tab
-                let g:guakeTab = substitute( system('guake -g 2>/dev/null'), '[\n\r]', '', 'g' )
+                let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
                     "store its number
-            en
+            end
             exe 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
                 "execute command on the new tab
         endf
@@ -58,7 +63,7 @@
             if ! filereadable(expand('%:p'))
                 ec expand('%:p')
                 bd expand('%:p')
-            en
+            end
         endf
 
         " transforms well formated selected line commented code to markdown
@@ -89,7 +94,7 @@
 
             "for each removed indent, add a header level
             let a:find = '\v^(\s*)    (' . a:comment . '#+)'
-            for a:n in range( line("'<"), line("'>") )
+            for a:n in range(line("'<"), line("'>"))
                 let a:l = getline(a:n)
                 while a:l =~ a:find
                     exe string(a:n) . 's/' . a:find . '/\1#\2/'
@@ -102,25 +107,25 @@
             silent! exe '''<,''>s/\v^\s+([^#])/    \1/'
         endfunction
 
-        "reduces level of all selected markdown headers
+        " Reduce level of all selected markdown headers
         "
-        "operates linewise even if the cursor is not a the beginning of a line
+        " Operates linewise even if the cursor is not a the beginning of a line
         "
-        "if there is a level one header at already level one,
-        "raises an exception and does nothing
+        " If there is a level one header at already level one,
+        " raises an exception and does nothing
         "
-        fu! MdReduceLevel()
-            for a:n in range( line("'<"), line("'>") )
+        function! MdReduceLevel()
+            for a:n in range(line("'<"), line("'>"))
                 if getline(a:n) =~ '^#[^#]'
-                    throw 'one of the headers is already at level one. Operation aborted'
+                    echo 'One of the headers is already at level one. Operation aborted'
                 endif
             endfor
             exe '''<,''>s/\v^(#+)#/\1/'
-        endf
+        endfunction
 
-        fu! MdIncreaseLevel()
+        function! MdIncreaseLevel()
             exe '''<,''>s/\v^(#+)/\1#/'
-        endf
+        endfunction
 
 "#plugins
 
@@ -234,7 +239,7 @@
         "Enable heavy omni completion.
         if !exists('g:neocomplcache_omni_patterns')
             let g:neocomplcache_omni_patterns = {}
-        en
+        end
         let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
         "au FileType ruby setlocal omnifunc=rubycomplete#Complete
         let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
@@ -244,7 +249,7 @@
         "For snippet_complete marker.
         if has('conceal')
             set conceallevel=2 concealcursor=i
-        en
+        end
 
     "#fugitive
 
@@ -384,7 +389,7 @@
         "ysiw<em : add surrounding <em> to word
         "ysiwtem : idem
         "ysiw\tabuar{lc : latex envs
-        "< ( { [ work multiline, ' " ` dont
+        "< ({ [ work multiline, ' " ` dont
         "linewise visual mode + S<p class="important">: surround lines with p.
 
         Bundle 'tpope/vim-surround'
@@ -432,7 +437,8 @@
 
         "disable folding
 
-            let g:vim_markdown_folding_disabled=1
+            "let g:vim_markdown_folding_disabled=1
+            let g:vim_markdown_initial_foldlevel=6
 
         "Bundle 'tpope/vim-markdown'
 
@@ -549,16 +555,28 @@
         set wrapmargin=0
         let &showbreak='>'.repeat(' ', 8)
 
-        aug highlight_line_too_long
-            au BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
-            au BufEnter * match LineTooLong /\%75v.*/
-        aug END
+    "#highlight
 
-    "highlight tralling whitestpace
-    aug highlight_trailling_whitespace
-        au BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
-        au BufEnter * match TraillingWhitespace /\s\+$/
-    aug END
+        "Only last match works. This was probably designed for interactive usage.
+
+        "2match is a second option.
+
+        "3match is reserved.
+
+        "General solution: only exists with plugins as of 2013:
+        "<http://superuser.com/questions/211916/setting-up-multiple-highlight-rules-in-vim>
+
+            "highlight tralling whitestpace
+
+                augroup TraillingWhitespaceAucmd
+                    autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
+                    autocmd BufEnter * match TraillingWhitespace /\s\+$/
+                augroup END
+
+                augroup LineTooLongAucmd
+                    autocmd BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
+                    autocmd BufEnter * 2match LineTooLong /\%75v.*/
+                augroup END
 
     "#ruler
 
@@ -575,10 +593,12 @@
         "format tab titles:
 
             set guitablabel=%N)\ %t\ %M
+            "set guitablabel=%!expand(\"\%:p\")
+            "set guitablabel=%!pathshorten(expand(\"\%:p\"))
 
         "%N: tab number from left to right
         "%t: basename of loaded buffer
-        "%M: modify status ( a '+' if modified )
+        "%M: modify status (a '+' if modified)
 
     "allow backspacing over everything in insert mode:
 
@@ -594,40 +614,79 @@
         set shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
         set smarttab      "insert tabs on the start of a line according to
                                             " shiftwidth, not tabstop
-    "#folding
+    "#fold
 
-        set foldmethod=indent   "fold based on indent
-        set foldnestmax=3       "deepest fold level
-        set nofoldenable        "dont fold by default
-        set foldlevel=3         "this is just what i use
+        "#foldmethod
 
-    "#gvim specific
+            " There are a few diferent methods.
 
-        set guioptions-=m  "remove menu bar
-        set guioptions-=T  "remove toolbar
-        set guioptions-=r  "remove right-hand scroll bar
-        set guioptions-=b  "remove right-hand scroll bar
+            " - `expr`: based on any expression or function. Most powerful.
+
+                "set foldmethod=indent
+
+        "#foldlevel
+
+            " How deep fold currently is:
+
+                "set foldlevel=3
+
+            " Level 0 is the maximum fold level.
+
+            " This can be modified by many default mappings such as
+            " zr, zR, zm and, zM
+
+        " Deepest allowed fold:
+
+            "set foldnestmax=3
+
+        "#foldenable
+
+            " It true, fold is turned off:
+
+                set nofoldenable
+
+            " `zi` toogles this by default.
+
+            " Useful to turn fold on and off. The current foldlevel is kept.
 
     "#conceal
 
-        "the thing that renders greek, underline, etc in latex for example
+        "The thing that renders onscreeen Greek, underline, etc. in latex for example.
 
         "g:tex_conceal=""
 
-        set cole=0
+            set conceallevel=0
 
-    "allows '%' to jump between open 'if' 'else', 'do', 'done', etc instead
+    "#spell
+
+        "On the fly spell checker that underlines errors.
+
+        "Features:
+
+        "- to add word under cursor to the dictionary
+        "- view correction suggestions and possibly correct
+        "- jump to next incorrect word
+        "- for code filetypes, only checks spelling on comments and strings.
+        "- for markup filetypes such as HTML or latex, ignores keywords such `<html>`
+
+        "`help spell`
+
+            "set spell spelllang=en_us
+
+            au BufEnter,BufRead *.{md,rst,html,tex} setlocal spell spelllang=en_us
+
+    "allows '%' to jump between open 'if' 'else', 'do', 'done', etc. instead.
     "of just parenthesis like chars
     "marcros/matchit.vim has been a standard file for years
 
         runtime macros/matchit.vim
 
-    "autocompletion. leave to distro default
+    "autocompletion. Leave to distro default
     "set ofu=syntaxcomplete#Complete
 
     "#autosource project files
 
-        "allows to define project specific mappings for example
+        "Allows to define project specific mappings for example
         "this comes after FileType, and thus has higher precedence
 
         " if there is a file named `so.vim` in current dir, source it
@@ -640,6 +699,13 @@
 
         "au BufRead,BufNewFile * cal SoCurDir('so.vim')
 
+    "#gvim specific
+
+        set guioptions-=m  "remove menu bar
+        set guioptions-=T  "remove toolbar
+        set guioptions-=r  "remove right-hand scroll bar
+        set guioptions-=b  "remove right-hand scroll bar
+
 "#language speficif
 
     "the right place for those is in a ftplugin, but I'm lazy to put such small settings in files...
@@ -649,7 +715,7 @@
     "#html
 
         au FileType html setlocal shiftwidth=4 tabstop=4
-        au BufEnter,BufRead *.html cal MapAllBuff( '<F6>', ':w<cr>:sil ! firefox %<cr>' )
+        au BufEnter,BufRead *.html cal MapAllBuff('<F6>', ':w<cr>:sil ! firefox %<cr>')
 
     "#compilable markup
 
@@ -658,68 +724,70 @@
             "au FileType *.md setlocal shiftwidth=4 tabstop=4
             au BufEnter,BufRead *.{md,rst} setl shiftwidth=4 tabstop=4
             "au BufEnter,BufRead *.{md,rst} setl filetype=text
-            au BufEnter,BufRead *.rst cal MapAllBuff( '<F5>', 'w<cr>:sil ! make<cr>' )
+            au BufEnter,BufRead *.rst cal MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
 
             "TODO this is broken still:
-            au BufEnter,BufRead *.rst cal MapAllBuff( '<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>' )
+            au BufEnter,BufRead *.rst cal MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
 
             "make and open with firefox on curent point without a makefile
             let s:out_dir = '_out'
-            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>' )
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff('<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>')
             "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<.html; firefox _out/%<.html<cr>
 
-            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>' )
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff('<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>')
 
             "clean default output dir
-            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>' )
-            au BufEnter,BufRead *.{md,rst} cal MapAllBuff( '<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>' )
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
+            au BufEnter,BufRead *.{md,rst} cal MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
 
         "#latex #tex
 
             au FileType tex setlocal shiftwidth=4 tabstop=4
 
-            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>' )
-            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>' )
-            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
-            "au BufEnter,BufRead *{.tex,.md} cal MapAllBuff( '<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>' )
+            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff('<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>')
+            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff('<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>')
+            au BufEnter,BufRead *{.tex,.md} cal MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
+            "au BufEnter,BufRead *{.tex,.md} cal MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
 
             "this works
             "but the problem is: in which dir is the output file?
             "this is something only the makefile knows about.
             fu! LatexForwardOkular(pdfdir)
                 let pdf = a:pdfdir . expand('%:r') . '.pdf'
-                let synctex_out = system( 'synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"' )
+                let synctex_out = system('synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"')
                 let page = 1
-                for l in split( synctex_out, '\n' )
+                for l in split(synctex_out, '\n')
                     if l =~ '^Page:'
-                        let page = substitute( l, '^Page:\(\d\+\)$', '\1', '' )
-                    en
+                        let page = substitute(l, '^Page:\(\d\+\)$', '\1', '')
+                    end
                 endfor
                 exe 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
             endf
-            "au BufEnter,BufRead *.tex cal MapAllBuff( '<F4>', ':cal LatexForwardOkular("_out/")<cr>' )
+            "au BufEnter,BufRead *.tex cal MapAllBuff('<F4>', ':cal LatexForwardOkular("_out/")<cr>')
 
     "#interpreted languages #python #bash #perl
 
         au FileType sh,python,perl setlocal shiftwidth=4 tabstop=4
-        au FileType sh,python,perl cal MapAllBuff( '<F6>', ':w<cr>:cal RedirStdoutNewTabSingle( "./" . expand(''%'') )<cr>' )
+        au FileType ruby setlocal shiftwidth=2 tabstop=2
+        au BufEnter,BufRead *.erb setlocal shiftwidth=2 tabstop=2
+        au FileType sh,python,perl,ruby cal MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
 
     "#compile to executable languages
 
         "#c #c++ #cpp #lex #y #fortran #asm #s #java
 
         fu! FileTypeCCpp()
-            cal MapAllBuff( '<F5>'  , ':w<cr>:make<cr>' ) "vim make quickfix
-            cal MapAllBuff( '<S-F5>', ':w<cr>:sil ! make clean<cr>' )
-            cal MapAllBuff( '<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>' )
+            cal MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
+            cal MapAllBuff('<S-F5>', ':w<cr>:sil ! make clean<cr>')
+            cal MapAllBuff('<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>')
                 "make run, stdout to a new file
                 "stdout is only seen when program stops.
-            cal MapAllBuff( '<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>' )
+            cal MapAllBuff('<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
                 "same as above, but may pas command line args
-            cal MapAllBuff( '<F7>'  , ':cnext<cr>' )
-            cal MapAllBuff( '<F8>'  , ':cprevious<cr>' )
-            cal MapAllBuff( '<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>' )
-            cal MapAllBuff( '<S-F9>', ':w<cr>:! make assembler<cr>' )
+            cal MapAllBuff('<F7>'  , ':cnext<cr>')
+            cal MapAllBuff('<F8>'  , ':cprevious<cr>')
+            cal MapAllBuff('<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>')
+            cal MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
         endf
 
         au FileType c,cpp,fortran,asm,s,java cal FileTypeCCpp()
@@ -786,9 +854,9 @@
 
     "#f keys
 
-            cal MapAll( '<F2>',     ':cal GuakeNewTabHere()<cr>')
-            cal MapAll( '<S-F2>',   ':ConqueTermTab bash<cr>')
-            cal MapAll( '<F3>',     ':NERDTreeToggle<cr>')
+            cal MapAll('<F2>',     ':cal GuakeNewTabHere()<cr>')
+            cal MapAll('<S-F2>',   ':ConqueTermTab bash<cr>')
+            cal MapAll('<F3>',     ':NERDTreeToggle<cr>')
 
     "#~
 
@@ -852,8 +920,8 @@
 
     "#(
 
-        "- ( previous sentence
-        "- ) next
+        "- (previous sentence
+        "-) next
 
         "what is a sentence?
 
@@ -865,8 +933,8 @@
 
         "next and previous tab:
 
-            cal MapAll( '<c-tab>',   ':tabnext<cr>' )
-            cal MapAll( '<c-s-tab>', ':tabprevious<cr>' )
+            cal MapAll('<c-tab>',   ':tabnext<cr>')
+            cal MapAll('<c-s-tab>', ':tabprevious<cr>')
 
     "#q
 
@@ -900,9 +968,9 @@
 
         "close windows:
 
-            "cal MapAll( '<c-w>', ':tabclose<cr>' )
-            cal MapAll( '<c-w>', ':q<cr>' )
-            "cal MapAll( '<c-w>', ':bd<cr>' )
+            "cal MapAll('<c-w>', ':tabclose<cr>')
+            cal MapAll('<c-w>', ':q<cr>')
+            "cal MapAll('<c-w>', ':bd<cr>')
 
     "#e
 
@@ -1035,7 +1103,7 @@
 
         "- c-] go to location of link under cursor used in vim docs TODO how to make one of those?
 
-        "- [( last unmatched open par. Same for ),[,],{,}.=, but not for <>
+        "- [(last unmatched open par. Same for),[,],{,}.=, but not for <>
         "- [z fold move
 
     "#|
@@ -1163,7 +1231,7 @@
     "beginning or end of line
     "and J, K to jump 5 lines instead.
     "Also, I prefer to move along visual lines
-    "rather than real lines ( thus the remap )
+    "rather than real lines (thus the remap)
 
         "nn H ^
         "vn H ^
@@ -1242,29 +1310,33 @@
             nn zl zL
             nn zh zH
 
-        "open close fold under cursor:
+        " Open close fold under cursor:
 
             "unmap zo
             "unmap zc
 
-        "recursivelly:
+        " Recursivelly:
 
             "unmap zO
             "unmap zC
 
-        "toogle fold:
+        " Toogle fold:
 
             "unmap za
             "unmap zA
 
-        "all folds (m more, M max, r reduce, R min)
+        " All folds (m more, M max, r reduce, R min)
 
             "unmap zm
             "unmap zM
             "unmap zr
             "unmap zR
 
-        "move over folds:
+        " Toogle all folds max or min:
+
+            "unmap zi
+
+        " Move over folds:
 
             "unmap [z       "start  of current
             "unmap ]z       "end    of current
@@ -1349,14 +1421,29 @@
         "- control for repeated uses
         "- c-w is a bit useless, remap it to something better
 
-"#sources
+"#help
 
-"#h
-
-    "the most important of all commands
+    " The most important of all commands
 
         "h
-        "h map
+
+    " Can tab complete. Type:
+
+        "h ma
+
+    " Hit <tab> and see what I mean.
+
+    " For comands use colon:
+
+        "h :t
+
+    " For options use single quotes:
+
+        "h 'more'
+
+"#helpgrep
+
+    " grep all the help files for expressions.
 
 "- <http://andrewscala.com/vimscript/>
 
@@ -1492,7 +1579,7 @@
 
     "must use let always:
 
-        "let a = 2 | if a != 2 | ec 'fail' | en
+        "let a = 2 | if a != 2 | throw 'assertion failed' | end
 
     "can redefine:
 
@@ -1537,47 +1624,76 @@
 
     "equality:
 
-        if [1,2] != [1,2] | ec 'fail' | en
-        if [1,2] == [2,1] | ec 'fail' | en
+        if [1,2] != [1,2] | throw 'assertion failed' | end
+        if [1,2] == [2,1] | throw 'assertion failed' | end
 
     "find item:
 
-        if (index( [1,2], 1) != 0) | ec 'fail' | end
-        if (index( [2,1], 1) != 1) | ec 'fail' | end
-        if (index( [1,2], 3) >= 0) | ec 'fail' | end
+        if (index([1,2], 1) != 0) | throw 'assertion failed' | end
+        if (index([2,1], 1) != 1) | throw 'assertion failed' | end
+        if (index([1,2], 3) >= 0) | throw 'assertion failed' | end
 
     "contains:
 
-        if (index( [1,2], 3) >= 0) | ec 'fail' | end
+        if (index([1,2], 3) >= 0) | throw 'assertion failed' | end
 
     "unpack (like python tuples):
 
         "let [a,b] = [1,2]
-        "if a != 1 | ec 'fail' | en
-        "if b != 2 | ec 'fail' | en
+        "if a != 1 | throw 'assertion failed' | end
+        "if b != 2 | throw 'assertion failed' | end
 
     "can be used to return multiple values from function
 
     "range:
 
-        if range(3) != [ 0, 1, 2 ] | ec 'fail' | en
+        if range(3) != [ 0, 1, 2 ] | throw 'assertion failed' | end
 
     "#filter
 
         "done in place:
 
             "a = range(4)
-            "filter( a, 'v:val > 1' )
-            "if a != [2,3] | ec 'fail' | en
+            "filter(a, 'v:val > 1')
+            "if a != [2,3] | throw 'assertion failed' | end
 
         "copy:
 
             "a = range(4)
-            "let b = filter( filter( a, 'v:val > 1' ) )
-            "if a != range(4) | ec 'fail' | en
-            "if b != [2,3]    | ec 'fail' | en
+            "let b = filter(filter(a, 'v:val > 1'))
+            "if a != range(4) | throw 'assertion failed' | end
+            "if b != [2,3]    | throw 'assertion failed' | end
 
-"#dict
+"#dicttionary #map data type
+
+        "let d = {1: 'one', 'two': 2}
+        "if d.1 != 'one' | throw 'assertion failed' | end
+        "if d.two != 2 | throw 'assertion failed' | end
+
+    " Canot use the literal notation for keys inside variables:
+
+        "let key = 1
+        "if d.key != 'one' | throw 'assertion failed' | end
+
+    "#get
+
+        "Can be used to get from variable key:
+
+            "let d = {1: 'one', 'two': 2}
+            "let key = 1
+            "if get(d, key) != 'one' | throw 'assertion failed' | end
+
+        "Can take default value:
+
+            "let d = {1: 'one', 'two': 2}
+            "if get(d, 3, 'three') != 'three' | throw 'assertion failed' | end
+
+    "#keys
+
+        " Get a list of the keys in arbitrary order:
+
+            "let d = {1: 'one', 'two': 2}
+            "echo keys(d)
 
 "#string
 
@@ -1616,43 +1732,43 @@
 
         "therefore: **always use either ==# or ==? when comparing strings!!**
 
-    "concat:
+    "cat:
 
-        "if "ab" . "cd" != 'abcd' | ec 'fail' | en
+        "if "ab" . "cd" != 'abcd' | throw 'assertion failed' | end
 
     "string to int:
 
-        "if 10  + "10"    != 20   | ec 'fail' | en
-        "if 10  + "10.10" != 20   | ec 'fail' | en
-        "if 1.1 + "1.1"   != 2.1  | ec 'fail' | en
+        "if 10  + "10"    != 20   | throw 'assertion failed' | end
+        "if 10  + "10.10" != 20   | throw 'assertion failed' | end
+        "if 1.1 + "1.1"   != 2.1  | throw 'assertion failed' | end
 
     "substring
 
         "let a = 'abc'
-        "if a[0]     != 'a'  | ec 'fail' | en
-        "if a[0:1]   != 'ab' | ec 'fail' | en
-        "if a[1:]    != 'bc' | ec 'fail' | en
-        "if a[-1]    != 'c'  | ec 'fail' | en
+        "if a[0]     != 'a'  | throw 'assertion failed' | end
+        "if a[0:1]   != 'ab' | throw 'assertion failed' | end
+        "if a[1:]    != 'bc' | throw 'assertion failed' | end
+        "if a[-1]    != 'c'  | throw 'assertion failed' | end
 
     "equality:
 
-        "if "ab" != "ab" | ec "fail" | en
+        "if "ab" != "ab" | ec "fail" | end
 
     "test regex match:
 
-        "if "ab" !~ "a." | ec "fail" | en
+        "if "ab" !~ "a." | ec "fail" | end
 
     "length:
 
-        "if len("abc") != 3 | ec 'fail' | en
+        "if len("abc") != 3 | throw 'assertion failed' | end
 
     "split:
 
-        "if split( "a,b,c", "," ) != [ 'a', 'b', 'c' ] | ec 'fail' | en
+        "if split("a,b,c", ",") != [ 'a', 'b', 'c' ] | throw 'assertion failed' | end
 
     "join:
 
-        "if join( ["a", "b", "c"], "," ) != 'a,b,c' | ec 'fail' | en
+        "if join(["a", "b", "c"], ",") != 'a,b,c' | throw 'assertion failed' | end
 
 "#if
 
@@ -1664,21 +1780,21 @@
 
     "single line:
 
-        "if 0 | ec 0 | elseif 1 | ec 1 | else | ec 2 | en
+        "if 0 | ec 0 | elseif 1 | ec 1 | else | ec 2 | end
 
     "#boolean operations
 
         "all that matters is =0 or !=0:
 
-            "if !0     != 1 | ec 'fail' | en
-            "if !1     != 0 | ec 'fail' | en
-            "if !-1    != 0 | ec 'fail' | en
-            "if 0 && 1 != 0 | ec 'fail' | en
-            "if 0 || 1 != 1 | ec 'fail' | en
+            "if !0     != 1 | throw 'assertion failed' | end
+            "if !1     != 0 | throw 'assertion failed' | end
+            "if !-1    != 0 | throw 'assertion failed' | end
+            "if 0 && 1 != 0 | throw 'assertion failed' | end
+            "if 0 || 1 != 1 | throw 'assertion failed' | end
 
 "#for
 
-        "for i in [1,3,2] | ec i | endfor
+        "for i in [1, 3, 2] | ec i | endfor
 
 "#while
 
@@ -1698,47 +1814,50 @@
 
     "cannot use | for single line
 
-        "fu! F( a, b )
+        "fu! F(a, b)
             "retu a:a + a:b
         "endf
 
-        "if F( 1, 2 ) != 3 | ec 'fail' | en
+        "if F(1, 2) != 3 | throw 'assertion failed' | end
 
-    "nargs:
+    "#vararg
 
-        "fu! F( a, b, ... )
-            "for i in range( a:0 )
-                "ec a:{i}
-            "endfor
-        "endf
+            "fu! F(a, b, ...)
+                "for i in range(a:0)
+                    "ec a:{i}
+                "endfor
+            "endf
 
-    "a:0 contains the number of args
-    "a:1 contains the first arg
-    "...
+        "- a:0 contains the number of varargs. This does not cound regular
+            "arguments.
+        "- a:1 contains the vararg arg.
+        "- a:2 contains the second arg, and so on.
 
-    "#cal
+    "#call
 
-        "command to call function
+        " Command to call function.
 
-        "ignores return value
+        " Ignores return value.
 
-        "only side effects can be useful therefore
+        " Only side effects can be useful therefore.
 
     "#multiple return values
 
-        "fu! F()
-            "retu [1,2]
-        "endf
+        " Put them inside a list, and unpack at return time:
 
-        "let [a,b] = F()
-        "if [a,b] != [1,2] | ec 'fail' | en
+            "fu! F()
+                "retu [1,2]
+            "endf
+
+            "let [a,b] = F()
+            "if [a,b] != [1,2] | throw 'assertion failed' | end
 
     "no return val returns 0:
 
         "fu! F()
         "endf
 
-        "if F() != 0 | ec 'fail' | en
+        "if F() != 0 | throw 'assertion failed' | end
 
     "#default values
 
@@ -1775,7 +1894,7 @@
             ""ERROR: must be capital
                 ""let a = function('F')
 
-            "if A() != 1 | ec 'fail' | en
+            "if A() != 1 | throw 'assertion failed' | end
 
         "also works:
 
@@ -1786,18 +1905,18 @@
 
     "throw:
 
-        "th 'abc'
+        "throw 'abc'
 
     "try catch finnaly:
 
         "try:
-            "th 'abc'
-        "cat: /a./
-            "ec 'a.'
-        "cat:
-            "ec 'default'
-        "fina:
-            "ec 'finnally'
+            "throw 'abc'
+        "catch: /a./
+            "echo 'a.'
+        "catch:
+            "echo 'default'
+        "finally:
+            "echo 'finnally'
         "endt
 "#so
 
@@ -1859,32 +1978,22 @@
 
 "#redir
 
-    "redirect output of any *vim command* (ex :ec 1) output (for sh stdout (:! ls), use <#r> )
+    " Redirect output of any *vim command* (ex :ec 1) output (for sh stdout (:! ls), use <#r>)
 
-    "redir to var a:
+    " Redir to var a:
 
         "redir =>a | ec 1 | redir END
-        "if a != 1 | ec 'fail' | en
+        "if a != 1 | throw 'assertion failed' | end
 
-    "append ro var a:
+    " Append ro var a:
 
         "redir =>>a
 
-    "redir to register a:
+    " Redir to register a:
 
         "redir @a
             "ec 1
         "redir END
-
-    "redir @a
-    "!ls
-    "redir END
-        "redir to register a
-        "a contains:
-        "
-        "!ls
-        "
-        "a b c d e
 
 "#shell commands
 
@@ -1901,11 +2010,11 @@
 
         "exec sh command and get stdout
 
-        "let a = system( 'ec asdf' )
+        "let a = system('ec asdf')
         "ec a
             "asdf
 
-        "let a = system( 'sort', "b\na" )
+        "let a = system('sort', "b\na")
         "ec a
             "a
             "b
@@ -2063,14 +2172,14 @@
 
         fu! s:WipeBuffersWithoutFiles()
             let bufs = filter(
-                range( 1, bufnr('$') ),
+                range(1, bufnr('$')),
                 'bufexists(v:val) && '.
                 \'empty(getbufvar(v:val, "&buftype")) && '.
                 \'!filereadable(bufname(v:val))'
-            )
+           )
             if !empty(bufs)
                 exe 'bw' join(bufs)
-            en
+            end
         endf
 
         "call it at every startup (TODO does not work)
@@ -2078,6 +2187,25 @@
             "cal s:WipeBuffersWithoutFiles()
 
         "command WBWF call s:WipeBuffersWithoutFiles()
+
+    "#scratch buffer
+
+        " To create a buffer which contains only output which you want to
+        " browse with vim such as program output, use:
+
+            "tabnew
+            "setlocal buftype=nofile
+            "setlocal bufhidden=wipe
+            "setlocal noswapfile
+
+        " It is not possible to save this buffer to a file,
+        " and this buffer cannot conflict with any other since it has not
+        " name.
+
+        " Tabs containing this buffer show `[Scratch]` as the tab title.
+
+        " If you want to save the contents of a strach buffer to a file,
+        " just use `w filename`.
 
 "#window
 
@@ -2162,11 +2290,11 @@
 
 "#editing commands
 
-    "prints lines to command line
+    "#print
 
-        "#p
+        "prints lines to prompt.
 
-    "#pu
+    "#put
 
       "insert abc on a new line after current line:
 
@@ -2183,54 +2311,62 @@
 
             "pu! a
 
-    "#d
+    "#delete
 
-        "delete cur line, put it on register
+        " Delete lines, put them on register.
 
-    "#r
+            "1,3d
 
-        "inserts contents of file here
+    "#read
 
-        "inserts stdout in current line (read)
+        " Inserts contents of file here (Read).
 
             "r a.txt
 
             "r !ls
 
-    "yank:
+    "#yank
 
-        "y
+        " Paste (Yank):
 
-    "yank to register a:
+            "y
 
-        "y a
+        " Yank to register a:
 
-    "#s
+            "y a
 
-        "substitute on lines with regex
+    "#t #copy
 
-        "s/re/sub
-            "sub
-        "s/re/sub/g
-            "global
-        "s/re/sub/c
-            "confirm before
+        " Copy line 3 after line 5 and before old line 6 (line 3 becomes the
+        " new line 6):
 
-    ":3t5
-        "copy line 3 to line 5
+            ":3t5
 
-    ":3m5
-        "move line 3 to line 5
+    "#move
 
-    "join current and next line:
+        " Move line 3 to line 5:
 
-        ":j
+            ":3m5
 
-    ":g/re/p
-        "global if line matches re
+    "#join
 
-    ":g/^pattern/s/$/mytext
-        "do s in each line that matches pattern
+        " Join current and next line:
+
+            "j
+
+        " Removes leading spaces of second line.
+
+    "#global
+
+        " Does an arbitrary command on all lines that match a regexp.
+
+        " Print all lines that match a regexp to command line:
+
+            ":g/re/p
+
+        " do `s/find1/replace` in each line that matches regexp `find0`.
+
+            ":g/^find0/s/find1/replace
 
 "#range
 
@@ -2251,7 +2387,6 @@
     "all lines:
 
         "%p
-
         "1,$p
 
     "from mark a to mark b, inclusive
@@ -2538,64 +2673,98 @@
 
 "#set
 
-    "control and view several vim options
+    " Set allows to view and modify options, which are global variables
+    " that control Vim's operation.
+
+    " Main help page:
 
         "h options
 
-    "view value:
+    " To get help on options, surround them with single quotes as:
+
+        "h 'filetype'
+
+    " View value of an option
 
         "set ft?
 
-    "set value on non boolean option:
+    " Set value on non boolean option:
 
         "set ft=vim
 
-    "set value of boolean option to true:
+    " Set value of boolean option to true:
 
         "set expandtab
 
-    "set value of boolean option to false:
+    " Set value of boolean option to false:
 
-        "set expandtab
+        "set noexpandtab
 
-    "toogle value (only applicable to boolean options):
+    " All non-negated boolean options support a `<no>name` version.
+
+    " Toogle value of boolean optoin (only applicable to boolean options):
 
         "set wrapscan!
 
-    "get value of option programatically:
+    " Get value of option programatically:
 
         "ec &ft
 
-    "just add ampersand.
+    " Just add ampersand.
 
-    "- nomodified
+    "#setlocal
 
-        "as if the buffer hadn't been modified
+        " Sets option only for cur buffer.
 
-    "#setl
+        " Only some options can have local values.
 
-        "sets option only for cur buffer
+        " Should always be used instead of `:set` in ftplugin files which are
+        " sourced for every file of a given type.
 
-        "only some options can have local values.
+    "#option linst
 
-        "should always be used instead of `:se` in ftplugin files.
+        " This is a list of options that did not fit anywhere else,
+        " by order or decreasing utility.
+
+        "#modified
+
+            " Determies if the current buffer has been modified or not since
+            " last save. by default, modified buffers get a plus sign `+`
+            " added to their titles.
+
+                "set modified
+
+        "#buftype
+
+            " Sets the type of the buffer.
+
+            " - `nofile`: buffer has no coresponding file. Cannot be saved.
+
+                " Useful for buffers that will contain temporary data buffers.
+
+        "#bufhidden
+
+            " Determines what to do with bufferst that don't show in any
+            " window.
+
+            " - `wip`: does a `bwipe`. Good option for temporary buffers.
 
 "#builtin functions
 
-    "#file operations
+    "#file operations #path operations
 
         "check file exists and is radable:
 
             "if filereadable("SpecificFile")
-                    "ec "SpecificFile exists"
+                "ec "SpecificFile exists"
             "en
 
-        "dirname
+        "#dirname
 
             "for a file or directory not enting in slash:
 
-                "if fnamemodify( '/a/b', ':h') != '/a' | ec 'fail' | endif
-                "if fnamemodify( '/a/b/', ':h') != '/a/b' | ec 'fail' | endif
+                "if fnamemodify('/a/b', ':h') != '/a' | throw 'assertion failed' | endif
+                "if fnamemodify('/a/b/', ':h') != '/a/b' | throw 'assertion failed' | endif
 
             "whatch out for trailling slashes since that changes the meaning...
 
@@ -2610,6 +2779,18 @@
             ":echo split(globpath('.', '**'), '\n')
 
         "os path join: vim autoconverts `/` in paths to the correct os separator (ex Windows `\`)
+
+        "#pathshortlen
+
+            "Converts:
+
+                "/path/to/file.txt
+
+            "To:
+
+                "/p/t/file.txt
+
+            "Useful wiht setguilabel.
 
     "#expand
 
@@ -2659,7 +2840,7 @@
 
         "another way to set position:
 
-            "cursor(line,col)
+            "cursor(line, col)
 
         "get initial position while on visual mode:
 
@@ -2686,14 +2867,14 @@
             ""
             "":raises: bad mode argument, bad position argument
             ""
-            "fu! SetSelection( x, y, x2, y2, ... )
+            "fu! SetSelection(x, y, x2, y2, ...)
                 "let valid_mode_strings = ["v","\<s-v>","\<c-v>"]
 
                 "if a:0 > 0
-                    "if index( valid_mode_strings, a:1 ) >= 0
+                    "if index(valid_mode_strings, a:1) >= 0
                         "let mode = a:1
                     "el
-                        "th 'bad mode argument: ' . a:1 . ' valid options: ' . join( valid_mode_strings, ', ' )
+                        "th 'bad mode argument: ' . a:1 . ' valid options: ' . join(valid_mode_strings, ', ')
                     "en
                 "el
                     "let mode = 'v'
@@ -2701,16 +2882,16 @@
 
                 "let oldpos = getpos('.')
 
-                "if setpos( '.', [0,a:x,a:y] ) != 0
+                "if setpos('.', [0,a:x,a:y]) != 0
                     "exe "norm! \<esc>"
                     "th 'bad position argument: ' . a:x . ' ' . a:y . ' ' . a:x2 . ' ' . a:y2
                 "en
 
                 "exe 'norm! ' . mode
 
-                "if setpos( '.', [0,a:x2,a:y2] ) != 0
+                "if setpos('.', [0,a:x2,a:y2]) != 0
                     "exe "norm! \<esc>"
-                    "cal setpos( '.', oldpos )
+                    "cal setpos('.', oldpos)
                     "th 'bad position argument: ' . a:x . ' ' . a:y . ' ' . a:x2 . ' ' . a:y2
                 "en
             "endf
@@ -2772,7 +2953,7 @@
 
         "don't move cursor:
 
-            "cal search( 'a', 'n' )
+            "cal search('a', 'n')
 
         "backwards:
 
@@ -2820,58 +3001,58 @@
 
 "#regex
 
-    "pearl like but...
+    " Pearl like but...
 
-    "by default must escape some chars for them *to be* magic but not others...
+    " By default must escape some chars for them *to be* magic but not others...
 
-    "but you can change that with modifying chars and using one of the four flavors:
+    " But you can change that with modifying chars and using one of the four flavors:
 
-    "- magic
-    "- non magic
-    "- very magic
-    "- very non magic
+    " - magic
+    " - non magic
+    " - very magic
+    " - very non magic
 
-    "I only recommend using very magic and very non-magic for you own sanity
-    "since in those modes it is easy to remember what is what.
+    " I only recommend using very magic and very non-magic for you own sanity
+    " since in those modes it is easy to remember what is what.
 
-    "for explanations
+    " For explanations
 
         ":h regex
 
     "#very non magic
 
-        "becomes not a regex, everything is literal, unless escaped by \:
+        " Becomes not a regex, everything is literal, unless escaped by \:
 
-        "default regex:
+        " Default regex:
 
             "/.*
 
-        "very non-magic:
+        " Very non-magic:
 
             "/\V\.\*
 
     "#very magic
 
-        "you can change the flavour with \v! with \v, meaning Very magic,
-        "only: [A-Za-0-9_] are not magic and thigs really work like in perl!
+        " You can change the flavour with \v! with \v, meaning Very magic,
+        " only: [A-Za-0-9_] are not magic and thigs really work like in perl!
 
-        "example:
+        "Example:
 
-        "default regex:
+        "Default regex:
 
             "/\(a\+\)
 
-        "very magic regex:
+        "Very magic regex:
 
             "/\v(a+)
 
-        "you should always use very magic.
+        "You should always use very magic.
 
     "#change default flavor
 
-        "cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
+        "Cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
 
-        "would break too may plugings
+        "Would break too may plugings.
 
     "#classes
 
@@ -2884,7 +3065,7 @@
         "- \_$     the end of a line (zero width)
         "- \_.     any character including a newline
 
-    "# escaping in default mode
+    "#escaping in default mode
 
         "if you really use default mode, here the escape list follows.
 
@@ -2908,82 +3089,98 @@
         "- \1           mathing group 1. can be used on search
         "- /\(\w\)\1  search equal adjacent chars
 
-    "#perldo
-
-        "if compiled with perl support (`vim --version | grep perl`),
-        "you can use perld for replacements
-
-        "ex:
-
-            ":pe $a = 'b'
-            ":perldo s/$a(.)/c\1/g
-
-        "so you get perl regexes
-
     "#s
 
-        "capture group:
+        " Replace in buffer.
+
+        " Capture group:
 
             ":s/\(a\)/\1/
 
-        "set first letter of each line to uppercase:
+        " Set first letter of each line to uppercase:
 
             ":s/.*/\u&
 
-        "sets first letter of each line to lowercase:
+        " Sets first letter of each line to lowercase:
 
             ":s/.*/\l&
 
         "#multiline
 
-            "`\n` vs `\r` confusion: <http://stackoverflow.com/questions/71417/why-is-r-a-newline-for-vim>
+            " `\n` vs `\r` confusion: <http://stackoverflow.com/questions/71417/why-is-r-a-newline-for-vim>
 
-            "when searching `\n` is a newline char, `\r` <CR>
+            " When searching `\n` is a newline char, `\r` <CR>
 
-            "when replacing `\n` is the null byte and `\r` a newline char
+            " When replacing `\n` is the null byte and `\r` a newline char
 
-            "replace two or more newlinews for two newlines:
+            " Replace two or more newlinews for two newlines:
 
                 ":%s/\n\n+/\r\r/
 
-        "confirm each match replace before doing it:
+        " Confirm each match replace before doing it:
 
             ":%s/a/a/c
 
-        "- y: yes
-        "- n: no
-        "- a: replace all remaining
-        "- q: quit
-        "- l: last == yes and quit
+        " Options:
+
+        " - y: yes
+        " - n: no
+        " - a: replace all remaining
+        " - q: quit
+        " - l: last == yes and quit
 
     "#substitute
 
-        "regex replace in vimscript
+        " Regexp replace in vimscript:
 
-            "if substitute( 'abc', 'a\(.\)c', '\1', '' ) != 'b' | ec 'fail' | en
+            "if substitute('abc', 'a\(.\)c', '\1', '') != 'b' | throw 'assertion failed' | end
 
-        "todo: how to use magic
+    "#=~ #!~
 
-            "if substitute( '\vabc', 'a(.)c', '\1', '' ) != 'b' | ec 'fail' | en
+        " Check if string matches regex:
+
+            "if 'abc' =~ 'a.c' | | else | throw 'assertion failed' | end
+            "if 'abc' !~ 'a.c' |          throw 'assertion failed' | end
 
     "#match
 
-        "get start of match index:
+        " Returns start of match index. If no match return `-1`.
 
-            "if match( 'abc', '\v.c' ) != 1 | ec 'fail' | en
-            "if match( 'abc', '\v.b' ) != 0 | ec 'fail' | en
+            "if match('abc', '\v.c') != 1 | throw 'assertion failed' | end
+            "if match('abc', '\v.b') != 0 | throw 'assertion failed' | end
+            "if match('abc', '\vd')  != -1 | throw 'assertion failed' | end
+
+    "#matchlist
+
+        " Get list of matches, first the full match, then capturing groups.
+
+        " This is the best way to use capturing groups.
+
+            "let matches = matchlist('abcde', '\v(a.)c(.e)')
+            "if matches[0] != 'abcde' | throw 'assertion failed' | end
+            "if matches[1] != 'ab'    | throw 'assertion failed' | end
+            "if matches[2] != 'de'    | throw 'assertion failed' | end
+
+        " If no match is found, return the empty list `[]`:
+
+            "if matchlist('abcde', '\vac') != [] | throw 'assertion failed' | end
 
     "#matchstr
 
-        "get matching string
+        " Get matching string. Same as `matchlist()[0]`.
 
-            "if matchstr( 'abc', '\v.c' ) != 'bc' | ec 'fail' | en
-            "if matchstr( 'abc', '\v.b' ) != 'ab' | ec 'fail' | en
+            "if matchstr('abc', '\v.c') != 'bc' | throw 'assertion failed' | end
+            "if matchstr('abc', '\v.b') != 'ab' | throw 'assertion failed' | end
 
-    "check if string matches regex:
+    "#perldo
 
-        "if 'abc' =~ 'a.c' | | else | ec 'fail' | en
-        "if 'abc' !~ 'a.c' |          ec 'fail' | en
+        " If compiled with perl support (`vim --version | grep perl`),
+        " you can use `perldo` for replacements with pure Perl regexps:
+
+        " Ex:
+
+            ":pe $a = 'b'
+            ":perldo s/$a(.)/c\1/g
 
 "#com
 
@@ -3065,7 +3262,7 @@
         "pass a vim integer variable to python:
 
             ":let a = 1
-            ":py a = int( vim.eval('a') )
+            ":py a = int(vim.eval('a'))
             ":py assert a + 1 == 2
 
     "#python to vim
@@ -3083,7 +3280,7 @@
         "py f()
     "endf
 
-"#configuration
+"#configuration #startup #initialization
 
     "<http://www.22ideastreet.com/debug/vim-directory-structure/>
 

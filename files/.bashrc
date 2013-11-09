@@ -279,6 +279,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         ##python
 
             alias py='python'
+            alias py3='python3'
             alias ipy='ipython'
             alias tipy='touch __init__.py'
 
@@ -294,6 +295,14 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                     alias dmscts="./manage.py convert_to_south"
                     alias dmssi="./manage.py schemamigration --initial"
                     alias dmssa="./manage.py schemamigration --auto"
+
+        ##heroku
+
+            alias hrk="heroku"
+            alias hrkc="heroku create"
+            alias hrko="heroku open"
+            alias hrkr="heroku run"
+            alias gphm="git push heroku master"
 
         ##git
 
@@ -313,11 +322,19 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         ##makefile
 
-                alias  mk='make'
+            #Those are life changers:
+
+                alias mk='make'
                 alias mkc='make clean'
                 alias mkd='make dist'
+                alias mkdc='make distclean'
+                # It is better to `make` first without the sudo so that the generated build
+                # will not be owned, or else it could only be cleaned with by sudo.
+                alias mki='make && sudo make install'
+                alias mkir='make && sudo make install && make install-run'
                 alias mkr='make run'
                 alias mkt='make test'
+                alias mku='sudo make uninstall'
                 alias mkv='make view'
 
             #commands from git root:
@@ -327,6 +344,8 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                 alias gmkd='cd `git rev-parse --show-toplevel` && make dist'
                 alias gmkr='cd `git rev-parse --show-toplevel` && make run'
                 alias gmkt='cd `git rev-parse --show-toplevel` && make test'
+
+                alias cmk='mkdir build && cd build && cmake .. && make'
 
         ##mysql
 
@@ -353,3 +372,9 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias sslr="sudo service lightdm restart"
 
 #</ciro>
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
