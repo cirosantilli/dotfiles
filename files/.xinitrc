@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
-xmodmap ~/.Xmodmap
+date > .xinitrc.test.tmp
+
+#xmodmap ~/.Xmodmap
 
 xbacklight -set 60
+setxkbmap -option caps:escape

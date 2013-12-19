@@ -210,71 +210,74 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         #Ubuntu 1 Public url to Clipboard
         function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
 
-        alias xar="xargs -0I'{}'" 
-        alias xselb="xsel --clipboard" 
+        alias xar="xargs -0I'{}'"
+        alias xselb="xsel --clipboard"
+        alias vuvs="vagrant up --no-provision && vagrant ssh"
 
         ##power management
 
-            alias pmhi="sudo ps-hibernate"
-            alias pmsh="sudo shutdown"
-            alias pmsu="sudo ps-suspend"
-            alias pmre="sudo reboot"
+                alias pmhi="sudo ps-hibernate"
+                alias pmsh="sudo shutdown"
+                alias pmsu="sudo ps-suspend"
+                alias pmre="sudo reboot"
 
         ##aptitude
 
-            alias acse="apt-cache search"
-            alias acde="apt-cache depends"
-            alias acsh="apt-cache show"
-            alias afse="apt-file search"
-            alias afsh="apt-file show"
-            alias dplg="dpkg -l | grep -i"
-            alias saii="sudo aptitude install"
-            alias sair="sudo aptitude remove"
-            alias saiu="sudo aptitude update"
-            alias saip="sudo aptitude purge"
+                alias acse="apt-cache search"
+                alias acde="apt-cache depends"
+                alias acsh="apt-cache show"
+                alias afse="apt-file search"
+                alias afsh="apt-file show"
+                alias dplg="dpkg -l | grep -i"
+                alias saii="sudo aptitude install"
+                alias sair="sudo aptitude remove"
+                alias saiu="sudo aptitude update"
+                alias saip="sudo aptitude purge"
+                function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
 
         ##ctags
 
-            alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
-            function ctag { grep "^$1" tags; } #CTAgs Grep
-            function rctag { cd `git rev-parse --show-toplevel` && grep "^$1" tags; } #Root CTAgs Gre
+                alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
+                function ctag { grep "^$1" tags; } #CTAgs Grep
+                function rctag { cd `git rev-parse --show-toplevel` && grep "^$1" tags; } #Root CTAgs Gre
 
         ##dirs
 
-            LC_COLLATE=C
-            export LC_COLLATE
-                #dot will come first!
+                LC_COLLATE=C
+                export LC_COLLATE
+                    #dot will come first!
 
-            alias ls='ls -1 --color=auto --group-directories-first'
-            alias lsa='ls -A'
-            alias ll="ls -h -l"
-            alias lls="ls -h -l | sort -k5hr" #by Size
-            alias lla="ll -A"
-            alias llas="ls -a -h -l | sort -k5hr" #by Size
+                alias ls='ls -1 --color=auto --group-directories-first'
+                alias lsa='ls -A'
+                alias ll="ls -h -l"
+                alias lls="ls -h -l | sort -k5hr" #by Size
+                alias lla="ll -A"
+                alias llas="ls -a -h -l | sort -k5hr" #by Size
 
             ##bookmarks
 
-                #this will open krusader where I want.
-                #use this from the embedded terminal emulator
-                #must have "single instance mode on", or new windows will be opened
+                # These will open krusader where I want.
 
-                alias krpr='krusader "$PROGRAM_DIR"'
-                alias krba='krusader "$MY_BASH_DIR"'
-                alias kras='krusader "$ASSEMBLER_DIR"'
-                alias krcp='krusader "$CPP_DIR"'
-                alias krli='krusader "$MY_LINUX_DIR"'
-                alias krpy='krusader "$MY_PYTHON_DIR"'
-                alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
+                # Better with "single instance mode on", or new windows will be opened.
 
-                alias krtst='krusader "$TEST_DIR"'
+                    alias krpr='krusader "$PROGRAM_DIR"'
+                        alias kras='krusader "$ASSEMBLER_DIR"'
+                        alias krba='krusader "$MY_BASH_DIR"'
+                        alias krcp='krusader "$CPP_DIR"'
+                        alias krli='krusader "$MY_LINUX_DIR"'
+                        alias krpy='krusader "$MY_PYTHON_DIR"'
+                        alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
+                        alias krror='krusader "$PROGRAM_DIR/rails-cheat/cirosantilli"'
 
-                alias krmsc='krusader "$MUSIC_DIR"'
-                alias krctm='krusader "$CHINESE_MUSIC_DIR"'
-                alias kritm='krusader "$INDIAN_MUSIC_DIR"'
+                    alias krtst='krusader "$TEST_DIR"'
 
-                alias krgm='krusader "$GAME_DIR"'
+                    alias krmsc='krusader "$MUSIC_DIR"'
+                        alias krctm='krusader "$CHINESE_MUSIC_DIR"'
+                        alias kritm='krusader "$INDIAN_MUSIC_DIR"'
 
-                alias krusd='krusader "/usr/share/doc/"'
+                    alias krgm='krusader "$GAME_DIR"'
+
+                    alias krusd='krusader "/usr/share/doc/"'
 
         ##python
 
@@ -296,6 +299,11 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                     alias dmssi="./manage.py schemamigration --initial"
                     alias dmssa="./manage.py schemamigration --auto"
 
+        ##rails
+
+            alias rdcm="rake db:drop db:migrate"
+            alias be="bundle exec"
+
         ##heroku
 
             alias hrk="heroku"
@@ -306,18 +314,32 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         ##git
 
+            alias gad="git add"
+            alias gbr="git branch"
+            alias gbrv="git branch -v"
             alias gcl="git clone --recursive"
-            alias gcm="git commit --allow-empty-message -am"
-            alias gcam="git commit -am"
+            alias gcma="git commit --allow-empty-message -am"
+            function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
             alias gco="git checkout"
+            alias gcom="git checkout master"
+            alias gcod="git checkout dev"
+            alias gcp="git cp"
+            alias gcr="git cherry-pick"
             alias gdi="git diff"
-            function gcp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
             alias glo="git log"
-            alias gpu="git push --tags -u origin master"
+            alias gme="git merge"
+            alias gppp="git push prod prod"
+            alias gps="git push --tags"
+            alias gpsom="git push --tags -u origin master"
+            alias gpl="git pull origin master"
+            alias gplu="git pull up master"
+            alias grm="git rm"
+            alias grt="git remote"
+            alias grtv="git remote -v"
             alias gst="git status"
-            alias lngp="latex-new-github-project.sh cirosantilli"
-            alias vgig="vim .gitignore"
+            alias gta="git tag"
 
+            alias vgig="vim .gitignore"
             alias lngp="latex-new-github-project.sh cirosantilli"
 
         ##makefile
