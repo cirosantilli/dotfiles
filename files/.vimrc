@@ -176,141 +176,189 @@
 
     "#neocomplcache
 
-        " Hardcore autocompletion. VERY GOOD PLUGIN!!!
+        " Hardcore autocompletion. May be slow. Use its successor Neocomplete
+        " istead on vim 7.3+.
 
-        "Bundle 'Shougo/neocomplcache'
-        "let g:neocomplcache_enable_at_startup             = 1
-        "let g:neocomplcache_enable_camel_case_completion  = 1
-        "let g:neocomplcache_enable_smart_case             = 1
-        "let g:neocomplcache_enable_underbar_completion    = 1
-        "let g:neocomplcache_min_syntax_length             = 3
-        "let g:neocomplcache_enable_auto_delimiter         = 1
+            "Bundle 'Shougo/neocomplcache'
+            "let g:neocomplcache_enable_at_startup             = 1
+            "let g:neocomplcache_enable_camel_case_completion  = 1
+            "let g:neocomplcache_enable_smart_case             = 1
+            "let g:neocomplcache_enable_underbar_completion    = 1
+            "let g:neocomplcache_min_syntax_length             = 3
+            "let g:neocomplcache_enable_auto_delimiter         = 1
 
-        "" AutoComplPop like behavior.
-        "let g:neocomplcache_enable_auto_select = 0
+            "" AutoComplPop like behavior.
+            "let g:neocomplcache_enable_auto_select = 0
 
-        "" SuperTab like snippets behavior.
-        "imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)": pumvisible() ? "\<c-n>": "\<TAB>"
+            "" SuperTab like snippets behavior.
+            "imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)": pumvisible() ? "\<c-n>": "\<TAB>"
 
-        "" Plugin key-mappings.
-        "imap <c-k>     <Plug>(neocomplcache_snippets_expand)
-        "smap <c-k>     <Plug>(neocomplcache_snippets_expand)
-        "inoremap <expr><c-g>     neocomplcache#undo_completion()
-        "inoremap <expr><c-l>     neocomplcache#complete_common_string()
+            "" Plugin key-mappings.
+            "imap <c-k>     <Plug>(neocomplcache_snippets_expand)
+            "smap <c-k>     <Plug>(neocomplcache_snippets_expand)
+            "inoremap <expr><c-g>     neocomplcache#undo_completion()
+            "inoremap <expr><c-l>     neocomplcache#complete_common_string()
 
 
-        "" <cr>: close popup
-        "" <s-CR>: close popup and save indent.
-        "inoremap <expr><cr>  pumvisible() ? neocomplcache#close_popup() : "\<cr>"
-        "inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup() "\<cr>": "\<cr>"
-        "" <TAB>: completion.
-        "inoremap <expr><TAB>  pumvisible() ? "\<c-n>": "\<TAB>"
+            "" <cr>: close popup
+            "" <s-CR>: close popup and save indent.
+            "inoremap <expr><cr>  pumvisible() ? neocomplcache#close_popup() : "\<cr>"
+            "inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup() "\<cr>": "\<cr>"
+            "" <TAB>: completion.
+            "inoremap <expr><TAB>  pumvisible() ? "\<c-n>": "\<TAB>"
 
-        "" <c-h>, <BS>: close popup and delete backword char.
-        "inoremap <expr><c-h> neocomplcache#smart_close_popup()."\<c-h>"
-        "inoremap <expr><BS> neocomplcache#smart_close_popup()."\<c-h>"
-        "inoremap <expr><c-y>  neocomplcache#close_popup()
-        "inoremap <expr><c-e>  neocomplcache#cancel_popup()
+            "" <c-h>, <BS>: close popup and delete backword char.
+            "inoremap <expr><c-h> neocomplcache#smart_close_popup()."\<c-h>"
+            "inoremap <expr><BS> neocomplcache#smart_close_popup()."\<c-h>"
+            "inoremap <expr><c-y>  neocomplcache#close_popup()
+            "inoremap <expr><c-e>  neocomplcache#cancel_popup()
 
-        "" Enable omni completion.
-        "au FileType css setlocal omnifunc=csscomplete#CompleteCSS
-        "au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-        "au FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-        "au FileType python setlocal omnifunc=pythoncomplete#Complete
-        "au FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+            "" Enable omni completion.
+            "au FileType css setlocal omnifunc=csscomplete#CompleteCSS
+            "au FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+            "au FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+            "au FileType python setlocal omnifunc=pythoncomplete#Complete
+            "au FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
-        "" Enable heavy omni completion.
-        "if !exists('g:neocomplcache_omni_patterns')
-            "let g:neocomplcache_omni_patterns = {}
-        "end
-        "let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-        ""au FileType ruby setlocal omnifunc=rubycomplete#Complete
-        "let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-        "let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-        "let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+            "" Enable heavy omni completion.
+            "if !exists('g:neocomplcache_omni_patterns')
+                "let g:neocomplcache_omni_patterns = {}
+            "end
+            "let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+            ""au FileType ruby setlocal omnifunc=rubycomplete#Complete
+            "let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+            "let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+            "let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 
-        "" For snippet_complete marker.
-        "if has('conceal')
-            "set conceallevel=2 concealcursor=i
-        "end
+            "" For snippet_complete marker.
+            "if has('conceal')
+                "set conceallevel=2 concealcursor=i
+            "end
+
+        "#neocomplete.vim
+
+            " Sucessor of neocomplcache, but requires a super up to date VIM version.
+
+                "Bundle 'Shougo/neocomplete.vim'
+
+    "#syntastic
+
+        " Does syntax checking using external checkers.
+
+            Bundle 'scrooloose/syntastic'
+
+        " You must then install the external syntax checkers you will use.
+
+        " LIst of compatible syntax checkers: <https://github.com/scrooloose/syntastic/wiki/Syntax-Checkers>
+
+        " Ones I have tried and approved on Ubuntu:
+
+            "gem install ruby-lint
+
+        " This is specially useful when your are going to do a run / compile that takes some time,
+        " allowing you to catch silly mistakes before wasting that time.
+
+        " Checks that checkers often do include:
+
+        " - opening without closings (braces, `do` `end`, etc.)
+        " - unset / unused variables
+        " - shadows variable
+
+        " Check is done at save time.
 
     "#fugitive
 
-        "git vim interface
+        " Git vim frontend:
 
             Bundle 'tpope/vim-fugitive'
 
+        " Tutorial: https://github.com/tpope/vim-fugitive
+
     "#easymotion
 
-        "list on place all possitions and jump to them with a single key stroke
+        " List on place all possitions and jump to them with a single key stroke.
 
-        "very fast for non structured moves!
+        " Very fast for non structured moves!
 
-        "- <leader><leader>w        beginnings  of words and lines
-        "- <leader><leader>W                       Words
-        "- <leader><leader>e        ends           words
-        "- <leader><leader>E        ends           Words
-        "- <leader><leader>f{char}  given chars
-        "- <leader><leader>j        lines down
-        "- <leader><leader>n        last search down
+        " - <leader><leader>w        beginnings  of words and lines
+        " - <leader><leader>W                       Words
+        " - <leader><leader>e        ends           words
+        " - <leader><leader>E        ends           Words
+        " - <leader><leader>f{char}  given chars
+        " - <leader><leader>j        lines down
+        " - <leader><leader>n        last search down
 
             "h easymotion
 
         Bundle 'Lokaltog/vim-easymotion'
 
+        let g:EasyMotion_mapping_f = '<leader>/'
+        let g:EasyMotion_mapping_F = '<leader>?'
+        let g:EasyMotion_mapping_w = '<leader>w'
+        let g:EasyMotion_mapping_W = '<leader>W'
+
     "#nerdcommenter
 
-        "does the right type of comment for each recognized filetype
+        " Does the right type of comment for each recognized filetype.
 
             Bundle 'scrooloose/nerdcommenter'
 
-        "toogle comment on current/selected lines:
+        " Default mappings start with `<leader>c`.
+
+        " Toogle comment on current/selected lines:
 
             "<leader>c<space>
 
+        " To use the functions provided in the plugin you must do:
+
+            "call NERDComment('n', 'uncomment')
+
+        " as explained in `:h NERDComment`.
+
     "#nerdtree
 
-        "file manager
+        " File manager.
 
             Bundle 'scrooloose/nerdtree'
 
             "h nerdtree
 
-        "let NERDTreeKeepTreeInNewTab=0
-        "let loaded_nerd_tree=1  "stop opening nerd tree.
+        " let NERDTreeKeepTreeInNewTab=0
+        " let loaded_nerd_tree=1  "stop opening nerd tree.
 
-        "- ?: help
+        " - ?: help
 
-        "- u: root up a dir
-        "- C: change root to selected dir
-        "- o: toogle open close dir
-        "- x: close current level
+        " - u: root up a dir
+        " - C: change root to selected dir
+        " - o: toogle open close dir
+        " - x: close current level
 
-        "- - t: open in new tab and to to it
-             "For file,  opens normal buffer
-             "For dir,   opens another nerdtree with root there
-        "- T: same as t but stay on current nerd tree
+        " - - t: open in new tab and to to it
+              "For file,  opens normal buffer
+              "For dir,   opens another nerdtree with root there
+        " - T: same as t but stay on current nerd tree
 
-        "- - p: go to parent of current
-        "- P: go to root
-        "- K: first   sibling current level
-        "- J: last    sibling current level
-        "- <c-k>: previous sibling
-        "- <c-j>: next sibling
+        " - - p: go to parent of current
+        " - P: go to root
+        " - K: first   sibling current level
+        " - J: last    sibling current level
+        " - <c-k>: previous sibling
+        " - <c-j>: next sibling
 
-        "- m: enter a menu that allows you to: copy, delete, etc.
-            "selected node. <esc> to exit this menu
+        " - m: enter a menu that allows you to: copy, delete, etc.
+             "selected node. <esc> to exit this menu
 
-        "- A: toogle maximize
+        " - A: toogle maximize
 
-        "- B: show bookmark list and move cursor to first one
-        "- o: move root to selected bookmark
-        "- D: delete selected bookmark
-        "
-        "the following commands can only be used from inside NERDTree:
-        "- :Bookmark <name>: create bookmark at node under cursor with given name
-        "- :BookmarkToRoot <name>: move root to bookmark with given name
-        "- :ClearBookmark <name>: delete bookmark
+        " - B: show bookmark list and move cursor to first one
+        " - o: move root to selected bookmark
+        " - D: delete selected bookmark
+
+        " The following commands can only be used from inside the NERDTree window:
+
+        " - :Bookmark <name>: create bookmark at node under cursor with given name
+        " - :BookmarkToRoot <name>: move root to bookmark with given name
+        " - :ClearBookmark <name>: delete bookmark
 
     "#vim-session
 
@@ -347,14 +395,6 @@
             let g:session_autosave_to = 'default'
             let g:session_autoload = 'yes'
 
-    "#msanders/snipmate.vim
-
-        " Allow you to define snippets: inster pieces of code, and then jump to
-        " the point you want with tab. Also allows to force several placeholders
-        " to be equal.
-
-            Bundle 'msanders/snipmate.vim'
-
     "#FuzzyFinder
 
         " Find things like Files and Buffers really quickly.
@@ -364,6 +404,37 @@
 
             Bundle 'L9'
             Bundle 'FuzzyFinder'
+
+    "#ctrlp
+
+        " Fuzzy finder in files or buffers.
+
+        " Seems more pupular than FuzzyFinder now.
+
+        " Tutorial: https://github.com/kien/ctrlp.vim
+
+            Bundle 'kien/ctrlp.vim'
+
+    "#ack.vim
+
+        " Vim ack integration
+
+           Bundle 'mileszs/ack.vim'
+
+        " Usage:
+
+          ":Ack a.c
+
+        " Does `ack a.c` on current directory and opens up a quickfix window with matches.
+
+        " You can therefore use any quickfix shortcut such as `:cn` to jump
+        " between matches.
+
+        " Inside the quickfix window, the following mappings can be used (the
+        " standard quickfix ones seem to be off):
+
+        " - `o`: open file in current buffer and jump to line
+        " - `T`: open in new tab and jump to line
 
     "#tpope/vim-surround
 
@@ -381,13 +452,33 @@
         "< ({ [ work multiline, ' " ` dont
         "linewise visual mode + S<p class="important">: surround lines with p.
 
-        Bundle 'tpope/vim-surround'
+            Bundle 'tpope/vim-surround'
+
+    "#autoclose
+
+        " Automatically closes parenthesis, HTML tags, etc., and puts the cursor in the middle.
+
+            Bundle 'Townk/vim-autoclose'
+
+        " Completion is somewhat smart:
+
+        " - does not complete inside strings
+
+    "#msanders/snipmate.vim
+
+        " Allow you to define snippets: inster pieces of code, and then jump to
+        " the point you want with tab. Also allows to force several placeholders
+        " to be equal.
+
+            Bundle 'msanders/snipmate.vim'
 
     "#vim-vis
 
-        "visual block only replace
-        "select then :B s/a/b/g. replace acts only on selected block
-        Bundle 'taku-o/vim-vis'
+        " Visual block only replace.
+
+            Bundle 'taku-o/vim-vis'
+
+        " Select visual bloc, then `:B s/a/b/g` so that replace acts only on selected block.
 
     "#conque-term
 
@@ -435,7 +526,7 @@
 
         "html mappings
 
-        Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+            Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 
     "#vim latex
 
@@ -448,13 +539,23 @@
 
         "python refactoring
 
-        Bundle 'klen/rope-vim'
+            Bundle 'klen/rope-vim'
 
     "#sovim
 
         "let g:sovim_basename = 'asdf.vim'
 
-        Bundle 'cirosantilli/sovim'
+            Bundle 'cirosantilli/sovim'
+
+    "#rename.vim
+
+        " Rename current file.
+
+            Bundle 'danro/rename.vim'
+
+        " Usage:
+
+            ":reaneme <newname>
 
 "#general
 
@@ -484,7 +585,7 @@
 
     "#search
 
-        "control parameters of `/` search
+        " Control parameters of `/` search
 
             set hlsearch    " highlight search terms
             set incsearch   " match as you type each new character
@@ -495,17 +596,17 @@
             set wrapscan    " wrap around end of document (default)
             "set nowrapscan " do not wrap around
 
-        "stop current highlighting:
+        " Stop current highlighting:
 
             "noh
 
-        "will be automatically turned back on on next search
+        " Will be automatically turned back on on next search
 
-    "working directory is always the same as the file being edited
+    " Working directory is always the same as the file being edited
 
         set autochdir
 
-    "allow to use the mouse:
+    " Allow to use the mouse:
 
         set mouse=a
 
@@ -519,15 +620,15 @@
         set noswapfile
         "set directory=~/tmp     "same as backupdir but for swaps
 
-    "automatically load files that were modified externally
+    " Automatically load files that were modified externally
 
         set autoread
 
-    "reduce standard message verbosity:
+    " Reduce standard message verbosity:
 
         set shortmess=atI
 
-    "command tab completion
+    " Command tab completion
 
         set wildmenu
         set wildmode=list:longest
@@ -545,31 +646,54 @@
 
     "set nohidden
 
-    "maintains at least 4 lines in view from the cursor
+    " Maintains at least 4 lines in view from the cursor
 
         set scrolloff=4
 
-    "colorscheme
+    " Colorscheme
 
         colorscheme vividchalk
 
-    "font size
+    " Font size
 
         set guifont=9
 
-    "line numbers on right of page
+    " Line numbers on right of page
 
         set number
 
     "#wrapping
 
         set nowrap
-        set linebreak
-        "set breakat=                           " at which characters it is possible to break
-        set textwidth=0                         " Maximum line width. Inserts newline automatically at first space.
+        set linebreak                           " Use breakat or not
+        "set breakat=                           " At which characters it is possible to break.
         set wrapmargin=0                        " Wrapping margin left at the right.
-        "let &showbreak = '>'.repeat(' ', 8)    " What to show on the new broken line
+        "let &showbreak = '>'.repeat(' ', 8)    " What to show on the new broken line.
         set nolist
+
+    " Maximum line width. Inserts newline automatically at first space.  0 to disable.
+
+    " If you use filetype needs and autocommand because most of the default filetypes set this to true.
+    " I prefer to highlight long lines and break lines mysefl.
+
+        autocmd Bufenter * set textwidth=0
+
+    "#formatoptions
+
+        " Do not automatically continue comments that start on the first line
+        " when using enter (it will still happen when using `o`).
+
+        " As of 7.3, this would overriden by most pesky default ftplugins.
+
+            "set formatoptions-=r
+
+        " Same as above but for `o`:
+
+            "set formatoptions-=o
+
+    " Stop adding spaces after `.` on `J` and `:j`:
+
+        set nojoinspaces
 
     "#highlight
 
@@ -598,17 +722,15 @@
 
     "#ruler
 
-        "at the right bottom there is info about:
-        "line, column and percentage of current file
-        "in the same space for commands
-        "that is the ruler
+        " The ruler is at the right bottom where there is info about:
+        " line, column and percentage of current file in the same space for commands.
 
-        set ruler
-        "set noruler
+            set ruler
+            "set noruler
 
     "#tabwindow
 
-        "format tab titles:
+        " Format tab titles:
 
             set guitablabel=%N)\ %t\ %M
             "set guitablabel=%!expand(\"\%:p\")
@@ -618,7 +740,7 @@
         "%t: basename of loaded buffer
         "%M: modify status (a '+' if modified)
 
-    "allow backspacing over everything in insert mode:
+    " Allow backspacing over everything in insert mode:
 
         set backspace=indent,eol,start
 
@@ -677,15 +799,15 @@
 
     "#spell
 
-        "On the fly spell checker that underlines errors.
+        " On the fly spell checker that underlines errors.
 
-        "Features:
+        " Features:
 
-        "- to add word under cursor to the dictionary
-        "- view correction suggestions and possibly correct
-        "- jump to next incorrect word
-        "- for code filetypes, only checks spelling on comments and strings.
-        "- for markup filetypes such as HTML or latex, ignores keywords such `<html>`
+        " - to add word under cursor to the dictionary
+        " - view correction suggestions and possibly correct
+        " - jump to next incorrect word
+        " - for code filetypes, only checks spelling on comments and strings.
+        " - for markup filetypes such as HTML or latex, ignores keywords such `<html>`
 
         " Main help page:
 
@@ -707,19 +829,25 @@
 
             autocmd BufEnter,BufRead *.{md,rst,html,tex} setlocal spell spelllang=en_us
 
-    "allows '%' to jump between open 'if' 'else', 'do', 'done', etc. instead.
-    "of just parenthesis like chars
-    "marcros/matchit.vim has been a standard file for years
+        " Keymaps
+
+        " - `]s`: move to next misspelled word
+        " - `z=`: show and select from suggestion list
+        " - `zg`: add word to dict
+
+    " allows '%' to jump between open 'if' 'else', 'do', 'done', etc. instead.
+    " of just parenthesis like chars
+    " marcros/matchit.vim has been a standard file for years
 
         runtime macros/matchit.vim
 
-    "autocompletion. Leave to distro default
-    "set ofu=syntaxcomplete#Complete
+    " autocompletion. Leave to distro default
+    " set ofu=syntaxcomplete#Complete
 
-    "#autosource project files
+    " #autosource project files
 
-        "Allows to define project specific mappings for example
-        "this comes after FileType, and thus has higher precedence
+        " Allows to define project specific mappings for example
+        " this comes after FileType, and thus has higher precedence
 
         " if there is a file named `so.vim` in current dir, source it
         "
@@ -745,11 +873,11 @@
 
 "#language speficif
 
-    "the right place for those is in a ftplugin, but I'm lazy to put such small settings in files...
+    " The right place for those is in a ftplugin, but I'm lazy to put such small settings in files...
 
-    "#data languages
+    " #data languages
 
-    "#html
+    " #html
 
         autocmd FileType html setlocal shiftwidth=4 tabstop=4
         autocmd BufEnter,BufRead *.html call MapAllBuff('<F6>', ':w<cr>:sil ! firefox %<cr>')
@@ -776,6 +904,10 @@
             "clean default output dir
             autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
             autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
+
+            " Markdown *cannot* be indented, and GFM forces us to have
+            " infinitely long lines. because single newlines become line breaks.
+            autocmd BufEnter,BufRead *.{md,rst} setlocal wrap
 
         "#latex #tex
 
@@ -843,30 +975,33 @@
             set noconfirm
             tabdo e
             set confirm
-        endfu
+        endfunction
 
         autocmd FileType vim setlocal shiftwidth=4 tabstop=4
         "this will write all buffers, source this vimrc, and reaload open
         "buffers so that changes in vimrc are applied
         autocmd FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:sil call ReloadVisible()<cr>
 
-"#maps
+        " Save and source current script:
+        autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>
 
-    "Here are all the:
+"#mappings
 
-    "- cheats on default meanings
-    "- custom mappings
+    " Here are all the:
 
-    "sorted by qwerty order so that it is easy to find:
+    " - cheats on default meanings
+    " - custom mappings
+
+    " Sorted by qwerty order so that it is easy to find:
 
         "Esc F1-F12
         "1234567890
-        "qwertyuiop[]
-        "asdfghjkl;'\
+        "qwertyuiop[]\
+        "asdfghjkl;'<cr>
         "zxcvbnm,./
-        "^<v>
+        "<space>
 
-    "language specific mappings may be in language specific sections
+    " Language specific mappings may be in language specific sections.
 
     "#leader
 
@@ -874,8 +1009,8 @@
 
         " Set the current leader:
 
-            "let mapleader = ',' "default
-            let mapleader = '\'
+            let mapleader = ',' "default
+            "let mapleader = '\'
 
         " Use current leader:
 
@@ -917,9 +1052,9 @@
 
             "vn ~
 
-    "#@
+    "#@ #2
 
-        "do macro saved on a register:
+        " Do macro saved on a register:
 
             "noremap @a
 
@@ -927,13 +1062,20 @@
 
             "noremap @@
 
-    "##
+    "## #3
 
         "noremap * backwards:
 
             "noremap #
 
-    "#%
+    "#% #4
+
+        " Swap with L:
+
+            nn $ L
+            vn $ L
+
+    "#% #5
 
         "goes between open close pairs
 
@@ -949,9 +1091,9 @@
 
         "individual pairs and more can be done with `[`
 
-    "#^
+    "#^ #6
 
-        "go to first non whitespace char of line:
+        " Go to first non whitespace char of line:
 
             "unmap ^
 
@@ -959,19 +1101,22 @@
 
             "unmap c-^
 
+        " Swap with H:
+
+            noremap ^ H
+
     "#*
 
-        "search for word under cursor
-        "# for backwards
+        " Search for word under cursor for backwards:
 
             "noremap *
 
-        "replacement starts as current word (w) under cursor
-        "(analogy to `*` which searches for word under cursor):
+        " Replacement starts as current word (w) under cursor
+        " (analogy to `*` which searches for word under cursor):
 
             nn <leader>* bve"zy:%s/<c-r>z/<c-r>z/g<left><left>
 
-    "#(
+    "#( #) #0
 
         "- (previous sentence
         "-) next
@@ -982,42 +1127,56 @@
 
            "h sentence
 
+    "#=
+
+        " Indent current lines to match the indent of the last line:
+
+            "map ==
+
     "#tab
 
-        "next and previous tab:
+        " Next and previous tab:
 
             call MapAll('<c-tab>',   ':tabnext<cr>')
             call MapAll('<c-s-tab>', ':tabprevious<cr>')
 
     "#q
 
-        "start/end recording commands in register a:
+        " Start/end recording commands in register a:
 
             "nn qa
 
-        "enter ex mode:
+        " Enter ex mode:
 
             "nn Q
 
-        "same as command mode, except you can do several ex commands
-        "without exiting ex command mode
+        " Same as command mode, except you can do several ex commands
+        " without exiting ex command mode
 
-        "visual block mode:
+        " Visual block mode:
 
             "nn c-q
 
-        "same as `c-v` in gvim, but used for terminal control
+        " Same as `c-v` in gvim, but used for terminal control
+
+        " Close current window and move left:
+
+            call MapAll('<c-q>', ':q<cr>:tabprevious<cr>')
+
+        " Useful because I don't use subwindows (each window becomes too small),
+        " and often I open up Scrap tabs to the right of the current tab (program | program output),
+        " so when I close the program output I want to go back to the program source.
 
     "#w
 
-        "move across windows:
+        " Move across windows:
 
             "<c-w>h
             "<c-w>j
             "<c-w>k
             "<c-w>l
 
-        "rationale: better with a direct control key mapping.
+        " Rationale: better with a direct control key mapping.
 
         " Close current window:
 
@@ -1029,15 +1188,15 @@
 
     "#e
 
-        "scrol up one line (don't move cursor (unless it would go out of view)):
+        " Scroll up one line (don't move cursor (unless it would go out of view)):
 
             "nn <c-e>
 
-        "mnemonic: Extra lines!!
+        " Scroll down:
 
-        "accelerate vertical scroll down:
+            "nn <c-E>
 
-            "nn <c-E> 5<c-E>
+        " Mnemonic: Extra lines!!
 
     "#r
 
@@ -1072,23 +1231,30 @@
 
     "#y
 
-        "same as c-e, upwards:
+        " Same as c-e, upwards:
 
             "nn <c-y>
 
-        "mnemonic: close to c-u (on qwertyu)
+        " Mnemonic: close to c-u (on qwertyu)
 
-        "same as yy:
+        " Same as yy, therefore useless.
 
             "nn Y
 
-        "accelerate vertical scroll up
+        " Copy to system clipboard:
+
+           nnoremap Y "+y
+           vnoremap Y "+y
+
+        " Very useful to copy paste to browser or terminals.
+
+        " Accelerate vertical scroll up:
 
             "nn <c-Y> 5<c-Y>
 
-        "copy line to system clipboard:
+        " Copy line to system clipboard:
 
-            nn yY ^v$"+y
+           nnoremap yY ^"+y$
 
     "#u
 
@@ -1131,24 +1297,189 @@
 
     "#[ #]
 
-        "miscelaneous commands, mostly section motions
+        " Miscelaneous commands, mostly section motions.
 
-        "- } go to next     latex paragraph (double newline)
-        "- {       previous
+        " - } go to next     latex paragraph (double newline)
+        " - {       previous
 
-        "- ]] go to next     `}` at current level
-        "- [[ go to previous `}` at current level
-        "- ][       next     `{`
-        "- ][       previous `{`
+        " - ]] go to next     `}` at current level
+        " - [[ go to previous `}` at current level
+        " - ][       next     `{`
+        " - ][       previous `{`
 
-        "what is a section? defined by `se sects?`.
+        " What is a section? defined by `se sects?`.
 
             "h sect
 
-        "- c-] go to location of link under cursor used in vim docs TODO how to make one of those?
+        " - c-] go to location of link under cursor used in vim docs TODO how to make one of those?
 
-        "- [(last unmatched open par. Same for),[,],{,}.=, but not for <>
-        "- [z fold move
+        " - [(last unmatched open par. Same for),[,],{,}.=, but not for <>
+        " - [z fold move
+
+        " Some nice ones from the famous `https://github.com/tpope/vim-unimpaired`:
+
+        " Exchange current line(s) with the line above / below:
+
+            function! s:Move(cmd, count, map) abort
+                normal! m`
+                exe 'move'.a:cmd.a:count
+                norm! ``
+                silent! call repeat#set("\<Plug>unimpairedMove".a:map, a:count)
+            endfunction
+
+            function! s:MoveSelectionUp(count) abort
+                normal! m`
+                exe "'<,'>move'<--".a:count
+                norm! ``
+                silent! call repeat#set("\<Plug>unimpairedMoveSelectionUp", a:count)
+            endfunction
+
+            function! s:MoveSelectionDown(count) abort
+                normal! m`
+                exe "'<,'>move'>+".a:count
+                norm! ``
+                silent! call repeat#set("\<Plug>unimpairedMoveSelectionDown", a:count)
+            endfunction
+
+            nnoremap <silent> <Plug>unimpairedMoveUp :<C-U>call <SID>Move('--',v:count1,'Up')<CR>
+            nnoremap <silent> <Plug>unimpairedMoveDown :<C-U>call <SID>Move('+',v:count1,'Down')<CR>
+            noremap <silent> <Plug>unimpairedMoveSelectionUp :<C-U>call <SID>MoveSelectionUp(v:count1)<CR>
+            noremap <silent> <Plug>unimpairedMoveSelectionDown :<C-U>call <SID>MoveSelectionDown(v:count1)<CR>
+
+            nmap [e <Plug>unimpairedMoveUp
+            nmap ]e <Plug>unimpairedMoveDown
+            xmap [e <Plug>unimpairedMoveSelectionUp
+            xmap ]e <Plug>unimpairedMoveSelectionDown
+
+        " Next / previous file in current directory:
+
+            function! s:entries(path)
+            let path = substitute(a:path,'[\\/]$','','')
+            let files = split(glob(path."/.*"),"\n")
+            let files += split(glob(path."/*"),"\n")
+            call map(files,'substitute(v:val,"[\\/]$","","")')
+            call filter(files,'v:val !~# "[\\\\/]\\.\\.\\=$"')
+
+            " filter out &suffixes
+            let filter_suffixes = substitute(escape(&suffixes, '~.*$^'), ',', '$\\|', 'g') .'$'
+            call filter(files, 'v:val !~# filter_suffixes')
+
+            return files
+            endfunction
+
+            function! s:FileByOffset(num)
+            let file = expand('%:p')
+            let num = a:num
+            while num
+                let files = s:entries(fnamemodify(file,':h'))
+                if a:num < 0
+                call reverse(sort(filter(files,'v:val < file')))
+                else
+                call sort(filter(files,'v:val > file'))
+                endif
+                let temp = get(files,0,'')
+                if temp == ''
+                let file = fnamemodify(file,':h')
+                else
+                let file = temp
+                while isdirectory(file)
+                    let files = s:entries(file)
+                    if files == []
+            " TODO: walk back up the tree and continue
+                    break
+                    endif
+                    let file = files[num > 0 ? 0 : -1]
+                endwhile
+                let num += num > 0 ? -1 : 1
+                endif
+            endwhile
+            return file
+            endfunction
+
+            function! s:fnameescape(file) abort
+            if exists('*fnameescape')
+                return fnameescape(a:file)
+            else
+                return escape(a:file," \t\n*?[{`$\\%#'\"|!<")
+            endif
+            endfunction
+
+            nnoremap <silent> <Plug>unimpairedDirectoryNext :<C-U>edit <C-R>=<SID>fnameescape(<SID>FileByOffset(v:count1))<CR><CR>
+            nnoremap <silent> <Plug>unimpairedDirectoryPrevious :<C-U>edit <C-R>=<SID>fnameescape(<SID>FileByOffset(-v:count1))<CR><CR>
+            nmap ]f <Plug>unimpairedDirectoryNext
+            nmap [f <Plug>unimpairedDirectoryPrevious
+
+        " Add blank lines above / below:
+
+            function! s:BlankUp(count) abort
+                put!=repeat(nr2char(10), a:count)
+                ']+1
+                silent! call repeat#set("\<Plug>unimpairedBlankUp", a:count)
+            endfunction
+
+            function! s:BlankDown(count) abort
+                put =repeat(nr2char(10), a:count)
+                '[-1
+                silent! call repeat#set("\<Plug>unimpairedBlankDown", a:count)
+            endfunction
+
+            nnoremap <silent> <Plug>unimpairedBlankUp :<C-U>call <SID>BlankUp(v:count1)<CR>
+            nnoremap <silent> <Plug>unimpairedBlankDown :<C-U>call <SID>BlankDown(v:count1)<CR>
+
+            nmap [<Space> <Plug>unimpairedBlankUp
+            nmap ]<Space> <Plug>unimpairedBlankDown
+
+        "Move between lines with same indentation <http://vim.wikia.com/wiki/Move_to_next/previous_line_with_same_indentation>:
+
+        "- l and ]l jump to the previous or the next line with the same indentation level as the current line.
+        "- [L and ]L jump to the previous or the next line with an indentation level lower than the current line. 
+
+            " Jump to the next or previous line that has the same level or a lower
+            " level of indentation than the current line.
+            "
+            " exclusive (bool): true: Motion is exclusive
+            " false: Motion is inclusive
+            " fwd (bool): true: Go to next line
+            " false: Go to previous line
+            " lowerlevel (bool): true: Go to line with lower indentation level
+            " false: Go to line with the same indentation level
+            " skipblanks (bool): true: Skip blank lines
+            " false: Don't skip blank lines
+            function! NextIndent(exclusive, fwd, lowerlevel, skipblanks)
+            let line = line('.')
+            let column = col('.')
+            let lastline = line('$')
+            let indent = indent(line)
+            let stepvalue = a:fwd ? 1 : -1
+            while (line > 0 && line <= lastline)
+                let line = line + stepvalue
+                if ( ! a:lowerlevel && indent(line) == indent ||
+                    \ a:lowerlevel && indent(line) < indent)
+                if (! a:skipblanks || strlen(getline(line)) > 0)
+                    if (a:exclusive)
+                    let line = line - stepvalue
+                    endif
+                    exe line
+                    exe "normal " column . "|"
+                    return
+                endif
+                endif
+            endwhile
+            endfunction
+
+            " Moving back and forth between lines of same or lower indentation.
+            nnoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+            nnoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+            nnoremap <silent> [L :call NextIndent(0, 0, 1, 1)<CR>
+            nnoremap <silent> ]L :call NextIndent(0, 1, 1, 1)<CR>
+            vnoremap <silent> [l <Esc>:call NextIndent(0, 0, 0, 1)<CR>m'gv''
+            vnoremap <silent> ]l <Esc>:call NextIndent(0, 1, 0, 1)<CR>m'gv''
+            vnoremap <silent> [L <Esc>:call NextIndent(0, 0, 1, 1)<CR>m'gv''
+            vnoremap <silent> ]L <Esc>:call NextIndent(0, 1, 1, 1)<CR>m'gv''
+            onoremap <silent> [l :call NextIndent(0, 0, 0, 1)<CR>
+            onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
+            onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
+            onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
 
     "#|
 
@@ -1158,25 +1489,23 @@
 
     "#a
 
-        "Increment integer number under the cursor!
+        " Increment integer number under the cursor!
 
             "<c-A>
 
-        "pAste from system clipboard before cursor (in the same place as you would edit with 'i')
+        " pAste from system clipboard before cursor (in the same place as you would edit with 'i')
 
-        "the pasted item is left selected in viusal mode if you want to indent it
+        " The pasted item is left selected in viusal mode if you want to indent it
 
-        "so if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
+        " So if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
 
-        "does not affect any vim local register
+        " Does not affect any vim local register
 
-        "rationale
+        " Rationale:
 
-        "- c-A not to conflict with c-v visual block mode or with terminal shortcuts
-
-        "- is left hand only, allowing you to keep your right hand is no the mouse
-
-        "- the default <c-a> command is not that useful
+        " - c-A not to conflict with c-v visual block mode or with terminal shortcuts
+        " - is left hand only, allowing you to keep your right hand is no the mouse
+        " - the default <c-a> command is not that useful
 
             cnoremap <c-A> <c-R>+
             inoremap <c-A> <ESC>"+p`[v`]
@@ -1185,50 +1514,57 @@
 
     "#s
 
-        "same as cl:
+        " Same as cl:
 
             "nn
 
-        "useless.
+        " Useless.
 
-        "substitude starting with selection/selection/:
+        " Substitude starting with selection/selection/:
 
             vn s "zy:%s/<c-r>z/<c-r>z/g<left><left>
 
-        "substitude starting with selection//
+        " Substitude starting with selection//
 
             vn S "zy:%s/<c-r>z//g<left><left>
 
-        "substitute on all file very magic:
+        " Substitute on all file very magic:
 
             nn <leader><leader>s :%s/\v/g<left><left>
 
-        "substitute on all file very non-magic:
+        " Substitute on all file very non-magic:
 
             nn <leader><leader>S :%s/\V/g<left><left>
 
-        "insert single char
-        "can be repeated with `.`
+        " Insert single char
+        " Can be repeated with `.`
 
             function! RepeatChar(char, count)
                 return repeat(a:char, a:count)
-            endfu
+            endfunction
             nn <silent> s :<c-U>exec "normal i".RepeatChar(nr2char(getchar()), v:count1)<cr>
             nn <silent> S :<c-U>exec "normal a".RepeatChar(nr2char(getchar()), v:count1)<cr>
 
-        "type bd *.xml<c-S> to delete all xml buffers
+        " Type bd *.xml<c-S> to delete all xml buffers
 
             "cnoremap <c-S> <c-A>
+
+        " Save current buffer:
+
+            "map  <c-S> <esc>:w<cr>
+            "map! <c-S> <esc>:w<cr>
     "#d
 
-        "cut line to system clipboard:
+        " Cut line to system clipboard:
 
             nn dD ^v$"+ygv
 
-        "takes word under cursor
-        "open in turrent window a file with same name as that word
-        "searchs files under the special path variable (no g: prefix, but global)
-        "  help path
+        " Takes word under cursor
+        " open in turrent window a file with same name as that word
+        " searchs files under the special path variable (no g: prefix, but global)
+
+            "help path
+
         "looks in cur dir by default
         "usage: view header/inlcluded files
 
@@ -1280,14 +1616,13 @@
 
     "#h
 
-        "I would rather have the capital H and L to go to
-        "beginning or end of line
-        "and J, K to jump 5 lines instead.
-        "Also, I prefer to move along visual lines
-        "rather than real lines (thus the remap)
+        " Swap H and L by ^ and $ because:
 
-            "nn H ^
-            "vn H ^
+        " - H and L are useless and very easy to type.
+        " - ^ and $ are very useful and hard to type.
+        " - H and L are good mnemonicts for the begining and end of line.
+
+            noremap H ^
 
         " Make help open on a new window:
 
@@ -1295,25 +1630,40 @@
 
     "#j
 
-        "use screen lines instead of real lines:
+        " Use screen lines instead of real lines:
 
             nn j gj
             vn j gj
 
-        "accelerate down
+        " Accelerate down
 
             nn J 5j
             vn J 5j
 
-        "join lines:
+        " Join lines:
 
             "unmap J
 
-        "same as j:
+        " Same as j:
 
             "nn <c-j> j
 
-        "therefore useless.
+        " therefore useless.
+
+        " If the line ends in certain characters such as a dot `.`, `J` and `:j` add a extra space.
+
+        " Check out `h 'joinspaces'`.
+
+        " Join commented lines:
+
+            function! JoinCommentedLines()
+                normal! j
+                call NERDComment('n', 'uncomment')
+                normal! k
+                j
+            endfunction
+
+            command! J call JoinCommentedLines()
 
     "#k
 
@@ -1341,24 +1691,45 @@
 
     "#l
 
-        "nn L $
-        "vn L $
+            noremap L $
 
-    "#:
+        "#TODO make this a motion so I can `yL` to yank
 
-        "repeat last f, F, t or T (like n,N)
+            "function! MoveRight()
+                "normal! $
+            "endfunction
+
+            "nn L :set opfunc=MoveRight<CR>g@
+
+    "#; #:
+
+        " Repeat last f, F, t or T (like n,N)
 
             "nn ;
 
-        "enter command mode:
+        " Comma to repeat in reverse direction.
+
+        " Enter command mode:
 
             "nn :
 
         "swap ';' and ':', dispensing shift to start commands:
+
             nn ; :
             nn : ;
 
         "noremap <c-;> asd
+
+    "#enter #cr
+
+        " - <c-m> is equivalent to <cr> becuse of terminals: http://stackoverflow.com/questions/3935970/vim-how-to-map-ctrl-m-without-affecting-return-keypress-as-well
+        " - <cr> and <enter> are the same thing, so just use <cr> always
+        " - <s-cr> is hard to mapa problem: http://stackoverflow.com/questions/16359878/vim-how-to-map-shift-enter
+
+        " Make enter similar to `o` on normal mode, except that it does not
+        " continue comments (because of formatoptions `-=r` ):
+
+            nn <cr> :let b:old_formatoptions = &formatoptions<cr>:set formatoptions-=r<cr>A<cr><esc>:let &formatoptions=b:old_formatoptions<cr>
 
     "#z
 
@@ -1402,15 +1773,27 @@
 
     "#x
 
-        "decrement number under cursor (oposite of <c-a>)
+        " Delete char under cursor:
+
+            "nn x
+
+        " Delete char before cursor:
+
+            "nn X
+
+        " Decrement number under cursor (oposite of <c-a>):
 
             "nn <c-X>
 
-        "cut to system clipboard
+        " Cut to system clipboard:
 
             vn X "+ygvd
 
     "#v
+
+        "Enter line visual mode:
+
+            "nn <c-v>
 
         "Enter block visual mode:
 
@@ -1429,11 +1812,15 @@
         "copy to system clipboard:
 
             vn C "+y
+            nn <c-c> "+y
 
     "#m
 
-        nn <c-M> <plugin>NERDComToggleComment<cr>
-            "toggle coMMent
+        " LISTEN UP: <c-m> is equivalent to <cr> because of terminals.
+
+        " For your sanity, never remap <c-m>, always use <cr>.
+
+            "nn <c-m> DONT DO THIS!!
 
         "make mark a on cur buf
 
@@ -1444,12 +1831,14 @@
 
             "mA
 
-    "#<
+    "#< #>
 
-        "keep selected after shift in visual mode
+        " Keep text selected after shift in visual mode:
 
             vn < <gv
             vn > >gv
+
+        " Ctrl maps cannot be used.
 
     "#/
 
@@ -1463,8 +1852,11 @@
 
     "#directionals
 
-            inoremap <down> <c-o>gj
-            inoremap <up> <c-o>g
+        " Better keep them plain (not gj), in order not to break stuff like
+        " omnicompletion.
+
+            "inoremap <down> <c-o>gj
+            "inoremap <up> <c-o>g
 
         "move across windows:
 
@@ -1478,9 +1870,100 @@
         "- control instead of double key for sequences that are often pressed repeatedly
         "- `c-w` is a bit useless, remap it to something better
 
+"#modes
+
+    " Vim is a modal editor, so the first thing you should learn are its modes.
+
+    " The following modes and mode groups exist:
+
+    " - n: normal only
+    " - v: visual and select
+    " - o: operator-pending
+    " - x: visual only
+    " - s: select only
+    " - i: insert
+    " - c: command-line
+    " - l: insert, command-line, regexp-search (and others. Collectively called "Lang-Arg" pseudo-mode)
+
+    "#command mode
+
+        " Is what you get when you type `:`
+
+        " Can tab complete
+
+        " After a tab, left and right arrows navigate possible tab complete commands.
+
+        " After a tab, up returns to the normal command mode
+
+    "#select mode
+
+        " Looks like visual but allows different commands.
+
+        " Enter select mode:
+
+            " gh
+
+        " TODO examples of how commands work
+
+    "#operator pending mode
+
+        " Mode that comes after an operator such as `y`, `d` or `c` was entered.
+
+        " It expects a motion like `hjkl`, *not* an operator as the name may suggest.
+
+        " This is specially important if you want to remap movements.
+
+        " For example, if we do:
+
+            " nnoremap ^ H
+
+        " Then:
+
+            "yH
+
+        "  Will *not* copy up to the beginning of the line. `H` will have its normal meaning
+        " and go to the top of the screen, becase after the `y` is entered, we are in `o` mode.
+
+        " If however use use:
+
+            " onoremap ^ H
+
+        " It will work.
+
+        " The best option for this particular example is probably `noremap`, which would remap `nvo`.
+
+    "#ex mode
+
+        " Is what you get when you type `Q`
+
+        " It is like command mode, except you stay in it after executing a command until you type 'visual'
+
+"#motions #operators
+
+        "h motion.txt
+
+    " Operators are things like `c`, `d` or `y`.
+
+    " Motions are things that can come after operators like `hjkl`, and
+    " indicate where and how (charwise, wordwise, linewise) operators will act.
+
+    "<http://whileimautomaton.net/2008/11/vimm3/operator>
+
 "#vimscript
 
     " Is the built-in language for scripting Vim.
+
+"#version
+
+    " The version command `:version` shows extensive version info, incuding installed
+    " extensions, just like `vim --version`.
+
+    " The function `version`, returns a version integer such as `703` for
+    " version `7.3`, therefore suitable for conditional execution:
+
+        "if version < 600
+        "else
+        "endif
 
 "#sources
 
@@ -1724,24 +2207,6 @@
         " <http://stackoverflow.com/questions/7513380/vim-change-x-function-to-delete-buffer-instead-of-save-quit/7515418#7515418>
 
             ":cabbrev e <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'E' : 'e')<CR>
-
-"#modes
-
-    "#command mode
-
-        " Is what you get when you type `:`
-
-        " Can tab complete
-
-        " After a tab, left and right arrows navigate possible tab complete commands.
-
-        " After a tab, up returns to the normal command mode
-
-    "#ex mode
-
-        " Is what you get when you type `Q`
-
-        " It is like command mode, except you stay in it after executing a command until you type 'visual'
 
 "#comments
 
@@ -2342,9 +2807,12 @@
 
 "#buffer
 
-    "buffers are RAM memory versions of files, possibly without saved to disk changes
+    " Buffers are RAM memory versions of files, possibly without saved to disk changes
 
-    "they may be open on one or more windows or not.
+    " They may be open on one or more windows or not.
+
+    " When you exit Vim, buffers are lost by default, unless you have some plugin that saves and restores them
+    " such as vim session.
 
     "#loaded vs unloaded
 
@@ -2381,23 +2849,25 @@
 
         " bad f1.txt
 
-    "#b
+    "#buffer command
 
-        "load buffer in the buffer list and make it visible in cur window
+        " Very useful because of the tab complete!
 
-        "does not however add new buffers to the buffer list.
+        " Load buffer in the buffer list and make it visible in cur window
 
-        "by number 2:
+        " Does not however add new buffers to the buffer list.
+
+        " By number 2:
 
             "b 2
 
-        "by path:
+        " By path:
 
             "b file.txt
 
-        "tab complete matches in middle of file paths.
+        " Tab complete matches in middle of file paths for open buffers.
 
-        "if there is a single match for a substring of path, <enter> opens it.
+        " If there is a single match for a substring of path, <enter> opens it.
 
     "#e
 
@@ -2585,44 +3055,40 @@
 
     "application: pass parameters to functions
 
-"#norm
+"#normal
 
-    "execute normal mode command:
+    " Execute normal mode command:
 
-        "norm dd
+        "normal! dd
 
-    "this does *not* leave current mode and goes to normal mode, unless you
-    "tell it too
-    "but has all the effects of useing the commnad on normal mode
+    " This does *not* leave current mode and goes to normal mode, unless you tell it too
+    " but has all the side effects of useing the commnad on normal mode.
 
-    "
-
-    "with [!] execute normal mode command without mappings activated:
+    " With [!] execute normal mode command *without* mappings activated:
 
         "map a b
 
-    "b:
+    " b:
 
-        "norm a
+        "normal! a
 
-    "a:
+    " a:
 
-        "norm! a
+        "normal! a
 
-    "**always use this!!** unless you really want to use the user commands...
-    "which is a rare case
+    " **always use this!!** unless you really want to use the user commands...  which is a rare case
 
-    "multiple commands:
+    " Multiple commands:
 
-        "norm! jj
+        "normal! jj
 
-    "goes twice down
+    " Goes twice down.
 
-    "special chars:
+    " Special chars:
 
         "exe "norm! \<s-v>"
 
-    "goes to line visual mode
+    " Goes to line visual mode
 
 "#editing commands
 
@@ -2672,6 +3138,14 @@
         " Yank to register a:
 
             "y a
+
+        " Yank current line (same as yy so useless):
+
+            "Y
+
+        " Yank to clipboard;
+
+            "map Y "+y
 
     "#t #copy
 
@@ -2810,19 +3284,30 @@
 
 "#map #noremap #nmap #nnoremap
 
-    " Map keys and key sequences to other sequences of keys.
-    " later view what they are mapped to.
+    " Map keys and key sequences to other sequences of keys. and view what they are mapped to.
 
     " Main help file:
 
         ":h map
 
-    "#mode versions
+    "#modes
 
-        " - n: normal
-        " - v: visual
-        " - i: insert
-        " - c: command
+        " First learn what one character mode descriptions mean in the modes section.
+
+        " With:
+
+            "help map-modes
+
+        " We see that:
+
+        " - `:map`  does `nvo` == normal + (visual + select) + operator pending
+        " - `:vmap`  does `xs` == visual + select
+        " - `:xmap`  only `x`  == visual visual only
+        " - `:smap`  only `s`  == select only
+        " - `:map!` does `ic`  == insert + command
+        " - `:lmap` does `icl` == insert + command + LangArgs
+
+            " TODO lmap is doing nothing for me. How does it work?
 
         " Test them out:
 
@@ -2951,6 +3436,10 @@
             "of course, it is up to your terminal to determine what maps to
             "what, but usually ^X is achieved via c-x (except for c-@)
 
+            "Control keys that can be mapped
+
+                "http://vimhelp.appspot.com/vim_faq.txt.html#faq-20.5
+
             "#has standard terminal representation
 
                 "- alpha (numbers are reserved for repeating motions)
@@ -3008,6 +3497,10 @@
         "- use `<c-` or `<s-` for commands that must be done repeatedly several times
 
             "instead of two key combinations like `<leaders>a`
+
+    "Allow map and motions to work together:
+
+        "h map-operator
 
 "#abbreviate #noreabbrev
 
@@ -3081,9 +3574,13 @@
 
         "set wrapscan!
 
-    " Get value of option programatically:
+    " Get value of option programatically / to a variable.
 
         "echo &ft
+
+    " Set variable from option (USE `let`!!):
+
+        "let &option=variable
 
     " Just add ampersand.
 
@@ -3096,7 +3593,7 @@
         " Should always be used instead of `:set` in ftplugin files which are
         " sourced for every file of a given type.
 
-    "#option linst
+    "#misc options
 
         " This is a list of options that did not fit anywhere else,
         " by order or decreasing utility.
@@ -3422,6 +3919,9 @@
     " I only recommend using very magic and very non-magic for you own sanity
     " since in those modes it is easy to remember what is what.
 
+    " Note however that very magic is even more magic than Perl! (e.g.: `<` and
+    " `>` are word boundaries).
+
     " For explanations
 
         ":h regex
@@ -3443,17 +3943,22 @@
         " You can change the flavour with \v! with \v, meaning Very magic,
         " only: [A-Za-0-9_] are not magic and thigs really work like in perl!
 
-        "Example:
+        " Example:
 
-        "Default regex:
+        " Default regex:
 
             "/\(a\+\)
 
-        "Very magic regex:
+        " Very magic regex:
 
             "/\v(a+)
 
-        "You should always use very magic.
+        " You should always use very magic.
+
+        " Points in which very magic is more magic than Perl
+
+        " - `<` and `>` for word boundaries
+        " - `=` TODO same as `?`?
 
     "#change default flavor
 
@@ -3463,38 +3968,38 @@
 
     "#classes
 
-        "- \w   alpha (a-zA-z)
-        "- \n     a newline character (line ending)
-        "- \s   whitespace except newline
-        "- \S   non-whitespace
-        "- \_s     a whitespace (space or tab) or newline character
-        "- \_^     the beginning of a line (zero width)
-        "- \_$     the end of a line (zero width)
-        "- \_.     any character including a newline
+        " - \w   alpha (a-zA-z)
+        " - \n     a newline character (line ending)
+        " - \s   whitespace except newline
+        " - \S   non-whitespace
+        " - \_s     a whitespace (space or tab) or newline character
+        " - \_^     the beginning of a line (zero width)
+        " - \_$     the end of a line (zero width)
+        " - \_.     any character including a newline
 
     "#escaping in default mode
 
-        "if you really use default mode, here the escape list follows.
+        " If you really use default mode, here the escape list follows.
 
-        "escape to be literal:
+        " Escape to be literal:
 
-        "- .      wildcard
-        "- a*     repetition
-        "- a\{-}  non greedy repeat
-        "- [abc]  char classes
-        "- ^      begin
-        "- $      end
+        " - .      wildcard
+        " - a*     repetition
+        " - a\{-}  non greedy repeat
+        " - [abc]  char classes
+        " - ^      begin
+        " - $      end
 
-        "escape to be magic:
+        " Escape to be magic:
 
-        "- a\+
-        "- a\(b\|c\)
-        "- a\|b
-        "- a\{1,3}
-        "- \<           word boundary left
-        "- \>           word boundary right
-        "- \1           mathing group 1. can be used on search
-        "- /\(\w\)\1  search equal adjacent chars
+        " - a\+
+        " - a\(b\|c\)
+        " - a\|b
+        " - a\{1,3}
+        " - \<           word boundary left
+        " - \>           word boundary right
+        " - \1           mathing group 1. can be used on search
+        " - /\(\w\)\1  search equal adjacent chars
 
     "#s
 
@@ -3596,7 +4101,7 @@
             ":pe $a = 'b'
             ":perldo s/$a(.)/c\1/g
 
-"#com
+"#command
 
     "view existing and create new commands
 
@@ -3609,12 +4114,25 @@
 
 "#quickfix
 
-    "- :make    creates the error list
-    "- :copen   open error list in window
-    "- :cc      see the current error
-    "- :cn      next error
-    "- :cp      previous error
-    "- :clist   list all errors
+    " - :make    creates the error list
+    " - :copen   open error list in window
+    " - :cc      see the current error
+    " - :cn      jump to next error
+    " - :cp      jump to previous error
+    " - :clist   list all errors
+
+    " On the quickfix window:
+
+    " - <enter>:   jump to file and line of error under cursor
+
+    " Options:
+
+    " - `switchbuff`: Controls how buffers are opened.
+
+        " - `newtab`: open buffers on a new tab
+        " - `usetab`: if an existing tab exists with buffer, use it
+
+           set switchbuf+=usetab,newtab
 
 "#python vim scripting
 
@@ -3698,27 +4216,32 @@
 
     "<http://www.22ideastreet.com/debug/vim-directory-structure/>
 
-    "help on startup sequence:
+    " Help on startup sequence:
 
         ":h startup
 
-    "show all scripts that are run at startup and their order:
+    " Show the order in which scripts are run (including filetype plugins that
+    " were not run for the current filetype):
 
         ":scriptnames
 
+    "#where something is set
+
+        " See verb.
+
     "#verb
 
-        "verbose info on commands
+        " Verbose info on commands.
 
-        "often shows which file last set something!
+        " Often shows which file last set something!
 
-        "very useful to debug.
+        " Very useful to debug.
 
-        "maps:
+        " Maps:
 
             "verb map a
 
-        "options:
+        " Options:
 
             "verb set ft?
 
@@ -3755,11 +4278,11 @@
 
 "#ftplugin #filetype
 
-    "plugins that autocmd sources only for particular types of files
+    " Plugins that autocmd sources only for particular types of files
 
         "h ftplugin
 
-    "for those to work, you must first detect the type of file:
+    " For those to work, you must first detect the type of file:
 
     " List all known filetypes:
 
@@ -3812,44 +4335,55 @@
 
     "#default ftplugin sourcing
 
-        "vim comes with good defaults for loading plugins only for given filetypes.
+        " Vim comes with good defaults for loading plugins only for given filetypes.
 
-        "turn on ftplugins detection:
+        " Turn on ftplugins detection:
 
             "ftplugin on
 
-        "this ources $VIMRUNTIME/ftplugin.vim
-        "which in short executes all files inside
+        " This ources $VIMRUNTIME/ftplugin.vim which in short executes all files inside
 
             ":ru! /ftplugin/
 
-        "with vim extensions .vim in this directory and subdirectories
+        " With vim extensions .vim in this directory and subdirectories
+        " when the buffer of the right filetype enters.
 
-        "when the buffer of the right filetype enters.
-
-        "for example for `c` files the following would all be sourced (in alphabetical path order)
+        " For example for `c` files the following would all be sourced (in alphabetical path order)
 
             "c.vim
             "c_extra.vim
             "c/settings.vim
 
-        "'_' is required to separate c form the arbitrary rest of the name
+        " '_' is required to separate c form the arbitrary rest of the name
 
-        "as explained in the help:
+        " As explained in the help:
 
-        "- always use setlocal      instead of set
-        "-            map <buffer>             map
+        " - always use setlocal      instead of set
+        " -            map <buffer>             map
 
     "#override defaults
 
-        "the simplest way is to  create an ftplugin file and put it inside
-        "after/ftplugin
+        " This is currently a pain.
 
-        "this however is a pain because you have to keep many separate files.
+        " One possibility, is to use:
+
+            "autocmd BufEnter *
+            "autocmd FileType html
+
+        " Directlyl into your vimrc.
+
+        " Another possibility is to:
+
+            "autocmd BufEnter so ~/.vimrc.after
+
+        " And put everything that you want sourced after ftplugins in that file.
+
+        " Another possibility is to use `after/ftplugin`, but the problem with 
+        " that option is that it only works for single files.
 
     "#default indent sourcing
 
-        "exact same idea as ftplugin, but replace plugin by indent.
+        " Exact same idea as ftplugin, but replace plugin by indent.
 
 "#find
 

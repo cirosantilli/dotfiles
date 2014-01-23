@@ -212,6 +212,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
         alias xar="xargs -0I'{}'"
         alias xselb="xsel --clipboard"
+        alias vss="vagrant ssh"
         alias vuvs="vagrant up --no-provision && vagrant ssh"
 
         ##power management
@@ -247,12 +248,15 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                 export LC_COLLATE
                     #dot will come first!
 
+            ##ls
+
                 alias ls='ls -1 --color=auto --group-directories-first'
                 alias lsa='ls -A'
                 alias ll="ls -h -l"
                 alias lls="ls -h -l | sort -k5hr" #by Size
                 alias lla="ll -A"
                 alias llas="ls -a -h -l | sort -k5hr" #by Size
+                alias lsg="ls | grep"
 
             ##bookmarks
 
@@ -268,6 +272,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
                         alias krpy='krusader "$MY_PYTHON_DIR"'
                         alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
                         alias krror='krusader "$PROGRAM_DIR/rails-cheat/cirosantilli"'
+                        alias krgitl='krusader "$PROGRAM_DIR/rails-cheat/cookbook-gitlab"'
 
                     alias krtst='krusader "$TEST_DIR"'
 
@@ -318,6 +323,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias gbr="git branch"
             alias gbrv="git branch -v"
             alias gcl="git clone --recursive"
+            alias gcm="git commit"
             alias gcma="git commit --allow-empty-message -am"
             function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
             alias gco="git checkout"
@@ -325,11 +331,12 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias gcod="git checkout dev"
             alias gcp="git cp"
             alias gcr="git cherry-pick"
-            alias gdi="git diff"
+            alias gdf="git diff"
+            alias ggr="git grep"
             alias glo="git log"
             alias gme="git merge"
             alias gppp="git push prod prod"
-            alias gps="git push --tags"
+            alias gps="git push"
             alias gpsom="git push --tags -u origin master"
             alias gpl="git pull origin master"
             alias gplu="git pull up master"
@@ -337,6 +344,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             alias grt="git remote"
             alias grtv="git remote -v"
             alias gst="git status"
+            alias gsh="git stash"
             alias gta="git tag"
 
             alias vgig="vim .gitignore"
