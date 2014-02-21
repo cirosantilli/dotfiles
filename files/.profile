@@ -86,6 +86,8 @@ export LC_COLLATE="en_US.UTF-8"
         export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin"
         export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 
+        export RAILS_DIR="$PROGRAM_DIR/rails-cheat/cirosantilli"
+
         export ANDROID_DIR="$PROGRAM_DIR/android"
         export ANDROID_ADT_DIR="$ANDROID_DIR/adt"
         export MY_ANDROID_DIR="$ANDROID_DIR/$MYID/"
@@ -112,4 +114,7 @@ export LC_COLLATE="en_US.UTF-8"
         export LFS=/media/lfs/
             #linux from scratch home
 
+    ##for Gitlab development as git user so I can run X programs as Git.
+
+        xhost +
 #</ciro>

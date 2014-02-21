@@ -170,13 +170,13 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
     ##aliases
 
-        #aliases are not exported to subshells!
+        # Aliases are not exported to subshells!
 
-        #therefore, those will only work if this file gets sourced,
-        #whih only happens on interactive shells, and not when executing
-        #scripts with ``bash -c`` or ``./``
+        # Therefore, those will only work if this file gets sourced,
+        # which only happens on interactive shells, and not when executing
+        # scripts with `bash -c` or `./`
 
-        alias ack="ack-grep"
+        alias ack="ack-grep -a --smart-case"
         alias cla11="clang++ -std=c++11"
         alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
         function dpx { dropbox puburl "$1" | xsel --clipboard; }
@@ -203,7 +203,6 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         #alias sudo='sudo env PATH=$PATH'
             #normally, sudo cannot see your personal path variable. now it can.
 
-        alias pe='perl'
         alias tree='tree --charset=ascii'
 
         alias vrmm='vim readme.md'
@@ -214,6 +213,59 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias xselb="xsel --clipboard"
         alias vss="vagrant ssh"
         alias vuvs="vagrant up --no-provision && vagrant ssh"
+
+        ##perl
+
+            # Mass Regex Refactor.
+            #
+            # Shows old and new lines.
+            #
+            # Dry run:
+            #
+            #    find . -type f | per "a/b/g"
+            #
+            # Sample output:
+            #
+            #     a:1
+            #     a
+            #     c
+            #
+            #     b:1
+            #     b
+            #     c
+            #
+            # Replace (Not Dry run):
+            #
+            #    find . -type f | per "a/b/g" D
+            #
+            function mrr {
+                if [ $# -gt 1 ]; then
+                    if [ "$2" = "D" ]; then
+                        xargs perl -lapi -e "s/$1"
+                    fi
+                else
+                    sed "s|^\./||" | xargs -L 1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
+                fi
+            }
+
+            # "grep" only in Basename.
+            #
+            # Sample usage:
+            #
+            #     git ls-files | grepb a.c
+            #
+            # Highlight breaks if Perl pattern is not POSIX ERE.
+            #
+            function grepb { perl -ne "print if m/$1(?!.*\/.)/" | grep --color -E "$1|\$";}
+
+            # Find files recursively filtering by regex.
+            #
+            # Basename only, prune hidden.
+            function fin { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1" ;}
+            # also Hidden
+            function finh { find . ! -path . | sed "s|^\./||" | grepb "$1" ;}
+            # full Path
+            function finp { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/" ;}
 
         ##power management
 
@@ -320,35 +372,48 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         ##git
 
             alias gad="git add"
+            alias garcp="git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f"
             alias gbr="git branch"
             alias gbrv="git branch -v"
             alias gcl="git clone --recursive"
             alias gcm="git commit"
             alias gcma="git commit --allow-empty-message -am"
+            alias gcman="git commit --amend --no-edit"
             function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
             alias gco="git checkout"
             alias gcom="git checkout master"
-            alias gcod="git checkout dev"
+            alias gcoo="git checkout --ours"
+            alias gcot="git checkout --theirs"
             alias gcp="git cp"
             alias gcr="git cherry-pick"
             alias gdf="git diff"
-            alias ggr="git grep"
+            alias gfe="git fetch"
+            alias ggr="git grep --color"
+            alias gka="gitk --all"
+            alias gls="git ls-files"
+            alias glsg="git ls-files | grep"
             alias glo="git log"
             alias gme="git merge"
+            alias gmv="git mv"
             alias gppp="git push prod prod"
             alias gps="git push"
             alias gpsom="git push --tags -u origin master"
             alias gpl="git pull origin master"
             alias gplu="git pull up master"
+            alias grb="git rebase"
+            alias grbc="git rebase --continue"
             alias grm="git rm"
             alias grt="git remote"
             alias grtv="git remote -v"
             alias gst="git status"
             alias gsh="git stash"
             alias gta="git tag"
+            alias gtr="git ls-tree"
 
             alias vgig="vim .gitignore"
             alias lngp="latex-new-github-project.sh cirosantilli"
+
+            alias ghb="hub browse"
 
         ##makefile
 
@@ -380,7 +445,14 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         ##mysql
 
             alias myr="mysql -u root -p"
-            alias myt="mysql -u test -h localhost -ppass test"
+
+            # Before using this you ran:
+            #mysql -u root -h localhost -p -e "
+                #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
+                #CREATE DATABASE test;
+                #GRANT ALL ON a.* TO 'a'@'localhost';
+            #"
+            alias myt="mysql -u a -h localhost -pa a" #MYsql Test
 
         ##music
 
