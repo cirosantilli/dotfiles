@@ -50,7 +50,7 @@ export LC_COLLATE="en_US.UTF-8"
 
     #directory structure
 
-        MYID=cirosantilli
+        MYID=my
 
         export ROOT_DIR="$HOME"
 
@@ -118,3 +118,8 @@ export LC_COLLATE="en_US.UTF-8"
 
         xhost +
 #</ciro>
+
+# Texlive
+export PATH=$PATH:/usr/local/texlive/2013/bin/i386-linux
+export MANPATH=$MANPATH:/usr/local/texlive/2013/texmf-dist/doc/man
+export INFOPATH=$INFOPATH:/usr/local/texlive/2013/texmf-dist/doc/info

@@ -842,7 +842,8 @@
         set shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
         set smarttab      "insert tabs on the start of a line according to
                                             " shiftwidth, not tabstop
-    "#eol #endofline
+
+    "#eol #endofline #newline at end of file
 
         " Controls automatic addition of <EOL> at the end of file.
 
@@ -864,6 +865,11 @@
         " - you cannot view or remove the <EOL> easily.
         "
         "    Workaround: `!truncate -1 %` (-2 on Windows...)
+        "
+        " - if you forget to set the default behavior for new files to match the projects standards, you may break them.
+        "       and there will be no immediate visual indiation of that (except for `git diff`).
+        "
+        "    Workaround: never create, always copy existing files.
         "
         " - it is confusing for the initiates
 
@@ -1026,11 +1032,11 @@
 
         "#latex #tex
 
-            autocmd FileType tex setlocal shiftwidth=4 tabstop=4
+            autocmd FileType tex setlocal shiftwidth=2 tabstop=2
 
             autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>')
             autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>')
-            autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
+            autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r.pdf"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
             "au BufEnter,BufRead *{.tex,.md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
 
             "this works
@@ -1051,9 +1057,9 @@
 
     "#interpreted languages #python #bash #perl #ruby
 
-        autocmd FileType sh,python,perl setlocal shiftwidth=4 tabstop=4
-        autocmd FileType ruby setlocal shiftwidth=2 tabstop=2
-        autocmd BufEnter,BufRead *.{erb,feature} setlocal shiftwidth=2 tabstop=2
+        autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
+        autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
+        autocmd BufEnter,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
         autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
 
     "#compile to executable languages
