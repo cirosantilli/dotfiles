@@ -56,7 +56,11 @@
                 let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
                     "store its number
             end
-            exe 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
+        "
+"
+"
+"
+    exe 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
                 "execute command on the new tab
         endfunction
 
@@ -146,7 +150,7 @@
 
         "let Vundle manage Vundle:
 
-                Bundle 'gmarik/vundle'
+                Plugin 'gmarik/vundle'
 
         "#inner workings
 
@@ -172,6 +176,12 @@
             "I don't think `ftplugin/after` mappings can be overriden
 
             "TODO
+
+    "#local-vimrc
+
+        Plugin 'MarcWeber/vim-addon-local-vimrc'
+
+        " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
     "#AutoComplPop
 
@@ -271,14 +281,14 @@
 
         " Once you leave insert mode, it stops.
 
-            Bundle 'msanders/snipmate.vim'
-            Bundle 'kaichen/vim-snipmate-ruby-snippets'
+            Plugin 'msanders/snipmate.vim'
+            Plugin 'kaichen/vim-snipmate-ruby-snippets'
 
     "#syntastic
 
         " Does syntax checking using external checkers.
 
-            Bundle 'scrooloose/syntastic'
+            Plugin 'scrooloose/syntastic'
 
         " You must then install the external syntax checkers you will use.
 
@@ -303,7 +313,7 @@
 
         " Insaney powerful git Vim frontend:
 
-            Bundle 'tpope/vim-fugitive'
+            Plugin 'tpope/vim-fugitive'
 
         " Tutorial: https://github.com/tpope/vim-fugitive
 
@@ -314,6 +324,47 @@
         " - Gremove <name>: close rename buffer and `git rm`
         " - Gbrowse <ref>: open GitHub URL corresponding to file in browser.
         " - Gblame <ref>: vplist a git blame. Corresponds line by line with the buffer. Both scroll together.
+        " - Gstatus <ref>: tons of per file quickfix like functionality like:
+        "     - `-`: git add file on line under cursor
+        "     - `O`: open file on line under cursor in new tab
+        "     - `D`: open Gdiff on file under cursor on the window below
+        "     - `cc`: Gcommit
+        "     - `cA`: Gcommit| --amend --reuse-message=HEAD
+
+        " Open diff for current file in a new tab.
+        "
+        " Requires:
+        "
+        "     Plugin 'vim-scripts/AnsiEsc.vim'
+        "
+        function! Gdf()
+            tabnew
+            setlocal buftype=nofile
+            setlocal bufhidden=wipe
+            setlocal noswapfile
+            execute 'read ! git diff --color ' . expand('%:p')
+            AnsiEsc
+        endfunction
+        command! Gdf call Gdf()
+
+        command! Gad execute '!git add ' . expand('%:p')
+        command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
+        command! Gps !git push
+        command! Gpsf !git push -f
+
+    "#AnsiEsc
+
+        " Show ansi escapes as color.
+
+           Plugin 'vim-scripts/AnsiEsc.vim'
+
+        " Toogle interpret on:
+
+            "AnsiEsc
+
+        " Toogle interpret off:
+
+            "AnsiEsc
 
     "#easymotion
 
@@ -331,7 +382,7 @@
 
             "h easymotion
 
-        Bundle 'Lokaltog/vim-easymotion'
+        Plugin 'Lokaltog/vim-easymotion'
 
         let g:EasyMotion_mapping_f = '<leader>/'
         let g:EasyMotion_mapping_F = '<leader>?'
@@ -342,7 +393,7 @@
 
         " File manager.
 
-            Bundle 'scrooloose/nerdtree'
+            Plugin 'scrooloose/nerdtree'
 
             "h nerdtree
 
@@ -383,11 +434,14 @@
         " - :BookmarkToRoot <name>: move root to bookmark with given name
         " - :ClearBookmark <name>: delete bookmark
 
+        " Bookmarks are stored under `~/.NERDTreeBookmarks`.
+        " The only way to remove bookmarks to directories that don't exist is to edit that file.
+
     "#conque-term
 
         " Github mirror of the Google code main repo:
 
-            Bundle 'rosenfeld/conque-term'
+            Plugin 'rosenfeld/conque-term'
 
         " - runs terminal inside vim
         " - hit esc and you can edit history as a vim buffer
@@ -420,9 +474,9 @@
 
             " Required by vim-session and other xolox plugins:
 
-                Bundle 'xolox/vim-misc'
+                Plugin 'xolox/vim-misc'
 
-            Bundle 'xolox/vim-session'
+            Plugin 'xolox/vim-session'
 
         " Help:
 
@@ -454,8 +508,8 @@
         " Specially interesting is the completioin mode which transforms:
         " `abc` into a regexp `a.*b.*c`.
 
-            Bundle 'L9'
-            Bundle 'FuzzyFinder'
+            Plugin 'L9'
+            Plugin 'FuzzyFinder'
 
     "#ctrlp
 
@@ -465,13 +519,13 @@
 
         " Tutorial: https://github.com/kien/ctrlp.vim
 
-            Bundle 'kien/ctrlp.vim'
+            Plugin 'kien/ctrlp.vim'
 
     "#ack.vim
 
         " Vim ack integration
 
-           Bundle 'mileszs/ack.vim'
+           Plugin 'mileszs/ack.vim'
 
         " Usage:
 
@@ -492,7 +546,7 @@
 
         " Does the right type of comment for each recognized filetype.
 
-            Bundle 'scrooloose/nerdcommenter'
+            Plugin 'scrooloose/nerdcommenter'
 
         " Default mappings start with `<leader>c`.
 
@@ -522,13 +576,13 @@
         "< ({ [ work multiline, ' " ` dont
         "linewise visual mode + S<p class="important">: surround lines with p.
 
-            Bundle 'tpope/vim-surround'
+            Plugin 'tpope/vim-surround'
 
     "#autoclose
 
         " Automatically closes parenthesis, HTML tags, etc., and puts the cursor in the middle.
 
-            Bundle 'Townk/vim-autoclose'
+            Plugin 'Townk/vim-autoclose'
 
         " Completion is somewhat smart:
 
@@ -538,7 +592,7 @@
 
         " Better documented than tabular, and more vim like interface.
 
-            Bundle 'junegunn/vim-easy-align'
+            Plugin 'junegunn/vim-easy-align'
 
         " Test with:
 
@@ -555,7 +609,7 @@
 
         " Easily align at certain characters.
 
-            Bundle 'godlygeek/tabular'
+            Plugin 'godlygeek/tabular'
 
         " Align current paragraph (lines without \n\n) at a regexp (comma in the example):
 
@@ -573,7 +627,7 @@
 
         " Visual block only replace.
 
-            Bundle 'taku-o/vim-vis'
+            Plugin 'taku-o/vim-vis'
 
         " Select visual bloc, then `:B s/a/b/g` so that replace acts only on selected block.
 
@@ -581,7 +635,7 @@
 
         " Allows for dot `.` repetition of custom commands.
 
-            Bundle 'tpope/vim-repeat'
+            Plugin 'tpope/vim-repeat'
 
         " Used in plugins from tpope and others.
 
@@ -595,7 +649,7 @@
         " - code folding
         " - header navigation mappings
 
-            Bundle 'plasticboy/vim-markdown'
+            Plugin 'plasticboy/vim-markdown'
 
         " Disable folding:
 
@@ -610,12 +664,12 @@
 
         " HTML mappings.
 
-            Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+            Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 
     "#vim latex
 
-        " Bundle 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
-        " Bundle 'jcf/vim-latex'
+        " Plugin 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
+        " Plugin 'jcf/vim-latex'
         " could not install with vundle. next best option then
         " set runtimepath+=$HOME/.vim/plugin/vim-latex
 
@@ -623,23 +677,23 @@
 
         " Python refactoring.
 
-            Bundle 'klen/rope-vim'
+            Plugin 'klen/rope-vim'
 
     "#coffee-script
 
-            Bundle 'kchmck/vim-coffee-script'
+            Plugin 'kchmck/vim-coffee-script'
 
     "#sovim
 
         "let g:sovim_basename = 'asdf.vim'
 
-            Bundle 'cirosantilli/sovim'
+            Plugin 'cirosantilli/sovim'
 
     "#rename.vim
 
         " Rename current file.
 
-            Bundle 'danro/rename.vim'
+            Plugin 'danro/rename.vim'
 
         " Usage:
 
@@ -834,34 +888,28 @@
 
     "#tab
 
-        set expandtab     "insert spaces instead of tabs
-        set tabstop=4     "a tab viewed as 8 spaces
-        set shiftwidth=4  "number of spaces to use for autoindenting
-        set autoindent    "always set autoindenting on
-        set copyindent    "copy the previous indentation on autoindenting
-        set shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
-        set smarttab      "insert tabs on the start of a line according to
-                                            " shiftwidth, not tabstop
+        set expandtab     " Insert spaces instead of tabs
+        set tabstop=4     " A tab viewed as 8 spaces
+        set shiftwidth=4  " Number of spaces to use for autoindenting
+        set autoindent    " Always set autoindenting on
+        set copyindent    " Copy the previous indentation on autoindenting
+        set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'
+        set smarttab      " Insert tabs on the start of a line according to
+						  " shiftwidth, not tabstop
 
-    "#eol #endofline #newline at end of file
+    "EOL
 
-        " Controls automatic addition of <EOL> at the end of file.
+        " System independant end of line. `\n` on linux, `\r` on Mac OS X, `\n\r` on Windows.
 
-        " Summary: by default, Vim *hides* the <EOL> at end of file if present.
-        " so that the only way to view/remove it is to modify this option.
+    "#eol #endofline #newline at end of file #binary
 
-        " By default, Vim remembers if the file had an <EOL> at end or not when it is opened,
-        " via this option, and when saving adds an <EOL> if it did
-
-        " This option is turned on by default for new buffers, so if you save a non empty buffer,
-        " it will end with an <EOL> even if you see none.
-
-        " The tradeoff is simple. If you keep the default magic you have the upside that:
-
-        " - don't have to worry about different per project / per file type conventions.
-
-        " The downsides are:
-
+        " If `eol` and `binary` are on (default), Vim adds an <EOL> at the end of file if it does not have one already.
+        "
+        " `eol` is automatically set when opening a new file if it ends in <EOL>. Therefore, if `binary` is on,
+        " Vim maintains the file state.
+        "
+        " The downsides of having `binary` are that:
+        "
         " - you cannot view or remove the <EOL> easily.
         "
         "    Workaround: `!truncate -1 %` (-2 on Windows...)
@@ -869,18 +917,29 @@
         " - if you forget to set the default behavior for new files to match the projects standards, you may break them.
         "       and there will be no immediate visual indiation of that (except for `git diff`).
         "
-        "    Workaround: never create, always copy existing files.
+        "    Workaround: never create, always copy existing files, or use a local vimrc that sets binary.
         "
         " - it is confusing for the initiates
-
+        "
+        " If you keep the default magic you have the upside that:
+        "
+        " - don't have to worry about different per project / per file type conventions.
+        "
         " We feel that this default was a good design choice by Vim,
         " specially once you understand that there is magic going on.
+        "
+        " When you open a non-empty file that does not end in a newline, it shows [noeol] on the status line.
+        " You can see this anytime by doing `e`.
 
-        " Exact behaviour:
+        set binary
 
-        " - if `binary` is off (default), this has no effect
-        " - if `binary` is on:
-            " - TODO
+    "#binary file edit
+
+        "TODO how to edit a binary file?
+
+    "#encoding #fileenconding #utf8 #bomb
+
+        "http://stackoverflow.com/questions/16507777/vim-set-encoding-and-fileencoding-utf-8
 
     "#fold
 
@@ -1721,36 +1780,38 @@
 
     "#g
 
-        "leader for lots of miscelaneous commands
+        " Leader for lots of miscelaneous commands
 
-        "- gg: go to first line
-        "- G:  go to last line
-        "- {num}G:  go to line num
-        "- ge: go to end of last word!
-        "- gE:
-        "- gv: go to visual mode and reselect previous visual selection.
+        " - gg: go to first line
+        " - G:  go to last line
+        " - {num}G:  go to line num
+        " - ge: go to end of last word!
+        " - gE:
+        " - gv: go to visual mode and reselect previous visual selection.
 
-            "also restores visual mode type (char, bloc, line)
+            " Also restores visual mode type (char, bloc, line)
 
-            "you can also set that selection programatically:
+            " You can also set that selection programatically:
 
                 "call setpos("'<", [0, 2, 1])
                 "call setpos("'>", [0, 3, 2])
                 "normal! gv
 
-        "- `gx`: open URL (local file / internet) under cursor using appropriate program.
+        " - `gx`: open URL (local file / internet) under cursor using appropriate program.
 
             " If does not start with a protocol, assumes file: relative to current dir.
 
                 let g:netrw_browsex_viewer = "xdg-open"
 
-        "- {num}gt: go to tab num 1 based.
+        " - {num}gt: go to tab num 1 based.
 
-        "select Go to last Pasted text (to indent, or delete for example)
+        " - `g<c-g>`: `wc` like output.
+
+        " Select Go to last Pasted text (to indent, or delete for example)
 
             nn <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
-        "show current file name and position:
+        " Show current file name and position:
 
             "nunmap <c-g>
 
@@ -2024,6 +2085,10 @@
 
         "- control instead of double key for sequences that are often pressed repeatedly
         "- `c-w` is a bit useless, remap it to something better
+
+"#command line #invocation
+
+	" Run vim 
 
 "#modes
 
@@ -2343,11 +2408,11 @@
 
         " View all user defined commands (including those in plugins):
 
-            "com!
+            "command!
 
         " Only those that start with start
 
-            "com start
+            "command start
 
         " Define a new command.
 
@@ -2943,41 +3008,41 @@
 
 "#shell commands
 
-    "excecute shell commands:
+    " Excecute shell commands:
 
         "! ls; ls
 
-    "pass vim variable to bash command:
+     "pass vim variable to bash command:
 
         "let a = 1
         "exe "! echo " . a
 
     "#system
 
-        "exec sh command and get stdout
+        " Exec sh command and get stdout
 
-        "let a = system('ec asdf')
-        "echo a
-            "asdf
+            "let a = system('ec asdf')
+            "echo a
+                "asdf
 
-        "let a = system('sort', "b\na")
-        "echo a
-            "a
-            "b
+            "let a = system('sort', "b\na")
+            "echo a
+                "a
+                "b
 
-        ":ec v:shell_error
-            "constains return status of last command executed by shell after
-            "- ``:!``
-            "- ``:r !``
-            "- calling ``system()``
+            ":echo v:shell_error
+                "constains return status of last command executed by shell after
+                "- ``:!``
+                "- ``:r !``
+                "- calling ``system()``
 
     "#exit status of shell command
 
-        "is stored in `v:shell_error`
+        " Is stored in `v:shell_error`
 
-        "same as `$?`
+        " Same as `$?`
 
-        "works after:
+        " Works after:
 
         "- !
         "- r !
@@ -3148,7 +3213,7 @@
     "#scratch buffer
 
         " To create a buffer which contains only output which you want to
-        " browse with vim such as program output, use:
+        " browse with Vim such as program output, use:
 
             "tabnew
             "setlocal buftype=nofile
@@ -3241,16 +3306,15 @@
 
 "#exe
 
-    "execute string as a vim command
+    " Execute string as a vim command
 
         "exe "let a = 10"
-        "if
 
-    "multiple args are concatenated separated by space:
+    " Multiple args are concatenated separated by space:
 
         "exe "echo 1 |" "echo 1"
 
-    "application: pass parameters to functions
+    " Application: pass parameters to functions.
 
 "#normal
 
@@ -4182,7 +4246,6 @@
 
         " - .      wildcard
         " - a*     repetition
-        " - a\{-}  non greedy repeat
         " - [abc]  char classes
         " - ^      begin
         " - $      end
@@ -4193,6 +4256,7 @@
         " - a\(b\|c\)
         " - a\|b
         " - a\{1,3}
+        " - a\{-}        non greedy repeat. Analogous to {,}, mnemonic: match less because of `-` sign.
         " - \<           word boundary left
         " - \>           word boundary right
         " - \1           mathing group 1. can be used on search

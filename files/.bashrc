@@ -183,8 +183,6 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias cla11="clang++ -std=c++11"
     alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
-    alias dush="du -sh * | sort -hr 1>&2"
-    alias dushf='du -sh * | sort -hr | tee .dush`timestamp` 1>&2' #to File and stdout
     alias fbr="find_basename_res.py"
     alias fmmmr="find-music-make-m3u ."
     alias golly="env UBUNTU_MENUPROXY=0 golly"
@@ -197,20 +195,23 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     cmd="paplay ~/share/sounds/alert.ogg"
     alias playa="$cmd" # play Alert
     alias playi="bash -c 'while true; do $cmd; done' &" # play alert Infinite. Stop with `kill %1`.
-      alias rmd="sleep 2 && playa && recordmydesktop --stop-shortcut Shift+F10"
-
     alias pdc='pandoc'
+    alias rmd="sleep 2 && playa && recordmydesktop --stop-shortcut 'Control+Mod1+z'"
     alias pingg='ping google.com'
-    alias psg='sudo ps aux | grep'
+    alias psg='sudo ps aux | grep -i'
     alias rbul="rename_basename_unidecode_lowercase.py"
     alias rifr="replace_in_files_regex.py"
     alias robots="robots -ta`for i in {1..1000}; do echo -n n; done`"
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
+    alias timestamp="date '+%Y-%m-%d-%H-%M-%S'"
+      # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
+      alias dush="du -sh .[^.]* * 2>/dev/null | sort -hr"
+      alias dushf='dush | tee ".dush$(timestamp)"' # to File
     # Normally, sudo cannot see your personal path variable. now it can:
     #alias sudo='sudo env PATH=$PATH'
     alias tree='tree --charset=ascii'
-    alias vrmm='vim readme.md'
+    alias vrmm='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
     function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
     alias xar="xargs -I'{}'"
@@ -227,7 +228,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       #
       # Dry run:
       #
-      #  find . -type f | per "a/b/g"
+      #    find . -type f | mrr "a/b/g"
       #
       # Sample output:
       #
@@ -241,7 +242,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       #
       # Replace (Not Dry run):
       #
-      #  find . -type f | per "a/b/g" D
+      #  find . -type f | mrr "a/b/g" D
       #
       function mrr {
         if [ $# -gt 1 ]; then
@@ -249,7 +250,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
             xargs perl -lapi -e "s/$1"
           fi
         else
-          sed "s|^\./||" | xargs -L 1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
+          sed "s|^\./||" | xargs -L1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
         fi
       }
 
@@ -408,13 +409,16 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias gls="git ls-files"
       alias glso="git ls-files --other"
       alias glsg="git ls-files | grep"
-      alias glo="git log"
+      alias glo="git log --decorate"
+      #alias glop="git log --pretty=oneline --decorate"
+      alias glop="git log --pretty=format:'%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s' --date=short | column -ts'|' | less -r"
+      alias glog="git log --pretty=oneline --decorate --graph --all"
       alias gme="git merge"
       alias gmv="git mv"
       alias gppp="git push prod prod"
       alias gps="git push"
       alias gpsom="git push --tags -u origin master"
-      alias gpl="git pull origin master"
+      alias gpl="git pull"
       alias gplu="git pull up master"
       alias gre="git rebase"
       alias grec="git rebase --continue"
@@ -433,15 +437,16 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       # Github
 
         alias ghb="git browse-remote"
+        alias ghpb="git push && git browse-remote"
+        alias ghcmanpsf="gcmanpsf && git browse-remote"
 
     ##makefile
-
-      #Those are life changers:
 
         alias mk='make'
         alias mkc='make clean'
         alias mkd='make dist'
         alias mkdc='make distclean'
+        alias mkh='make help'
         # It is better to `make` first without the sudo so that the generated build
         # will not be owned, or else it could only be cleaned with by sudo.
         alias mki='make && sudo make install'
@@ -451,7 +456,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias mku='sudo make uninstall'
         alias mkv='make view'
 
-      #commands from git root:
+      # From Git root:
 
         alias gmk='cd `git rev-parse --show-toplevel` && make'
         alias gmkc='cd `git rev-parse --show-toplevel` && make clean'
@@ -493,6 +498,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       function ssr { sudo service "$1" restart ; }
       function sss { sudo service "$1" start ; }
       function sst { sudo service "$1" status ; }
+      function ssta { sudo service --status-all ; }
       alias ssar="sudo service apache2 restart"
       alias sslr="sudo service lightdm restart"
 
@@ -516,3 +522,9 @@ export PATH="/usr/local/heroku/bin:$PATH"
 # Added by vrm:
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+# The next line updates PATH for the Google Cloud SDK.
+source /home/ciro/google-cloud-sdk/path.bash.inc
+
+# The next line enables bash completion for gcloud.
+source /home/ciro/google-cloud-sdk/completion.bash.inc
