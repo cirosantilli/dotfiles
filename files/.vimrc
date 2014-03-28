@@ -118,31 +118,37 @@
 
         " Plugin manager.
 
+        " Install:
+
+            "sudo aptitude install -y vim git
+            "git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+            "vim +PluginInstall +qall
+
         " Concurrence to Pathogen. Seems to be winning.
 
         " Use this! Easy install and plugin update via single vimrc lines + git or github repos.
 
         " View all avaliable bundles (searches github?):
 
-            "Bundles
+            "Plugins
 
         "#install plugin
 
-            "add:
+            " Add to `.vimrc`:
 
-                "`Bundle 'gitrepouser/reponame'`
+                "Plugin 'gitrepouser/reponame'
 
-            "to `.vimrc` and run:
+            " and run:
 
-                "`BundleInstall`
+                "`PluginInstall`
 
-        "update all installed plugins:
+        " Update all installed plugins:
 
-            "BundleInstall!
+            "PluginInstall!
 
-        "remove a plugin:
+        " Remove a plugin:
 
-        "required:
+        " Required:
         filetype off
 
         set rtp+=~/.vim/bundle/vundle/
@@ -159,7 +165,7 @@
 
         "#overriding mappings
 
-            "using the default path maintained by vundle you can override
+            " Using the default path maintained by vundle you can override
 
             "ftplugin mappings by:
 
@@ -699,6 +705,11 @@
 
             ":reaneme <newname>
 
+    "#colorscheme
+
+        Plugin 'tpope/vim-vividchalk'
+        colorscheme vividchalk
+
 "#general
 
     " Leave vi compatibility to get better features.
@@ -792,9 +803,6 @@
 
         set scrolloff=4
 
-    " Colorscheme
-
-        colorscheme vividchalk
 
     " Font size
 
@@ -888,14 +896,14 @@
 
     "#tab
 
-        set expandtab     " Insert spaces instead of tabs
-        set tabstop=4     " A tab viewed as 8 spaces
-        set shiftwidth=4  " Number of spaces to use for autoindenting
-        set autoindent    " Always set autoindenting on
-        set copyindent    " Copy the previous indentation on autoindenting
-        set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'
-        set smarttab      " Insert tabs on the start of a line according to
-						  " shiftwidth, not tabstop
+        set expandtab     "insert spaces instead of tabs
+        set tabstop=4     "a tab viewed as 8 spaces
+        set shiftwidth=4  "number of spaces to use for autoindenting
+        set autoindent    "always set autoindenting on
+        set copyindent    "copy the previous indentation on autoindenting
+        set shiftround    "use multiple of shiftwidth when indenting with '<' and '>'
+        set smarttab      "insert tabs on the start of a line according to
+                                            " shiftwidth, not tabstop
 
     "EOL
 
@@ -931,7 +939,7 @@
         " When you open a non-empty file that does not end in a newline, it shows [noeol] on the status line.
         " You can see this anytime by doing `e`.
 
-        set binary
+        "set binary
 
     "#binary file edit
 
@@ -2086,9 +2094,20 @@
         "- control instead of double key for sequences that are often pressed repeatedly
         "- `c-w` is a bit useless, remap it to something better
 
-"#command line #invocation
+"#invocation
 
-	" Run vim 
+    " Run Vim commands from the command line:
+
+        "vim +PluginInstall +qall
+
+    " Same as:
+
+        "vim -c PluginInstall -c qall
+
+    " Same as doing form inside of Vim:
+
+        "PluginInstall
+        "qall
 
 "#modes
 

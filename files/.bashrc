@@ -168,9 +168,6 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
 #<ciro>
 
-  source ~/.nvm/nvm.sh
-  nvm use 0.10.26 &>/dev/null
-
   ##aliases
 
     # Aliases are not exported to subshells!
@@ -219,6 +216,11 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
     alias xselb="xsel --clipboard"
     # wget Mirror. My favorite mirror command:
     alias wgetm="wget -E -k -l inf -np -p -r"
+
+    ##Provision machines
+
+      alias provision-min-ssh="wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash"
+      alias provision-min="wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-ssh.sh | bash"
 
     ##mass regex operations
 
@@ -513,6 +515,9 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
       alias sugqa='ssh ubuntu@gitlab-elearn-qa'
       alias sugpr='ssh ubuntu@gitlab-elearn-prod'
+
+  source ~/.nvm/nvm.sh
+  nvm use 0.10.26 &>/dev/null
 
 #</ciro>
 
