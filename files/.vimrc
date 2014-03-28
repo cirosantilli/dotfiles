@@ -189,6 +189,10 @@
 
         " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
+        " Start from root, ans source every file with a given basename (.vimrc by default).
+
+        " Security is hash based: you have to accept only once for each filename / content hash.
+
     "#AutoComplPop
 
         " Automatically opens Vim's built-in completion as you type.
@@ -688,12 +692,6 @@
     "#coffee-script
 
             Plugin 'kchmck/vim-coffee-script'
-
-    "#sovim
-
-        "let g:sovim_basename = 'asdf.vim'
-
-            Plugin 'cirosantilli/sovim'
 
     "#rename.vim
 
