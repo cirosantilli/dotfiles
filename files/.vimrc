@@ -653,22 +653,34 @@
 
     "#markdown
 
-        " Offers;
+        "#plasticboy markdown
 
-        " - syntax highlighting
-        " - code folding
-        " - header navigation mappings
+            " Offers;
 
-            Plugin 'plasticboy/vim-markdown'
+            " - syntax highlighting
+            " - code folding
+            " - header navigation mappings
 
-        " Disable folding:
+                Plugin 'plasticboy/vim-markdown'
 
-            "let g:vim_markdown_folding_disabled=1
-            let g:vim_markdown_initial_foldlevel=6
+            " Disable folding:
 
-        " There is also a version by tpope, but plasticboy seems better:
+                "let g:vim_markdown_folding_disabled=1
+                let g:vim_markdown_initial_foldlevel=6
 
-            "Bundle 'tpope/vim-markdown'
+            " There is also a version by tpope, but plasticboy seems better:
+
+                "Bundle 'tpope/vim-markdown'
+
+        "#instant markdown
+
+            " Preview server on localhost:8090.
+            "
+            " Recompiles everytime you type with redcarpet.
+            "
+            " Tons of external dependencies. I'd rather just compile and do `firefox output.html` for now.
+
+                "Plugin 'suan/vim-instant-markdown'
 
     "#sparkup
 
@@ -720,19 +732,33 @@
 
             filetype on
 
-        " this allows the following to work properly:
+        " This allows the following to work properly:
 
-        " plugins for given filetypes
+        " Plugins for given filetypes
 
             filetype plugin on
 
-        " syntax highlighting
+        " Syntax highlighting
 
             syntax on
 
         " indent for specific filetypes
 
             filetype indent on
+
+    "#modeline
+
+        " If on, Vim will read options from one of the first comment `modelines` lines (default 5)
+        " at the top of the file.
+        "
+        " This is specially useful for setting filetypes on files without extension not shebang
+        " such as Vagrantfiles with something of the type:
+        "
+        "   # vi: set ft=ruby :
+        "
+        " Default: on.
+
+            "set modeline
 
     "#search
 
@@ -984,7 +1010,7 @@
 
     "#conceal
 
-        " The thing that renders onscreeen Greek, underline, etc. in latex for example.
+        " The thing that renders onscreeen Greek, underline, etc. in LaTeX for example.
 
         " g:tex_conceal=""
 
@@ -1094,6 +1120,8 @@
             " Markdown *cannot* be indented, and GFM forces us to have
             " infinitely long lines. because single newlines become line breaks.
             autocmd BufEnter,BufRead *.{md,rst} setlocal wrap
+
+            " Make index
 
         "#latex #tex
 
@@ -1519,7 +1547,7 @@
 
             "h sect
 
-        " - c-] go to location of link under cursor used in vim docs TODO how to make one of those?
+        " - c-] go to location of link under cursor used in Vim docs TODO how to make one of those?
 
         " - [(last unmatched open par. Same for),[,],{,}.=, but not for <>
         " - [z fold move
@@ -1941,7 +1969,7 @@
         " Make enter similar to `o` on normal mode, except that it does not
         " continue comments (because of formatoptions `-=r` ):
 
-            nn <cr> :let b:old_formatoptions = &formatoptions<cr>:set formatoptions-=r<cr>A<cr><esc>:let &formatoptions=b:old_formatoptions<cr>
+            "nn <cr> :let b:old_formatoptions = &formatoptions<cr>:set formatoptions-=r<cr>A<cr><esc>:let &formatoptions=b:old_formatoptions<cr>
 
     "#z
 
@@ -2402,7 +2430,7 @@
 
             "function! F()
                 "echo 1
-            "endf
+              "endfunction
 
         " `F` is not a command, so you **cannot** do:
 
@@ -2467,6 +2495,10 @@
         " <http://stackoverflow.com/questions/7513380/vim-change-x-function-to-delete-buffer-instead-of-save-quit/7515418#7515418>
 
             ":cabbrev e <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'E' : 'e')<CR>
+
+        " Define command only on current buffer:
+
+            "command! -buffer Test echo 1
 
 "#comments
 
@@ -2549,7 +2581,7 @@
 
             "function! s:F()
                 "retu 1
-            "endf
+              "endfunction
 
             "nn <buffer> call <SID>F()
 
@@ -2683,42 +2715,42 @@
 
 "#string
 
-    "escape
+    " Escape
 
-    ":ec 'That''s enough.'
-    ":ec '\"'
+    " :ec 'That''s enough.'
+    " :ec '\"'
         "exactly \ and "
         "the only escape inside single quotes is '' for '
 
     "special chars
 
-        "clike:
+        " C-like:
 
             "echo "\n"
 
-        "control chars:
+        " Control chars:
 
             "echo "\<s-v>"
 
-        "appear like ^V
+        " Appear like ^V
 
-        "must use double quotes:
+        " Must use double quotes:
 
             "echo '\n'
 
-        "outputs literal '\n'
+        " Outputs literal '\n'
 
-    "compare:
+    " Compare:
 
-        "note the insanity:
+        " Note the insanity:
 
             "abc" ==# "Abc"	  "evaluates to 0
             "abc" ==? "Abc"	  "evaluates to 1
             "abc" ==  "Abc"	  "evaluates to 1 if 'ignorecase' is set, which is
                               "the default!
 
-        "therefore: **always use either ==# or ==? when comparing strings!!**,
-        "since `==` can be broken by an option.
+        " therefore: **always use either ==# or ==? when comparing strings!!**,
+        " since `==` can be broken by an option.
 
     "cat:
 
@@ -2736,7 +2768,7 @@
         "if 10  + "10.10" != 20   | throw 'assertion failed' | end
         "if 1.1 + "1.1"   != 2.1  | throw 'assertion failed' | end
 
-    "substring
+    " Substring, range:
 
         "let a = 'abc'
         "if a[0]     != 'a'  | throw 'assertion failed' | end
@@ -2766,9 +2798,15 @@
 
     " int to string is done automatically (weak typing):
 
-        if 1 . '2' != '12'  | throw 'assertion failed' | end
-        if '1' . 2 != '12'  | throw 'assertion failed' | end
-        if 1 . '' != '1'    | throw 'assertion failed' | end
+        "if 1 . '2' != '12'  | throw 'assertion failed' | end
+        "if '1' . 2 != '12'  | throw 'assertion failed' | end
+        "if 1 . '' != '1'    | throw 'assertion failed' | end
+
+    "#repeat
+
+        " Like Python string multiplication:
+
+            "if repeat('a', 3) != 'aaa'  | throw 'assertion failed' | end
 
 "#if
 
@@ -2784,7 +2822,7 @@
 
     "#boolean operations
 
-        "all that matters is =0 or !=0:
+        " Like in C, all that matters is =0 or !=0:
 
             "if !0     != 1 | throw 'assertion failed' | end
             "if !1     != 0 | throw 'assertion failed' | end
@@ -2801,6 +2839,14 @@
         "if range(1, 3) != [1, 2, 3] | throw 'assertion failed' | end
         "if range(3, 1, -1) != [3, 2, 1] | throw 'assertion failed' | end
 
+    " Loop all lines of a file modifying them with any function.
+
+        "for i in range(1, line('$'))
+            "let l:line = getline(i)
+            "let l:line =  substitute(l:line, 'a\(.\), '\1', '')
+            "setline(i, l:line)
+        "endfor
+
 "#while
 
         "let i = 0
@@ -2809,19 +2855,19 @@
             "let i = i + 1
         "endwhile
 
-    "there is no do-while loop
+    " There is no do-while loop
 
 "#function
 
-    "must start with uppercase char
+    " Must start with uppercase char
 
-    "'!' means can override existing func
+    " '!' means can override existing func
 
-    "cannot use | for single line
+    " Cannot use | for single line
 
         "function! F(a, b)
             "retu a:a + a:b
-        "endf
+        "endfunction
 
         "if F(1, 2) != 3 | throw 'assertion failed' | end
 
@@ -2831,12 +2877,12 @@
                 "for i in range(a:0)
                     "echo a:{i}
                 "endfor
-            "endf
+              "endfunction
 
-        "- a:0 contains the number of varargs. This does not cound regular
-            "arguments.
-        "- a:1 contains the vararg arg.
-        "- a:2 contains the second arg, and so on.
+        " - a:0 contains the number of varargs. This does not cound regular
+        "     arguments.
+        " - a:1 contains the vararg arg.
+        " - a:2 contains the second arg, and so on.
 
     "#call
 
@@ -2851,48 +2897,52 @@
         " Put them inside a list, and unpack at return time:
 
             "function! F()
-                "retu [1,2]
-            "endf
+                "return [1,2]
+            "endfunction
 
             "let [a,b] = F()
             "if [a,b] != [1,2] | throw 'assertion failed' | end
 
-    "no return val returns 0:
+    " No return val returns 0:
 
         "function! F()
-        "endf
+        "endfunction
 
         "if F() != 0 | throw 'assertion failed' | end
 
     "#default values
 
-        "concept does not exist in the language.
+        " Concept does not exist in the language.
 
-        "possible solution:
+        " Workaround;
 
             "function! F(a, ...)
-
                 "if a:0 > 0
-                    "let b = a:1
-                "el
-                    "let b = 0
-                "en
+                    "let l:b = a:1
+                "else
+                    "let l:b = 10
+                "endif
 
                 "if a:0 > 1
-                    "let c = a:2
-                "el
-                    "let c = 0
-                "en
+                    "let l:c = a:2
+                "else
+                    "let l:c = 100
+                "endif
 
-            "endf
+                "return a:a + l:b + l:c
+            "endfunction
+
+            "if F(1) != 111 | throw 'assertion failed' | end
+            "if F(2, 20) != 122 | throw 'assertion failed' | end
+            "if F(3, 30, 300) != 333 | throw 'assertion failed' | end
 
     "#assign function to a variable
 
-        "must use the `function` function:
+        " Must use the `function` function:
 
             "function! F()
-                "ret 1
-            "endf
+                "return 1
+            "endfunction
 
             "let A = function('F')
 
@@ -2901,18 +2951,18 @@
 
             "if A() != 1 | throw 'assertion failed' | end
 
-        "also works:
+        " Also works:
 
             "echo function('F')()
             "call function('F')()
 
 "#exceptions
 
-    "throw:
+    " Throw:
 
         "throw 'abc'
 
-    "try catch finnaly:
+    " Try catch finnaly:
 
         "try:
             "throw 'abc'
@@ -3197,15 +3247,14 @@
 
     "#alternate file
 
-        "then you open a buffer on top of another on a window,
-        "for example with `:b`,
-        "the old buffer is remembered and is called the *alternate file*
+        " Then you open a buffer on top of another on a window, "for example with `:b`,
+        " the old buffer is remembered and is called the *alternate file*.
 
-        "you can toogle between the current and alternate file with <c-*>
+        " You can toogle between the current and alternate file with <c-*>.
 
             ":b
 
-        "this behaviour can be orverriden with `keepalt`.
+        " This behaviour can be orverriden with `keepalt`.
 
     " Wipe all buffers without corresponding existing files:
 
@@ -3283,43 +3332,98 @@
 
         " Close all windows except cur one
 
+    "#lines #columns
+
+        " Total tab width, size of terminal window, not affected by splits.
+
+        " Modifying it on GVim resizes the X window:
+
+            "set lines=30
+            "set columns=50
+
+    "#winwidth #winheight
+
+        " Minimal window width.
+
+        " Set number of columns:
+
+            "set winwidth=50
+
+        " Minimum half of current window:
+
+            "let &winwidth=(&columns/2)
+
     "#resize
 
-        " Resize window (vertically or horizontally depending on window type):
+        " Many options:
 
-            "res 10
-            "res -5
-            "res +5
+            "help window-resize
 
-"#tab
+        " Set number of lines in window. Does not change window size: blank lines are added to end.
 
-    " Create an horizontal split with same bufer:
+        " Fixed value:
 
-        "split
+            "resize 10
 
-    " Vertical;
+        " Relative values:
 
-        "vsplit
+            "resize -5
+            "resize +5
 
-    " Make both scroll at the same time;
+    "#winwidth() #get window width #winheight
 
-        "vsplit
-        "set scrollbind
-        "norm <c-w>l
-        "set scrollbind
+        " Current window:
+
+            "echo winwidth(0)
+            "echo winheight(0)
+
+        " Given window:
+
+            "echo winwidth(2)
+            "echo winheight(2)
+
+    "#split #vsplit
+
+        " Create an horizontal split with same bufer:
+
+            "split
+
+        " Set height of the new window:
+
+            "50split
+
+        " Vertical;
+
+            "vsplit
+
+        " Make both scroll at the same time;
+
+            "vsplit
+            "set scrollbind
+            "norm <c-w>l
+            "set scrollbind
+
+    "#vertical
+
+        " Execute command that would open an horizontal split but open a vertical split instead.
+
+            "vertical help
 
 "#tab
 
     " A tab is a collection of split windows.
 
-"#tab command #:tab
+    "#tab command
 
-    " Execute command, and if it would open a new window open a new tab
-    " instead.
 
-    " Ex: open help in a new tab instead of a new window.
+        "#tab command #:tab
 
-        "tab help
+            " Execute command, and if it would open a new window open a new tab
+            " instead.
+
+            " Ex: open help in a new tab instead of a new window.
+
+                "tab help
 
 "#exe
 
@@ -3446,7 +3550,7 @@
 
         " Removes leading spaces of second line.
 
-    "#global
+    "#global #:g
 
         " Does an arbitrary command on all lines that match a regexp.
 
@@ -3460,21 +3564,21 @@
 
 "#range
 
-    "for many commands you can specify a line range of action
+    " For many commands you can specify a line range of action
 
-    "lines 1 and 2:
+    " Lines 1 and 2:
 
         ":1,2p
 
-    "from cur line to end:
+    " From cur line to end:
 
         ".+1,$p
 
-    "all lines before the current line
+    " All lines before the current line
 
         ":1,.-1p
 
-    "all lines:
+    " All lines:
 
         "%p
         "1,$p
@@ -3686,7 +3790,7 @@
 
                 "function! F()
                     "echo 1
-                "endf
+                  "endfunction
 
                 "map            a :cal F()<cr>
                 "map <silent>   a :cal F()<cr>
@@ -3960,7 +4064,7 @@
         "- r: basename without extension
         "- e: extension
 
-    "#position
+    "#position #line
 
         " Get cur line number:
 
@@ -4052,7 +4156,7 @@
                     "call setpos('.', oldpos)
                     "th 'bad position argument: ' . a:x . ' ' . a:y . ' ' . a:x2 . ' ' . a:y2
                 "en
-            "endf
+              "endfunction
 
     "#mode()
 
@@ -4176,10 +4280,6 @@
 
             "normal! '"ay'
             "echo getreg('a')
-
-    "#grep #vimgrep
-
-        "TODO
 
 "#regex
 
@@ -4379,23 +4479,30 @@
             ":pe $a = 'b'
             ":perldo s/$a(.)/c\1/g
 
-"#command
+"#quickfix #makeprg
 
-    "view existing and create new commands
+    " Try it out:
 
-    "`!` creates new. must start uppercase
-    "command! -nargs=+ -complete=command Func call Func(<q-args>)
-    "define a user command from a function
-    "now you can call  Func as df
+        "set makeprg='cat'
+        "make %
+        "copen
 
-    "com! -nargs=1 Pd :perldo
-
-"#quickfix
-
-    " - :make    creates the error list
-    " - :copen   open error list in window
+    " - :make    runs commands based on the `makeprg` option on a shell and captures its output.
+    "
+    "       The default value for `makeprg` is `make`, so by default `:make` runs `make`.
+    "
+    "       See h makeprg
+    "
+    " - :copen   open everything that came out of the :make command or :vimgrep command, one per line.
+    "
+    "       Works well with tab:
+    "
+    "           tab copen
+    "
+    "       <enter> jumps to the line of the error on the buffer.
+    "
     " - :cc      see the current error
-    " - :cn      jump to next error
+    " - :cn      jump to next error on buffer.
     " - :cp      jump to previous error
     " - :clist   list all errors
 
@@ -4412,34 +4519,56 @@
 
            set switchbuf+=usetab,newtab
 
+    "#grep #vimgrep
+
+        " Same as `:make` , but specialized to generating output by grepping files.
+
+        " `errorformat` is replaced by `grepformat`.
+
+        " - mimgrep uses Vim's internal regexes and is threrefore more portable
+        " - grep uses the external utility.
+
+        " Perfect for file navigation. On a markdown file, try:
+
+            "vimgrep '^#' %
+            "tab copen
+
+        " And you now have a navigable index!
+
+    "#errorformat #grepformat
+
+        " Those options affect **only** how the input is parsed, not how the quickfix looks.
+
+        " There seems to be no way of doing that: <http://stackoverflow.com/questions/11199068/how-to-format-vim-quickfix-entry/11202758#11202758>
+
 "#python vim scripting
 
-    "you can script vim with python instead of vimscript!!!
+    " You can script vim with python instead of vimscript!!!
 
-    "this is a **GREAT** feature!!! no more vimscript for me except for the most simple tasks!!!
+    " This is a **GREAT** feature!!! no more vimscript for me except for the most simple tasks!!!
 
-    "h python-vim
+    " h python-vim
 
-    "for this to work you need:
+    " For this to work you need:
 
-    "- python!
-    "- vim compiled with python support
+    " - python!
+    " - vim compiled with python support
 
-    "separate commands go to the same python session:
+    " Separate commands go to the same python session:
 
         "py a = 1
         "py a = a + 1
         "py assert a == 2
 
-    "commands:
+    " Commands:
 
         ":py vim.command('p')               "execute an Ex command
 
-    "normal mode commands:
+    " Normal mode commands:
 
         ":py vim.command('normal j')        "down one line
 
-    "window:
+    " Window:
 
         ":py w = vim.windows[n]             "gets window "n"
         ":py cw = vim.current.window        "gets the current window
@@ -4447,7 +4576,7 @@
         ":py w.cursor = (row, col)          "sets the window cursor position
         ":py pos = w.cursor                 "gets a tuple (row, col)
 
-    "buffer:
+    " Buffer:
 
         ":py b = vim.buffers[n]             "gets buffer "n"
         ":py cb = vim.current.buffer        "gets the current buffer
@@ -4461,15 +4590,15 @@
 
     "#vim to python
 
-        "evaluate a vim expression and get its result into python
+        " Evaluate a vim expression and get its result into python
 
-        "returns:
+        " Returns:
 
-        "- a string if the Vim expression evaluates to a string or number
-        "- a list if the Vim expression evaluates to a Vim list
-        "- a dictionary if the Vim expression evaluates to a Vim dictionary
+        " - a string if the Vim expression evaluates to a string or number
+        " - a list if the Vim expression evaluates to a Vim list
+        " - a dictionary if the Vim expression evaluates to a Vim dictionary
 
-        "pass a vim integer variable to python:
+        " Pass a vim integer variable to python:
 
             ":let a = 1
             ":py a = int(vim.eval('a'))
@@ -4479,7 +4608,7 @@
 
         "
 
-    "multiline python code:
+    " Multiline python code:
 
 "py << EOF
 "def f():
@@ -4488,7 +4617,7 @@
 
     "function! PythonTest()
         "py f()
-    "endf
+      "endfunction
 
 "#configuration #startup #initialization
 

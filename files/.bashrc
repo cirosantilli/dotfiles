@@ -506,30 +506,43 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
     ##vagrant
 
+      alias vde="vagrant destroy"
       alias vpr="vagrant provision"
       alias vss="vagrant ssh"
       alias vup="vagrant up"
-      alias vuvs="vagrant up --no-provision && vagrant ssh"
+      alias vsh="vagrant ssh"
+      alias vups="vagrant up && vagrant ssh"
+      alias vus="vagrant up --no-provision && vagrant ssh"
+      alias vdus="vagrant destroy && vagrant up && vagrant ssh"
 
     ##gitlab elearn ssh
 
       alias sugqa='ssh ubuntu@gitlab-elearn-qa'
       alias sugpr='ssh ubuntu@gitlab-elearn-prod'
 
-  source ~/.nvm/nvm.sh
-  nvm use 0.10.26 &>/dev/null
+  ##source lines
 
+    # NVM
+    if [ -r ~/.nvm/nvm.sh ]; then
+      source ~/.nvm/nvm.sh
+      nvm use 0.10.26 &>/dev/null
+    fi
+
+    # Heroku Toolbelt:
+    export PATH="/usr/local/heroku/bin:$PATH"
+
+    # RVM:
+    if [ -r "$HOME/.rvm/scripts/rvm" ]; then
+      # Load RVM into a shell session *as a function*
+      source "$HOME/.rvm/scripts/rvm"
+      PATH=$PATH:$HOME/.rvm/bin
+    fi
+
+    # GCE:
+    if [ -d ~/google-cloud-sdk ]; then
+      # The next line updates PATH for the Google Cloud SDK.
+      source ~/google-cloud-sdk/path.bash.inc
+      # The next line enables bash completion for gcloud.
+      source ~/google-cloud-sdk/completion.bash.inc
+    fi
 #</ciro>
-
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
-# Added by vrm:
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
-# The next line updates PATH for the Google Cloud SDK.
-source /home/ciro/google-cloud-sdk/path.bash.inc
-
-# The next line enables bash completion for gcloud.
-source /home/ciro/google-cloud-sdk/completion.bash.inc

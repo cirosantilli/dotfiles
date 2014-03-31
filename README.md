@@ -1,8 +1,6 @@
 Create hard links to your home from files under `files/`:
 
-    git clone https://github.com/cirosantilli/dotfiles
-    cd dotfiles
-    ./install.sh
+    git clone https://github.com/cirosantilli/dotfiles && cd dotfiles && ./install.sh
 
 The best way to do the above on a machine with X Display Manager is:
 
