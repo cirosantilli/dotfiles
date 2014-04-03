@@ -231,6 +231,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       # Dry run:
       #
       #    find . -type f | mrr "a/b/g"
+      #    git ls-files | mrr "a/b/g"
       #
       # Sample output:
       #
@@ -242,7 +243,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       #   b
       #   c
       #
-      # Replace (Not Dry run):
+      # Replace (Not Dry run): WARNING: will transform symlinks into files. TODO how to avoid?
       #
       #  find . -type f | mrr "a/b/g" D
       #
@@ -395,6 +396,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias gcm="git commit"
       alias gcman="git commit --amend --no-edit"
       alias gcmanpsf="git commit --amend --no-edit && git push -f"
+      alias gadcmanpsf="git add . && gcmanpsf"
       function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
       alias gco="git checkout"
       alias gcom="git checkout master"
@@ -408,6 +410,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias gfe="git fetch"
       alias ggr="git grep --color"
       alias gka="gitk --all"
+      alias giac="git init && git add . && git commit -m 'Init.'" #Git Init Add Commit
       alias gls="git ls-files"
       alias glso="git ls-files --other"
       alias glsg="git ls-files | grep"
@@ -422,8 +425,10 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias gpsom="git push --tags -u origin master"
       alias gpl="git pull"
       alias gplu="git pull up master"
-      alias gre="git rebase"
-      alias grec="git rebase --continue"
+      alias grb="git rebase"
+      alias grbc="git rebase --continue"
+      alias grs="git reset"
+      alias grshh="git reset --hard HEAD~"
       alias grm="git rm"
       alias grt="git remote"
       alias grtv="git remote -v"
@@ -448,6 +453,7 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
         alias mkc='make clean'
         alias mkd='make dist'
         alias mkdc='make distclean'
+        alias mkde='make deps'
         alias mkh='make help'
         # It is better to `make` first without the sudo so that the generated build
         # will not be owned, or else it could only be cleaned with by sudo.
@@ -506,14 +512,15 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
     ##vagrant
 
-      alias vde="vagrant destroy"
-      alias vpr="vagrant provision"
-      alias vss="vagrant ssh"
-      alias vup="vagrant up"
-      alias vsh="vagrant ssh"
-      alias vups="vagrant up && vagrant ssh"
-      alias vus="vagrant up --no-provision && vagrant ssh"
-      alias vdus="vagrant destroy && vagrant up && vagrant ssh"
+        alias vde="vagrant destroy"
+        alias vdef="vagrant destroy -f"
+        alias vdu="vagrant destroy -f && vagrant up"
+        alias vdus="vagrant destroy -f && vagrant up && vagrant ssh"
+        alias vpr="vagrant provision"
+        alias vss="vagrant ssh"
+        alias vup="vagrant up"
+        alias vups="vagrant up && vagrant ssh"
+        alias vus="vagrant up --no-provision && vagrant ssh"
 
     ##gitlab elearn ssh
 

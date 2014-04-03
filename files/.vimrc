@@ -183,9 +183,16 @@
 
             "TODO
 
-    "#local-vimrc
+    "#local-vimrc #auto source local .vimrc
+
+        function! F()
+            echo 'global'
+        endfunction
 
         Plugin 'MarcWeber/vim-addon-local-vimrc'
+        "TODO: without this it does not work! With this I get cannot redefine XXX such that is is defined with `!`
+        "here and in the local vimrc
+        autocmd BufEnter,BufRead * SourceLocalVimrcOnce
 
         " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
@@ -318,6 +325,15 @@
         " - shadows variable
 
         " Check is done at save time.
+
+        " C++11:
+
+            let g:syntastic_cpp_compiler = 'g++'
+            let g:syntastic_cpp_compiler_options = ' -std=c++11'
+
+        " C++11 syntax. TODO not working?
+
+            "Plugin 'https://github.com/vim-scripts/Cpp11-Syntax-Support'
 
     "#fugitive
 
@@ -4283,7 +4299,7 @@
 
 "#regex
 
-    " Pearl like but...
+    " Pearl like but... not really.
 
     " By default must escape some chars for them *to be* magic but not others...
 
@@ -4335,14 +4351,14 @@
 
         " Points in which very magic is more magic than Perl
 
-        " - `<` and `>` for word boundaries
+        " - `<` and `>` for word boundaries. This is insanely useful to find single character variables: `<x>`.
         " - `=` TODO same as `?`?
 
     "#change default flavor
 
-        "Cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
+        " Cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
 
-        "Would break too may plugings.
+        " Would break too may plugings.
 
     "#classes
 
