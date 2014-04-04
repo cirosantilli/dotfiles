@@ -2,15 +2,13 @@ Create hard links to your home from files under `files/`:
 
     git clone https://github.com/cirosantilli/dotfiles && cd dotfiles && ./install.sh
 
-The best way to do the above on a machine with X Display Manager is:
+Do the above and also install an Ubuntu 12.04 survival kit:
 
-    wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min.sh | bash
+    wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install.sh | bash -s min
 
-and for a SSH-only machine:
+SSH only survival kit:
 
-    wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash
-
-both of which also install other basic utilities such as Vim packages.
+    wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install.sh | bash -s min-ssh
 
 #Reverse
 

@@ -192,7 +192,7 @@
         Plugin 'MarcWeber/vim-addon-local-vimrc'
         "TODO: without this it does not work! With this I get cannot redefine XXX such that is is defined with `!`
         "here and in the local vimrc
-        autocmd BufEnter,BufRead * SourceLocalVimrcOnce
+        "autocmd BufEnter,BufRead * SourceLocalVimrcOnce
 
         " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
@@ -1077,6 +1077,32 @@
         " marcros/matchit.vim has been a standard file for years
 
             runtime macros/matchit.vim
+
+    "#sessions #views
+
+        " Vim has a built-in session system.
+
+        " This sytem is made more confortable by plugins such as vim-session, but the backend is the same.
+
+        " Create a session file called Session.vim
+
+            "mksession
+
+        " Overwrite if existing:
+
+            "mksession!
+
+        " Custom name:
+
+            "mksession Custom_name.vim
+
+        " What exactly to save is controlled by the vim
+
+        " This saves a lot of trash to the sessionoptions option, such as:
+        " - global variables, which are already set from your vimrc
+        " - options which you only changed once, and do not to pass to the next session.
+
+            set sessionoptions=blank,buffers,help,tabpages
 
     "#gvim specific
 
@@ -2150,6 +2176,18 @@
 
         "PluginInstall
         "qall
+
+"#vimrc
+
+    " Default location: ~/.vimrc.
+
+    " Starting on Vim 7.4: `~/.vim/vimrc` will also be a possible location, thus clearing up your home a bit.
+
+    " Start vim with a given vimrc:
+
+        "vim -u vimrc a.txt
+
+    " Good way to test plugins with a minimum vimrc.
 
 "#modes
 

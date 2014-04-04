@@ -552,4 +552,5 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       # The next line enables bash completion for gcloud.
       source ~/google-cloud-sdk/completion.bash.inc
     fi
+    alias gce='gcutil --service_version="v1" --project="cirosantilli-hash" ssh --zone="europe-west1-b" "instance0"'
 #</ciro>
