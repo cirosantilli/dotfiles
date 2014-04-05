@@ -1,3 +1,20 @@
 [user]
-	name = Ciro Duran Santillli
+	name = Ciro Santillli
 	email = ciro.santilli@gmail.com
+	name = Ciro
+[alias]
+	st = status
+	exec = "!exec "
+[color]
+	ui = auto
+[credential]
+	helper = cache
+[grep]
+	lineNumber = true
+	extendedRegexp = true
+[pager]
+	log = diff-highlight | less
+	show = diff-highlight | less
+	diff = diff-highlight | less
+[push]
+	default = current
