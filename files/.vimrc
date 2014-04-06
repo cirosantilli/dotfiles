@@ -837,20 +837,37 @@
             set undolevels=1000         " How many undos
             set undoreload=10000        " Number of lines to save for undo
 
-    "set nohidden
-
     " Maintains at least 4 lines in view from the cursor
 
         set scrolloff=4
-
 
     " Font size
 
         set guifont=9
 
-    " Line numbers on right of page
+    "#number
 
-        set number
+        " Show line numbers on left of page:
+
+            set number
+
+        " Show numbers relative to current line. Fun and insane:
+
+            set norelativenumber
+
+        " Minimum number of spaces to leave for line numbers. Automatically increases as needed.
+        " so just use the minimum 1.
+
+            set numberwidth=1
+
+    "#highlight
+
+        " Highlight current line and column. Makes line too unreadable on certain dark themes.
+
+            set nocursorline
+            set nocursorcolumn
+
+        " TODO make only the line number bold: http://stackoverflow.com/questions/8247243/highlighting-the-current-line-number-in-vim
 
     "#wrapping
 
@@ -3530,7 +3547,17 @@
 
     "#print
 
-        "prints lines to prompt.
+        " Prints lines to prompt.
+
+        " Current line:
+
+            print
+
+        "#number
+
+            " Also print line number.
+
+                number
 
     "#put
 
