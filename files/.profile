@@ -71,7 +71,7 @@ export LC_COLLATE="en_US.UTF-8"
 
     export PYTHON_DIR="$PROGRAM_DIR/python"
     export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"
-    export MY_PYTHON_DIR="$PYTHON_DIR/$MYID/"
+    export MY_PYTHON_DIR="$PYTHON_DIR/cheat/"
     export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin"
     export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
 

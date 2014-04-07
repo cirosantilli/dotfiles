@@ -1,3 +1,5 @@
+autocmd!
+
 "#my functions
 
         " Executes shell cmd and redirects output to a new unnammed buffer in
@@ -192,7 +194,7 @@
         Plugin 'MarcWeber/vim-addon-local-vimrc'
         "TODO: without this it does not work! With this I get cannot redefine XXX such that is is defined with `!`
         "here and in the local vimrc
-        "autocmd BufEnter,BufRead * SourceLocalVimrcOnce
+        "autocmd BufEnter * SourceLocalVimrcOnce
 
         " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
@@ -527,6 +529,8 @@
             let g:session_autosave_to = 'default'
             let g:session_autoload = 'yes'
 
+        " Autoload happens after all the standard initialization process.
+
     "#FuzzyFinder
 
         " Find things like Files and Buffers really quickly.
@@ -736,7 +740,7 @@
         Plugin 'tpope/vim-vividchalk'
         colorscheme vividchalk
 
-"#general
+"#General options.
 
     " Leave vi compatibility to get better features.
 
@@ -754,11 +758,7 @@
 
             filetype plugin on
 
-        " Syntax highlighting
-
-            syntax on
-
-        " indent for specific filetypes
+        " Indent for specific filetypes
 
             filetype indent on
 
@@ -772,9 +772,9 @@
         "
         "   # vi: set ft=ruby :
         "
-        " Default: on.
+        " Default: 5.
 
-            "set modeline
+            "set modeline=5
 
     "#search
 
@@ -869,6 +869,19 @@
 
         " TODO make only the line number bold: http://stackoverflow.com/questions/8247243/highlighting-the-current-line-number-in-vim
 
+            hi clear CursorLine
+            augroup CLClear
+                autocmd! ColorScheme * hi clear CursorLine
+            augroup END
+            hi CursorLineNR cterm=bold
+            augroup CLNRSet
+                autocmd! ColorScheme * hi CursorLineNR cterm=bold
+            augroup END
+
+        " Syntax highlighting
+
+            syntax on
+
     "#wrapping
 
         set nowrap
@@ -918,11 +931,13 @@
             " Also possible with set list + listchars, but this is better.
 
                 augroup TraillingWhitespaceAucmd
+                    autocmd!
                     autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
                     autocmd BufEnter * match TraillingWhitespace /\s\+$/
                 augroup END
 
                 augroup LineTooLongAucmd
+                    autocmd!
                     autocmd BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
                     autocmd BufEnter * 2match LineTooLong /\%75v.*/
                 augroup END
@@ -3551,13 +3566,13 @@
 
         " Current line:
 
-            print
+            "print
 
         "#number
 
             " Also print line number.
 
-                number
+                "number
 
     "#put
 
@@ -3684,66 +3699,82 @@
 
     "<http://www.ibm.com/developerworks/linux/library/l-vim-script-5/index.html>
 
-    "execute command automatically on an event.
+    " Execute command automatically on an event.
 
     "#events
 
-        "list all events:
+        " List all events:
 
-            "h event
+            "help event
 
-        "two important events:
+        " Important events:
 
-            "au BufEnter,BufRead *.c noremap a b
+        " - BufEnter: cursor enter buffers after commands like `:tabnext` or `:tabnew`.
+        " - BufRead: cursor enter buffers after commands like `:tabnext` or `:tabnew`.
 
-        "with those two, you can define mappings, options, functions or variables to any c file
+            "autocmd BufEnter echo 'BufEnter'
 
     "#order
 
-        "autocommands are always executed on the order that they are set thus:
+        " Autocommands are always executed on the order that they are set thus:
 
-            "au BufEnter,BufRead * echo 1
-            "au BufEnter,BufRead * echo 2
+            "autocmd BufEnter,BufRead * echo 1
+            "autocmd BufEnter,BufRead * echo 2
 
-        "will always echo 1 and then 2
+        " Will always echo 1 and then 2
 
-            "au BufEnter,BufRead * echo 2
-            "au BufEnter,BufRead * echo 1
+            "autocmd BufEnter,BufRead * echo 2
+            "autocmd BufEnter,BufRead * echo 1
 
-        "will always echo 2 and then 1
+        " Will always echo 2 and then 1
 
     "#patterns
 
-        "for many events except FileType, you can use the following patterns:
+        " For many events except FileType, you can use the following patterns:
 
-        "- *.py
-        "- *.py,*.pl
-        "- *.{py,pl}
+        " - `*.py`
+        " - `*.py,*.pl`
+        " - `*.{py,pl}`
 
-        "for FileType, just enter enter the filetypes (`:se ft?`) comma separated:
+        " For FileType, just enter enter the filetypes (`:se ft?`) comma separated:
 
             "au FileType c,cpp noremap a b
 
-    "#aug
+    "#augroup
 
-        "groups autocomands
+        " Gives labels to multiple autocmds. That label can be used to trigger or disable those autocmds.
 
-        "you can later execute autocommands from a single chosen group afterwards
-        "with `:do` or `:doautoall`
+        " `au`s in a group are stil executed by default when the file is sourced.
 
-        "`au`s in a group are stil executed by default when the file is sourced
+            "augroup A
+                "" With `!`, if inside a group, remove all autocmds in current group.
+                "" If this is sourced multiple times, autocmds will only be defined once!
+                "" Always use this techniqe.
+                "" If used outside of an augroup, cancels all autocmds.
+                "autocmd!
 
-        "example: TODO get working
+                "autocmd BufEnter * echo 1
+                "autocmd BufEnter * echo 2
+            "augroup END
 
-            "aug A
-                "au BufEnter,BufRead * echo 1
-                "au BufEnter,BufRead * echo 2
-            "aug END
-            "au BufEnter * echo 3
+            "" These are defined twice, and once more whenever this file is sourced,
+            "" unless it does autocmd! somewhere.
+            "autocmd BufEnter * echo 0
+            "autocmd BufEnter * echo 0
 
-        "to do only groupa A use:
+        " Remove autocmds from group `A`:
 
-            "do A
+            "autocmd! A
+
+        " Remove all autocmds:
+
+            "autocmd!
+
+        "#doautocmd #do
+
+            " Execute autocmds that match events and files. If group is given, only execute from given group.
+
+                "doautocmd A BufEnter *
 
 "#map #noremap #nmap #nnoremap
 
@@ -4706,7 +4737,7 @@
 
     " Help on startup sequence:
 
-        ":h startup
+        ":help startup
 
     " Show the order in which scripts are run (including filetype plugins that
     " were not run for the current filetype):
