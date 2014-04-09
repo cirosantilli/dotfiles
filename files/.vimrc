@@ -456,13 +456,15 @@ autocmd!
 
     "#conque-term
 
+        " Runs terminal inside vim.
+
         " Github mirror of the Google code main repo:
 
             Plugin 'rosenfeld/conque-term'
 
-        " - runs terminal inside vim
         " - hit esc and you can edit history as a vim buffer
         "     hit i, and you're back to terminal mode
+        "
         " - after C-D, shell history remains on normal buffer and you can vim edit it
         "
         " :ConqueTerm bash
@@ -484,6 +486,20 @@ autocmd!
             ""specific instance
             ":ConqueTermTab bashx make run
             ":ConqueTermTab bashx make run; exit
+
+    "#vimux
+
+        " Requires you to be running vim from inside tmux already!
+
+        " tmux integration.
+
+            Plugin 'benmills/vimux'
+
+        " Split a tmux pane and run given command on it:
+
+            "call VimuxRunCommand("ls")
+
+        " Reuses split if it exists already.
 
     "#vim-session
 
@@ -1121,6 +1137,22 @@ autocmd!
 
             set sessionoptions=blank,buffers,help,tabpages
 
+    "#'shell'
+
+        " Path of the shell to use for ~ commands:
+
+            "set shell?
+
+    "#shellcmdflag
+
+        " Flags to pass for the shell called with !.
+
+        " Last flag should always be `-c` for bash to actually execute the command.
+
+        " `-i` makes the shell interactive, so it will read your aliases under ~/.bashrc.
+
+            :set shellcmdflag=-ic
+
     "#gvim specific
 
         set guioptions-=m  "remove menu bar
@@ -1135,7 +1167,7 @@ autocmd!
 
 "#language speficification
 
-    " The right place for those is in a ftplugin, but I'm lazy to put such small settings in files...
+    " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
 
     " #data languages
 
@@ -2199,7 +2231,7 @@ autocmd!
 
         "vim -u vimrc a.txt
 
-    " Good way to test plugins with a minimum vimrc.
+    " Great way to test plugins with a minimum vimrc.
 
 "#modes
 
@@ -3139,7 +3171,7 @@ autocmd!
             "echo 1
         "redir END
 
-"#shell commands
+"#shell commands #!
 
     " Excecute shell commands:
 
