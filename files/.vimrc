@@ -23,21 +23,21 @@ autocmd!
         " Map on all modes
         "
         function! MapAll(keys, rhs)
-            exe 'noremap' a:keys a:rhs
-            exe 'noremap!' a:keys '<ESC>'.a:rhs
+            execute 'noremap' a:keys a:rhs
+            execute 'noremap!' a:keys '<ESC>'.a:rhs
         endfunction
 
         " Map on all modes in current buffer
         "
         function! MapAllBuff(keys, rhs)
-            exe 'noremap <buffer>' a:keys a:rhs
-            exe 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
+            execute 'noremap <buffer>' a:keys a:rhs
+            execute 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
         endfunction
 
         " Open new Guake tab in cur dir
         "
         function! GuakeNewTabHere()
-            exe ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
+            execute ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
         endfunction
 
         " Run cmd in guake tab.
@@ -53,17 +53,12 @@ autocmd!
         let g:guakeTab = ""
         function! GuakeSingleTabCmdHere(cmd)
             if g:guakeTab == ""
-                sil ! guake -n ~; guake -r "GVIM"
-                    "create new tab
+                " Create new tab.
+                silent ! guake -n ~; guake -r "GVIM"
+                " Store its number.
                 let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
-                    "store its number
             end
-        "
-"
-"
-"
-    exe 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
-                "execute command on the new tab
+            execute 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
         endfunction
 
         function! EchoReadable()
@@ -104,14 +99,14 @@ autocmd!
             for a:n in range(line("'<"), line("'>"))
                 let a:l = getline(a:n)
                 while a:l =~ a:find
-                    exe string(a:n) . 's/' . a:find . '/\1#\2/'
+                    execute string(a:n) . 's/' . a:find . '/\1#\2/'
                     let a:l = getline(a:n)
                 endwhile
             endfor
 
-            silent! exe '''<,''>s/\v^\s*' . a:comment . '([^#])/\1/'
-            "silent! exe '''<,''>s/\v^(#+)([^#])/\1 \2/'
-            silent! exe '''<,''>s/\v^\s+([^#])/    \1/'
+            silent! execute '''<,''>s/\v^\s*' . a:comment . '([^#])/\1/'
+            "silent! execute '''<,''>s/\v^(#+)([^#])/\1 \2/'
+            silent! execute '''<,''>s/\v^\s+([^#])/    \1/'
         endfunction
 
 "#plugins
@@ -151,12 +146,12 @@ autocmd!
         " Remove a plugin:
 
         " Required:
+        set nocompatible
         filetype off
-
         set rtp+=~/.vim/bundle/vundle/
         call vundle#rc()
 
-        "let Vundle manage Vundle:
+        " Let Vundle manage Vundle:
 
                 Plugin 'gmarik/vundle'
 
@@ -187,14 +182,8 @@ autocmd!
 
     "#local-vimrc #auto source local .vimrc
 
-        function! F()
-            echo 'global'
-        endfunction
-
         Plugin 'MarcWeber/vim-addon-local-vimrc'
-        "TODO: without this it does not work! With this I get cannot redefine XXX such that is is defined with `!`
-        "here and in the local vimrc
-        "autocmd BufEnter * SourceLocalVimrcOnce
+        autocmd BufEnter * SourceLocalVimrc
 
         " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
@@ -742,10 +731,6 @@ autocmd!
 
 "#General options.
 
-    " Leave vi compatibility to get better features.
-
-        set nocompatible
-
     "#filetype
 
         " Set autodetect filetype and set it for buffers:
@@ -754,7 +739,7 @@ autocmd!
 
         " This allows the following to work properly:
 
-        " Plugins for given filetypes
+        " Plugins for given filetypes:
 
             filetype plugin on
 
@@ -1094,7 +1079,7 @@ autocmd!
 
         " Enable only for certain filetypes:
 
-            autocmd BufEnter,BufRead *.{md,rst,html,haml,tex} setlocal spell spelllang=en_us
+            autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en_us
 
         " Keymaps
 
@@ -1206,9 +1191,8 @@ autocmd!
             autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r.pdf"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
             "au BufEnter,BufRead *{.tex,.md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
 
-            "this works
-            "but the problem is: in which dir is the output file?
-            "this is something only the makefile knows about.
+            " This works but the problem is: in which dir is the output file?
+            " This is something only the Makefile knows about.
             function! LatexForwardOkular(pdfdir)
                 let pdf = a:pdfdir . expand('%:r') . '.pdf'
                 let synctex_out = system('synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"')
@@ -1218,7 +1202,7 @@ autocmd!
                         let page = substitute(l, '^Page:\(\d\+\)$', '\1', '')
                     end
                 endfor
-                exe 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
+                execute 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
             endfunction
             "au BufEnter,BufRead *.tex call MapAllBuff('<F4>', ':cal LatexForwardOkular("_out/")<cr>')
 
@@ -1226,39 +1210,35 @@ autocmd!
 
         autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
         autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
-        autocmd BufEnter,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
+        autocmd BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
         autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
 
     "#compile to executable languages
 
         "#c #c++ #cpp #lex #y #fortran #asm #s #java
 
-        function! FileTypeCCpp()
+        function! FileTypeCpp()
             call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
             call MapAllBuff('<S-F5>', ':w<cr>:sil ! make clean<cr>')
+            " Make run, stdout to a new file. Stdout is only seen when program stops.
             call MapAllBuff('<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>')
-                "make run, stdout to a new file
-                "stdout is only seen when program stops.
+            " Same as above, but may allows you to type in command line args.
             call MapAllBuff('<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
-                "same as above, but may pas command line args
             call MapAllBuff('<F7>'  , ':cnext<cr>')
             call MapAllBuff('<F8>'  , ':cprevious<cr>')
             call MapAllBuff('<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>')
             call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
         endfunction
 
-        autocmd FileType c,cpp,fortran,asm,s,java call FileTypeCCpp()
-
+        autocmd FileType c,cpp,fortran,asm,s,java call FileTypeCpp()
         autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
-        autocmd BufEnter,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
-
-        "because fortran has a max line length...
+        autocmd BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+        " Because fortran has a max line length.
         autocmd FileType fortran setlocal shiftwidth=2 tabstop=2
 
     "#vimscript
 
-        "reaload all visible buffers.
-        "TODO: multiple windows per tabpage.
+        " Reaload all visible buffers. TODO: multiple windows per tabpage.
         function! ReloadVisible()
             set noconfirm
             tabdo e
@@ -1632,21 +1612,21 @@ autocmd!
 
             function! s:Move(cmd, count, map) abort
                 normal! m`
-                exe 'move'.a:cmd.a:count
+                execute 'move'.a:cmd.a:count
                 norm! ``
                 silent! call repeat#set("\<Plug>unimpairedMove".a:map, a:count)
             endfunction
 
             function! s:MoveSelectionUp(count) abort
                 normal! m`
-                exe "'<,'>move'<--".a:count
+                execute "'<,'>move'<--".a:count
                 norm! ``
                 silent! call repeat#set("\<Plug>unimpairedMoveSelectionUp", a:count)
             endfunction
 
             function! s:MoveSelectionDown(count) abort
                 normal! m`
-                exe "'<,'>move'>+".a:count
+                execute "'<,'>move'>+".a:count
                 norm! ``
                 silent! call repeat#set("\<Plug>unimpairedMoveSelectionDown", a:count)
             endfunction
@@ -1769,8 +1749,8 @@ autocmd!
                     if (a:exclusive)
                     let line = line - stepvalue
                     endif
-                    exe line
-                    exe "normal " column . "|"
+                    execute line
+                    execute "normal " column . "|"
                     return
                 endif
                 endif
@@ -3701,7 +3681,7 @@ autocmd!
 
     " Execute command automatically on an event.
 
-    "#events
+    "#Events
 
         " List all events:
 
@@ -3709,10 +3689,33 @@ autocmd!
 
         " Important events:
 
-        " - BufEnter: cursor enter buffers after commands like `:tabnext` or `:tabnew`.
-        " - BufRead: cursor enter buffers after commands like `:tabnext` or `:tabnew`.
+        "#BufEnter
 
-            "autocmd BufEnter echo 'BufEnter'
+            " Cursor enter buffers.
+
+            " Trigerred by: `:tabnext`, `<C-W>l`
+
+            " Huge precedence.
+
+                "autocmd BufEnter * echo input('BufEnter')
+
+        "#BufRead
+
+            " File is read into buffer.
+
+            " Trigerred by: `:e`, `:tabopen`, `vim file`.
+
+                "autocmd BufRead * echo input('BufRead')
+
+        "#FileType
+
+            " File is detected to be of a given type.
+
+            " See `ftplugin` for more info.
+
+            " Happens after `BufRead`. TODO confirm
+
+                "autocmd FileType c,cpp echo input('FileType c,cpp')
 
     "#order
 
@@ -4799,7 +4802,7 @@ autocmd!
 
     " Plugins that autocmd sources only for particular types of files
 
-        "h ftplugin
+        "help ftplugin
 
     " For those to work, you must first detect the type of file:
 
