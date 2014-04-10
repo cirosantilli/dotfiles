@@ -1,7 +1,6 @@
 [user]
-	name = Ciro Santillli
+	name = Ciro Santilli
 	email = ciro.santilli@gmail.com
-	name = Ciro
 [alias]
 	st = status
 	exec = "!exec "

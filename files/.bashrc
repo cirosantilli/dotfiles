@@ -1,34 +1,14 @@
-#source ~/.profile # changes made to ~/.profile apply immediately without having to log out and in again.
+# Sorced whenever you run an interactive shell, not when running `bash -c` or `./program.sh`.
 
-# If not running interactively, don't do anything
+# Changes made to ~/.profile apply immediately without having to log out and in again.
+# Must be at the top to that changes on bashrc will have precedence.
+#source ~/.profile
+
+# If not running interactively, don't do anything.
 [ -z "$PS1" ] && return
 
-#osx color terminal
-export CLICOLOR=1
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# make less more friendly for non-text input files, see lesspipe(1)
+# Make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-  debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-PS1='\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ '
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-  PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-  ;;
-*)
-  ;;
-esac
 
 # Set up TERM variables.
 # vt100 and xterm have no color in vim (at least on unixs), but if we call them xterm-color, they will.
@@ -99,17 +79,6 @@ else
   alias ll="ls -lF"
 fi
 
-# Alias definitions.
-if [ -f ~/.bash_aliases ]; then
-  . ~/.bash_aliases
-fi
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-fi
 # Set $TERM for libvte terminals that set $TERM wrong (like gnome-terminal)
 {
   [ "_$TERM" = "_xterm" ] && type ldd && type grep && type tput && [ -L "/proc/$PPID/exe" ] && {
@@ -130,23 +99,7 @@ if [ "$venwrap" != "" ]; then
   source $venwrap
 fi
 
-vim=`type -P vim`
-if [ "$vim" == "" ]; then
-  vim="gvim -v"
-fi
-
-alias vim="$vim"
-
-# osx vim
-if [ -x "/Applications/MacVim.app/Contents/MacOS/Vim" ]; then
-  PATH=/Applications/MacVim.app/Contents/MacOS/:$PATH
-fi
-
-PYTHONSTARTUP=~/.pythonrc.py
-export PYTHONSTARTUP
-
-parse_git_branch ()
-{
+parse_git_branch () {
   git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#(git::\1)#'
 }
 parse_svn_branch() {
@@ -158,23 +111,22 @@ parse_svn_url() {
 parse_svn_repository_root() {
   svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
 }
-set -o emacs
-
-export EDITOR="$vim"
-export GIT_EDITOR="$vim"
-
-# Add git and svn branch names
-export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
 #<ciro>
 
-  ##aliases
+  ##variables
 
-    # Aliases are not exported to subshells!
+    # Variables that are required by multiple following commands.
+    # Must come before everything else.
 
-    # Therefore, those will only work if this file gets sourced,
-    # which only happens on interactive shells, and not when executing
-    # scripts with `bash -c` or `./`
+    vim=`type -P vim`
+    if [ "$vim" == "" ]; then
+      vim="gvim -v"
+    fi
+
+  ##alias
+
+    # Misc aliases.
 
     alias ack="ack-grep -a --smart-case"
     alias cla11="clang++ -std=c++11"
@@ -222,277 +174,302 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias provision-min-ssh="wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash"
       alias provision-min="wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-ssh.sh | bash"
 
-    ##mass regex operations
+  ##aptitude
 
-      # Mass Regex Refactor.
-      #
-      # Shows old and new lines.
-      #
-      # Dry run:
-      #
-      #    find . -type f | mrr "a/b/g"
-      #    git ls-files | mrr "a/b/g"
-      #
-      # Sample output:
-      #
-      #   a:1
-      #   a
-      #   c
-      #
-      #   b:1
-      #   b
-      #   c
-      #
-      # Replace (Not Dry run): WARNING: will transform symlinks into files. TODO how to avoid?
-      #
-      #  find . -type f | mrr "a/b/g" D
-      #
-      function mrr {
-        if [ $# -gt 1 ]; then
-          if [ "$2" = "D" ]; then
-            xargs perl -lapi -e "s/$1"
-          fi
-        else
-          sed "s|^\./||" | xargs -L1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
+      alias acse="apt-cache search"
+      alias acde="apt-cache depends"
+      alias acsh="apt-cache show"
+      alias afse="apt-file search"
+      alias afsh="apt-file show"
+      alias dplg="dpkg -l | grep -Ei"
+      alias saii="sudo aptitude install"
+      alias sair="sudo aptitude remove"
+      alias saiu="sudo aptitude update"
+      alias saip="sudo aptitude purge"
+      function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
+
+  ##ctags
+
+      alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
+      function ctag { grep "^$1" tags; } #CTAgs Grep
+      function rctag { cd `git rev-parse --show-toplevel` && grep "^$1" tags; } #Root CTAgs Gre
+
+  ##dirs
+
+    ##bookmarks
+
+      # These will open krusader where I want.
+
+      # Better with "single instance mode on", or new windows will be opened.
+
+      alias krpr='krusader "$PROGRAM_DIR"'
+        alias kras='krusader "$ASSEMBLER_DIR"'
+        alias krba='krusader "$MY_BASH_DIR"'
+        alias krcp='krusader "$CPP_DIR"'
+        alias krli='krusader "$MY_LINUX_DIR"'
+        alias krpy='krusader "$MY_PYTHON_DIR"'
+        alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
+        alias krror='krusader "$PROGRAM_DIR/rails-cheat/cirosantilli"'
+        alias krgitl='krusader "$PROGRAM_DIR/rails-cheat/cookbook-gitlab"'
+
+      alias krtst='krusader "$TEST_DIR"'
+
+      alias krmsc='krusader "$MUSIC_DIR"'
+        alias krctm='krusader "$CHINESE_MUSIC_DIR"'
+        alias kritm='krusader "$INDIAN_MUSIC_DIR"'
+
+      alias krgm='krusader "$GAME_DIR"'
+
+      alias krusd='krusader "/usr/share/doc/"'
+
+    ##ls
+
+      alias ls='ls -1 --color=auto --group-directories-first'
+      alias lsa='ls -A'
+      alias ll="ls -hl"
+      alias lls="ls -hl | sort -k5hr" #by Size
+      alias lla="ll -A"
+      alias llas="ls -a -h -l | sort -k5hr" #by Size
+      alias lsg="ls | grep -Ei"
+
+  ##export
+
+    # MISC exports.
+
+    export EDITOR="$vim"
+    export LC_COLLATE=C
+
+    # OSX
+    export CLICOLOR=1
+
+    ##PS1
+
+      # Set variable identifying the chroot you work in (used in the prompt below).
+      if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+        debian_chroot=$(cat /etc/debian_chroot)
+      fi
+      PS1='\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ '
+
+      # If this is an xterm set the title to user@host:dir
+      case "$TERM" in
+      xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+      *)
+        ;;
+      esac
+
+      # Add git and svn branch names
+      export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
+
+  ##git
+
+    export GIT_EDITOR="$vim"
+
+    alias gad="git add"
+    alias garcp="git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f"
+    alias gbl="git blame"
+    alias gbr="git branch"
+    function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
+    alias gbrv="git branch -v"
+    alias gcl="git clone --recursive"
+    alias gcm="git commit"
+    alias gcman="git commit --amend --no-edit"
+    alias gcmanpsf="git commit --amend --no-edit && git push -f"
+    alias gadcmanpsf="git add . && gcmanpsf"
+    function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
+    alias gco="git checkout"
+    alias gcom="git checkout master"
+    alias gcoo="git checkout --ours"
+    alias gcot="git checkout --theirs"
+    alias gcp="git cp"
+    alias gcr="git cherry-pick"
+    alias gdf="git diff"
+    alias gdfc="git diff --cached"
+    alias gdfhh="git diff HEAD~ HEAD"
+    alias gfe="git fetch"
+    alias ggr="git grep --color"
+    alias gka="gitk --all"
+    alias giac="git init && git add . && git commit -m 'Init.'" #Git Init Add Commit
+    alias gls="git ls-files"
+    alias glso="git ls-files --other"
+    alias glsg="git ls-files | grep"
+    alias glo="git log --decorate"
+    #alias glop="git log --pretty=oneline --decorate"
+    alias glop="git log --pretty=format:'%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s' --date=short | column -ts'|' | less -r"
+    alias glog="git log --pretty=oneline --decorate --graph --all"
+    alias gme="git merge"
+    alias gmv="git mv"
+    alias gppp="git push prod prod"
+    alias gps="git push"
+    alias gpsom="git push --tags -u origin master"
+    alias gpl="git pull"
+    alias gplu="git pull up master"
+    alias grb="git rebase"
+    alias grbc="git rebase --continue"
+    alias grs="git reset"
+    alias grshh="git reset --hard HEAD~"
+    alias grm="git rm"
+    alias grt="git remote"
+    alias grtv="git remote -v"
+    alias gsa="git stash"
+    alias gsaa="git stash apply"
+    alias gst="git status"
+    alias gta="git tag"
+    alias gtas="git tag | sort -V"
+    alias gtr="git ls-tree HEAD"
+
+    alias vgig="vim .gitignore"
+    alias lngp="latex-new-github-project.sh cirosantilli"
+
+    # GitHub
+
+      alias ghb="git browse-remote"
+      alias ghpb="git push && git browse-remote"
+      alias ghcmanpsf="gcmanpsf && git browse-remote"
+
+  ##gitlab elearn ssh
+
+    alias sugqa='ssh ubuntu@gitlab-elearn-qa'
+    alias sugpr='ssh ubuntu@gitlab-elearn-prod'
+
+  ##heroku
+
+    alias hrk="heroku"
+    alias hrkc="heroku create"
+    alias hrko="heroku open"
+    alias hrkr="heroku run"
+    alias gphm="git push heroku master"
+
+  ##make
+
+    alias mk='make'
+    alias mkc='make clean'
+    alias mkd='make dist'
+    alias mkdc='make distclean'
+    alias mkde='make deps'
+    alias mkh='make help'
+    # It is better to `make` first without the sudo so that the generated build
+    # will not be owned, or else it could only be cleaned with by sudo.
+    alias mki='make && sudo make install'
+    alias mkir='make && sudo make install && make install-run'
+    alias mkr='make run'
+    alias mkt='make test'
+    alias mku='sudo make uninstall'
+    alias mkv='make view'
+
+    # From Git root:
+
+      alias gmk='cd `git rev-parse --show-toplevel` && make'
+      alias gmkc='cd `git rev-parse --show-toplevel` && make clean'
+      alias gmkd='cd `git rev-parse --show-toplevel` && make dist'
+      alias gmkr='cd `git rev-parse --show-toplevel` && make run'
+      alias gmkt='cd `git rev-parse --show-toplevel` && make test'
+
+      alias cmk='mkdir build && cd build && cmake .. && make'
+
+  ##mass regex operations
+
+    # Mass Regex Refactor.
+    #
+    # Shows old and new lines.
+    #
+    # Dry run:
+    #
+    #    find . -type f | mrr "a/b/g"
+    #    git ls-files | mrr "a/b/g"
+    #
+    # Sample output:
+    #
+    #   a:1
+    #   a
+    #   c
+    #
+    #   b:1
+    #   b
+    #   c
+    #
+    # Replace (Not Dry run): WARNING: will transform symlinks into files. TODO how to avoid?
+    #
+    #  find . -type f | mrr "a/b/g" D
+    #
+    function mrr {
+      if [ $# -gt 1 ]; then
+        if [ "$2" = "D" ]; then
+          xargs perl -lapi -e "s/$1"
         fi
-      }
+      else
+        sed "s|^\./||" | xargs -L1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
+      fi
+    }
 
-      # "grep" only in Basename.
-      #
-      # Sample usage:
-      #
-      #   git ls-files | grepb a.c
-      #
-      # Highlight breaks if Perl pattern is not POSIX ERE.
-      #
-      function grepb { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$";}
+    # "grep" only in Basename.
+    #
+    # Sample usage:
+    #
+    #   git ls-files | grepb a.c
+    #
+    # Highlight breaks if Perl pattern is not POSIX ERE.
+    #
+    function grepb { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$";}
 
-      # Find files recursively filtering by regex.
-      #
-      # Basename only, prune hidden.
-      function fin { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1" ;}
-      # also Hidden
-      function finh { find . ! -path . | sed "s|^\./||" | grepb "$1" ;}
-      # full Path
-      function finp { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/" ;}
+    # Find files recursively filtering by regex.
+    #
+    # Basename only, prune hidden.
+    function fin { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1" ;}
+    # Also Hidden.
+    function finh { find . ! -path . | sed "s|^\./||" | grepb "$1" ;}
+    # full Path.
+    function finp { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/" ;}
 
-      function grr { grep -Er "$1" . ; }
+    function grr { grep -Er "$1" . ; }
 
-      # Mass rename refactoring.
-      alias mvr="move_regex.py"
+    # Mass rename refactoring.
+    alias mvr="move_regex.py"
 
-    ##power management
+  ##mysql
 
-        alias pmhi="sudo ps-hibernate"
-        alias pmsh="sudo shutdown"
-        alias pmsu="sudo ps-suspend"
-        alias pmre="sudo reboot"
+    alias myr="mysql -u root -p"
 
-    ##aptitude
+    # Before using this you ran:
+    #mysql -u root -h localhost -p -e "
+      #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
+      #CREATE DATABASE test;
+      #GRANT ALL ON a.* TO 'a'@'localhost';
+    #"
+    alias myt="mysql -u a -h localhost -pa a" #MYsql Test
 
-        alias acse="apt-cache search"
-        alias acde="apt-cache depends"
-        alias acsh="apt-cache show"
-        alias afse="apt-file search"
-        alias afsh="apt-file show"
-        alias dplg="dpkg -l | grep -Ei"
-        alias saii="sudo aptitude install"
-        alias sair="sudo aptitude remove"
-        alias saiu="sudo aptitude update"
-        alias saip="sudo aptitude purge"
-        function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
+  ##music
 
-    ##ctags
+    alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
+    alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
+    alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
+    alias mroc="nohup vlc \"$MUSIC_DIR/rock/all.m3u\" >/dev/null &"
 
-        alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
-        function ctag { grep "^$1" tags; } #CTAgs Grep
-        function rctag { cd `git rev-parse --show-toplevel` && grep "^$1" tags; } #Root CTAgs Gre
+  ##options
 
-    ##dirs
+    # Bash set or shopt options.
 
-        LC_COLLATE=C
-        export LC_COLLATE
-          #dot will come first!
+    set -o vi
 
-      ##ls
+    # Check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+    shopt -s checkwinsize
 
-        alias ls='ls -1 --color=auto --group-directories-first'
-        alias lsa='ls -A'
-        alias ll="ls -h -l"
-        alias lls="ls -h -l | sort -k5hr" #by Size
-        alias lla="ll -A"
-        alias llas="ls -a -h -l | sort -k5hr" #by Size
-        alias lsg="ls | grep -Ei"
+  ##power
 
-      ##bookmarks
+    alias pmhi="sudo ps-hibernate"
+    alias pmsh="sudo shutdown"
+    alias pmsu="sudo ps-suspend"
+    alias pmre="sudo reboot"
 
-        # These will open krusader where I want.
+  ##python
 
-        # Better with "single instance mode on", or new windows will be opened.
+    export PYTHONSTARTUP=~/.pythonrc.py
 
-          alias krpr='krusader "$PROGRAM_DIR"'
-            alias kras='krusader "$ASSEMBLER_DIR"'
-            alias krba='krusader "$MY_BASH_DIR"'
-            alias krcp='krusader "$CPP_DIR"'
-            alias krli='krusader "$MY_LINUX_DIR"'
-            alias krpy='krusader "$MY_PYTHON_DIR"'
-            alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
-            alias krror='krusader "$PROGRAM_DIR/rails-cheat/cirosantilli"'
-            alias krgitl='krusader "$PROGRAM_DIR/rails-cheat/cookbook-gitlab"'
-
-          alias krtst='krusader "$TEST_DIR"'
-
-          alias krmsc='krusader "$MUSIC_DIR"'
-            alias krctm='krusader "$CHINESE_MUSIC_DIR"'
-            alias kritm='krusader "$INDIAN_MUSIC_DIR"'
-
-          alias krgm='krusader "$GAME_DIR"'
-
-          alias krusd='krusader "/usr/share/doc/"'
-
-    ##python
-
-      alias py='python'
-      alias py3='python3'
-      alias ipy='ipython'
-      alias tipy='touch __init__.py'
-
-      ##django
-
-        alias dmrs="./manage.py runserver" #Django Manage Run Server
-        alias dmds="./manage.py dbshell" #Db Shell
-        alias dmsd="./manage.py syncdb" #Sync Db
-        alias dmcs="echo "yes" | ./manage.py collectstatic" #Collect Static
-
-        ##south
-
-          alias dmscts="./manage.py convert_to_south"
-          alias dmssi="./manage.py schemamigration --initial"
-          alias dmssa="./manage.py schemamigration --auto"
-
-    ##rails
-
-      alias rdcm="rake db:drop db:migrate"
-      alias be="bundle exec"
-      alias bi="bundle install"
-
-    ##heroku
-
-      alias hrk="heroku"
-      alias hrkc="heroku create"
-      alias hrko="heroku open"
-      alias hrkr="heroku run"
-      alias gphm="git push heroku master"
-
-    ##git
-
-      alias gad="git add"
-      alias garcp="git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f"
-      alias gbl="git blame"
-      alias gbr="git branch"
-      function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
-      alias gbrv="git branch -v"
-      alias gcl="git clone --recursive"
-      alias gcm="git commit"
-      alias gcman="git commit --amend --no-edit"
-      alias gcmanpsf="git commit --amend --no-edit && git push -f"
-      alias gadcmanpsf="git add . && gcmanpsf"
-      function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
-      alias gco="git checkout"
-      alias gcom="git checkout master"
-      alias gcoo="git checkout --ours"
-      alias gcot="git checkout --theirs"
-      alias gcp="git cp"
-      alias gcr="git cherry-pick"
-      alias gdf="git diff"
-      alias gdfc="git diff --cached"
-      alias gdfhh="git diff HEAD~ HEAD"
-      alias gfe="git fetch"
-      alias ggr="git grep --color"
-      alias gka="gitk --all"
-      alias giac="git init && git add . && git commit -m 'Init.'" #Git Init Add Commit
-      alias gls="git ls-files"
-      alias glso="git ls-files --other"
-      alias glsg="git ls-files | grep"
-      alias glo="git log --decorate"
-      #alias glop="git log --pretty=oneline --decorate"
-      alias glop="git log --pretty=format:'%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s' --date=short | column -ts'|' | less -r"
-      alias glog="git log --pretty=oneline --decorate --graph --all"
-      alias gme="git merge"
-      alias gmv="git mv"
-      alias gppp="git push prod prod"
-      alias gps="git push"
-      alias gpsom="git push --tags -u origin master"
-      alias gpl="git pull"
-      alias gplu="git pull up master"
-      alias grb="git rebase"
-      alias grbc="git rebase --continue"
-      alias grs="git reset"
-      alias grshh="git reset --hard HEAD~"
-      alias grm="git rm"
-      alias grt="git remote"
-      alias grtv="git remote -v"
-      alias gsa="git stash"
-      alias gsaa="git stash apply"
-      alias gst="git status"
-      alias gta="git tag"
-      alias gtas="git tag | sort -V"
-      alias gtr="git ls-tree HEAD"
-
-      alias vgig="vim .gitignore"
-      alias lngp="latex-new-github-project.sh cirosantilli"
-
-      # Github
-
-        alias ghb="git browse-remote"
-        alias ghpb="git push && git browse-remote"
-        alias ghcmanpsf="gcmanpsf && git browse-remote"
-
-    ##makefile
-
-        alias mk='make'
-        alias mkc='make clean'
-        alias mkd='make dist'
-        alias mkdc='make distclean'
-        alias mkde='make deps'
-        alias mkh='make help'
-        # It is better to `make` first without the sudo so that the generated build
-        # will not be owned, or else it could only be cleaned with by sudo.
-        alias mki='make && sudo make install'
-        alias mkir='make && sudo make install && make install-run'
-        alias mkr='make run'
-        alias mkt='make test'
-        alias mku='sudo make uninstall'
-        alias mkv='make view'
-
-      # From Git root:
-
-        alias gmk='cd `git rev-parse --show-toplevel` && make'
-        alias gmkc='cd `git rev-parse --show-toplevel` && make clean'
-        alias gmkd='cd `git rev-parse --show-toplevel` && make dist'
-        alias gmkr='cd `git rev-parse --show-toplevel` && make run'
-        alias gmkt='cd `git rev-parse --show-toplevel` && make test'
-
-        alias cmk='mkdir build && cd build && cmake .. && make'
-
-    ##mysql
-
-      alias myr="mysql -u root -p"
-
-      # Before using this you ran:
-      #mysql -u root -h localhost -p -e "
-        #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
-        #CREATE DATABASE test;
-        #GRANT ALL ON a.* TO 'a'@'localhost';
-      #"
-      alias myt="mysql -u a -h localhost -pa a" #MYsql Test
-
-    ##music
-
-      alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
-      alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
-      alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
-      alias mroc="nohup vlc \"$MUSIC_DIR/rock/all.m3u\" >/dev/null &"
+    alias py='python'
+    alias py3='python3'
+    alias ipy='ipython'
+    alias tipy='touch __init__.py'
 
     ##pip
 
@@ -501,52 +478,67 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       alias pise="pip search"
       alias pifr="pip freeze"
 
-    ##services
+    ##django
 
-      function sso { sudo service "$1" stop ; }
-      function ssr { sudo service "$1" restart ; }
-      function sss { sudo service "$1" start ; }
-      function sst { sudo service "$1" status ; }
-      function ssta { sudo service --status-all ; }
-      alias ssar="sudo service apache2 restart"
-      alias sslr="sudo service lightdm restart"
+      alias dmrs="./manage.py runserver" #Django Manage Run Server
+      alias dmds="./manage.py dbshell" #Db Shell
+      alias dmsd="./manage.py syncdb" #Sync Db
+      alias dmcs="echo "yes" | ./manage.py collectstatic" #Collect Static
 
-    ##vagrant
+      ##south
 
-        alias vde="vagrant destroy"
-        alias vdef="vagrant destroy -f"
-        alias vdu="vagrant destroy -f && vagrant up"
-        alias vdus="vagrant destroy -f && vagrant up && vagrant ssh"
-        alias vpr="vagrant provision"
-        alias vss="vagrant ssh"
-        alias vup="vagrant up"
-        alias vups="vagrant up && vagrant ssh"
-        alias vus="vagrant up --no-provision && vagrant ssh"
+        alias dmscts="./manage.py convert_to_south"
+        alias dmssi="./manage.py schemamigration --initial"
+        alias dmssa="./manage.py schemamigration --auto"
 
-    ##gitlab elearn ssh
+  ##rails
 
-      alias sugqa='ssh ubuntu@gitlab-elearn-qa'
-      alias sugpr='ssh ubuntu@gitlab-elearn-prod'
+    alias rdcm="rake db:drop db:migrate"
+    alias be="bundle exec"
+    alias bi="bundle install"
+
+  ##services
+
+    function sso { sudo service "$1" stop ; }
+    function ssr { sudo service "$1" restart ; }
+    function sss { sudo service "$1" start ; }
+    function sst { sudo service "$1" status ; }
+    function ssta { sudo service --status-all ; }
+    alias ssar="sudo service apache2 restart"
+    alias sslr="sudo service lightdm restart"
+
+  ##vagrant
+
+    alias vde="vagrant destroy"
+    alias vdef="vagrant destroy -f"
+    alias vdu="vagrant destroy -f && vagrant up"
+    alias vdus="vagrant destroy -f && vagrant up && vagrant ssh"
+    alias vpr="vagrant provision"
+    alias vss="vagrant ssh"
+    alias vup="vagrant up"
+    alias vups="vagrant up && vagrant ssh"
+    alias vus="vagrant up --no-provision && vagrant ssh"
+
+  ##vim
+
+    alias vim="$vim"
+    # osx vim
+    if [ -x "/Applications/MacVim.app/Contents/MacOS/Vim" ]; then
+      PATH=/Applications/MacVim.app/Contents/MacOS/:$PATH
+    fi
 
   ##source lines
 
-    # NVM
-    if [ -r ~/.nvm/nvm.sh ]; then
-      source ~/.nvm/nvm.sh
-      nvm use 0.10.26 &>/dev/null
+    # Should come at the end.
+
+    # Enable programmable completion features (you don't need to enable
+    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+    # sources /etc/bash.bashrc).
+    if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+        . /etc/bash_completion
     fi
 
-    # Heroku Toolbelt:
-    export PATH="/usr/local/heroku/bin:$PATH"
-
-    # RVM:
-    if [ -r "$HOME/.rvm/scripts/rvm" ]; then
-      # Load RVM into a shell session *as a function*
-      source "$HOME/.rvm/scripts/rvm"
-      PATH=$PATH:$HOME/.rvm/bin
-    fi
-
-    # GCE:
+    ##GCE
     if [ -d ~/google-cloud-sdk ]; then
       # The next line updates PATH for the Google Cloud SDK.
       source ~/google-cloud-sdk/path.bash.inc
@@ -554,4 +546,21 @@ export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
       source ~/google-cloud-sdk/completion.bash.inc
     fi
     alias gce='gcutil --service_version="v1" --project="cirosantilli-hash" ssh --zone="europe-west1-b" "instance0"'
+
+    ##Heroku Toolbelt
+    export PATH="/usr/local/heroku/bin:$PATH"
+
+    ##NVM
+    if [ -r ~/.nvm/nvm.sh ]; then
+      source ~/.nvm/nvm.sh
+      nvm use 0.10.26 &>/dev/null
+    fi
+
+    ##RVM
+    if [ -r "$HOME/.rvm/scripts/rvm" ]; then
+      # Load RVM into a shell session *as a function*
+      source "$HOME/.rvm/scripts/rvm"
+      PATH=$PATH:$HOME/.rvm/bin
+    fi
+
 #</ciro>
