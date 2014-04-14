@@ -143,7 +143,7 @@ parse_svn_repository_root() {
 
     cmd="paplay ~/share/sounds/alert.ogg"
     alias playa="$cmd" # play Alert
-    alias playi="bash -c 'while true; do $cmd; done' &" # play alert Infinite. Stop with `kill %1`.
+    alias playi="bash -c 'while true; do $cmd; done'" # play alert Infinite. Stop with `kill %1`.
     alias pdc='pandoc'
     alias rmd="sleep 2 && playa && recordmydesktop --stop-shortcut 'Control+Mod1+z'"
     alias pingg='ping google.com'
@@ -545,7 +545,6 @@ parse_svn_repository_root() {
       # The next line enables bash completion for gcloud.
       source ~/google-cloud-sdk/completion.bash.inc
     fi
-    alias gce='gcutil --service_version="v1" --project="cirosantilli-hash" ssh --zone="europe-west1-b" "instance0"'
 
     ##Heroku Toolbelt
     export PATH="/usr/local/heroku/bin:$PATH"
@@ -562,5 +561,7 @@ parse_svn_repository_root() {
       source "$HOME/.rvm/scripts/rvm"
       PATH=$PATH:$HOME/.rvm/bin
     fi
+
+    . .bashrc_local
 
 #</ciro>
