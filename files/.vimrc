@@ -1,113 +1,113 @@
 autocmd!
 
-"#my functions
+"#functions and commands
 
-        " Executes shell cmd and redirects output to a new unnammed buffer in
-        " a new tab next to the current one.
-        "
-        function! RedirStdoutNewTabSingle(cmd)
-            tabnext
-            if expand('%:p') != ""
-                tabprevious
-                execute "tabnew"
-                setlocal buftype=nofile
-                setlocal bufhidden=wipe
-                setlocal noswapfile
-            endif
-            %delete
-            execute "silent read !" . a:cmd
-            set nomodified
-        endfunction
-        "command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
+    " Executes shell cmd and redirects output to a new unnammed buffer in
+    " a new tab next to the current one.
+    "
+    function! RedirStdoutNewTabSingle(cmd)
+        tabnext
+        if expand('%:p') != ""
+            tabprevious
+            execute "tabnew"
+            setlocal buftype=nofile
+            setlocal bufhidden=wipe
+            setlocal noswapfile
+        endif
+        %delete
+        execute "silent read !" . a:cmd
+        set nomodified
+    endfunction
+    "command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
 
-        " Map on all modes
-        "
-        function! MapAll(keys, rhs)
-            execute 'noremap' a:keys a:rhs
-            execute 'noremap!' a:keys '<ESC>'.a:rhs
-        endfunction
+    " Map on all modes
+    "
+    function! MapAll(keys, rhs)
+        execute 'noremap' a:keys a:rhs
+        execute 'noremap!' a:keys '<ESC>'.a:rhs
+    endfunction
 
-        " Map on all modes in current buffer
-        "
-        function! MapAllBuff(keys, rhs)
-            execute 'noremap <buffer>' a:keys a:rhs
-            execute 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
-        endfunction
+    " Map on all modes in current buffer
+    "
+    function! MapAllBuff(keys, rhs)
+        execute 'noremap <buffer>' a:keys a:rhs
+        execute 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
+    endfunction
 
-        " Open new Guake tab in cur dir
-        "
-        function! GuakeNewTabHere()
-            execute ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
-        endfunction
+    " Open new Guake tab in cur dir
+    "
+    function! GuakeNewTabHere()
+        execute ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
+    endfunction
 
-        " Run cmd in guake tab.
-        "
-        " If done once already, reuses same tab for other cmds.
-        "
-        " This tab is named GVIM.
-        "
-        " Number of this tab is stored in g:guakeTab
-        "
-        " If the tab gets closed, there is currently no way simple to detect it, and this method breaks.
-        "
-        let g:guakeTab = ""
-        function! GuakeSingleTabCmdHere(cmd)
-            if g:guakeTab == ""
-                " Create new tab.
-                silent ! guake -n ~; guake -r "GVIM"
-                " Store its number.
-                let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
-            end
-            execute 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
-        endfunction
+    " Run cmd in guake tab.
+    "
+    " If done once already, reuses same tab for other cmds.
+    "
+    " This tab is named GVIM.
+    "
+    " Number of this tab is stored in g:guakeTab
+    "
+    " If the tab gets closed, there is currently no way simple to detect it, and this method breaks.
+    "
+    let g:guakeTab = ""
+    function! GuakeSingleTabCmdHere(cmd)
+        if g:guakeTab == ""
+            " Create new tab.
+            silent ! guake -n ~; guake -r "GVIM"
+            " Store its number.
+            let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
+        end
+        execute 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
+    endfunction
 
-        function! EchoReadable()
-            if ! filereadable(expand('%:p'))
-                echo expand('%:p')
-                bdelete expand('%:p')
-            end
-        endfunction
+    function! EchoReadable()
+        if ! filereadable(expand('%:p'))
+            echo expand('%:p')
+            bdelete expand('%:p')
+        end
+    endfunction
 
-        " transforms well formated selected line commented code to markdown
-        "
-        " well formated for languages that don't have fixed indentation:
-        "
-        " - use exact md, except that instead of header levels use 4 spaces for indentation
-        "     and always a single `#`
-        "
-        " for languages that have fixed inedentation (python):
-        "
-        " - always add a space after each comment, except for the code
-        "
-        "     this way, you can simply uncomment to try stuff out
-        "
-        "     not yet implemented
-        "
-        " this is only an heuristic, as nested lists are hard to tokenize
-        "
-        " :param comment: the regex that starts the line comment.
-        "
-        "     ex: `#` in python, `"` in vim
-        "
-        " :param comment: regexp that starts a comment
-        " :type comment: string
-        "
-        function! CodeToMd(comment)
+    " Transform well formated selected line commented code to markdown.
+    "
+    " Well formated for languages that don't have fixed indentation:
+    "
+    " - use exact md, except that instead of header levels use 4 spaces for indentation
+    "     and always a single `#`
+    "
+    " for languages that have fixed inedentation (python):
+    "
+    " - always add a space after each comment, except for the code
+    "
+    "     this way, you can simply uncomment to try stuff out
+    "
+    "     not yet implemented
+    "
+    " this is only an heuristic, as nested lists are hard to tokenize
+    "
+    " :param comment: the regex that starts the line comment.
+    "
+    "     ex: `#` in python, `"` in vim
+    "
+    " :param comment: regexp that starts a comment
+    " :type comment: string
+    "
+    function! CodeToMd(comment)
 
-            "for each removed indent, add a header level
-            let a:find = '\v^(\s*)    (' . a:comment . '#+)'
-            for a:n in range(line("'<"), line("'>"))
+        "for each removed indent, add a header level
+        let a:find = '\v^(\s*)    (' . a:comment . '#+)'
+        for a:n in range(line("'<"), line("'>"))
+            let a:l = getline(a:n)
+            while a:l =~ a:find
+                execute string(a:n) . 's/' . a:find . '/\1#\2/'
                 let a:l = getline(a:n)
-                while a:l =~ a:find
-                    execute string(a:n) . 's/' . a:find . '/\1#\2/'
-                    let a:l = getline(a:n)
-                endwhile
-            endfor
+            endwhile
+        endfor
 
-            silent! execute '''<,''>s/\v^\s*' . a:comment . '([^#])/\1/'
-            "silent! execute '''<,''>s/\v^(#+)([^#])/\1 \2/'
-            silent! execute '''<,''>s/\v^\s+([^#])/    \1/'
-        endfunction
+        silent! execute '''<,''>s/\v^\s*' . a:comment . '([^#])/\1/'
+        "silent! execute '''<,''>s/\v^(#+)([^#])/\1 \2/'
+        silent! execute '''<,''>s/\v^\s+([^#])/    \1/'
+    endfunction
 
 "#plugins
 
@@ -146,10 +146,11 @@ autocmd!
         " Remove a plugin:
 
         " Required:
-        set nocompatible
-        filetype off
-        set rtp+=~/.vim/bundle/vundle/
-        call vundle#rc()
+
+            set nocompatible
+            filetype off
+            set rtp+=~/.vim/bundle/vundle/
+            call vundle#rc()
 
         " Let Vundle manage Vundle:
 
@@ -366,12 +367,14 @@ autocmd!
 
         command! Gad execute '!git add ' . expand('%:p')
         command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
+        " Ggrep and open quickfix in a new tab.
+        command! -nargs=1 Ggr Ggrep! <args> | tab copen
         command! Gps !git push
         command! Gpsf !git push -f
 
     "#AnsiEsc
 
-        " Show ansi escapes as color.
+        " Show ANSI escapes as color.
 
            Plugin 'vim-scripts/AnsiEsc.vim'
 
@@ -382,6 +385,8 @@ autocmd!
         " Toogle interpret off:
 
             "AnsiEsc
+
+        " Implemented based on conceal.
 
     "#easymotion
 
@@ -720,6 +725,10 @@ autocmd!
         " could not install with vundle. next best option then
         " set runtimepath+=$HOME/.vim/plugin/vim-latex
 
+    "#QFEnter
+
+            Plugin 'yssl/QFEnter'
+
     "#rope-vim
 
         " Python refactoring.
@@ -743,9 +752,10 @@ autocmd!
     "#colorscheme
 
         Plugin 'tpope/vim-vividchalk'
-        colorscheme vividchalk
+        " Silent because on the first run it is not yet installed.
+        silent! colorscheme vividchalk
 
-"#General options.
+"#Options
 
     "#filetype
 
@@ -1285,6 +1295,13 @@ autocmd!
         " Save and source current script:
         autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>
 
+    "#quickfix
+
+        command! Qo tab copen
+
+        " Open in new tab.
+        "autocmd FileType qf nnoremap <buffer> T :let b:switchbuf_old = &switchbuf | set switchbuf+=usetab,newtab<cr>:tabprevioux
+
 "#mappings
 
     " Here are all the:
@@ -1481,16 +1498,17 @@ autocmd!
 
         " Move across windows:
 
-            "<c-w>h
-            "<c-w>j
-            "<c-w>k
-            "<c-w>l
-
-        " Rationale: better with a direct control key mapping.
+        " - <c-w>h
+        " - <c-w>j
+        " - <c-w>k
+        " - <c-w>l
+        " - <c-w>p : previous window
 
         " Close current window:
 
             call MapAll('<c-w>', ':q<cr>')
+
+        " Rationale: better with control mapping to allow navigating windows multiple times.
 
         " Close current tab (possibly multiple windows):
 
@@ -4655,27 +4673,43 @@ autocmd!
 
     " On the quickfix window:
 
-    " - <enter>:   jump to file and line of error under cursor
+    " - <enter>:   jump to file and line of error under cursor. Where it is opened in controlled by the switchbuf option.
 
-    " Options:
+    " #switchbuf
 
-    " - `switchbuff`: Controls how buffers are opened.
+        " Controls how buffers are opened.
 
         " - `newtab`: open buffers on a new tab
         " - `usetab`: if an existing tab exists with buffer, use it
 
            set switchbuf+=usetab,newtab
 
+        " For a plugin that defines some mappings, see: <https://github.com/yssl/QFEnter>.
+
     "#grep #vimgrep
 
-        " Same as `:make` , but specialized to generating output by grepping files.
+        " Same as `:make` , but specialized for generating output by grepping files.
 
         " `errorformat` is replaced by `grepformat`.
 
-        " - mimgrep uses Vim's internal regexes and is threrefore more portable
+        " - vimgrep uses Vim's internal regexes and is threrefore more portable
         " - grep uses the external utility.
 
-        " Perfect for file navigation. On a markdown file, try:
+        " Don't jump to first match automatically:
+
+            ":vimgrep YourPattern **/*
+
+        " Recursive search with:
+
+            ":vimgrep YourPattern **/*
+
+        " By default searches only on the current buffer.
+
+        " For a single file extension:
+
+            ":vimgrep YourPattern **/*.rb
+
+        " Perfect for file navigation or multifile searches. On a markdown file, try:
 
             "vimgrep '^#' %
             "tab copen

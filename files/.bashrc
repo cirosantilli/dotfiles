@@ -282,6 +282,9 @@ parse_svn_repository_root() {
     alias gcom="git checkout master"
     alias gcoo="git checkout --ours"
     alias gcot="git checkout --theirs"
+    alias gcou="git checkout up"
+    alias gcn="git config"
+    alias gcng="git config --global"
     alias gcp="git cp"
     alias gcr="git cherry-pick"
     alias gdf="git diff"
@@ -299,12 +302,14 @@ parse_svn_repository_root() {
     alias glop="git log --pretty=format:'%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s' --date=short | column -ts'|' | less -r"
     alias glog="git log --pretty=oneline --decorate --graph --all"
     alias gme="git merge"
+    alias gmt="git mergetool"
     alias gmv="git mv"
     alias gppp="git push prod prod"
     alias gps="git push"
     alias gpsom="git push --tags -u origin master"
     alias gpl="git pull"
-    alias gplu="git pull up master"
+    alias gplum="git pull up master"
+    alias gplom="git pull origin master"
     alias grb="git rebase"
     alias grbc="git rebase --continue"
     alias grs="git reset"
@@ -562,6 +567,9 @@ parse_svn_repository_root() {
       PATH=$PATH:$HOME/.rvm/bin
     fi
 
-    . .bashrc_local
+    # Not tracked by git.
+    if [ -r "$HOME/.bashrc_local" ]; then
+      . "$HOME/.bashrc_local"
+    fi
 
 #</ciro>
