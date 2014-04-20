@@ -267,11 +267,14 @@ parse_svn_repository_root() {
     export GIT_EDITOR="$vim"
 
     alias gad="git add"
+    alias gadcm="git add . && git commit"
+    alias gadcp="git add . && git commit && git push"
+    function gadcmp { git add . && git commit -m "$1" && git push; }
     alias garcp="git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f"
     alias gbl="git blame"
     alias gbr="git branch"
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
-    alias gbrv="git branch -v"
+    alias gbrv="git branch -vv"
     alias gcl="git clone --recursive"
     alias gcm="git commit"
     alias gcman="git commit --amend --no-edit"

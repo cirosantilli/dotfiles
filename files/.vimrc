@@ -1089,7 +1089,7 @@ autocmd!
 
         " Main help page:
 
-            "`help spell`
+            "help spell
 
         " Enable for all files by default:
 
@@ -1099,19 +1099,33 @@ autocmd!
 
             "set spelllang=en_us
 
-        " Do both at once (works for any option in general):
-
-            "set spell spelllang=en_us
-
         " Enable only for certain filetypes:
 
             autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en_us
 
-        " Keymaps
+        " Keymaps:
 
         " - `]s`: move to next misspelled word
         " - `z=`: show and select from suggestion list
-        " - `zg`: add word to dict
+        " - `zg` and `zw`: add and remove words to dict (Good and Wrong).
+            " Those words are added to a separate file from the main dictionary,
+            " determined by the spellfile option.
+
+        "#spellfile
+
+            " Where words added via `zg` and `zw` will be stored.
+
+            " If empty, use the first writable directory of `'runtimepath'` and add a `spell` subdir to it.
+
+            " Must end in `.{encoding}.add`:
+
+                set spellfile=$HOME/.vim/spell-en.utf-8.add
+
+            " This file is plaintext. To speed things up, Vim uses a binary cache file with extension `.spl`.
+            " in the same directory.
+
+            " The cache is updated automatically by `zg` and `zw`, but you need to run #mkspell
+            " to regenerate the cache if you edit the `.add` directly.
 
     "#matchit
 
@@ -2736,17 +2750,21 @@ autocmd!
 
     " Empty if not defined
 
-    " Some environment variables are given default values if undefined at startup.
+    " Some environment variables are given default values if undefined at startup,
+    " and are set for programmatic use inside Vim.
 
     " Shared root:
 
         "echo $VIM
-
         "echo $VIMRUNTIME
 
-    " Environment variables can also be assigned to:
+    " Location of .vimrc:
 
-        "let $a = b
+        "echo $MYVIMRC
+
+    " Environment variables can also be set. They are exported to subshells:
+
+        "let $a = 'b'
         "echo $a
         "!echo $a
 
@@ -2754,7 +2772,7 @@ autocmd!
 
     " Literals:
 
-        "let a = [ 1, 2, 3 ]
+        "let a = [1, 2, 3]
 
     " Equality:
 
