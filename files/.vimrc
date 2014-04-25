@@ -896,9 +896,9 @@ autocmd!
     "#wrapping
 
         set nowrap
-        set linebreak                           " Use breakat or not
-        "set breakat=                           " At which characters it is possible to break.
-        set wrapmargin=0                        " Wrapping margin left at the right.
+        set linebreak                           " Break only at characters in breakat or not.
+        "set breakat=                           " At which characters it is possible to break. Default is good.
+        set wrapmargin=0                        " Margin added to the new wrapped line at the left.
         "let &showbreak = '>'.repeat(' ', 8)    " What to show on the new broken line.
         set nolist
 
@@ -1119,7 +1119,7 @@ autocmd!
 
             " Must end in `.{encoding}.add`:
 
-                set spellfile=$HOME/.vim/spell-en.utf-8.add
+                set spellfile=$HOME/.vim/spell/en.utf-8.add
 
             " This file is plaintext. To speed things up, Vim uses a binary cache file with extension `.spl`.
             " in the same directory.
@@ -4487,7 +4487,7 @@ autocmd!
 
         ":h regex
 
-    "#very non magic
+    "#Very non-magic
 
         " Becomes not a regex, everything is literal, unless escaped by \:
 
@@ -4499,7 +4499,7 @@ autocmd!
 
             "/\V\.\*
 
-    "#very magic
+    "#Very magic
 
         " You can change the flavour with \v! with \v, meaning Very magic,
         " only: [A-Za-0-9_] are not magic and thigs really work like in perl!
@@ -4521,13 +4521,13 @@ autocmd!
         " - `<` and `>` for word boundaries. This is insanely useful to find single character variables: `<x>`.
         " - `=` TODO same as `?`?
 
-    "#change default flavor
+    "#Change default flavor
 
         " Cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
 
         " Would break too may plugings.
 
-    "#classes
+    "#Classes
 
         " - \w   alpha (a-zA-z)
         " - \n     a newline character (line ending)
@@ -4538,7 +4538,7 @@ autocmd!
         " - \_$     the end of a line (zero width)
         " - \_.     any character including a newline
 
-    "#escaping in default mode
+    "#Escaping in default mode
 
         " If you really use default mode, here the escape list follows.
 
@@ -4561,6 +4561,16 @@ autocmd!
         " - \>           word boundary right
         " - \1           mathing group 1. can be used on search
         " - /\(\w\)\1  search equal adjacent chars
+
+    "#lookahead lookbehind
+
+        " Unlike Perl notation, comes outside the parenthesis.
+
+        " - `foo(bar)@=`: lookahead
+        " - `foo(bar)@!`: negative lookahead
+        " - `foo(bar)@<=`: lookbehind
+        " - `foo(bar)@<!`: negative lookbehind
+        " - `foo(bar)@>`: TODO
 
     "#s
 

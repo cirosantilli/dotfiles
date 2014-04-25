@@ -274,13 +274,14 @@ parse_svn_repository_root() {
     alias gbl="git blame"
     alias gbr="git branch"
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
+    alias gbrg="git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration" # BRanch Graph
     alias gbrv="git branch -vv"
     alias gcl="git clone --recursive"
     alias gcm="git commit"
     alias gcman="git commit --amend --no-edit"
     alias gcmanpsf="git commit --amend --no-edit && git push -f"
     alias gadcmanpsf="git add . && gcmanpsf"
-    function gcmp { git commit --allow-empty-message -am "$1"; git push --tags -u origin master; }
+    function gcmp { git commit -am "$1"; git push --tags -u origin master; }
     alias gco="git checkout"
     alias gcom="git checkout master"
     alias gcoo="git checkout --ours"
@@ -296,14 +297,15 @@ parse_svn_repository_root() {
     alias gfe="git fetch"
     alias ggr="git grep --color"
     alias gka="gitk --all"
-    alias giac="git init && git add . && git commit -m 'Init.'" #Git Init Add Commit
+    alias giac="git init && git add . && git commit -m 'Init.'" # Init Add Commit
     alias gls="git ls-files"
     alias glso="git ls-files --other"
     alias glsg="git ls-files | grep"
-    alias glo="git log --decorate"
+    alias glo="git log"
+    alias glog="git log --abbrev-commit --decorate --graph"
+    alias gloo="git log --abbrev-commit --decorate --graph --pretty=oneline" # One line
     #alias glop="git log --pretty=oneline --decorate"
     alias glop="git log --pretty=format:'%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s' --date=short | column -ts'|' | less -r"
-    alias glog="git log --pretty=oneline --decorate --graph --all"
     alias gme="git merge"
     alias gmt="git mergetool"
     alias gmv="git mv"
@@ -323,6 +325,8 @@ parse_svn_repository_root() {
     alias gsa="git stash"
     alias gsaa="git stash apply"
     alias gst="git status"
+    alias gsu="git submodule"
+    alias gsua="git submodule add"
     alias gta="git tag"
     alias gtas="git tag | sort -V"
     alias gtr="git ls-tree HEAD"
