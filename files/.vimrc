@@ -2,10 +2,13 @@ autocmd!
 
 "#functions and commands
 
-    " Executes shell cmd and redirects output to a new unnammed buffer in
+    " Executes shell cmd and redirects output to a Scratch buffer in
     " a new tab next to the current one.
     "
-    function! RedirStdoutNewTabSingle(cmd)
+    " - cmd:    the external command to execute
+    " - arg[0]: the filetype of the Scratch buffer
+    "
+    function! RedirStdoutNewTabSingle(cmd, ...)
         tabnext
         if expand('%:p') != ""
             tabprevious
@@ -17,6 +20,9 @@ autocmd!
         %delete
         execute "silent read !" . a:cmd
         set nomodified
+        if a:0 > 0
+            let &filetype = a:1
+        endif
     endfunction
     "command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
 
@@ -366,6 +372,7 @@ autocmd!
         command! Gdf call Gdf()
 
         command! Gad execute '!git add ' . expand('%:p')
+        command! -nargs=1 Gadcm execute '!git add ' . expand('%:p') ' && git commit -m "<args>"'
         command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
         " Ggrep and open quickfix in a new tab.
         command! -nargs=1 Ggr Ggrep! <args> | tab copen
@@ -681,50 +688,6 @@ autocmd!
 
         " - surround
 
-    "#markdown
-
-        "#plasticboy markdown
-
-            " Offers;
-
-            " - syntax highlighting
-            " - code folding
-            " - header navigation mappings
-
-                Plugin 'plasticboy/vim-markdown'
-
-            " Disable folding:
-
-                "let g:vim_markdown_folding_disabled=1
-                let g:vim_markdown_initial_foldlevel=6
-
-            " There is also a version by tpope, but plasticboy seems better:
-
-                "Bundle 'tpope/vim-markdown'
-
-        "#instant markdown
-
-            " Preview server on localhost:8090.
-            "
-            " Recompiles everytime you type with redcarpet.
-            "
-            " Tons of external dependencies. I'd rather just compile and do `firefox output.html` for now.
-
-                "Plugin 'suan/vim-instant-markdown'
-
-    "#sparkup
-
-        " HTML mappings.
-
-            Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-
-    "#vim latex
-
-        " Plugin 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
-        " Plugin 'jcf/vim-latex'
-        " could not install with vundle. next best option then
-        " set runtimepath+=$HOME/.vim/plugin/vim-latex
-
     "#QFEnter
 
             Plugin 'yssl/QFEnter'
@@ -748,6 +711,56 @@ autocmd!
         " Usage:
 
             ":reaneme <newname>
+
+    "#language specific plugins
+
+        "#markdown
+
+            "#plasticboy markdown
+
+                " Offers;
+
+                " - syntax highlighting
+                " - code folding
+                " - header navigation mappings
+
+                    Plugin 'plasticboy/vim-markdown'
+
+                " Disable folding:
+
+                    "let g:vim_markdown_folding_disabled=1
+                    let g:vim_markdown_initial_foldlevel=6
+
+                " There is also a version by tpope, but plasticboy seems better:
+
+                    "Bundle 'tpope/vim-markdown'
+
+            "#instant markdown
+
+                " Preview server on localhost:8090.
+                "
+                " Recompiles everytime you type with redcarpet.
+                "
+                " Tons of external dependencies. I'd rather just compile and do `firefox output.html` for now.
+
+                    "Plugin 'suan/vim-instant-markdown'
+
+        "#sparkup
+
+            " HTML mappings.
+
+                Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+        "#latex
+
+            " Plugin 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
+            " Plugin 'jcf/vim-latex'
+            " could not install with vundle. next best option then
+            " set runtimepath+=$HOME/.vim/plugin/vim-latex
+
+        "#nodejs
+
+            Plugin 'moll/vim-node'
 
     "#colorscheme
 
@@ -896,7 +909,7 @@ autocmd!
     "#wrapping
 
         set nowrap
-        set linebreak                           " Break only at characters in breakat or not.
+        set nolinebreak                         " Break only at characters in breakat or not. Insaner if yes (e.g. tables don't align right).
         "set breakat=                           " At which characters it is possible to break. Default is good.
         set wrapmargin=0                        " Margin added to the new wrapped line at the left.
         "let &showbreak = '>'.repeat(' ', 8)    " What to show on the new broken line.
@@ -943,8 +956,7 @@ autocmd!
 
                 augroup TraillingWhitespaceAucmd
                     autocmd!
-                    autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
-                    autocmd BufEnter * match TraillingWhitespace /\s\+$/
+                    autocmd BufEnter * if index(['mkd'], &ft) < 0 | highlight TraillingWhitespace ctermbg=brown guibg=brown | match TraillingWhitespace /\s\+$/
                 augroup END
 
                 augroup LineTooLongAucmd
@@ -1198,8 +1210,9 @@ autocmd!
     " #html
 
         autocmd FileType html,haml setlocal shiftwidth=2 tabstop=2
-        autocmd FileType html,haml call MapAllBuff('<F6>', ':w<cr>:sil ! firefox %<cr>')
-        autocmd FileType html,haml call MapAllBuff('<S-F6>', ':w<cr>:sil ! chromium-browser %<cr>')
+        autocmd FileType html call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
+        autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
+        autocmd FileType html,haml call MapAllBuff('<S-F6>', ':w<cr>:silent ! chromium-browser %<cr>')
 
     " #css and family
 
@@ -1267,23 +1280,24 @@ autocmd!
         autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
         autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
         autocmd BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
-        autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+        autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+        autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
 
     "#compile to executable languages
 
         "#c #c++ #cpp #lex #y #fortran #asm #s #java
 
         function! FileTypeCpp()
-            call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
-            call MapAllBuff('<S-F5>', ':w<cr>:sil ! make clean<cr>')
+            call MapAllBuff('<F5>'  , ':write<cr>:make<cr>') "vim make quickfix
+            call MapAllBuff('<S-F5>', ':write<cr>:silent ! make clean<cr>')
             " Make run, stdout to a new file. Stdout is only seen when program stops.
-            call MapAllBuff('<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>')
+            call MapAllBuff('<F6>'  , ':write<cr>:call RedirStdoutNewTabSingle("make run")<cr>')
             " Same as above, but may allows you to type in command line args.
-            call MapAllBuff('<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
+            call MapAllBuff('<S-F6>', ':write<cr>:call RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
             call MapAllBuff('<F7>'  , ':cnext<cr>')
             call MapAllBuff('<F8>'  , ':cprevious<cr>')
-            call MapAllBuff('<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>')
-            call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
+            call MapAllBuff('<F9>'  , ':write<cr>:call RedirStdoutNewTabSingle("make profile")<cr>')
+            call MapAllBuff('<S-F9>', ':write<cr>:! make assembler<cr>')
         endfunction
 
         autocmd FileType c,cpp,fortran,asm,s,java call FileTypeCpp()
@@ -1847,24 +1861,24 @@ autocmd!
 
             "<c-A>
 
-        " pAste from system clipboard before cursor (in the same place as you would edit with 'i')
+        "#pAste from system clipboard before cursor (in the same place as you would edit with 'i')
 
-        " The pasted item is left selected in viusal mode if you want to indent it
+            " The pasted item is left selected in viusal mode if you want to indent it
 
-        " So if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
+            " So if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
 
-        " Does not affect any vim local register
+            " Does not affect any vim local register
 
-        " Rationale:
+            " Rationale:
 
-        " - c-A not to conflict with c-v visual block mode or with terminal shortcuts
-        " - is left hand only, allowing you to keep your right hand is no the mouse
-        " - the default <c-a> command is not that useful
+            " - c-A not to conflict with c-v visual block mode or with terminal shortcuts
+            " - is left hand only, allowing you to keep your right hand is no the mouse
+            " - the default <c-a> command is not that useful
 
-            cnoremap <c-A> <c-R>+
-            inoremap <c-A> <ESC>"+p`[v`]
-            nn <c-A> "+P`[v`]
-            vn <c-A> d"+P`[v`]
+                cnoremap <c-A> <c-R>+
+                inoremap <c-A> <ESC>"+p`[v`]
+                nn <c-A> "+P`[v`]
+                vn <c-A> d"+P`[v`]
 
     "#s
 
@@ -2265,6 +2279,10 @@ autocmd!
 
     " Great way to test plugins with a minimum vimrc.
 
+    " Start without any .vimrc:
+
+        "vim -u NONE a.txt
+
 "#modes
 
     " Vim is a modal editor, so the first thing you should learn are its modes.
@@ -2602,7 +2620,7 @@ autocmd!
             "command! -nargs=0 Echoa echo 'a'
             "Echoa
 
-        " `-nargs=1` is special because it considers the spaces into the argument:
+        " `-nargs=1` is special because it considers the spaces in the argument as part of it:
 
             "command! -nargs=1 Echo1 echo <args>
             "Echo1 'a' 'b'
@@ -2851,8 +2869,8 @@ autocmd!
 
     " Escape
 
-    " :ec 'That''s enough.'
-    " :ec '\"'
+    " :echo 'That''s enough.'
+    " :echo '\"'
         "exactly \ and "
         "the only escape inside single quotes is '' for '
 
@@ -3592,7 +3610,7 @@ autocmd!
 
         "normal! a
 
-    " **always use this!!** unless you really want to use the user commands...  which is a rare case
+    " You almost always want to use the exclamation mark, unless you really want to use the user commands, which is a rare case.
 
     " Multiple commands:
 
@@ -4680,13 +4698,13 @@ autocmd!
         "make %
         "copen
 
-    " - :make    runs commands based on the `makeprg` option on a shell and captures its output.
+    " - `:make`: runs commands based on the `makeprg` option on a shell and captures its output.
     "
     "       The default value for `makeprg` is `make`, so by default `:make` runs `make`.
     "
     "       See h makeprg
     "
-    " - :copen   open everything that came out of the :make command or :vimgrep command, one per line.
+    " - `:copen`: open everything that came out of the :make command or :vimgrep command, one per line.
     "
     "       Works well with tab:
     "
@@ -4694,10 +4712,10 @@ autocmd!
     "
     "       <enter> jumps to the line of the error on the buffer.
     "
-    " - :cc      see the current error
-    " - :cn      jump to next error on buffer.
-    " - :cp      jump to previous error
-    " - :clist   list all errors
+    " - `:cc`: see the current error
+    " - `:cn`: jump to next error on buffer.
+    " - `:cp`: jump to previous error
+    " - `:cl`: list all errors
 
     " On the quickfix window:
 

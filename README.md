@@ -35,3 +35,9 @@ Whenever you make changes to the script on the host, copy and run it again on th
     cd && rm -rf dotfiles/ && cp -r /vagrant/ dotfiles/ && cd dotfiles && ./install.sh
 
 Copying has to be done because hard links cannot be made from host to guest.
+
+#rootfiles
+
+The `rootfiles` directory contains files whose path is realtive to the root `/`.
+
+There is no currently automation script for them, but we would like one.

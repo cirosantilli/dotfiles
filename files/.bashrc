@@ -274,7 +274,7 @@ parse_svn_repository_root() {
     alias gbl="git blame"
     alias gbr="git branch"
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
-    alias gbrg="git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration" # BRanch Graph
+    alias gbrg="git log --all --decorate --graph --oneline --simplify-by-decoration" # BRanch Graph
     alias gbrv="git branch -vv"
     alias gcl="git clone --recursive"
     alias gcm="git commit"
@@ -339,11 +339,6 @@ parse_svn_repository_root() {
       alias ghb="git browse-remote"
       alias ghpb="git push && git browse-remote"
       alias ghcmanpsf="gcmanpsf && git browse-remote"
-
-  ##gitlab elearn ssh
-
-    alias sugqa='ssh ubuntu@gitlab-elearn-qa'
-    alias sugpr='ssh ubuntu@gitlab-elearn-prod'
 
   ##heroku
 
@@ -461,8 +456,10 @@ parse_svn_repository_root() {
   ##options
 
     # Bash set or shopt options.
-
     set -o vi
+
+    # Turn off history substitution !.
+    set +H
 
     # Check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
     shopt -s checkwinsize
@@ -573,6 +570,9 @@ parse_svn_repository_root() {
       source "$HOME/.rvm/scripts/rvm"
       PATH=$PATH:$HOME/.rvm/bin
     fi
+
+    ##Go lang
+    [[ -s "/home/ciro/.gvm/scripts/gvm" ]] && source "/home/ciro/.gvm/scripts/gvm"
 
     # Not tracked by git.
     if [ -r "$HOME/.bashrc_local" ]; then

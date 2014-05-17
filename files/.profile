@@ -109,8 +109,8 @@ fi
     xhost +
 
   # Texlive
-  export PATH=$PATH:/usr/local/texlive/2013/bin/i386-linux
-  export MANPATH=$MANPATH:/usr/local/texlive/2013/texmf-dist/doc/man
-  export INFOPATH=$INFOPATH:/usr/local/texlive/2013/texmf-dist/doc/info
+  export PATH="/usr/local/texlive/2013/bin/i386-linux:$PATH"
+  export MANPATH="/usr/local/texlive/2013/texmf-dist/doc/man:$MANPATH"
+  export INFOPATH="/usr/local/texlive/2013/texmf-dist/doc/info:$INFOPATH"
 
 #</ciro>
