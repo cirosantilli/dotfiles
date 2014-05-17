@@ -38,6 +38,6 @@ Copying has to be done because hard links cannot be made from host to guest.
 
 #rootfiles
 
-The `rootfiles` directory contains files whose path is realtive to the root `/`.
+The `rootfiles` directory contains files whose path is relative to the root `/`.
 
 There is no currently automation script for them, but we would like one.
