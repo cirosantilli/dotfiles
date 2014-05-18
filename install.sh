@@ -19,16 +19,19 @@ fi
 
 for FILE in $(ls -A "$ORIGIN_DIR"); do
   ORIGIN="$ORIGIN_DIR/$FILE"
-  DEST="$HOME/$FILE"
-  if $REVERSE; then
-    BUFFER="$DEST"
-    DEST="$ORIGIN"
-    ORIGIN="$BUFFER"
+  # TODO Ugly hack. Remove when support for inner directories is added.
+  if [ -f "$ORIGIN" ]; then
+    DEST="$HOME/$FILE"
+    if $REVERSE; then
+      BUFFER="$DEST"
+      DEST="$ORIGIN"
+      ORIGIN="$BUFFER"
+    fi
+    if [ -e "$DEST" ] && [ ! $REVERSE ]; then
+      echo "$DEST: already exits. Backing to: $DEST$BACKUP_SUFFIX"
+    else
+      echo "$DEST"
+    fi
+    ln $LN_ARGS "$ORIGIN" "$DEST"
   fi
-  if [ -e "$DEST" ] && [ ! $REVERSE ]; then
-    echo "$DEST: already exits. Backing to: $DEST$BACKUP_SUFFIX"
-  else
-    echo "$DEST"
-  fi
-  ln $LN_ARGS "$ORIGIN" "$DEST"
 done
