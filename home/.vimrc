@@ -1,14 +1,10 @@
 autocmd!
 
-"#functions and commands
+"#functions and #commands
 
-    " Executes shell cmd and redirects output to a Scratch buffer in
+    " Executes shell cmd and redirects output to a new unnammed buffer in
     " a new tab next to the current one.
-    "
-    " - cmd:    the external command to execute
-    " - arg[0]: the filetype of the Scratch buffer
-    "
-    function! RedirStdoutNewTabSingle(cmd, ...)
+    function! RedirStdoutNewTabSingle(cmd)
         tabnext
         if expand('%:p') != ""
             tabprevious
@@ -20,28 +16,22 @@ autocmd!
         %delete
         execute "silent read !" . a:cmd
         set nomodified
-        if a:0 > 0
-            let &filetype = a:1
-        endif
     endfunction
     "command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
 
     " Map on all modes
-    "
     function! MapAll(keys, rhs)
         execute 'noremap' a:keys a:rhs
         execute 'noremap!' a:keys '<ESC>'.a:rhs
     endfunction
 
     " Map on all modes in current buffer
-    "
     function! MapAllBuff(keys, rhs)
         execute 'noremap <buffer>' a:keys a:rhs
         execute 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
     endfunction
 
     " Open new Guake tab in cur dir
-    "
     function! GuakeNewTabHere()
         execute ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
     endfunction
@@ -55,7 +45,6 @@ autocmd!
     " Number of this tab is stored in g:guakeTab
     "
     " If the tab gets closed, there is currently no way simple to detect it, and this method breaks.
-    "
     let g:guakeTab = ""
     function! GuakeSingleTabCmdHere(cmd)
         if g:guakeTab == ""
@@ -97,10 +86,7 @@ autocmd!
     "
     " :param comment: regexp that starts a comment
     " :type comment: string
-    "
     function! CodeToMd(comment)
-
-        "for each removed indent, add a header level
         let a:find = '\v^(\s*)    (' . a:comment . '#+)'
         for a:n in range(line("'<"), line("'>"))
             let a:l = getline(a:n)
@@ -114,6 +100,22 @@ autocmd!
         "silent! execute '''<,''>s/\v^(#+)([^#])/\1 \2/'
         silent! execute '''<,''>s/\v^\s+([^#])/    \1/'
     endfunction
+
+    " Enter a good mode to edit markdown tables.
+    " Always shows leftmost column.
+    function! MdTable()
+        setlocal nowrap
+        vsplit
+        vertical resize 35
+        normal! ^
+        set scrollbind
+        wincmd l
+        set scrollbind
+        set cursorline
+        setlocal nostartofline
+        highlight clear LineTooLong
+    endfunction
+    command! MdTable call MdTable()
 
 "#plugins
 
@@ -160,7 +162,7 @@ autocmd!
 
         " Let Vundle manage Vundle:
 
-                Plugin 'gmarik/vundle'
+            Plugin 'gmarik/vundle'
 
         "#inner workings
 
@@ -189,8 +191,10 @@ autocmd!
 
     "#local-vimrc #auto source local .vimrc
 
-        Plugin 'MarcWeber/vim-addon-local-vimrc'
-        autocmd BufEnter * SourceLocalVimrc
+        " A bit buggish / hard to use correctly:
+
+            "Plugin 'MarcWeber/vim-addon-local-vimrc'
+            "autocmd BufEnter * SourceLocalVimrc
 
         " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
@@ -372,7 +376,6 @@ autocmd!
         command! Gdf call Gdf()
 
         command! Gad execute '!git add ' . expand('%:p')
-        command! -nargs=1 Gadcm execute '!git add ' . expand('%:p') ' && git commit -m "<args>"'
         command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
         " Ggrep and open quickfix in a new tab.
         command! -nargs=1 Ggr Ggrep! <args> | tab copen
@@ -688,6 +691,58 @@ autocmd!
 
         " - surround
 
+    "#markdown
+
+        "#plasticboy markdown
+
+            " Offers;
+
+            " - syntax highlighting
+            " - code folding
+            " - header navigation mappings
+
+                Plugin 'plasticboy/vim-markdown'
+
+            " Disable folding:
+
+                "let g:vim_markdown_folding_disabled=1
+                let g:vim_markdown_initial_foldlevel=6
+
+            " There is also a version by tpope, but plasticboy seems better:
+
+                "Bundle 'tpope/vim-markdown'
+
+        "#instant markdown
+
+            " Preview server on localhost:8090.
+            "
+            " Recompiles everytime you type with redcarpet.
+            "
+            " Tons of external dependencies. I'd rather just compile and do `firefox output.html` for now.
+
+                "Plugin 'suan/vim-instant-markdown'
+
+    "#docker
+
+            Plugin 'ekalinin/Dockerfile.vim'
+
+    "#node
+
+            Plugin 'moll/vim-node'
+
+    "#sparkup
+
+        " HTML mappings.
+
+            Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+    "#vim latex
+
+        " Plugin 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
+        " Plugin 'jcf/vim-latex'
+        " could not install with vundle. next best option then
+        " set runtimepath+=$HOME/.vim/plugin/vim-latex
+
     "#QFEnter
 
             Plugin 'yssl/QFEnter'
@@ -712,61 +767,15 @@ autocmd!
 
             ":reaneme <newname>
 
-    "#language specific plugins
-
-        "#markdown
-
-            "#plasticboy markdown
-
-                " Offers;
-
-                " - syntax highlighting
-                " - code folding
-                " - header navigation mappings
-
-                    Plugin 'plasticboy/vim-markdown'
-
-                " Disable folding:
-
-                    "let g:vim_markdown_folding_disabled=1
-                    let g:vim_markdown_initial_foldlevel=6
-
-                " There is also a version by tpope, but plasticboy seems better:
-
-                    "Bundle 'tpope/vim-markdown'
-
-            "#instant markdown
-
-                " Preview server on localhost:8090.
-                "
-                " Recompiles everytime you type with redcarpet.
-                "
-                " Tons of external dependencies. I'd rather just compile and do `firefox output.html` for now.
-
-                    "Plugin 'suan/vim-instant-markdown'
-
-        "#sparkup
-
-            " HTML mappings.
-
-                Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-
-        "#latex
-
-            " Plugin 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
-            " Plugin 'jcf/vim-latex'
-            " could not install with vundle. next best option then
-            " set runtimepath+=$HOME/.vim/plugin/vim-latex
-
-        "#nodejs
-
-            Plugin 'moll/vim-node'
-
     "#colorscheme
 
-        Plugin 'tpope/vim-vividchalk'
-        " Silent because on the first run it is not yet installed.
-        silent! colorscheme vividchalk
+        " When the command is run, it loads the colorscheme, which unsets user defined highlights.
+
+        " Therefore this should come before user highlight modifications.
+
+            Plugin 'tpope/vim-vividchalk'
+            " Silent because on the first run it is not yet installed.
+            silent! colorscheme vividchalk
 
 "#Options
 
@@ -869,7 +878,7 @@ autocmd!
 
         set guifont=9
 
-    "#number
+    "#number #LineNr
 
         " Show line numbers on left of page:
 
@@ -884,36 +893,31 @@ autocmd!
 
             set numberwidth=1
 
-    "#highlight
+        " Color can be configured with:
 
-        " Highlight current line and column. Makes line too unreadable on certain dark themes.
+            "highlight LineNr ctermfg=grey
 
-            set nocursorline
-            set nocursorcolumn
+        "#CursorLineNR
 
-        " TODO make only the line number bold: http://stackoverflow.com/questions/8247243/highlighting-the-current-line-number-in-vim
-
-            hi clear CursorLine
-            augroup CLClear
-                autocmd! ColorScheme * hi clear CursorLine
-            augroup END
-            hi CursorLineNR cterm=bold
-            augroup CLNRSet
-                autocmd! ColorScheme * hi CursorLineNR cterm=bold
-            augroup END
-
-        " Syntax highlighting
-
-            syntax on
+            " In more recent versions of Vim, hl-CursorLineNR can be used to highlight only the number
+            " of the current line.
 
     "#wrapping
 
         set nowrap
-        set nolinebreak                         " Break only at characters in breakat or not. Insaner if yes (e.g. tables don't align right).
+        set nolinebreak                         " Break only at characters in breakat or not.
         "set breakat=                           " At which characters it is possible to break. Default is good.
         set wrapmargin=0                        " Margin added to the new wrapped line at the left.
         "let &showbreak = '>'.repeat(' ', 8)    " What to show on the new broken line.
         set nolist
+
+    "#startofline
+
+        " If true, commands like `G` and `gg` go the first column.
+
+        " Else, they keep the current column if possible.
+
+            set startofline
 
     " Maximum line width. Inserts newline automatically at first space.  0 to disable.
 
@@ -939,39 +943,12 @@ autocmd!
 
         set nojoinspaces
 
-    "#highlight
-
-        "Only last match works. This was probably designed for interactive usage.
-
-        "2match is a second option.
-
-        "3match is reserved.
-
-        "General solution: only exists with plugins as of 2013:
-        "<http://superuser.com/questions/211916/setting-up-multiple-highlight-rules-in-vim>
-
-            " Highlight tralling whitestpace.
-            "
-            " Also possible with set list + listchars, but this is better.
-
-                augroup TraillingWhitespaceAucmd
-                    autocmd!
-                    autocmd BufEnter * if index(['mkd'], &ft) < 0 | highlight TraillingWhitespace ctermbg=brown guibg=brown | match TraillingWhitespace /\s\+$/
-                augroup END
-
-                augroup LineTooLongAucmd
-                    autocmd!
-                    autocmd BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
-                    autocmd BufEnter * 2match LineTooLong /\%75v.*/
-                augroup END
-
     "#ruler
 
         " The ruler is at the right bottom where there is info about:
         " line, column and percentage of current file in the same space for commands.
 
             set ruler
-            "set noruler
 
     "#tabwindow
 
@@ -1089,55 +1066,109 @@ autocmd!
 
     "#spell
 
+        set spellfile=$HOME/.vim/spell/en.utf-8.add
+        autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en
+
         " On the fly spell checker that underlines errors.
-
+        "
         " Features:
-
+        "
         " - to add word under cursor to the dictionary
         " - view correction suggestions and possibly correct
         " - jump to next incorrect word
         " - for code filetypes, only checks spelling on comments and strings.
-        " - for markup filetypes such as HTML or latex, ignores keywords such `<html>`
-
+        " - spell can be done only at certain syntax highlighing regions. This allows for example to
+        "     check spell only in comments of `.c` files, or ignore `<div>` tags in HTML.
+        "
         " Main help page:
-
-            "help spell
-
+        "
+        "     help spell
+        "
         " Enable for all files by default:
-
-            "set spell
-
+        "
+        "     set spell
+        "
         " Set language:
-
-            "set spelllang=en_us
-
+        "
+        "     set spelllang=en_us
+        "
         " Enable only for certain filetypes:
-
-            autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en_us
-
+        "
+        "     autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en_us
+        "
         " Keymaps:
-
-        " - `]s`: move to next misspelled word
-        " - `z=`: show and select from suggestion list
-        " - `zg` and `zw`: add and remove words to dict (Good and Wrong).
-            " Those words are added to a separate file from the main dictionary,
-            " determined by the spellfile option.
-
-        "#spellfile
-
-            " Where words added via `zg` and `zw` will be stored.
-
-            " If empty, use the first writable directory of `'runtimepath'` and add a `spell` subdir to it.
-
-            " Must end in `.{encoding}.add`:
-
-                set spellfile=$HOME/.vim/spell/en.utf-8.add
-
-            " This file is plaintext. To speed things up, Vim uses a binary cache file with extension `.spl`.
-            " in the same directory.
-
-            " The cache is updated automatically by `zg` and `zw`, but you need to run #mkspell
-            " to regenerate the cache if you edit the `.add` directly.
+        "
+        " -   `]s`: move to next misspelled word
+        "
+        " -   `z=`: show and select from suggestion list
+        "
+        " -   `zg`: add words under cursor to dict (Good). TODO: how to add word case insensitive (e.g. you are over the first word of a sentence)?
+        "
+        " -   `zw`: add word negated to dict `word/!` and comment out if existing by replacing first char.
+        "
+        "     Rationale: performance. Deleting a line requires to rewrite the entire file:
+        "     appending and replacing one char not.
+        "
+        "     This mess can be cleaned up with:
+        "
+        "         :runtime spell/cleanadd.vim
+        "
+        " -   `zug` and `zuw`: undo `zg` and `zw`, removing entry from spellfile.
+        "
+        "     Those words are added to a separate file from the main dictionary,
+        "     determined by the spellfile option.
+        "
+        "     zw does not simply remove words: it adds it as wrong as `word/!`
+        "
+        " #spellfile
+        "
+        " Where words added via `zg` and `zw` will be stored.
+        "
+        " If empty, use the first writable directory of `'runtimepath'` and add a `spell` subdir to it.
+        "
+        " Must end in `.{encoding}.add`:
+        "
+        "     set spellfile=$HOME/.vim/spell/en.utf-8.add
+        "
+        " This file is plaintext.
+        "
+        " ##mkspell
+        "
+        " To speed things up, Vim uses a binary cache file with extension `.spl`. in the same directory.
+        "
+        " For a spellfile with name `en.utf-8.add`, the corresponding `.spl` is: `en.utf-8.add.spl`.
+        "
+        " Note that `add` is still part of the filename!
+        "
+        " The cache is updated automatically by `zg` and `zw`.
+        "
+        " Renerate the cache after manually editing the `.add` file:
+        "
+        "     mkspell! ~/.vim/spell/en.utf-8.add.spl ~/.vim/spell/en.utf-8.add
+        "
+        " ## Syntax
+        "
+        " Comments:
+        "
+        "     # Comment
+        "
+        " Use two number signs `##` for manual comments:
+        "
+        "     ## Comment
+        "
+        " as comments with a single sign can be removed with the cleanup script.
+        "
+        " Mark word as wrong:
+        "
+        "     word\!
+        "
+        " Smart case: words with at least one capital are automatically case sensitive.
+        "
+        " Fix case for lowercase word:
+        "
+        "     word\=
+        "
+        " TODO how to set possessive apostrophe to correct automatically, i.e.: `abc's` correct if `abc` correct?
 
     "#matchit
 
@@ -1201,7 +1232,7 @@ autocmd!
 
             set winaltkeys=no
 
-"#language speficification
+"#language speficifs #filetype specifics
 
     " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
 
@@ -1212,7 +1243,7 @@ autocmd!
         autocmd FileType html,haml setlocal shiftwidth=2 tabstop=2
         autocmd FileType html call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
         autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
-        autocmd FileType html,haml call MapAllBuff('<S-F6>', ':w<cr>:silent ! chromium-browser %<cr>')
+        autocmd FileType html,haml call MapAllBuff('<S-F6>', ':w<cr>:sil ! chromium-browser %<cr>')
 
     " #css and family
 
@@ -1220,7 +1251,8 @@ autocmd!
 
     " #javascript #js #coffe
 
-        autocmd BufEnter,BufRead *.{js,coffee} setlocal shiftwidth=2 tabstop=2
+        autocmd BufEnter,BufRead *.{coffee} setlocal shiftwidth=2 tabstop=2
+        autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
 
     "#compilable markup
 
@@ -1234,20 +1266,20 @@ autocmd!
             "TODO this is broken still:
             autocmd BufEnter,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
 
-            "make and open with firefox on curent point without a makefile
+            " Make and open with firefox on curent point without a makefile.
             let s:out_dir = '_out'
             autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>')
             "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<. html; firefox _out/%<.html<cr>
 
             autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>')
 
-            "clean default output dir
+            " Clean default output dir.
             autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
             autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
 
             " Markdown *cannot* be indented, and GFM forces us to have
             " infinitely long lines. because single newlines become line breaks.
-            autocmd BufEnter,BufRead *.{md,rst} setlocal wrap
+            autocmd BufRead *.{md,rst} setlocal wrap
 
             " Make index
 
@@ -1280,7 +1312,7 @@ autocmd!
         autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
         autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
         autocmd BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
-        autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+        autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
         autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
 
     "#compile to executable languages
@@ -1288,16 +1320,16 @@ autocmd!
         "#c #c++ #cpp #lex #y #fortran #asm #s #java
 
         function! FileTypeCpp()
-            call MapAllBuff('<F5>'  , ':write<cr>:make<cr>') "vim make quickfix
-            call MapAllBuff('<S-F5>', ':write<cr>:silent ! make clean<cr>')
+            call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
+            call MapAllBuff('<S-F5>', ':w<cr>:sil ! make clean<cr>')
             " Make run, stdout to a new file. Stdout is only seen when program stops.
-            call MapAllBuff('<F6>'  , ':write<cr>:call RedirStdoutNewTabSingle("make run")<cr>')
+            call MapAllBuff('<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>')
             " Same as above, but may allows you to type in command line args.
-            call MapAllBuff('<S-F6>', ':write<cr>:call RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
+            call MapAllBuff('<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
             call MapAllBuff('<F7>'  , ':cnext<cr>')
             call MapAllBuff('<F8>'  , ':cprevious<cr>')
-            call MapAllBuff('<F9>'  , ':write<cr>:call RedirStdoutNewTabSingle("make profile")<cr>')
-            call MapAllBuff('<S-F9>', ':write<cr>:! make assembler<cr>')
+            call MapAllBuff('<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>')
+            call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
         endfunction
 
         autocmd FileType c,cpp,fortran,asm,s,java call FileTypeCpp()
@@ -1330,7 +1362,99 @@ autocmd!
         " Open in new tab.
         "autocmd FileType qf nnoremap <buffer> T :let b:switchbuf_old = &switchbuf | set switchbuf+=usetab,newtab<cr>:tabprevioux
 
-"#mappings
+"#highlight
+
+    " Required for the highlight command to work:
+
+        syntax on
+
+    " Once syntax is on, the `highlight` command can be used. It has the form:
+
+        "highlight group-name key=val ...
+
+    "#gui #cterm #term
+
+        " There are three types of highlight arguments:
+        "
+        " - term:
+        " - cterm: TODO vs term
+        " - gui: GVim
+        "
+        " For both cterm and gui, foreground `fg` and background `bg` colors can be set.
+        "
+        " For all ot them, `term`, `cterm` and `gui` options can be set: a comma separate list
+        " with options such as underline and boldface:
+        "
+        "     highlight CursorLine term=underline cterm=bold gui=italic
+        "
+        " gui can have more colors as it is free from terminal color limitations.
+        "
+        "     highlight CursorLine ctermfg=red
+        "     highlight CursorLine guifg=red
+        "
+        " TODO is it possible to use cterm colors for gui? http://vim.wikia.com/wiki/Using_GUI_color_settings_in_a_terminal
+        "
+        " TODO what is:
+        "
+        "   set term?
+
+    " Disable highlight for one group:
+
+        "highlight clear CursorLine
+
+    " Multiple highlight commands stack up:
+
+        "highlight CursorLine ctermfg=red
+        "highlight CursorLine ctermbg=red
+
+    " changes both bg and fg
+
+    " Settings for multiple terminals can be set on a single command:
+
+        "highlight CursorLine ctermfg=red guifg=blue
+
+    " Find the highlight group under the cursor: <http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor>
+
+    "#match
+
+        " Only last match works. This was probably designed for interactive usage.
+
+        " `2match` is a second option.
+
+        " `3match` is reserved.
+
+        " General solution: only exists with plugins as of 2013:
+        " <http://superuser.com/questions/211916/setting-up-multiple-highlight-rules-in-vim>
+
+    " #trailling whitespace
+
+        " Highlight tralling whitestpace.
+        "
+        " Also possible with set list + listchars, but this is better.
+
+            augroup TraillingWhitespaceAucmd
+                autocmd!
+                autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
+                autocmd BufEnter * match TraillingWhitespace /\s\+$/
+            augroup END
+
+            augroup LineTooLongAucmd
+                autocmd!
+                autocmd BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
+                " Must come after language specifics as it depends on wrap state.
+                autocmd BufEnter * if !&wrap | 2match LineTooLong /\%>74v.\+/ | endif
+            augroup END
+
+    "#cursorline #cursorcolumn
+
+        " Highlight current line and column. Makes line too unreadable on certain dark themes.
+
+        " The styles are given by the CursorLine and CursorColumn highlights, help at hl-CursorLine.
+
+            set nocursorline
+            set nocursorcolumn
+
+"#mappings "#key bindinigs
 
     " Here are all the:
 
@@ -1861,24 +1985,24 @@ autocmd!
 
             "<c-A>
 
-        "#pAste from system clipboard before cursor (in the same place as you would edit with 'i')
+        " pAste from system clipboard before cursor (in the same place as you would edit with 'i')
 
-            " The pasted item is left selected in viusal mode if you want to indent it
+        " The pasted item is left selected in viusal mode if you want to indent it
 
-            " So if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
+        " So if you want to append to a Line to to insert mode first, 'A' to append and then <c-A>
 
-            " Does not affect any vim local register
+        " Does not affect any vim local register
 
-            " Rationale:
+        " Rationale:
 
-            " - c-A not to conflict with c-v visual block mode or with terminal shortcuts
-            " - is left hand only, allowing you to keep your right hand is no the mouse
-            " - the default <c-a> command is not that useful
+        " - c-A not to conflict with c-v visual block mode or with terminal shortcuts
+        " - is left hand only, allowing you to keep your right hand is no the mouse
+        " - the default <c-a> command is not that useful
 
-                cnoremap <c-A> <c-R>+
-                inoremap <c-A> <ESC>"+p`[v`]
-                nn <c-A> "+P`[v`]
-                vn <c-A> d"+P`[v`]
+            cnoremap <c-A> <c-R>+
+            inoremap <c-A> <ESC>"+p`[v`]
+            nn <c-A> "+P`[v`]
+            vn <c-A> d"+P`[v`]
 
     "#s
 
@@ -2279,10 +2403,6 @@ autocmd!
 
     " Great way to test plugins with a minimum vimrc.
 
-    " Start without any .vimrc:
-
-        "vim -u NONE a.txt
-
 "#modes
 
     " Vim is a modal editor, so the first thing you should learn are its modes.
@@ -2620,7 +2740,7 @@ autocmd!
             "command! -nargs=0 Echoa echo 'a'
             "Echoa
 
-        " `-nargs=1` is special because it considers the spaces in the argument as part of it:
+        " `-nargs=1` is special because it considers the spaces into the argument:
 
             "command! -nargs=1 Echo1 echo <args>
             "Echo1 'a' 'b'
@@ -2654,14 +2774,14 @@ autocmd!
 
 "#spaces
 
-    " Are mostly ignored like in c, except for newlines!
+    " Are mostly ignored like in C, except for newlines:
 
         "echo 1
         "echo 2
 
-    " Therefore, you don't need `;` everythwere, but you need to get newlines right
+    " Therefore, you don't need `;` everythwere, but you need to get newlines right.
 
-    "multiline commands in script: start *next* line with `\` backslash:
+    " Multiline commands in script: start *next* line with `\` backslash:
 
         "ec
         "\ 1
@@ -2869,8 +2989,8 @@ autocmd!
 
     " Escape
 
-    " :echo 'That''s enough.'
-    " :echo '\"'
+    " :ec 'That''s enough.'
+    " :ec '\"'
         "exactly \ and "
         "the only escape inside single quotes is '' for '
 
@@ -3493,18 +3613,6 @@ autocmd!
             "set lines=30
             "set columns=50
 
-    "#winwidth #winheight
-
-        " Minimal window width.
-
-        " Set number of columns:
-
-            "set winwidth=50
-
-        " Minimum half of current window:
-
-            "let &winwidth=(&columns/2)
-
     "#resize
 
         " Many options:
@@ -3521,6 +3629,24 @@ autocmd!
 
             "resize -5
             "resize +5
+
+        " Set number of columns instead:
+
+            "vertical resize 10
+
+        " Only works if there are multiple splits, otherwise continues to occupy the entire screen TODO why.
+
+    "#winwidth #winheight
+
+        " Set minimum number of columns:
+
+            "set winwidth=50
+
+        " Cannot reduce window size, only increase.
+
+        " Minimum half of current window:
+
+            "let &winwidth=(&columns/2)
 
     "#winwidth() #get window width #winheight
 
@@ -3548,18 +3674,32 @@ autocmd!
 
             "vsplit
 
-        " Make both scroll at the same time;
+        "#scrollbind
 
-            "vsplit
-            "set scrollbind
-            "norm <c-w>l
-            "set scrollbind
+            " Make both windows scroll at the same time;
+
+                "nnoremap  vsplit
+                "set scrollbind
+                "norm <c-w>l
+                "set scrollbind
 
     "#vertical
 
         " Execute command that would open an horizontal split but open a vertical split instead.
 
             "vertical help
+
+    "#wincmd
+
+        " normal window commands do not work (TODO why?)
+
+            "vsplit
+            "normal <c-w>l
+
+        " For that to work you can use wincmd:
+
+            "vsplit
+            "wincmd l
 
 "#tab
 
@@ -3610,7 +3750,7 @@ autocmd!
 
         "normal! a
 
-    " You almost always want to use the exclamation mark, unless you really want to use the user commands, which is a rare case.
+    " **always use this!!** unless you really want to use the user commands...  which is a rare case
 
     " Multiple commands:
 
@@ -3712,7 +3852,7 @@ autocmd!
 
         " Removes leading spaces of second line.
 
-    "#global #:g
+    "#global #:g #g
 
         " Does an arbitrary command on all lines that match a regexp.
 
@@ -3720,9 +3860,21 @@ autocmd!
 
             ":g/re/p
 
-        " do `s/find1/replace` in each line that matches regexp `find0`.
+        " Do `s/find1/replace` in each line that matches regexp `find0`:
 
             ":g/^find0/s/find1/replace
+
+        " Delete all lines that match a regex:
+
+            ":g/re/d
+
+        " Move all lines that match regex to beginning of file in reverse order:
+
+            ":g/re/m0
+
+        " Reverse file:
+
+            ":g/./m0
 
 "#range
 
@@ -4698,13 +4850,13 @@ autocmd!
         "make %
         "copen
 
-    " - `:make`: runs commands based on the `makeprg` option on a shell and captures its output.
+    " - :make    runs commands based on the `makeprg` option on a shell and captures its output.
     "
     "       The default value for `makeprg` is `make`, so by default `:make` runs `make`.
     "
     "       See h makeprg
     "
-    " - `:copen`: open everything that came out of the :make command or :vimgrep command, one per line.
+    " - :copen   open everything that came out of the :make command or :vimgrep command, one per line.
     "
     "       Works well with tab:
     "
@@ -4712,10 +4864,10 @@ autocmd!
     "
     "       <enter> jumps to the line of the error on the buffer.
     "
-    " - `:cc`: see the current error
-    " - `:cn`: jump to next error on buffer.
-    " - `:cp`: jump to previous error
-    " - `:cl`: list all errors
+    " - :cc      see the current error
+    " - :cn      jump to next error on buffer.
+    " - :cp      jump to previous error
+    " - :clist   list all errors
 
     " On the quickfix window:
 

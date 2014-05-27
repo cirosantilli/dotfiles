@@ -36,6 +36,8 @@ The `root/` directory contains files whose path is relative to the root `/`.
 
 There is no currently automation script for them, but we want to implement it.
 
+One difficulty is that the current system is hardlink based, and if you use a separate home partition hardlinks cannot be created.
+
 # Developing
 
 Whenever you make changes to the script on the host, copy and run it again on the guest with:

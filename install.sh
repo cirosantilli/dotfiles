@@ -2,7 +2,7 @@
 
 set -eu
 
-ORIGIN_DIR="files"
+ORIGIN_DIR="home"
 BACKUP_SUFFIX=".cirosantilli_dotfiles.bak"
 
 if [ $# -gt 0 ] && [ "$1" = "-r" ]; then

@@ -129,8 +129,9 @@ parse_svn_repository_root() {
     # Misc aliases.
 
     alias ack="ack-grep -a --smart-case"
+    alias eip="curl ipecho.net/plain" # External IP.
     alias cla11="clang++ -std=c++11"
-    alias dfhs="df -h | sort -hrk2" #disk fill, human radable, sort by total Size
+    alias dfhs="df -h | sort -hrk2" # Disk Fill, Human readable, Sort by total size.
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
     alias fbr="find_basename_res.py"
     alias fmmmr="find-music-make-m3u ."
@@ -139,8 +140,8 @@ parse_svn_repository_root() {
     alias mupen="mupen64plus --fullscreen"
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
+    alias ncl='while true; do printf "" | nc -l 8000; done'
     alias ods='od -Ax -tx1'
-
     cmd="paplay ~/share/sounds/alert.ogg"
     alias playa="$cmd" # play Alert
     alias playi="bash -c 'while true; do $cmd; done'" # play alert Infinite. Stop with `kill %1`.
@@ -232,6 +233,21 @@ parse_svn_repository_root() {
       alias llas="ls -a -h -l | sort -k5hr" #by Size
       alias lsg="ls | grep -Ei"
 
+  ##docker
+
+    alias sdo='sudo docker'
+    alias sdob='sudo docker build'
+    function sdobt { sudo docker build -t "$1" .; }
+    alias sdoh='sudo docker help'
+    alias sdoi='sudo docker images'
+    alias sdop='sudo docker ps'
+    alias sdor='sudo docker run'
+    function sdorit { sudo docker run -it "$1" /bin/bash; }
+    function sdorp { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
+    function sdornp { sudo docker run -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
+    alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
+    alias sdos='sudo docker stop'
+
   ##export
 
     # MISC exports.
@@ -274,7 +290,7 @@ parse_svn_repository_root() {
     alias gbl="git blame"
     alias gbr="git branch"
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
-    alias gbrg="git log --all --decorate --graph --oneline --simplify-by-decoration" # BRanch Graph
+    alias gbrg="git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration" # BRanch Graph
     alias gbrv="git branch -vv"
     alias gcl="git clone --recursive"
     alias gcm="git commit"
@@ -339,6 +355,11 @@ parse_svn_repository_root() {
       alias ghb="git browse-remote"
       alias ghpb="git push && git browse-remote"
       alias ghcmanpsf="gcmanpsf && git browse-remote"
+
+  ##gitlab elearn ssh
+
+    alias sugqa='ssh ubuntu@gitlab-elearn-qa'
+    alias sugpr='ssh ubuntu@gitlab-elearn-prod'
 
   ##heroku
 
@@ -456,10 +477,8 @@ parse_svn_repository_root() {
   ##options
 
     # Bash set or shopt options.
-    set -o vi
 
-    # Turn off history substitution !.
-    set +H
+    set -o vi
 
     # Check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
     shopt -s checkwinsize
@@ -570,9 +589,6 @@ parse_svn_repository_root() {
       source "$HOME/.rvm/scripts/rvm"
       PATH=$PATH:$HOME/.rvm/bin
     fi
-
-    ##Go lang
-    [[ -s "/home/ciro/.gvm/scripts/gvm" ]] && source "/home/ciro/.gvm/scripts/gvm"
 
     # Not tracked by git.
     if [ -r "$HOME/.bashrc_local" ]; then
