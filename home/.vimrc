@@ -6,7 +6,7 @@ autocmd!
     " a new tab next to the current one.
     function! RedirStdoutNewTabSingle(cmd)
         tabnext
-        if expand('%:p') != ""
+        if expand('%:p') != ''
             tabprevious
             execute "tabnew"
             setlocal buftype=nofile
@@ -14,7 +14,7 @@ autocmd!
             setlocal noswapfile
         endif
         %delete
-        execute "silent read !" . a:cmd
+        execute 'silent read !' . a:cmd
         set nomodified
     endfunction
     "command! -nargs=+ -complete=command TabMessage call TabMessage(<q-args>)
@@ -33,7 +33,7 @@ autocmd!
 
     " Open new Guake tab in cur dir
     function! GuakeNewTabHere()
-        execute ':sil ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
+        execute ':silent ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
     endfunction
 
     " Run cmd in guake tab.
@@ -45,11 +45,11 @@ autocmd!
     " Number of this tab is stored in g:guakeTab
     "
     " If the tab gets closed, there is currently no way simple to detect it, and this method breaks.
-    let g:guakeTab = ""
+    let g:guakeTab = ''
     function! GuakeSingleTabCmdHere(cmd)
-        if g:guakeTab == ""
+        if g:guakeTab == ''
             " Create new tab.
-            silent ! guake -n ~; guake -r "GVIM"
+            silent ! guake -n ~; guake -r 'GVIM'
             " Store its number.
             let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
         end
@@ -100,22 +100,6 @@ autocmd!
         "silent! execute '''<,''>s/\v^(#+)([^#])/\1 \2/'
         silent! execute '''<,''>s/\v^\s+([^#])/    \1/'
     endfunction
-
-    " Enter a good mode to edit markdown tables.
-    " Always shows leftmost column.
-    function! MdTable()
-        setlocal nowrap
-        vsplit
-        vertical resize 35
-        normal! ^
-        set scrollbind
-        wincmd l
-        set scrollbind
-        set cursorline
-        setlocal nostartofline
-        highlight clear LineTooLong
-    endfunction
-    command! MdTable call MdTable()
 
 "#plugins
 
@@ -288,7 +272,7 @@ autocmd!
 
                 "Bundle 'Shougo/neocomplete.vim'
 
-    "#msanders/snipmate.vim
+    "#snipmate
 
         " <tab> expand in insert mode based on characters before cursor.
 
@@ -302,6 +286,28 @@ autocmd!
 
             Plugin 'msanders/snipmate.vim'
             Plugin 'kaichen/vim-snipmate-ruby-snippets'
+
+        " Define snippet. Must be in `snippets/<filetype>.snippets`
+
+            "snippet <div
+            "    <div>
+            "        ${2}
+            "    </div>
+            "# Comment.
+            "snippet <p
+            "    <p>
+            "        ${1}
+            "    </p>
+
+        " Only use hard tabs in snippets files. This encodes indent independently of tabwidth.
+
+        " Show popup with multiple options for a given trigger.
+
+            "snippet a desc 0
+            "    0
+            "# Comment.
+            "snippet a desc 1
+            "    1
 
     "#syntastic
 
@@ -1241,9 +1247,25 @@ autocmd!
     " #html
 
         autocmd FileType html,haml setlocal shiftwidth=2 tabstop=2
-        autocmd FileType html call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
-        autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
         autocmd FileType html,haml call MapAllBuff('<S-F6>', ':w<cr>:sil ! chromium-browser %<cr>')
+        autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
+
+        function! FtHtml()
+            call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
+            function! HeaderIncrease()
+                silent! %substitute/<h5/<h6/g
+                silent! %substitute/<h4/<h5/g
+                silent! %substitute/<h3/<h4/g
+                silent! %substitute/<h2/<h3/g
+                silent! %substitute/<h1/<h2/g
+                silent! %substitute/<\/h5/<\/h6/g
+                silent! %substitute/<\/h4/<\/h5/g
+                silent! %substitute/<\/h3/<\/h4/g
+                silent! %substitute/<\/h2/<\/h3/g
+                silent! %substitute/<\/h1/<\/h2/g
+            endfunction
+        endfunction
+        autocmd FileType html call FtHtml()
 
     " #css and family
 
@@ -1281,7 +1303,21 @@ autocmd!
             " infinitely long lines. because single newlines become line breaks.
             autocmd BufRead *.{md,rst} setlocal wrap
 
-            " Make index
+            " Enter a good mode to edit markdown tables.
+            " Always shows leftmost column.
+            function! MdTable()
+                setlocal nowrap
+                vsplit
+                vertical resize 35
+                normal! ^
+                set scrollbind
+                wincmd l
+                set scrollbind
+                set cursorline
+                setlocal nostartofline
+                highlight clear LineTooLong
+            endfunction
+            command! MdTable call MdTable()
 
         "#latex #tex
 
@@ -1426,24 +1462,26 @@ autocmd!
         " General solution: only exists with plugins as of 2013:
         " <http://superuser.com/questions/211916/setting-up-multiple-highlight-rules-in-vim>
 
-    " #trailling whitespace
+        " #trailling whitespace
 
-        " Highlight tralling whitestpace.
-        "
-        " Also possible with set list + listchars, but this is better.
+            " Highlight tralling whitestpace.
+            "
+            " Also possible with set list + listchars, but this is better.
 
-            augroup TraillingWhitespaceAucmd
-                autocmd!
-                autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
-                autocmd BufEnter * match TraillingWhitespace /\s\+$/
-            augroup END
+                augroup TraillingWhitespaceAucmd
+                    autocmd!
+                    autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
+                    autocmd BufEnter * match TraillingWhitespace /\s\+$/
+                augroup END
 
-            augroup LineTooLongAucmd
-                autocmd!
-                autocmd BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
-                " Must come after language specifics as it depends on wrap state.
-                autocmd BufEnter * if !&wrap | 2match LineTooLong /\%>74v.\+/ | endif
-            augroup END
+        " #highlight lines that are too long
+
+                augroup LineTooLongAucmd
+                    autocmd!
+                    autocmd BufEnter * highlight LineTooLong ctermbg=darkgrey guibg=#101010
+                    " Must come after language specifics as it depends on wrap state.
+                    autocmd BufEnter * if !&wrap | 2match LineTooLong /\%>74v.\+/ | endif
+                augroup END
 
     "#cursorline #cursorcolumn
 
@@ -2501,6 +2539,10 @@ autocmd!
 "#vimscript
 
     " Is the built-in language for scripting Vim.
+
+    " #style guides
+
+        " - <http://google-styleguide.googlecode.com/svn/trunk/vimscriptguide.xml>
 
 "#version
 
@@ -4636,111 +4678,128 @@ autocmd!
 
 "#regex
 
-    " Pearl like but... not really.
+        " help regex
 
-    " By default must escape some chars for them *to be* magic but not others...
+    " Slightly Pearl like but... not really. Tons of extensions. This shall focus on differences from perl.
 
-    " But you can change that with modifying chars and using one of the four flavors:
+    " #magic
 
-    " - magic
-    " - non magic
-    " - very magic
-    " - very non magic
+        " By default must escape some chars for them *to be* magic but not others...
 
-    " I only recommend using very magic and very non-magic for you own sanity
-    " since in those modes it is easy to remember what is what.
+        " But you can change that with modifying chars and using one of the four flavors:
 
-    " Note however that very magic is even more magic than Perl! (e.g.: `<` and
-    " `>` are word boundaries).
+        " - magic
+        " - non magic
+        " - very magic
+        " - very non magic
 
-    " For explanations
+        " I only recommend using very magic and very non-magic for you own sanity
+        " since in those modes it is easy to remember what is what.
 
-        ":h regex
+        " Note however that very magic is even more magic than Perl! (e.g.: `<` and
+        " `>` are word boundaries).
 
-    "#Very non-magic
+        " For explanations
 
-        " Becomes not a regex, everything is literal, unless escaped by \:
+            ":h regex
 
-        " Default regex:
+        "#Very non-magic
 
-            "/.*
+            " Becomes not a regex, everything is literal, unless escaped by \:
 
-        " Very non-magic:
+            " Default regex:
 
-            "/\V\.\*
+                "/.*
 
-    "#Very magic
+            " Very non-magic:
 
-        " You can change the flavour with \v! with \v, meaning Very magic,
-        " only: [A-Za-0-9_] are not magic and thigs really work like in perl!
+                "/\V\.\*
 
-        " Example:
+        "#Very magic
 
-        " Default regex:
+            " You can change the flavour with \v! with \v, meaning Very magic,
+            " only: [A-Za-0-9_] are not magic and thigs really work like in perl!
 
-            "/\(a\+\)
+            " Example:
 
-        " Very magic regex:
+            " Default regex:
 
-            "/\v(a+)
+                "/\(a\+\)
 
-        " You should always use very magic.
+            " Very magic regex:
 
-        " Points in which very magic is more magic than Perl
+                "/\v(a+)
 
-        " - `<` and `>` for word boundaries. This is insanely useful to find single character variables: `<x>`.
-        " - `=` TODO same as `?`?
+            " You should always use very magic.
 
-    "#Change default flavor
+            " Points in which very magic is more magic than Perl
 
-        " Cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
+            " - `<` and `>` for word boundaries. This is insanely useful to find single character variables: `<x>`.
+            " - `=` TODO same as `?`?
 
-        " Would break too may plugings.
+        "#Change default flavor
 
-    "#Classes
+            " Cannot be done: <http://stackoverflow.com/questions/3760444/in-vim-is-there-a-way-to-set-very-magic-permanently-and-globally>
 
-        " - \w   alpha (a-zA-z)
-        " - \n     a newline character (line ending)
-        " - \s   whitespace except newline
-        " - \S   non-whitespace
-        " - \_s     a whitespace (space or tab) or newline character
-        " - \_^     the beginning of a line (zero width)
-        " - \_$     the end of a line (zero width)
-        " - \_.     any character including a newline
+            " Would break too may plugings.
 
-    "#Escaping in default mode
+        "#Escaping in default mode
 
-        " If you really use default mode, here the escape list follows.
+            " If you really use default mode, here the escape list follows.
 
-        " Escape to be literal:
+            " Escape to be literal:
 
-        " - .      wildcard
-        " - a*     repetition
-        " - [abc]  char classes
-        " - ^      begin
-        " - $      end
+            " - .      wildcard
+            " - a*     repetition
+            " - [abc]  char classes
+            " - ^      begin
+            " - $      end
 
-        " Escape to be magic:
+            " Escape to be magic:
 
-        " - a\+
-        " - a\(b\|c\)
-        " - a\|b
-        " - a\{1,3}
-        " - a\{-}        non greedy repeat. Analogous to {,}, mnemonic: match less because of `-` sign.
-        " - \<           word boundary left
-        " - \>           word boundary right
-        " - \1           mathing group 1. can be used on search
-        " - /\(\w\)\1  search equal adjacent chars
+            " - a\+
+            " - a\(b\|c\)
+            " - a\|b
+            " - a\{1,3}
+            " - a\{-}        non greedy repeat. Analogous to {,}, mnemonic: match less because of `-` sign.
+            " - \<           word boundary left
+            " - \>           word boundary right
+            " - \1           mathing group 1. can be used on search
+            " - /\(\w\)\1  search equal adjacent chars
 
-    "#lookahead lookbehind
+    " #Major differences from Perl
 
-        " Unlike Perl notation, comes outside the parenthesis.
+        " #Classes
 
-        " - `foo(bar)@=`: lookahead
-        " - `foo(bar)@!`: negative lookahead
-        " - `foo(bar)@<=`: lookbehind
-        " - `foo(bar)@<!`: negative lookbehind
-        " - `foo(bar)@>`: TODO
+            " - \_s  a whitespace (space or tab) or newline character
+            " - \_^  the beginning of a line (zero width)
+            " - \_$  the end of a line (zero width)
+            " - \_.  any character including a newline
+
+            " Many more.
+
+        " #lookahead lookbehind #@
+
+            " Unlike Perl notation, comes outside the parenthesis with an `@` sign:
+
+            " - `foo(bar)@=`: lookahead
+            " - `foo(bar)@!`: negative lookahead
+            " - `foo(bar)@<=`: lookbehind
+            " - `foo(bar)@<!`: negative lookbehind
+            " - `foo(bar)@>`: TODO
+
+        " #percent #%
+
+            " The percent sign does a bunch of non-Perl new stuff:
+
+            " - %^	 beginning of file /zero-width
+            " - %$	 end of file /zero-width
+            " - %V	 inside Visual area /zero-width
+            " - %#	 cursor position /zero-width
+            " - %'m	 mark m position /zero-width
+            " - %23l in line 23 /zero-width
+            " - %23c in column 23 /zero-width
+            " - %23v in virtual column 23 /zero-width
 
     "#s
 
