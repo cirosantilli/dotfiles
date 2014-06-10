@@ -113,9 +113,7 @@ fi
   export MANPATH="$MANPATH:/usr/local/texlive/2013/texmf-dist/doc/man"
   export INFOPATH="$INFOPATH:/usr/local/texlive/2013/texmf-dist/doc/info"
 
-#</ciro>
+  # Cabal
+  export PATH="$PATH:$HOME/.cabal/bin"
 
-# Texlive
-export PATH=$PATH:/usr/local/texlive/2013/bin/x86_64-linux
-export MANPATH=$MANPATH:/usr/local/texlive/2013/texmf-dist/doc/man
-export INFOPATH=$INFOPATH:/usr/local/texlive/2013/texmf-dist/doc/info
+#</ciro>

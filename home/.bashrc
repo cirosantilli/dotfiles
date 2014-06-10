@@ -112,7 +112,7 @@ parse_svn_repository_root() {
   svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
 }
 
-#<ciro>
+#<custom>
 
   ##variables
 
@@ -141,8 +141,9 @@ parse_svn_repository_root() {
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
     alias ncl='while true; do printf "" | nc -l 8000; done'
+    function noh { nohup $@ \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null & }
     alias ods='od -Ax -tx1'
-    cmd="paplay ~/share/sounds/alert.ogg"
+    cmd='paplay "$HOME/share/sounds/alert.ogg"'
     alias playa="$cmd" # play Alert
     alias playi="bash -c 'while true; do $cmd; done'" # play alert Infinite. Stop with `kill %1`.
     alias pdc='pandoc'
@@ -317,6 +318,7 @@ parse_svn_repository_root() {
     alias gls="git ls-files"
     alias glso="git ls-files --other"
     alias glsg="git ls-files | grep"
+    alias glsr="git ls-remote"
     alias glo="git log"
     alias glog="git log --abbrev-commit --decorate --graph"
     alias gloo="git log --abbrev-commit --decorate --graph --pretty=oneline" # One line
@@ -492,7 +494,7 @@ parse_svn_repository_root() {
 
   ##python
 
-    export PYTHONSTARTUP=~/.pythonrc.py
+    export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
     alias py='python'
     alias py3='python3'
@@ -552,10 +554,10 @@ parse_svn_repository_root() {
     alias vim="$vim"
     # osx vim
     if [ -x "/Applications/MacVim.app/Contents/MacOS/Vim" ]; then
-      PATH=/Applications/MacVim.app/Contents/MacOS/:$PATH
+      PATH="/Applications/MacVim.app/Contents/MacOS/:$PATH"
     fi
 
-  ##source lines
+  ##source lines and path modifications
 
     # Should come at the end.
 
@@ -567,27 +569,27 @@ parse_svn_repository_root() {
     fi
 
     ##GCE
-    if [ -d ~/google-cloud-sdk ]; then
+    if [ -d "$HOME/google-cloud-sdk" ]; then
       # The next line updates PATH for the Google Cloud SDK.
-      source ~/google-cloud-sdk/path.bash.inc
+      . "$HOME/google-cloud-sdk/path.bash.inc"
       # The next line enables bash completion for gcloud.
-      source ~/google-cloud-sdk/completion.bash.inc
+      . "$HOME/google-cloud-sdk/completion.bash.inc"
     fi
 
     ##Heroku Toolbelt
     export PATH="/usr/local/heroku/bin:$PATH"
 
     ##NVM
-    if [ -r ~/.nvm/nvm.sh ]; then
-      source ~/.nvm/nvm.sh
-      nvm use 0.10.26 &>/dev/null
+    if [ -r "$HOME/.nvm/nvm.sh" ]; then
+      . "$HOME/.nvm/nvm.sh"
+      nvm use '0.10.26' &>/dev/null
     fi
 
     ##RVM
     if [ -r "$HOME/.rvm/scripts/rvm" ]; then
       # Load RVM into a shell session *as a function*
-      source "$HOME/.rvm/scripts/rvm"
-      PATH=$PATH:$HOME/.rvm/bin
+      . "$HOME/.rvm/scripts/rvm"
+      PATH="$PATH:$HOME/.rvm/bin"
     fi
 
     # Not tracked by git.
@@ -595,4 +597,6 @@ parse_svn_repository_root() {
       . "$HOME/.bashrc_local"
     fi
 
-#</ciro>
+    [ -s "$HOME/.gvm/scripts/gvm" ] && . "$HOME/.gvm/scripts/gvm"
+
+#</custom>
