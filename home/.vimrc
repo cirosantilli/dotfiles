@@ -1,5 +1,3 @@
-4671
-
 "#functions and #commands
 
   " Executes shell cmd and redirects output to a new unnammed buffer in
@@ -274,6 +272,28 @@
 
   "#snipmate
 
+    " Two repos:
+    "
+    " - original, innactive since 2011.
+
+        "Plugin 'msanders/snipmate.vim'
+
+    " - fork, more active.
+
+        Plugin 'MarcWeber/vim-addon-mw-utils'
+        Plugin 'tomtom/tlib_vim'
+        Plugin 'garbas/vim-snipmate'
+
+    " Next install some snippets.
+
+    " Tons of filetypes:
+
+        Plugin 'honza/vim-snippets'
+
+    " Ruby:
+
+        "Plugin 'kaichen/vim-snipmate-ruby-snippets'
+
     " <tab> expand in insert mode based on characters before cursor.
 
     " Useful to expand common programming contructs.
@@ -284,30 +304,44 @@
 
     " Once you leave insert mode, it stops.
 
-      Plugin 'msanders/snipmate.vim'
-      Plugin 'kaichen/vim-snipmate-ruby-snippets'
+    " snippet file format
 
-    " Define snippet. Must be in `snippets/<filetype>.snippets`
+      " Define snippet. Must be in `snippets/<filetype>.snippets`
 
-      "snippet <div
-      "  <div>
-      "    ${2}
-      "  </div>
-      "# Comment.
-      "snippet <p
-      "  <p>
-      "    ${1}
-      "  </p>
+        "snippet <div
+        "  <div>
+        "    ${2}
+        "  </div>
+        "# Comment.
+        "snippet <p
+        "  <p>
+        "    ${1}
+        "  </p>
 
-    " Only use hard tabs in snippets files. This encodes indent independently of tabwidth.
+      " Only use hard tabs in snippets files. This encodes indent independently of tabwidth.
 
-    " Show popup with multiple options for a given trigger.
+      " Show popup with multiple options for a given trigger:
 
-      "snippet a desc 0
-      "  0
-      "# Comment.
-      "snippet a desc 1
-      "  1
+        "snippet a desc 0
+        "  0
+        "# Comment.
+        "snippet a desc 1
+        "  1
+
+      " Evaluate expresion at snippet expansion. Use anchor from clipboard:
+
+        "snippet ac
+        "    <a href="`@+`">${0}</a>
+
+      " Use default value as last another value:
+
+        "snippet ac
+        "    <a href="${1}">${0:$1}</a>
+
+      " Use default value as expression;
+
+        "snippet ac
+        "    <a href="`@+`">${0:`@+`}</a>
 
   "#syntastic
 
@@ -842,7 +876,7 @@
 
     set mouse=a
 
-  "#backup #swap
+  "#backup #swp
 
     set nobackup
     "set backupdir=~/tmp   "where to create backups if need be so
@@ -956,11 +990,25 @@
 
       set ruler
 
-  "#statusline
+  "#statusline #laststatus
 
-    " TODO what is it? Why does it now show?
+    " Line that always shows at the bottom, above the command line.
+
+    " Can contain whatever you want.
+
+    " Enable / disable statusline:
+
+        set laststatus=0
+
+    " Set what you want it to contain. Accepts % substitutions.
+
+    " Filename:
 
         "set statusline+=%f
+
+    " Current highlight group name:
+
+        set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   "#tabwindow
 
@@ -1284,10 +1332,13 @@
 
     autocmd BufEnter,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
 
-  " #javascript #js #coffe
+  " #javascript #js #coffee
 
-    autocmd BufEnter,BufRead *.{coffee} setlocal shiftwidth=2 tabstop=2
+    autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
+    autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
     autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+    autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
+    autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
 
   "#compilable markup
 
@@ -1374,7 +1425,6 @@
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
     autocmd BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
     autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
-    autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
 
   "#compile to executable languages
 
@@ -1474,7 +1524,11 @@
 
     "highlight CursorLine ctermfg=red guifg=blue
 
-  " Find the highlight group under the cursor: <http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor>
+  " Get the highlight group under the cursor:
+  "
+  " <http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor>
+  "
+  "     set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   "#match
 
@@ -1511,12 +1565,29 @@
 
   "#cursorline #cursorcolumn
 
-    " Highlight current line and column. Makes line too unreadable on certain dark themes.
+    " Highlight current line and column.
 
     " The styles are given by the CursorLine and CursorColumn highlights, help at hl-CursorLine.
 
+    " Makes line too unreadable on certain dark themes.
+
       set nocursorline
       set nocursorcolumn
+
+  "#synIDAttr #synID
+
+    " Get name of syntax region under cursor:
+
+      "echo synIDattr(synID(line('.'),col('.'),1),'name')
+
+    " Add it to your status line. Great way to make small syntax developments:
+
+      "set laststatus=2
+      "set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}
+
+  "#syntax
+
+    "TODO
 
 "#mappings "#key bindinigs
 
@@ -1596,9 +1667,19 @@
 
       "noremap @a
 
-    "redo last used macro:
+    " Redo last used macro:
 
       "noremap @@
+
+    " Use value from register:
+
+      "cnoremap @a
+      "cnoremap @+
+
+    " Example:
+
+      "echo @a
+      "echo @+
 
   "## #3
 
@@ -1688,6 +1769,10 @@
     " Start/end recording commands in register a:
 
       "nn qa
+
+    " Macros DO replace registers. Check with:
+
+      "echo @a
 
     " Enter ex mode:
 
@@ -1987,7 +2072,7 @@
 
     "Move between lines with same indentation <http://vim.wikia.com/wiki/Move_to_next/previous_line_with_same_indentation>:
 
-    "- l and ]l jump to the previous or the next line with the same indentation level as the current line.
+    "- [l and ]l jump to the previous or the next line with the same indentation level as the current line.
     "- [L and ]L jump to the previous or the next line with an indentation level lower than the current line. 
 
       " Jump to the next or previous line that has the same level or a lower
@@ -2115,17 +2200,6 @@
 
       nn dD ^v$"+ygv
 
-    " Takes word under cursor
-    " open in turrent window a file with same name as that word
-    " searchs files under the special path variable (no g: prefix, but global)
-
-      "help path
-
-    "looks in cur dir by default
-    "usage: view header/inlcluded files
-
-      "nn gf
-
   "#f
 
     "one screen Forward:
@@ -2151,11 +2225,38 @@
         "call setpos("'>", [0, 3, 2])
         "normal! gv
 
-    " - `gx`: open URL (local file / internet) under cursor using appropriate program.
+    "#gf
 
-      " If does not start with a protocol, assumes file: relative to current dir.
+      " Open file under cursor in current buffer:
+
+        "gf
+
+      " In split:
+
+        "split gf
+
+      " Get file name that would be used by gf:
+
+      " Takes word under cursor
+      " open in turrent window a file with same name as that word
+      " searchs files under the special path variable (no g: prefix, but global)
+
+        "help path
+
+    "#gx
+
+      " Open URL (local file / internet) under cursor using appropriate program.
+
+      " Program used to open:
 
         let g:netrw_browsex_viewer = "xdg-open"
+
+      " If the input passed to xdg-open does not start with the protocol (http://)
+      " file:// is assumed.
+
+      " The function that opens the URL is:
+
+        "call netrw#NetrwBrowseX('http://example.com', 0)
 
     " - {num}gt: go to tab num 1 based.
 
@@ -2848,6 +2949,52 @@
 
         "command! -range=% Echo echo "<line1> <line2>"
 
+    "#sort
+
+      " Sort lines in range:
+
+        "sort
+
+      " Sort and remove duplicates:
+
+        "sort u
+
+"#registers
+
+  " Store user defined text, and things used as side effects of other commands,
+  " e.g. q` macro recording or `%` for the name of the current file.
+
+    ":h registers
+
+  " Get help on a specific register, prefix with `"`:
+
+    ":h "*
+
+  " Nice thread: <http://stackoverflow.com/questions/1497958/how-to-use-vim-registers>
+
+  " - `a-zA-Z`: general purpose.
+  " - `0`: filled by last `y`
+  " - `1`: filled by last `d` or `c`
+  " - `2`: filled by before last `d` or `c`
+  " - `3-9`: so on.
+  " - `"`: last `d`, `c`, `s`, `x` or `y`. Used by `p` if no register specified.
+  " - `-`: content of last `d` that deleted less than one line
+  " - `+`: clipboard
+  " - `*`: selection buffer on X11 (last selected text, can be pasted with middle click),
+  "     same as `+` on windows.
+  " - `_`: black hole register: `/dev/null` of registers.
+  " - `/`: last `/` search
+	" - `.`: last inserted text
+	" - `%`: name of the current file.
+	" - `#`: alternate file.
+	" - `:`: last executed command-line
+
+  " Get or set value of register: use `@`:
+
+    " echo @a
+    " echo @%
+    " let @a=dd
+
 "#comments
 
   " Start with '"'
@@ -2920,6 +3067,15 @@
 
   "- `v`: vim predefined
 
+  "#scopes are dicts
+
+      "let g:a = 0
+      "if g:['a'] != 0 | throw 'assertion failed' | end
+
+    " This means that you can get default values if undefined as:
+
+      "if !get(g:, "option_name", 0) | echo "undefined or 0" | fi
+
   "#sid
 
     " Make helper functions or variables that are unique to the script
@@ -2986,7 +3142,7 @@
     "echo $a
     "!echo $a
 
-"#list
+"#list #array
 
   " Literals:
 
@@ -3077,12 +3233,14 @@
 
 "#string
 
-  " Escape
+  " Escape:
 
-  " :ec 'That''s enough.'
-  " :ec '\"'
-    "exactly \ and "
-    "the only escape inside single quotes is '' for '
+    "echo 'That''s enough.'
+    "echo '\"'
+
+  " Only needed for exactly `\` and `"`
+
+  " The only escape inside single quotes is `''` for `'`.
 
   "special chars
 
@@ -3204,7 +3362,7 @@
 "#range() function
 
     "if range(1, 3) != [1, 2, 3] | throw 'assertion failed' | end
-    if range(3, 1, -1) != [3, 2, 1] | throw 'assertion failed' | end
+    "if range(3, 1, -1) != [3, 2, 1] | throw 'assertion failed' | end
 
   " Loop all lines of a file modifying them with any function.
 
@@ -3213,6 +3371,38 @@
       "let l:line =  substitute(l:line, 'a\(.\), '\1', '')
       "setline(i, l:line)
     "endfor
+
+  "#Useful ranges
+
+    " Start at current line, don't wrap:
+
+      "for l:i in range(line('.'), line('$'))
+      "  echo l:i getline(l:i)
+      "endfor
+
+    " Wrap: same as above, then after do line 0 to line - 1.
+
+    " Loop over all characters. Exclude newlines:
+
+      "for l:i in range(1, line('$'))
+      "  for l:j in range(1, getline(l:i))
+      "    echo l:i l:j getline(l:i)[l:j - 1]
+      "  endfor
+      "endfor
+
+    " Loop over all characters. Include newlines:
+
+      "for l:i in range(1, line('$'))
+      "  let l:line = getline(l:i) . "\n"
+      "  for l:j in range(1, len(l:line))
+      "    echo l:i l:j getline(l:i)[l:j - 1]
+      "  endfor
+      "endfor
+
+    " Start at current character, don't wrap: same as above, but treat the currrent line specially,
+    " then restart at line + 1. Check if not last line.
+    "
+    " Wrap: same as above, then after do line 0 to line - 1.
 
 "#while
 
@@ -3322,6 +3512,17 @@
 
       "echo function('F')()
       "call function('F')()
+
+  "#preserve state after function
+
+    " When writting plugins, many convenient commands only exist in the usual interactive form.
+    "
+    " The problem is that such commands may have unwanted side effects, such as
+    " modifying registers after `d`, or the last jump positions.
+    "
+    " I am yet to find a general way to prevent such state loss.
+    "
+    " The cleanest solution would for Vim to provide better commands for plugin writers.
 
 "#exceptions
 
@@ -3453,7 +3654,7 @@
       "echo 1
     "redir END
 
-"#shell commands #!
+"#shell commands #! #external commands
 
   " Excecute shell commands:
 
@@ -3463,6 +3664,9 @@
 
     "let a = 1
     "exe "! echo " . a
+
+  " TODO why does `!firefox -new-tab http://example.com` fail but `!firefox -new-tab http://example.com &` work?
+  " <http://superuser.com/questions/386646/xdg-open-url-doesnt-open-the-website-in-my-default-browser>
 
   "#system
 
@@ -4551,37 +4755,33 @@
 
       "echo line("'<")
 
-    "last one:
+    " Last one:
 
       "echo line("'>")
 
-    "get cur column
+    " Get cur line number, column, buffer
 
-      "echo column(".")
+      "getpos('.')
 
-    "get cur line number, column, buffer
+    " Returns:
 
-      "getpos():
+       "[bufnum, lnum, col, off]
 
-    "returns:
+    " `setpos()` with same args to set (last can be ommitted):
 
-      "[bufnum, lnum, col, off]
+       "setpos('.', [0,2,3])
 
-    "setpos() with same args to set (last can be ommitted):
+    " If buf number 0 means in current buffer
 
-      "setpos (0,2,3)
+    " Another way to set position:
 
-    "if buf number 0 means in current buffer
+       "cursor(line, col)
 
-    "another way to set position:
+    " Get initial position while on visual mode:
 
-      "cursor(line, col)
+       "getpos("'<")
 
-    "get initial position while on visual mode:
-
-      "getpos("'<")
-
-    "set visual selection position from function:
+    " Set visual selection position from function:
 
       ""put user in visual mode and set the visual selection
       ""
@@ -4883,7 +5083,7 @@
       " - %^	 beginning of file /zero-width
       " - %$	 end of file /zero-width
       " - %V	 inside Visual area /zero-width
-      " - %#	 cursor position /zero-width
+      " - %#	 current cursor position /zero-width
       " - %'m	 mark m position /zero-width
       " - %23l in line 23 /zero-width
       " - %23c in column 23 /zero-width
@@ -4930,17 +5130,26 @@
 
         ":%s/\n\n+/\r\r/
 
-    " Confirm each match replace before doing it:
+    "#c confirm
 
-      ":%s/a/a/c
+      " Confirm each match replace before doing it:
 
-    " Options:
+        ":%s/a/a/c
 
-    " - y: yes
-    " - n: no
-    " - a: replace all remaining
-    " - q: quit
-    " - l: last == yes and quit
+      " Options:
+
+      " - y: yes
+      " - n: no
+      " - a: replace all remaining
+      " - q: quit
+      " - l: last == yes and quit
+
+    "#e noerror
+
+      " Don't raise an error if pattern not found.
+
+        "%s/aisudhaiuhewiu//
+        "%s/aisudhaiuhewiu//e
 
   "#substitute()
 
@@ -5049,7 +5258,7 @@
 
     " For a plugin that defines some mappings, see: <https://github.com/yssl/QFEnter>.
 
-  "#grep #vimgrep
+  "#grep #vimgrep ##copen ##quickfix
 
     " Same as `:make` , but specialized for generating output by grepping files.
 
@@ -5078,6 +5287,15 @@
       "tab copen
 
     " And you now have a navigable index!
+
+  "#lvimgrep #copen
+
+    " Use location list instead of quickfix. Similar, but there is one per window.
+
+    " More appropriate when you have file outlines, like all headers of an HTML document,
+    " or all functions of a C file.
+
+        " :help location-list
 
   "#errorformat #grepformat
 

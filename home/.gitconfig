@@ -1,11 +1,10 @@
-[user]
-	name = Ciro Santilli
-	email = ciro.santilli@gmail.com
 [alias]
 	st = status
 	exec = "!exec "
 [color]
 	ui = auto
+[core]
+    quotepath = false
 [credential]
 	helper = cache
 [grep]
@@ -17,3 +16,6 @@
 	diff = diff-highlight | less
 [push]
 	default = current
+[user]
+	name = Ciro Santilli
+	email = ciro.santilli@gmail.com

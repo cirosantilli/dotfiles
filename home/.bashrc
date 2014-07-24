@@ -128,34 +128,34 @@ parse_svn_repository_root() {
 
     # Misc aliases.
 
-    alias ack="ack-grep -a --smart-case"
-    alias eip="curl ipecho.net/plain" # External IP.
-    alias cla11="clang++ -std=c++11"
-    alias dfhs="df -h | sort -hrk2" # Disk Fill, Human readable, Sort by total size.
+    alias ack='ack-grep -a --smart-case'
+    alias eip='curl ipecho.net/plain' # External IP.
+    alias cla11='clang++ -std=c++11'
+    alias dfhs='df -h | sort -hrk2' # Disk Fill, Human readable, Sort by total size.
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
-    alias fbr="find_basename_res.py"
-    alias fmmmr="find-music-make-m3u ."
-    alias golly="env UBUNTU_MENUPROXY=0 golly"
+    alias fbr='find_basename_res.py'
+    alias fmmmr='find-music-make-m3u .'
+    alias golly='env UBUNTU_MENUPROXY=0 golly'
     function mdc { mkdir "$1" && cd "$1"; } # Make Dir Cd
-    alias mupen="mupen64plus --fullscreen"
+    alias mupen='mupen64plus --fullscreen'
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
-    alias ncl='while true; do printf "" | nc -l 8000; done'
+    alias ncl='while true; do printf '' | nc -l 8000; done'
     function noh { nohup $@ \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
     alias playa="$cmd" # play Alert
     alias playi="bash -c 'while true; do $cmd; done'" # play alert Infinite. Stop with `kill %1`.
     alias pdc='pandoc'
-    alias rmd="sleep 2 && playa && recordmydesktop --stop-shortcut 'Control+Mod1+z'"
+    alias rmd='sleep 2 && playa && recordmydesktop --stop-shortcut 'Control+Mod1+z''
     alias pingg='ping google.com'
     alias psg='sudo ps aux | grep -i'
-    alias rbul="rename_basename_unidecode_lowercase.py"
-    alias rifr="replace_in_files_regex.py"
-    alias robots="robots -ta`for i in {1..1000}; do echo -n n; done`"
+    alias rbul='rename_basename_unidecode_lowercase.py'
+    alias rifr='replace_in_files_regex.py'
+    alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
-    alias timestamp="date '+%Y-%m-%d-%H-%M-%S'"
+    alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
       # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
       alias dush="du -sh .[^.]* * 2>/dev/null | sort -hr"
       alias dushf='dush | tee ".dush$(timestamp)"' # to File
@@ -173,21 +173,21 @@ parse_svn_repository_root() {
 
     ##Provision machines
 
-      alias provision-min-ssh="wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash"
-      alias provision-min="wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-ssh.sh | bash"
+      alias provision-min-ssh='wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash'
+      alias provision-min='wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-ssh.sh | bash'
 
   ##aptitude
 
-      alias acse="apt-cache search"
-      alias acde="apt-cache depends"
-      alias acsh="apt-cache show"
-      alias afse="apt-file search"
-      alias afsh="apt-file show"
-      alias dplg="dpkg -l | grep -Ei"
-      alias saii="sudo aptitude install"
-      alias sair="sudo aptitude remove"
-      alias saiu="sudo aptitude update"
-      alias saip="sudo aptitude purge"
+      alias acse='apt-cache search'
+      alias acde='apt-cache depends'
+      alias acsh='apt-cache show'
+      alias afse='apt-file search'
+      alias afsh='apt-file show'
+      alias dplg='dpkg -l | grep -Ei'
+      alias saii='sudo aptitude install'
+      alias sair='sudo aptitude remove'
+      alias saiu='sudo aptitude update'
+      alias saip='sudo aptitude purge'
       function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
 
   ##ctags
@@ -228,11 +228,11 @@ parse_svn_repository_root() {
 
       alias ls='ls -1 --color=auto --group-directories-first'
       alias lsa='ls -A'
-      alias ll="ls -hl"
-      alias lls="ls -hl | sort -k5hr" #by Size
-      alias lla="ll -A"
-      alias llas="ls -a -h -l | sort -k5hr" #by Size
-      alias lsg="ls | grep -Ei"
+      alias ll='ls -hl'
+      alias lls='ls -hl | sort -k5hr' #by Size
+      alias lla='ll -A'
+      alias llas='ls -a -h -l | sort -k5hr' #by Size
+      alias lsg='ls | grep -Ei'
 
   ##docker
 
@@ -283,93 +283,105 @@ parse_svn_repository_root() {
 
     export GIT_EDITOR="$vim"
 
-    alias gad="git add"
-    alias gadcm="git add . && git commit"
-    alias gadcp="git add . && git commit && git push"
+    alias gad='git add'
+    alias gadcm='git add . && git commit'
+    alias gadcp='git add . && git commit && git push'
     function gadcmp { git add . && git commit -m "$1" && git push; }
-    alias garcp="git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f"
-    alias gbl="git blame"
-    alias gbr="git branch"
+    alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
+    alias gbl='git blame'
+    alias gbr='git branch'
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
-    alias gbrg="git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration" # BRanch Graph
-    alias gbrv="git branch -vv"
-    alias gcl="git clone --recursive"
-    alias gcm="git commit"
-    alias gcman="git commit --amend --no-edit"
-    alias gcmanpsf="git commit --amend --no-edit && git push -f"
-    alias gadcmanpsf="git add . && gcmanpsf"
+    alias gbrg='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration' # BRanch Graph
+    alias gbrv='git branch -vv'
+    alias gcl='git clone --recursive'
+    alias gcm='git commit'
+    alias gcman='git commit --amend --no-edit'
+    alias gcmanpsf='git commit --amend --no-edit && git push -f'
+    alias gadcman='git add . && gcman'
+    alias gadcmanpsf='git add . && gcmanpsf'
     function gcmp { git commit -am "$1"; git push --tags -u origin master; }
-    alias gco="git checkout"
-    alias gcom="git checkout master"
-    alias gcoo="git checkout --ours"
-    alias gcot="git checkout --theirs"
-    alias gcou="git checkout up"
-    alias gcn="git config"
-    alias gcng="git config --global"
-    alias gcp="git cp"
-    alias gcr="git cherry-pick"
-    alias gdf="git diff"
-    alias gdfc="git diff --cached"
-    alias gdfhh="git diff HEAD~ HEAD"
-    alias gfe="git fetch"
-    alias ggr="git grep --color"
-    alias gka="gitk --all"
-    alias giac="git init && git add . && git commit -m 'Init.'" # Init Add Commit
-    alias gls="git ls-files"
-    alias glso="git ls-files --other"
-    alias glsg="git ls-files | grep"
-    alias glsr="git ls-remote"
-    alias glo="git log"
-    alias glog="git log --abbrev-commit --decorate --graph"
-    alias gloo="git log --abbrev-commit --decorate --graph --pretty=oneline" # One line
-    #alias glop="git log --pretty=oneline --decorate"
-    alias glop="git log --pretty=format:'%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s' --date=short | column -ts'|' | less -r"
-    alias gme="git merge"
-    alias gmt="git mergetool"
-    alias gmv="git mv"
-    alias gppp="git push prod prod"
-    alias gps="git push"
-    alias gpsom="git push --tags -u origin master"
-    alias gpl="git pull"
-    alias gplum="git pull up master"
-    alias gplom="git pull origin master"
-    alias grb="git rebase"
-    alias grbc="git rebase --continue"
-    alias grs="git reset"
-    alias grshh="git reset --hard HEAD~"
-    alias grm="git rm"
-    alias grt="git remote"
-    alias grtv="git remote -v"
-    alias gsa="git stash"
-    alias gsaa="git stash apply"
-    alias gst="git status"
-    alias gsu="git submodule"
-    alias gsua="git submodule add"
-    alias gta="git tag"
-    alias gtas="git tag | sort -V"
-    alias gtr="git ls-tree HEAD"
+    alias gco='git checkout'
+    alias gcom='git checkout master'
+    alias gcoo='git checkout --ours'
+    alias gcot='git checkout --theirs'
+    alias gcou='git checkout up'
+    alias gcn='git config'
+    alias gcng='git config --global'
+    alias gcp='git cp'
+    alias gcr='git cherry-pick'
+    alias gdf='git diff'
+    alias gdfc='git diff --cached'
+    alias gdfhh='git diff HEAD~ HEAD'
+    alias gfe='git fetch'
+    alias ggr='git grep --color'
+    alias gka='gitk --all'
+    alias giac='git init && git add . && git commit -m 'Init.'' # Init Add Commit
+    alias gls='git ls-files'
+    alias glso='git ls-files --other'
+    alias glsg='git ls-files | grep'
+    alias glsr='git ls-remote'
+    alias glo='git log'
+    alias glog='git log --all --abbrev-commit --decorate --graph'
+    alias gloo='git log --all --abbrev-commit --decorate --graph --pretty=oneline' # One line
+    #alias glop='git log --pretty=oneline --decorate'
+    alias glop='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
+    alias gme='git merge'
+    alias gmea='git merge --abort'
+    alias gmt='git mergetool'
+    alias gmv='git mv'
+    alias gppp='git push prod prod'
+    alias gps='git push'
+    alias gpsom='git push --tags -u origin master'
+    alias gpl='git pull'
+    alias gplum='git pull up master'
+    alias gplrum='git pull --rebase up master'
+    alias gplom='git pull origin master'
+    alias grb='git rebase'
+    alias grbc='git rebase --continue'
+    alias grs='git reset'
+    alias grshh='git reset --hard HEAD~'
+    alias grm='git rm'
+    alias grt='git remote'
+    alias grtv='git remote -v'
+    alias gsa='git stash'
+    alias gsaa='git stash apply'
+    alias gst='git status'
+    alias gsu='git submodule'
+    alias gsua='git submodule add'
+    alias gta='git tag'
+    alias gtas='git tag | sort -V'
+    alias gtr='git ls-tree HEAD'
 
-    alias vgig="vim .gitignore"
-    alias lngp="latex-new-github-project.sh cirosantilli"
+    alias vgig='vim .gitignore'
+    alias lngp='latex-new-github-project.sh cirosantilli'
 
     # GitHub
 
-      alias ghb="git browse-remote"
-      alias ghpb="git push && git browse-remote"
-      alias ghcmanpsf="gcmanpsf && git browse-remote"
+      alias ghb='git browse-remote'
+      alias ghpb='git push && git browse-remote'
+      alias ghcmanpsf='gcmanpsf && git browse-remote'
 
   ##gitlab elearn ssh
 
     alias sugqa='ssh ubuntu@gitlab-elearn-qa'
     alias sugpr='ssh ubuntu@gitlab-elearn-prod'
 
+  ##grunt
+
+    alias gru='grunt'
+    alias gruc='grunt clean'
+    alias gruh='grunt --help'
+    alias grur='grunt run'
+    alias grut='grunt test'
+    alias gruw='grunt watch'
+
   ##heroku
 
-    alias hrk="heroku"
-    alias hrkc="heroku create"
-    alias hrko="heroku open"
-    alias hrkr="heroku run"
-    alias gphm="git push heroku master"
+    alias hrk='heroku'
+    alias hrkc='heroku create'
+    alias hrko='heroku open'
+    alias hrkr='heroku run'
+    alias gphm='git push heroku master'
 
   ##make
 
@@ -383,10 +395,13 @@ parse_svn_repository_root() {
     # will not be owned, or else it could only be cleaned with by sudo.
     alias mki='make && sudo make install'
     alias mkir='make && sudo make install && make install-run'
+    # Stop background watch.
+    alias mkk='make kill'
     alias mkr='make run'
     alias mkt='make test'
     alias mku='sudo make uninstall'
     alias mkv='make view'
+    alias mkw='make watch'
 
     # From Git root:
 
@@ -419,9 +434,14 @@ parse_svn_repository_root() {
     #   b
     #   c
     #
-    # Replace (Not Dry run): WARNING: will transform symlinks into files. TODO how to avoid?
+    # Replace (Not Dry run)
     #
     #  find . -type f | mrr "a/b/g" D
+    #
+    # # Caveats
+    #
+    # - will transform symlinks into files
+    # - will add trailing newlines to files that end without them
     #
     function mrr {
       if [ $# -gt 1 ]; then
@@ -455,19 +475,19 @@ parse_svn_repository_root() {
     function grr { grep -Er "$1" . ; }
 
     # Mass rename refactoring.
-    alias mvr="move_regex.py"
+    alias mvr='move_regex.py'
 
   ##mysql
 
-    alias myr="mysql -u root -p"
+    alias myr='mysql -u root -p'
 
     # Before using this you ran:
-    #mysql -u root -h localhost -p -e "
+    #mysql -u root -h localhost -p -e '
       #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
       #CREATE DATABASE test;
       #GRANT ALL ON a.* TO 'a'@'localhost';
-    #"
-    alias myt="mysql -u a -h localhost -pa a" #MYsql Test
+    #'
+    alias myt='mysql -u a -h localhost -pa a' #MYsql Test
 
   ##music
 
@@ -475,6 +495,12 @@ parse_svn_repository_root() {
     alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
     alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
     alias mroc="nohup vlc \"$MUSIC_DIR/rock/all.m3u\" >/dev/null &"
+
+  ##npm
+
+    alias npmi='npm install'
+    alias npmis='npm install --save'
+    alias npmisd='npm install --save-dev'
 
   ##options
 
@@ -487,10 +513,10 @@ parse_svn_repository_root() {
 
   ##power
 
-    alias pmhi="sudo ps-hibernate"
-    alias pmsh="sudo shutdown"
-    alias pmsu="sudo ps-suspend"
-    alias pmre="sudo reboot"
+    alias pmhi='sudo ps-hibernate'
+    alias pmsh='sudo shutdown'
+    alias pmsu='sudo ps-suspend'
+    alias pmre='sudo reboot'
 
   ##python
 
@@ -503,29 +529,29 @@ parse_svn_repository_root() {
 
     ##pip
 
-      alias spii="sudo pip install"
-      alias spiu="sudo pip uninstall"
-      alias pise="pip search"
-      alias pifr="pip freeze"
+      alias spii='sudo pip install'
+      alias spiu='sudo pip uninstall'
+      alias pise='pip search'
+      alias pifr='pip freeze'
 
     ##django
 
-      alias dmrs="./manage.py runserver" #Django Manage Run Server
-      alias dmds="./manage.py dbshell" #Db Shell
-      alias dmsd="./manage.py syncdb" #Sync Db
-      alias dmcs="echo "yes" | ./manage.py collectstatic" #Collect Static
+      alias dmrs='./manage.py runserver' #Django Manage Run Server
+      alias dmds='./manage.py dbshell' #Db Shell
+      alias dmsd='./manage.py syncdb' #Sync Db
+      alias dmcs='echo "yes" | ./manage.py collectstatic' #Collect Static
 
       ##south
 
-        alias dmscts="./manage.py convert_to_south"
-        alias dmssi="./manage.py schemamigration --initial"
-        alias dmssa="./manage.py schemamigration --auto"
+        alias dmscts='./manage.py convert_to_south'
+        alias dmssi='./manage.py schemamigration --initial'
+        alias dmssa='./manage.py schemamigration --auto'
 
   ##rails
 
-    alias rdcm="rake db:drop db:migrate"
-    alias be="bundle exec"
-    alias bi="bundle install"
+    alias rdcm='rake db:drop db:migrate'
+    alias be='bundle exec'
+    alias bi='bundle install'
 
   ##services
 
@@ -534,27 +560,27 @@ parse_svn_repository_root() {
     function sss { sudo service "$1" start ; }
     function sst { sudo service "$1" status ; }
     function ssta { sudo service --status-all ; }
-    alias ssar="sudo service apache2 restart"
-    alias sslr="sudo service lightdm restart"
+    alias ssar='sudo service apache2 restart'
+    alias sslr='sudo service lightdm restart'
 
   ##vagrant
 
-    alias vde="vagrant destroy"
-    alias vdef="vagrant destroy -f"
-    alias vdu="vagrant destroy -f && vagrant up"
-    alias vdus="vagrant destroy -f && vagrant up && vagrant ssh"
-    alias vpr="vagrant provision"
-    alias vss="vagrant ssh"
-    alias vup="vagrant up"
-    alias vups="vagrant up && vagrant ssh"
-    alias vus="vagrant up --no-provision && vagrant ssh"
+    alias vde='vagrant destroy'
+    alias vdef='vagrant destroy -f'
+    alias vdu='vagrant destroy -f && vagrant up'
+    alias vdus='vagrant destroy -f && vagrant up && vagrant ssh'
+    alias vpr='vagrant provision'
+    alias vss='vagrant ssh'
+    alias vup='vagrant up'
+    alias vups='vagrant up && vagrant ssh'
+    alias vus='vagrant up --no-provision && vagrant ssh'
 
   ##vim
 
     alias vim="$vim"
     # osx vim
-    if [ -x "/Applications/MacVim.app/Contents/MacOS/Vim" ]; then
-      PATH="/Applications/MacVim.app/Contents/MacOS/:$PATH"
+    if [ -x '/Applications/MacVim.app/Contents/MacOS/Vim' ]; then
+      PATH="/Applications/MacVim.app/Contents/MacOS/:${PATH}"
     fi
 
   ##source lines and path modifications
@@ -564,8 +590,8 @@ parse_svn_repository_root() {
     # Enable programmable completion features (you don't need to enable
     # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
     # sources /etc/bash.bashrc).
-    if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-        . /etc/bash_completion
+    if [ -f '/etc/bash_completion' ] && ! shopt -oq 'posix'; then
+        . '/etc/bash_completion'
     fi
 
     ##GCE
@@ -579,11 +605,16 @@ parse_svn_repository_root() {
     ##Heroku Toolbelt
     export PATH="/usr/local/heroku/bin:$PATH"
 
-    ##NVM
-    if [ -r "$HOME/.nvm/nvm.sh" ]; then
-      . "$HOME/.nvm/nvm.sh"
-      nvm use '0.10.26' &>/dev/null
-    fi
+    ##node
+
+      ##NVM
+      if [ -r "$HOME/.nvm/nvm.sh" ]; then
+        . "$HOME/.nvm/nvm.sh"
+        nvm use '0.10.26' &>'/dev/null'
+      fi
+
+      # Use local executables at correct version.
+      export PATH="./node_modules/.bin:$PATH"
 
     ##RVM
     if [ -r "$HOME/.rvm/scripts/rvm" ]; then
