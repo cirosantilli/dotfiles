@@ -134,13 +134,15 @@ parse_svn_repository_root() {
     alias dfhs='df -h | sort -hrk2' # Disk Fill, Human readable, Sort by total size.
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
     alias fbr='find_basename_res.py'
+    alias g='grep'
+    alias gi='grep -i'
     alias fmmmr='find-music-make-m3u .'
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     function mdc { mkdir "$1" && cd "$1"; } # Make Dir Cd
     alias mupen='mupen64plus --fullscreen'
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
-    alias ncl='while true; do printf '' | nc -l 8000; done'
+    alias ncl="while true; do printf '' | nc -l localhost 8000; done"
     function noh { nohup $@ \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
@@ -167,9 +169,10 @@ parse_svn_repository_root() {
     function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
     alias xar="xargs -I'{}'"
     alias xar0="xargs -0I'{}'"
-    alias xselb="xsel --clipboard"
+    alias xselb='xsel --clipboard'
     # wget Mirror. My favorite mirror command:
-    alias wgetm="wget -E -k -l inf -np -p -r"
+    alias wgetm='wget -E -k -l inf -np -p -r'
+    alias pserve='python -m SimpleHTTPServer'
 
     ##Provision machines
 
@@ -295,6 +298,7 @@ parse_svn_repository_root() {
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
     alias gcm='git commit'
+    alias gcmm='git commit -m'
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gadcman='git add . && gcman'
@@ -313,7 +317,8 @@ parse_svn_repository_root() {
     alias gdfc='git diff --cached'
     alias gdfhh='git diff HEAD~ HEAD'
     alias gfe='git fetch'
-    alias ggr='git grep --color'
+    alias gg='git grep --color'
+    alias ggi='git grep --color -i'
     alias gka='gitk --all'
     alias giac='git init && git add . && git commit -m 'Init.'' # Init Add Commit
     alias gls='git ls-files'
@@ -322,7 +327,8 @@ parse_svn_repository_root() {
     alias glsr='git ls-remote'
     alias glo='git log'
     alias glog='git log --all --abbrev-commit --decorate --graph'
-    alias gloo='git log --all --abbrev-commit --decorate --graph --pretty=oneline' # One line
+    alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline' # One line
+    alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline' # One line Graph
     #alias glop='git log --pretty=oneline --decorate'
     alias glop='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
     alias gme='git merge'
@@ -337,14 +343,19 @@ parse_svn_repository_root() {
     alias gplrum='git pull --rebase up master'
     alias gplom='git pull origin master'
     alias grb='git rebase'
+    alias grbm='git rebase master'
     alias grbc='git rebase --continue'
     alias grs='git reset'
-    alias grshh='git reset --hard HEAD~'
+    alias grsh='git reset --hard'
+    alias grsH='git reset HEAD~'
+    alias grshH='git reset --hard HEAD~'
     alias grm='git rm'
     alias grt='git remote'
     alias grtv='git remote -v'
+    alias grtmou='git remote rename origin up && git remote add origin'
     alias gsa='git stash'
     alias gsaa='git stash apply'
+    alias gsh='git show'
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'
@@ -551,6 +562,11 @@ parse_svn_repository_root() {
 
     alias rdcm='rake db:drop db:migrate'
     alias be='bundle exec'
+    alias ber='bundle exec rake'
+    alias berc='bundle exec rake compile'
+    alias bert='bundle exec rake test'
+    function bertt { bundle exec rake test TEST="$1"; }
+    alias berT='bundle exec rake -T'
     alias bi='bundle install'
 
   ##services
@@ -609,7 +625,7 @@ parse_svn_repository_root() {
 
       ##NVM
       if [ -r "$HOME/.nvm/nvm.sh" ]; then
-        . "$HOME/.nvm/nvm.sh"
+        . "$HOME/.nvm/nvm.sh" &>'/dev/null'
         nvm use '0.10.26' &>'/dev/null'
       fi
 

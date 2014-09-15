@@ -18,35 +18,39 @@ fi
     export LC_MESSAGES="en_US.UTF-8"
     export LC_CTYPE="en_US.UTF-8"
     export LC_COLLATE="en_US.UTF-8"
-
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
     # Linux from scratch home.
     export LFS=/media/lfs/
 
     ##PATH
 
       # Before.
-      PATH="$PATH:$MY_PYTHON_BIN_DIR"
-      PATH="$PATH:$MY_BASH_BIN_DIR"
-      PATH="$PATH:$LATEX_BIN_DIR"
-      # Linux from scratch home.
-      export LFS=/media/lfs/
-      if [ -d "$HOME/bin" ] ; then
-          PATH="$HOME/bin:$PATH"
-      fi
+
+        PATH="$PATH:$MY_PYTHON_BIN_DIR"
+        PATH="$PATH:$MY_BASH_BIN_DIR"
+        PATH="$PATH:$LATEX_BIN_DIR"
+        # Linux from scratch home.
+        export LFS=/media/lfs/
+        # Texlive
+        export PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
+        # ~/bin
+        if [ -d "$HOME/bin" ] ; then
+            PATH="$HOME/bin:$PATH"
+        fi
 
       # After.
-      PATH="$ANDROID_ADT_DIR/tools/:$PATH"
-      PATH="$ANDROID_ADT_DIR/platform-tools/:$PATH"
-      PATH="$DEVBIN:$PATH"
-      export PATH
+
+        PATH="$ANDROID_ADT_DIR/tools/:$PATH"
+        PATH="$ANDROID_ADT_DIR/platform-tools/:$PATH"
+        PATH="$DEVBIN:$PATH"
+        PATH="$PATH:$HOME/.cabal/bin"
+        export PATH
 
     PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR:/var/www/django/devpath"
     # Adding to path is the only way I found to dev most modules with git
     # because the module often is a subdir of the git root and you can't
     # clone modify commit subdirs in git.
     export PYTHONPATH
-
-    # Set PATH so it includes user's private bin if it exists.
 
   # History
 
@@ -72,10 +76,7 @@ fi
     MYID=my
 
     export ROOT_DIR="$HOME"
-
     export BAK_DIR="$ROOT_DIR/bak"
-    export BIN_DIR="$ROOT_DIR/bin"
-
     export PROGRAM_DIR="$BAK_DIR/git"
       export ANDROID_DIR="$PROGRAM_DIR/android"
         export ANDROID_ADT_DIR="$ANDROID_DIR/adt"
@@ -89,11 +90,11 @@ fi
       export CPP_DIR="$PROGRAM_DIR/c/$MYID/"
       export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
       export WEBDEV_DIR="$PROGRAM_DIR/web"
-      export MY_LINUX_DIR="$PROGRAM_DIR/linux/$MYID"
+      export MY_LINUX_DIR="$PROGRAM_DIR/linux-cheat"
       export PYTHON_DIR="$PROGRAM_DIR/python"
         export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"
         export MY_PYTHON_DIR="$PYTHON_DIR/cheat/"
-        export MY_PYTHON_BIN_DIR="$PYTHON_DIR/$MYID/bin"
+        export MY_PYTHON_BIN_DIR="$PYTHON_DIR/python/cheat"
         export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
       export RAILS_DIR="$PROGRAM_DIR/rails-cheat/cirosantilli"
     export TEST_DIR="~/test"
@@ -109,11 +110,7 @@ fi
     xhost +
 
   # Texlive
-  export PATH="$PATH:/usr/local/texlive/2013/bin/$(uname -i)-linux"
-  export MANPATH="$MANPATH:/usr/local/texlive/2013/texmf-dist/doc/man"
-  export INFOPATH="$INFOPATH:/usr/local/texlive/2013/texmf-dist/doc/info"
-
-  # Cabal
-  export PATH="$PATH:$HOME/.cabal/bin"
+  export MANPATH="/usr/local/texlive/2013/texmf-dist/doc/man:$MANPATH"
+  export INFOPATH="/usr/local/texlive/2013/texmf-dist/doc/info:$INFOPATH"
 
 #</ciro>

@@ -302,7 +302,10 @@
 
     " On fields can complete multiple places (e.g.: variable name in a for loop).
 
-    " Once you leave insert mode, it stops.
+    " Once you leave insert mode, all the magic ends, which makes this only useful for small fields.
+
+    " One alternative is to write characters and jump erase to them like Vim LaTeX,
+    " but then you risk to forget to erase the added charactesr.
 
     " snippet file format
 
@@ -387,17 +390,23 @@
 
     " Most useful commands:
 
-    " - Gdiff <ref>: vimdiff between commits. To exit simply close the old one.
-    " - Gmove <name>: rename buffer and `git mv`
-    " - Gremove <name>: close rename buffer and `git rm`
-    " - Gbrowse <ref>: open GitHub URL corresponding to file in browser.
-    " - Gblame <ref>: vplist a git blame. Corresponds line by line with the buffer. Both scroll together.
-    " - Gstatus <ref>: tons of per file quickfix like functionality like:
-    "   - `-`: git add file on line under cursor
-    "   - `O`: open file on line under cursor in new tab
-    "   - `D`: open Gdiff on file under cursor on the window below
-    "   - `cc`: Gcommit
-    "   - `cA`: Gcommit| --amend --reuse-message=HEAD
+    " -   Gdiff <ref>: vimdiff between commits. To exit simply close the old one.
+    "
+    " -   Gmove <name>: rename buffer and `git mv`
+    "
+    " -   Gremove <name>: close rename buffer and `git rm`
+    "
+    " -   Gbrowse <ref>: open GitHub URL corresponding to file in browser.
+    "
+    " -   Gblame <ref>: vplist a git blame. Corresponds line by line with the buffer. Both scroll together.
+    "
+    " -   Gstatus <ref>: tons of per file quickfix like functionality like:
+    "
+    "     - `-`: git add file on line under cursor
+    "     - `O`: open file on line under cursor in new tab
+    "     - `D`: open Gdiff on file under cursor on the window below
+    "     - `cc`: Gcommit
+    "     - `cA`: Gcommit| --amend --reuse-message=HEAD
 
     " Open diff for current file in a new tab.
     "
@@ -405,15 +414,29 @@
     "
     "   Plugin 'vim-scripts/AnsiEsc.vim'
     "
-    function! Gdf()
+    function! Gdf(path)
       tabnew
       setlocal buftype=nofile
       setlocal bufhidden=wipe
       setlocal noswapfile
-      execute 'read ! git diff --color ' . expand('%:p')
+      silent execute 'read ! git diff --color ' . a:path
       AnsiEsc
     endfunction
-    command! Gdf call Gdf()
+
+    " Git diff for current file.
+    command! Gdf call Gdf(expand('%:p'))
+
+    " Git diff for entire repository.
+    command! Gdfr call Gdf('')
+
+    " Add and commit current file with given commit message.
+    "
+    " Sample usage:
+    "
+    "   Gadcm The commit message.
+    "
+    command! -nargs=* Gcm execute '!git add ' . expand('%:p') ' && git commit -m "<args>"'
+    command! -nargs=* Gcob execute '!git checkout -b "<args>"'
 
     command! Gad execute '!git add ' . expand('%:p')
     command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
@@ -421,6 +444,8 @@
     command! -nargs=1 Ggr Ggrep! <args> | tab copen
     command! Gps !git push
     command! Gpsf !git push -f
+
+    command! -nargs=* Gcmbr execute '!git add ' . expand('%:p') ' && git commit -m "<args>" && git push && git browse-remote'
 
   "#AnsiEsc
 
@@ -556,7 +581,7 @@
 
     " Reuses split if it exists already.
 
-  "#vim-session
+  "#session
 
     " Manage sessions. Save and load tabs, windows, buffers, etc.
 
@@ -593,13 +618,27 @@
 
   "#FuzzyFinder
 
-    " Find things like Files and Buffers really quickly.
-
-    " Specially interesting is the completioin mode which transforms:
-    " `abc` into a regexp `a.*b.*c`.
+    " Find things like Files, Buffers and other things really quickly.
 
       Plugin 'L9'
       Plugin 'FuzzyFinder'
+
+    " Transforms input `abc` into a regexp `a.*b.*c`.
+
+    " Open in new tab with enter:
+
+      let g:fuf_keyOpenTabpage = '<CR>'
+
+    " Alias the most useful commands to shorter versions:
+
+      " Buffers: files that you have opened once.
+      command! -nargs=* Fb FufBuffer <args>
+      " Files or directories in current directory.
+      command! -nargs=* Ff FufFile <args>
+      " Coverage: recursively in current directory.
+      command! -nargs=* Fc FufCoverage <args>
+
+    " Once the list appears, navigate with Up and Down: letters will add to the search.
 
   "#ctrlp
 
@@ -747,6 +786,8 @@
 
         "let g:vim_markdown_folding_disabled=1
         let g:vim_markdown_initial_foldlevel=6
+        let g:vim_markdown_math=1
+        let g:vim_markdown_frontmatter=1
 
       " There is also a version by tpope, but plasticboy seems better:
 
@@ -762,7 +803,7 @@
 
         "Plugin 'suan/vim-instant-markdown'
 
-  "#docker
+  "#dockerfile
 
       Plugin 'ekalinin/Dockerfile.vim'
 
@@ -776,12 +817,36 @@
 
       Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 
-  "#vim latex
+  "#latex
 
-    " Plugin 'git://vim-latex.git.sourceforge.net/gitroot/vim-latex/vim-latex'
-    " Plugin 'jcf/vim-latex'
-    " could not install with vundle. next best option then
-    " set runtimepath+=$HOME/.vim/plugin/vim-latex
+      Plugin 'git://git.code.sf.net/p/vim-latex/vim-latex'
+
+    " Docs: http://vim-latex.sourceforge.net/documentation/latex-suite.html#section-mappings
+
+    "#C-j
+
+      " Jump to the next <++> marker.
+
+    "#F5
+
+      "#Inside document
+
+        " Environment autocomplete.
+
+        " If the environment is known, a special complete happens,
+        " else, just a default environment opens:
+
+          "asdf<F5>
+
+        " Expands to:
+
+          "\begin{adsf}
+          "  <cursor>
+          "\end{adsf}<++>
+
+      "Outside of document
+
+    " Uses several insert mode mappings, like SEE for section.
 
   "#QFEnter
 
@@ -816,6 +881,20 @@
       Plugin 'tpope/vim-vividchalk'
       " Silent because on the first run it is not yet installed.
       silent! colorscheme vividchalk
+
+  "#Vader
+
+    " Unit tests, pure vim.
+
+      Plugin 'junegunn/vader.vim'
+
+  "#editorconfig
+
+    " Cross editor per project, prefiletpye, configuration parameters inside `.editorconfig` files.
+
+    " http://editorconfig.org/
+
+      Plugin 'editorconfig/editorconfig-vim'
 
 "#Options
 
@@ -905,10 +984,10 @@
     " Vim 7.3 added persistent undo: undo history is saved even for closed
     " buffers!
 
-      set undofile        " Save undo's after file closes
+      set undofile                " Save undo's after file closes
       set undodir=$HOME/.vim/undo " Where to save undo histories
-      set undolevels=1000     " How many undos
-      set undoreload=10000    " Number of lines to save for undo
+      set undolevels=1000         " How many undos
+      set undoreload=10000        " Number of lines to save for undo
 
   " Maintains at least 4 lines in view from the cursor
 
@@ -977,7 +1056,7 @@
 
     " Same as above but for `o`:
 
-      "set formatoptions-=o
+      set formatoptions-=o
 
   " Stop adding spaces after `.` on `J` and `:j`:
 
@@ -1008,6 +1087,7 @@
 
     " Current highlight group name:
 
+        "set laststatus=2
         set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   "#tabwindow
@@ -1100,11 +1180,11 @@
 
     "#foldlevel
 
-      " How deep fold currently is:
+      " Set how deep fold currently is:
 
         "set foldlevel=3
 
-      " Level 0 is the maximum fold level.
+      " Level 0 menas everything is folded.
 
       " This can be modified by many default mappings such as
       " zr, zR, zm and, zM
@@ -1134,7 +1214,12 @@
   "#spell
 
     set spellfile=$HOME/.vim/spell/en.utf-8.add
-    autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en
+    autocmd BufNewFile,BufRead *.{md,rst,html,haml,tex} setlocal spell spelllang=en
+
+    " After editing the spell file:
+
+    "runtime spell/cleanadd.vim
+    "mkspell! ~/.vim/spell/en.utf-8.add.spl ~/.vim/spell/en.utf-8.add
 
     " On the fly spell checker that underlines errors.
     "
@@ -1169,7 +1254,7 @@
     "
     " -   `z=`: show and select from suggestion list
     "
-    " -   `zg`: add words under cursor to dict (Good). TODO: how to add word case insensitive (e.g. you are over the first word of a sentence)?
+    " -   `zg`: add words under cursor to dict (Good).
     "
     " -   `zw`: add word negated to dict `word/!` and comment out if existing by replacing first char.
     "
@@ -1230,10 +1315,19 @@
     "   word\!
     "
     " Smart case: words with at least one capital are automatically case sensitive.
+    " Every word also matches the same word with all capitals.
     "
-    " Fix case for lowercase word:
+    " Fix case given word:
     "
     "   word\=
+    "
+    " TODO: is there a map that does `gz` bu adds as /= ?
+    " TODO: how to prevent Git from marking fixed case words
+    "       that start with lowercase as wrong if at start of sentence?
+    "
+    " Optionally add an s to the end of the word.
+    "
+    "   word\S
     "
     " TODO how to set possessive apostrophe to correct automatically, i.e.: `abc's` correct if `abc` correct?
 
@@ -1285,30 +1379,40 @@
 
     " `-i` makes the shell interactive, so it will read your aliases under ~/.bashrc.
 
-      :set shellcmdflag=-ic
+      set shellcmdflag=-ic
 
-  "#gvim specific
+  "#gvim specific #gui specific
 
-      set guioptions-=m  "remove menu bar
-      set guioptions-=T  "remove toolbar
-      set guioptions-=r  "remove right-hand scroll bar
-      set guioptions-=b  "remove right-hand scroll bar
+    if has('gui_running')
 
-    " Normally, pressing alt focuses on the menu in gvim, but vim NEEDS no menu,
-    " vim only needs vimrc!
+        " Maximize screen at startup.
+        " http://stackoverflow.com/questions/4722684/how-do-i-start-gvim-with-a-maximized-window
+        " Possibilities:
+        " - `gvim -geometry 9999x9999` but on Ubuntu 12.04 cannot launch Vim from command line.
+        " - `set lines=999 columns=999`, but this crashes vim on Ubun1u 12.04.
 
-      set winaltkeys=no
+        set guioptions-=m  " Remove menu bar.
+        set guioptions-=T  " Remove toolbar.
+        set guioptions-=r  " Remove right-hand scroll bar.
+        set guioptions-=b  " Remove right-hand scroll bar.
 
-"#language speficifs #filetype specifics
+      " Normally, pressing alt focuses on the menu in gvim, but vim needs NO menu:
+      " Vim only needs vimrc!
+
+        set winaltkeys=no
+
+    endif
+
+"#Language spefic
 
   " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
 
   " #data languages
 
-  " #html
+  " #html, #xml
 
-    autocmd FileType html,haml setlocal shiftwidth=2 tabstop=2
-    autocmd FileType html,haml call MapAllBuff('<S-F6>', ':w<cr>:sil ! chromium-browser %<cr>')
+    autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
+    autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
     autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
 
     function! FtHtml()
@@ -1365,7 +1469,7 @@
 
       " Markdown *cannot* be indented, and GFM forces us to have
       " infinitely long lines. because single newlines become line breaks.
-      autocmd BufRead *.{md,rst} setlocal wrap
+      autocmd BufRead,BufNewFile *.{md,rst} setlocal wrap
 
       function! FtMkd()
         " Enter a good mode to edit markdown tables.
@@ -1397,11 +1501,15 @@
 
     "#latex #tex
 
-      autocmd FileType tex setlocal shiftwidth=2 tabstop=2
+      autocmd FileType tex setlocal shiftwidth=2 tabstop=2 foldlevel=999
 
-      autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>')
-      autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>')
-      autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r.pdf"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
+      "autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>')
+      "autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>')
+      " Okular forward search.
+      " TODO why does `make &&` not work?!?! I have to use `make;`!
+      autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<F6>', ':write<cr>:execute "silent !make; okular --caption OkularVIM --unique %:p:r.pdf\\#src:" . line(".") . "%:p && wmctrl -a OkularVIM &"<cr>')
+      " With special Makefile that does SyncTeX for us:
+      "autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>', ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r.pdf"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
       "au BufEnter,BufRead *{.tex,.md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
 
       " This works but the problem is: in which dir is the output file?
@@ -1423,7 +1531,7 @@
 
     autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
-    autocmd BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
+    autocmd BufNewFile,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
     autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
 
   "#compile to executable languages
@@ -1445,7 +1553,7 @@
 
     autocmd FileType c,cpp,fortran,asm,s,java call FileTypeCpp()
     autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
-    autocmd BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+    autocmd BufNewFile,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
     " Because fortran has a max line length.
     autocmd FileType fortran setlocal shiftwidth=2 tabstop=2
 
@@ -1583,11 +1691,21 @@
     " Add it to your status line. Great way to make small syntax developments:
 
       "set laststatus=2
-      "set statusline+=%{synIDattr(synID(line('.'),col('.'),1),'name')}
+      set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   "#syntax
 
-    "TODO
+    " Tutorials on creating vim synta files:
+
+    " http://vim.wikia.com/wiki/Creating_your_own_syntax_files
+
+    " Try to use the standard names whenever possible:
+
+      "help group-name
+
+    " Defines syntax rules.
+
+    " Does a bunch of different things depending on the subcommand you give it, so watch out.
 
 "#mappings "#key bindinigs
 
@@ -1739,6 +1857,8 @@
     " (analogy to `*` which searches for word under cursor):
 
       nn <leader>* bve"zy:%s/<c-r>z/<c-r>z/g<left><left>
+
+    " See also: `[i`.
 
   "#( #) #0
 
@@ -1947,6 +2067,7 @@
     " - [[ go to previous `}` at current level
     " - ][     next   `{`
     " - ][     previous `{`
+    " - [i echo first line that contains word under cursor. See also: `*`.
 
     " What is a section? defined by `se sects?`.
 
@@ -2121,12 +2242,6 @@
       onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
       onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
       onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
-
-  "#|
-
-    "go to column number:
-
-      "unmap \n|
 
   "#a
 
@@ -2387,10 +2502,9 @@
     " - <cr> and <enter> are the same thing, so just use <cr> always
     " - <s-cr> is hard to mapa problem: http://stackoverflow.com/questions/16359878/vim-how-to-map-shift-enter
 
-    " Make enter similar to `o` on normal mode, except that it does not
-    " continue comments (because of formatoptions `-=r` ):
+    " Like `o` on normal mode, but it does not continue comments.
 
-      "nn <cr> :let b:old_formatoptions = &formatoptions<cr>:set formatoptions-=r<cr>A<cr><esc>:let &formatoptions=b:old_formatoptions<cr>
+      nn <cr> :let b:old_formatoptions = &formatoptions<cr>:set formatoptions-=o<cr>o <bs><esc>:let &formatoptions=b:old_formatoptions<cr>a
 
   "#z
 
@@ -2543,30 +2657,58 @@
 
 "#invocation
 
-  " Run Vim commands from the command line:
+  "#c #+
 
-    "vim +PluginInstall +qall
+    " Run Vim commands from the command line:
 
-  " Same as:
+      "vim +PluginInstall +qall
 
-    "vim -c PluginInstall -c qall
+    " Same as:
 
-  " Same as doing form inside of Vim:
+      "vim -c PluginInstall -c qall
 
-    "PluginInstall
-    "qall
+    " Same as doing form inside of Vim:
+
+      "PluginInstall
+      "qall
+
+  "#u
+
+    " Start vim with a given vimrc:
+
+      "vim -u vimrc a.txt
+
+    " Great way to test plugins with a minimum vimrc.
+
+    " Start without any vimrc:
+
+      "vim -u NONE a.txt
+
+  "#server
+
+    " List servers:
+
+      "vim --serverlist
+
+    " Start server with given name:
+
+      "vim --servername a
+      "vim --serverlist
+
+    " Run expression on server, print console to stdout:
+
+      "vim --servername a
+      "vim --servername a --remote-expr '1 + 1'
+
+    " Only expressions are valid, not commands.
+
+    " But 
 
 "#vimrc
 
   " Default location: ~/.vimrc.
 
   " Starting on Vim 7.4: `~/.vim/vimrc` will also be a possible location, thus clearing up your home a bit.
-
-  " Start vim with a given vimrc:
-
-    "vim -u vimrc a.txt
-
-  " Great way to test plugins with a minimum vimrc.
 
 "#modes
 
@@ -2673,23 +2815,39 @@
 
 "#version
 
-  " The version command `:version` shows extensive version info, incuding installed
-  " extensions, just like `vim --version`.
+  " The version command `:version` shows extensive version info, incuding enabled
+  " features, just like `vim --version`.
 
-  " The function `version`, returns a version integer such as `703` for
+  " The built-in variable `version` returns a version integer such as `703` for
   " version `7.3`, therefore suitable for conditional execution:
 
     "if version < 600
     "else
     "endif
 
+"#Features
+
+  " Vim cam be compiled with different capabilities.
+
+  " All the capabilities are documented at:
+
+    " help feature-list
+
+  "#has
+
+    " Check if a feature is enabled at runtime:
+
+      " echo has('python')
+
+    " Returns `1` or `0`.
+
 "#sources
 
   "- <http://andrewscala.com/vimscript/>
 
-    "a few good straight to the point, important vimscript tips
+    "A few good straight to the point, important vimscript tips
 
-  "- http://www.ibm.com/developerworks/linux/library/l-vim-script-1/index.html
+  "- <http://www.ibm.com/developerworks/linux/library/l-vim-script-1/index.html>
 
     "begginner tuts on vimscript
 
@@ -2901,31 +3059,45 @@
     " `!` to override existing without error. It is usually the better to use
     " it always and leave end result to precedence.
 
-    " `-nargs=0` is the default:
+    "#args #f-args #nargs
 
-      "command! Echoa echo 'a'
-      "Echoa
+      " `-nargs=0` is the default:
 
-      "command! -nargs=0 Echoa echo 'a'
-      "Echoa
+        "command! Echoa echo 'a'
+        "Echoa
 
-    " `-nargs=1` is special because it considers the spaces into the argument:
+        "command! -nargs=0 Echoa echo 'a'
+        "Echoa
 
-      "command! -nargs=1 Echo1 echo <args>
-      "Echo1 'a' 'b'
+      " `-nargs=1` is special because it considers the spaces into the argument:
 
-    " Output: `a b`.
+        "command! -nargs=1 Echo1 echo <args>
+        "Echo1 'a' 'b'
 
-      "command! -nargs=1 Echo1 echo "<args>"
-      "Echo1 a b c
+      " Output: `a b`.
 
-    " Output: `a b c`.
+        "command! -nargs=1 Echo1 echo "<args>"
+        "Echo1 a b c
 
-    " There seems to be now way to refer to an specific argument:
-    " best workaround seems to be to define a function and use `<f-args>`
+      " Output: `a b c`.
 
-    " Other possible values for `-nargs` are: `*`, `?` and `+`, analogous
-    " to regexp meaning.
+      " There seems to be now way to refer to an specific argument:
+      " best workaround seems to be to define a function and use `<f-args>`
+
+      " Other possible values for `-nargs` are: `*`, `?` and `+`, analogous
+      " to regexp meaning:
+
+        "command! -nargs=* Echo1 echo "<args>"
+        "Echo1 a b c
+
+      " Pass arguments to function: use `f-args`:
+
+        "command! -nargs=* Echo1 echo '<f-args>'
+        "Echo1 a b c
+
+      " Output:
+
+        "a","b","c"
 
     " Name must start with uppercase letter. For this reason, it is not possible to override
     " built-in commands which start with lowercase. The best workaround seems to be using cnoreabbrev;
@@ -2997,7 +3169,9 @@
 
 "#comments
 
-  " Start with '"'
+  " Start with '"'.
+
+  " TODO: multiline?
 
 "#spaces
 
@@ -3010,7 +3184,7 @@
 
   " Multiline commands in script: start *next* line with `\` backslash:
 
-    "ec
+    "echo
     "\ 1
 
 "#multiline commands
@@ -3428,7 +3602,7 @@
 
     "if F(1, 2) != 3 | throw 'assertion failed' | end
 
-  "#vararg
+  "#vararg #...
 
       "function! F(a, b, ...)
         "for i in range(a:0)
@@ -3440,6 +3614,7 @@
     "   arguments.
     " - a:1 contains the vararg arg.
     " - a:2 contains the second arg, and so on.
+    " - a:000: array with all varargs
 
   "#call
 
@@ -3448,6 +3623,24 @@
     " Ignores return value.
 
     " Only side effects can be useful therefore.
+
+  "#call() #apply #splat
+
+    " Function to call function with it's name given as string, and arguments as array.
+
+    " Analogous to Javascript's apply.
+
+    " Useful to forward varargs:
+
+      "function! F(...)
+        "return a:000
+      "endfunction
+
+      "function! G(...)
+        "return call('F', a:000)
+      "endfunction
+
+      "if G(0, 1) != [0,1] | throw 'assertion failed' | end
 
   "#multiple return values
 
@@ -3467,7 +3660,7 @@
 
     "if F() != 0 | throw 'assertion failed' | end
 
-  "#default values
+  "#default values #optional arguments
 
     " Concept does not exist in the language.
 
@@ -3821,7 +4014,7 @@
 
     "TODO
 
-  "#w #:write
+  "#write
 
     " Save current buffer to disk:
 
@@ -3834,6 +4027,14 @@
       "w othername
 
     " To also change, use `save`.
+
+  "#quit
+
+    " Exit Vim with status 0. Only saves if all buffers were saved.
+
+  "#cquit
+
+    " Exit Vim with non-0 status.
 
   "#save
 
@@ -4074,7 +4275,7 @@
 
     "normal! a
 
-  " **always use this!!** unless you really want to use the user commands...  which is a rare case
+  " **Always use `!`**, unless you really want to use the user commands...  which is a rare case.
 
   " Multiple commands:
 
@@ -4082,9 +4283,10 @@
 
   " Goes twice down.
 
-  " Special chars:
+  " Special chars: you must either enter them literally with `<c-v>`,
+  " or better, use `execute`, double quotes `"` and `\<cr>`
 
-    "exe "norm! \<s-v>"
+    "exe "norm! /a\<cr>"
 
   " Goes to line visual mode
 
@@ -4221,19 +4423,23 @@
     "%p
     "1,$p
 
-  " From mark a to mark b, inclusive
+  " All types of marks can be used. E.g., from mark `a` to mark `b`, inclusive:
 
     ":'a,'bp
+
+  " Current paragraph:
+
+    ":'{,'}p
 
   " /pattern/   next line where pattern matches
 
   " ?pattern?   previous line where pattern matches
 
-  " -  \/   next line where the previously used search pattern matches
-  " -  \?   previous line where the previously used search pattern matches
-  " -  \&   next line where the previously used substitute pattern matches
-  " -  0;/that   first line containing "that" (also matches in the first line)
-  " -  1;/that   first line after line 1 containing "that"
+  " - `\/`;      next line where the previously used search pattern matches
+  " - `\?`;      previous line where the previously used search pattern matches
+  " - `\&`;      next line where the previously used substitute pattern matches
+  " - `0;/that`: first line containing "that" (also matches in the first line)
+  " - `1;/that`: first line after line 1 containing "that"
 
   " <http://vim.wikia.com/wiki/Ranges>
 
@@ -4269,13 +4475,25 @@
 
         "autocmd BufRead * echo input('BufRead')
 
+    "#BufNew
+
+      " TODO vs `BufRead`?
+
+        "autocmd BufNew * echo input('BufNew')
+
+    "#BufNewFile
+
+      " File path that does not exist was created.
+
+        "autocmd BufNewFile * echo input('BufNewFile')
+
     "#FileType
 
       " File is detected to be of a given type.
 
       " See `ftplugin` for more info.
 
-      " Happens after `BufRead`. TODO confirm
+      " Happens after `BufRead`, since file type may be determined from file contents as well as path (e.g. shebang line). TODO confirm.
 
         "autocmd FileType c,cpp echo input('FileType c,cpp')
 
@@ -4727,55 +4945,89 @@
 
       "echo expand('%:r')
 
-    " In shell commands the expand function can be omitted:
+    " Important ones. Test path: `/a/b/f.ext`
 
-      "!echo %:p
+    "- `%`:   basename
+    "- `%:p`: full path
+    "- `%:r`: basename without extension
+    "- `%:e`: extension
+    "- `#`:   alternative file name
+
+    " `!` shell commands automatically expand % just like `expand`:
+
+      "!echo %
+
+    " To avoid that, backslash escape it:
+
+      "!echo \%
+      "!echo \#
 
     " For the possible things you can expand see:
 
       "h filename-modifiers
 
-    " Important ones. Test path: `/a/b/f.ext`
-
-    "- `p`: full path
-    "- `r`: basename without extension
-    "- `e`: extension
-
   "#position #line
 
-    " Get cur line number:
+    "#line
 
-      "echo line(".")
+      " Get various line numbers.
 
-    " Get last line number in buffer:
+      " Get cur line number:
 
-      "echo line("$")
+        "echo line(".")
 
-    " Get first line of last visual selection:
+      " Get last line number in buffer:
 
-      "echo line("'<")
+        "echo line("$")
 
-    " Last one:
+      " Get first line of last visual selection:
 
-      "echo line("'>")
+        "echo line("'<")
 
-    " Get cur line number, column, buffer
+      " Last one:
 
-      "getpos('.')
+        "echo line("'>")
 
-    " Returns:
+    "#col()
 
-       "[bufnum, lnum, col, off]
+      " Same as `line` but for the column.
 
-    " `setpos()` with same args to set (last can be ommitted):
+    "#getpos()
 
-       "setpos('.', [0,2,3])
+      " Get current: [buffer, line, column, offset].
 
-    " If buf number 0 means in current buffer
+      " Best way to get line and column in one call.
 
-    " Another way to set position:
+        "getpos('.')
 
-       "cursor(line, col)
+    "#setpos()
+
+      " Returns:
+
+      "[bufnum, lnum, col, off]
+
+      " `setpos()` with same args to set (last can be ommitted):
+
+      "setpos('.', [0,2,3])
+
+      " If buf number 0 means in current buffer.
+
+      " Does not change jumplist.
+
+    "#cursor()
+
+      " Set position. Subset of `setpos`. Does not affect the jump list:
+
+        "cursor(line, col)
+
+    "#keepjumps
+
+      " Do a motion but don't change the jumplist.
+
+        "normal! G
+        "keepjumps normal! gg
+
+      " Useful to maintain editor state in automatic motions from functions.
 
     " Get initial position while on visual mode:
 
@@ -4901,59 +5153,59 @@
 
   "#search
 
-    "same as '\' but:
+    " Same as '\' but:
 
-    "- is a function
-    "- does not set last jump mark (for use with `<c-o>` for example)
+    " - is a function
+    " - does not set last jump mark (for use with `<c-o>` for example)
 
-    "returns:
+    " Returns:
 
-    "- line number if match
-    "- 0 if no match
+    " - line number if match
+    " - 0 if no match
 
-    "it is therefore preferable in vimscript.
+    " It is therefore preferable in vimscript.
 
       "call search('a')
       "call search('\va')
 
-    "don't move cursor:
+    " Don't move cursor:
 
       "call search('a', 'n')
 
-    "backwards:
+    " Backwards:
 
       "call search('a','b')
 
-    "wrap around end (default):
+    " Wrap around end (default):
 
       "call search('a','w')
 
-    "don't wrap around end:
+    " Don't wrap around end:
 
       "call search('a','W')
 
-    "end of match:
+    " End of match:
 
       "call search('ab','e')
 
-    "stops at 'b' instead of 'a'
+    " Stops at 'b' instead of 'a'
 
-    "start search from under cursor
+    " Start search from under cursor:
 
       "call search('a','c')
 
-    "by default, if you are over an 'a' char and to search a,
-    "you will move to next match. But not with 'c'.
+    " By default, if you are over an 'a' char and to search a,
+    " you will move to next match. But not with 'c'.
 
-    "get column too:
+    " Get column too:
 
       "searchpos('a')
 
-    "get line and pos of match start and end:
+    " Get line and pos of match start and end:
 
       "TODO
 
-    "search for pairs like 'if' 'else':
+    " Search for pairs like 'if' 'else':
 
       "searchpair(TODO)
 
@@ -5040,13 +5292,14 @@
       " - .    wildcard
       " - a*   repetition
       " - [abc]  char classes
-      " - ^    begin
+      " - ^    begin. Only magic in certain positions, like beginning of pattern.
+      "     Use `\_^` for saner always magic version.
       " - $    end
 
       " Escape to be magic:
 
       " - a\+
-      " - a\(b\|c\)
+      " - `a\(b\|c\)`: alternative and capture group. For a non capturing group, use `\%(\)`.
       " - a\|b
       " - a\{1,3}
       " - a\{-}    non greedy repeat. Analogous to {,}, mnemonic: match less because of `-` sign.
@@ -5066,7 +5319,7 @@
 
       " Many more.
 
-    " #lookahead lookbehind #@
+    " #lookahead #lookbehind #@=
 
       " Unlike Perl notation, comes outside the parenthesis with an `@` sign:
 
@@ -5075,6 +5328,12 @@
       " - `foo(bar)@<=`: lookbehind
       " - `foo(bar)@<!`: negative lookbehind
       " - `foo(bar)@>`: TODO
+
+      " #\zs #\ze
+
+        " Also possible in a more restricted but sometimes convenient notation `\zs`,  `\ze` notation:
+
+        " - `ab\zscd\zeef` is the same as: `(ab)@<=cd(ef)@=`
 
     " #percent #%
 
@@ -5092,31 +5351,30 @@
 
     "#named capturing group
 
-      " Not possible: https://groups.google.com/forum/#!topic/vim_use/BsfxglpkufQ
-
-  "#Special replacement patterns
-
-      "h sub-replace-special
-
-    " Used by `:substitute` and `substitute()`.
-
-    " - `\=`: replace by expression, like in Perl. Catpure groups referred as `submatch(0)`.
+      " Does not exist: https://groups.google.com/forum/#!topic/vim_use/BsfxglpkufQ
 
   "#substitute #:substitute
 
     " Replace in buffer.
 
-    " Capture group:
+    "#Special replacement patterns
 
-      ":s/\(a\)/\1/
+        "h sub-replace-special
 
-    " Set first letter of each line to uppercase:
+      " Used by `:substitute` and `substitute()`.
 
-      ":s/.*/\u&
+      " - `\=`: replace by expression, like in Perl. Catpure groups referred as `submatch(0)`.
 
-    " Sets first letter of each line to lowercase:
+      " Capture group:
 
-      ":s/.*/\l&
+        ":s/\(a\)/\1/
+
+      " `\u` and `\l`: next char to upper or lower case. Set first letter of each line to uppercase / lower case:
+
+        ":s/.*/\u&
+        ":s/.*/\l&
+
+      " `\U` and `\L`: next chars to upper or lower case until `\E` found. Set first letter of each line to uppercase / lower case:
 
     "#multiline
 
@@ -5662,46 +5920,55 @@
 
 "#tags
 
+  " Vim can read the ctags file format,
+  " which allows you to quickly jump to the definition of functions and varaibles.
+
   "<http://vim.wikia.com/wiki/Browsing_programs_with_tags>
 
-  " List and jump to definitions of functions or variables.
-
-  "#generate tags
+  "#Generate tags
 
     " Before jumping to tags, you have to generate them with an external program.
 
-    " Tags must be placed in a file called tags in the current directory (TODO check)
+    " The location of the tags file can be configured with the `'tags'` option.
 
-    "` Tags` is a POSIX possibility. `exuberant-ctags` is more complete non standard possibility
+    " The best option is probably:
 
-    " Generate tags in all subdirs POSIX 7 compliant:
+      set tags=tags;
 
-      "for d in `find . -type d`; do cd $d && ctags *.h; done
+    " (*with* the semicolon), which looks up on parent directories until a tags file is found,
+    " and then you just put one recursive tags file at the root of the project.
 
-    " TODO write an append code for this that puts tags on current dir.
+    " Programs that can generate tags include:
 
-    " Using gnu ctags:
+    " - `ctags` POSIX utility, implemented by GNU `ctags`
 
-      "ctags -R
+        " Generate tags for entire directory:
 
-    " Will generate a t
+          "ctags -R
 
-  "Jump to first tag whose name is the same as the word currently under the cursor:
+        " Will generate a `tags` file on the current directory, which is our desired output.
 
-    "<c-]>
+    " - `exuberant-ctags`: more feature rich alternative to `ctags`.
 
-  "Note that there may be multiple tags with the same name, in special the
-  "definition and other declarations.
+  "#Tag keyboard maps
 
-  "Jump to next or previous tag found with last jump command:
+    "Jump to first tag whose name is the same as the word currently under the cursor:
 
-    ":tn
-    ":tp
+      "<C-]>
+      "<C-LeftMouse>
 
-  "If there is more than one tag, show a tag list, else jump:
+    "Note that there may be multiple tags with the same name, in special the
+    "definition and other declarations.
 
-    "g <c-]>
+    "Jump to next or previous tag found with last jump command:
 
-  "Jump to tag with given name:
+      ":tn
+      ":tp
 
-    ":ta dentry
+    "If there is more than one tag, show a tag list, else jump:
+
+      "g <c-]>
+
+    "Jump to tag with given name:
+
+      ":ta dentry
