@@ -137,6 +137,8 @@ parse_svn_repository_root() {
     alias g='grep'
     alias gi='grep -i'
     alias fmmmr='find-music-make-m3u .'
+    function gccs { echo "int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; } # gcc stdin
+    function gpps { echo "int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     function mdc { mkdir "$1" && cd "$1"; } # Make Dir Cd
     alias mupen='mupen64plus --fullscreen'
@@ -299,12 +301,15 @@ parse_svn_repository_root() {
     alias gcl='git clone --recursive'
     alias gcm='git commit'
     alias gcmm='git commit -m'
+    alias gcma='git commit --amend'
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gadcman='git add . && gcman'
     alias gadcmanpsf='git add . && gcmanpsf'
     function gcmp { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
+    alias gcob='git checkout -b'
+    function gcobm { git checkout -b "$1" master; }
     alias gcom='git checkout master'
     alias gcoo='git checkout --ours'
     alias gcot='git checkout --theirs'
@@ -317,6 +322,8 @@ parse_svn_repository_root() {
     alias gdfc='git diff --cached'
     alias gdfhh='git diff HEAD~ HEAD'
     alias gfe='git fetch'
+    alias gfeomm='git fetch origin master:master'
+    function gfeommcob { git fetch origin master:master && git checkout -b "$1" master; }
     alias gg='git grep --color'
     alias ggi='git grep --color -i'
     alias gka='gitk --all'
@@ -333,10 +340,12 @@ parse_svn_repository_root() {
     alias glop='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
     alias gme='git merge'
     alias gmea='git merge --abort'
+    alias gmem='git merge master'
     alias gmt='git mergetool'
     alias gmv='git mv'
     alias gppp='git push prod prod'
     alias gps='git push'
+    alias gpsum='git push -u mine'
     alias gpsom='git push --tags -u origin master'
     alias gpl='git pull'
     alias gplum='git pull up master'
@@ -370,7 +379,8 @@ parse_svn_repository_root() {
 
       alias ghb='git browse-remote'
       alias ghpb='git push && git browse-remote'
-      alias ghcmanpsf='gcmanpsf && git browse-remote'
+      alias gpsbr='gps && git browse-remote'
+      alias gcmanpsfbr='gcmanpsf && git browse-remote'
 
   ##gitlab elearn ssh
 
@@ -422,7 +432,8 @@ parse_svn_repository_root() {
       alias gmkr='cd `git rev-parse --show-toplevel` && make run'
       alias gmkt='cd `git rev-parse --show-toplevel` && make test'
 
-      alias cmk='mkdir build && cd build && cmake .. && make'
+      alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
+      alias cmkt='cmk && ctest -V .'
 
   ##mass regex operations
 
@@ -432,8 +443,8 @@ parse_svn_repository_root() {
     #
     # Dry run:
     #
-    #    find . -type f | mrr "a/b/g"
-    #    git ls-files | mrr "a/b/g"
+    #    find . -type f | mrr 'a/b/g'
+    #    git ls-files | mrr 'a/b/g'
     #
     # Sample output:
     #
@@ -563,10 +574,13 @@ parse_svn_repository_root() {
     alias rdcm='rake db:drop db:migrate'
     alias be='bundle exec'
     alias ber='bundle exec rake'
-    alias berc='bundle exec rake compile'
+    alias berc='bundle exec rake clean'
+    alias berco='bundle exec rake compile'
     alias bert='bundle exec rake test'
     function bertt { bundle exec rake test TEST="$1"; }
+    alias bers='bundle exec rake spec'
     alias berT='bundle exec rake -T'
+    alias bes='bundle exec spring'
     alias bi='bundle install'
 
   ##services
