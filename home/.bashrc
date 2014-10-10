@@ -128,7 +128,7 @@ parse_svn_repository_root() {
 
     # Misc aliases.
 
-    alias ack='ack-grep -a --smart-case'
+    alias ack='ack-grep --smart-case'
     alias eip='curl ipecho.net/plain' # External IP.
     alias cla11='clang++ -std=c++11'
     alias dfhs='df -h | sort -hrk2' # Disk Fill, Human readable, Sort by total size.
@@ -198,8 +198,6 @@ parse_svn_repository_root() {
   ##ctags
 
       alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
-      function ctag { grep "^$1" tags; } #CTAgs Grep
-      function rctag { cd `git rev-parse --show-toplevel` && grep "^$1" tags; } #Root CTAgs Gre
 
   ##dirs
 
@@ -345,6 +343,7 @@ parse_svn_repository_root() {
     alias gmv='git mv'
     alias gppp='git push prod prod'
     alias gps='git push'
+    alias gpsf='git push -f'
     alias gpsum='git push -u mine'
     alias gpsom='git push --tags -u origin master'
     alias gpl='git pull'
@@ -365,6 +364,8 @@ parse_svn_repository_root() {
     alias gsa='git stash'
     alias gsaa='git stash apply'
     alias gsh='git show'
+    function gshm { git show "master:./$1"; }
+    function gshmo { git show "master:./$1" > "old_$1"; }
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'
@@ -573,15 +574,23 @@ parse_svn_repository_root() {
 
     alias rdcm='rake db:drop db:migrate'
     alias be='bundle exec'
+    alias bei='bundle exec spinach'
+    alias bec='bundle exec rspec'
+    alias befs='bundle exec foreman start'
     alias ber='bundle exec rake'
     alias berc='bundle exec rake clean'
     alias berco='bundle exec rake compile'
+    alias berr='bundle exec rake routes'
+    alias berrl='bundle exec rake routes | less'
     alias bert='bundle exec rake test'
-    function bertt { bundle exec rake test TEST="$1"; }
     alias bers='bundle exec rake spec'
     alias berT='bundle exec rake -T'
     alias bes='bundle exec spring'
     alias bi='bundle install'
+    alias ra='bundle exec rails'
+    alias rac='bundle exec rails console'
+    alias ras='bundle exec rails server'
+    alias rasp='bundle exec rails server -p4000'
 
   ##services
 
