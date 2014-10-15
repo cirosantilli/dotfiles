@@ -129,6 +129,7 @@ parse_svn_repository_root() {
     # Misc aliases.
 
     alias ack='ack-grep --smart-case'
+    alias l='less'
     alias eip='curl ipecho.net/plain' # External IP.
     alias cla11='clang++ -std=c++11'
     alias dfhs='df -h | sort -hrk2' # Disk Fill, Human readable, Sort by total size.
@@ -140,6 +141,7 @@ parse_svn_repository_root() {
     function gccs { echo "int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; } # gcc stdin
     function gpps { echo "int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
+    alias md='mkdir'
     function mdc { mkdir "$1" && cd "$1"; } # Make Dir Cd
     alias mupen='mupen64plus --fullscreen'
     alias nets='sudo netstat -tupan'

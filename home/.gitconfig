@@ -4,18 +4,26 @@
 [color]
 	ui = auto
 [core]
+    excludesfile = ~/.gitignore_global
     quotepath = false
+	pager = less -r
 [credential]
 	helper = cache
 [grep]
-	lineNumber = true
 	extendedRegexp = true
+	lineNumber = true
+[mergetool]
+	keepBackup = false
+	prompt = false
+; less -r to wrap long lines.
 [pager]
-	log = diff-highlight | less
-	show = diff-highlight | less
-	diff = diff-highlight | less
+    diff = diff-highlight | less -R
+    log = diff-highlight | less -R
+    show = diff-highlight | less -R
 [push]
 	default = current
+[rerere]
+	enabled = 1
 [user]
-	name = Ciro Santilli
 	email = ciro.santilli@gmail.com
+	name = Ciro Santilli
