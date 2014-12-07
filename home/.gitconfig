@@ -1,14 +1,16 @@
 [alias]
 	st = status
 	exec = "!exec "
+	pushall = "!for i in `git remote`; do git push --all $i; done;"
 [color]
+	grep = auto
 	ui = auto
 [core]
-    excludesfile = ~/.gitignore_global
-    quotepath = false
+	excludesfile = ~/.gitignore_global
+	quotepath = false
 	pager = less -r
 [credential]
-	helper = cache
+	helper = cache --timeout=900
 [grep]
 	extendedRegexp = true
 	lineNumber = true
@@ -17,9 +19,9 @@
 	prompt = false
 ; less -r to wrap long lines.
 [pager]
-    diff = diff-highlight | less -R
-    log = diff-highlight | less -R
-    show = diff-highlight | less -R
+	diff = diff-highlight | less -R
+	log = diff-highlight | less -R
+	show = diff-highlight | less -R
 [push]
 	default = current
 [rerere]

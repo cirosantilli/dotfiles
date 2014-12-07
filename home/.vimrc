@@ -29,11 +29,6 @@
     execute 'noremap! <buffer>' a:keys '<ESC>'.a:rhs
   endfunction
 
-  " Open new Guake tab in cur dir
-  function! GuakeNewTabHere()
-    execute ':silent ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
-  endfunction
-
   " Run cmd in guake tab.
   "
   " If done once already, reuses same tab for other cmds.
@@ -84,20 +79,26 @@
   "
   " :param comment: regexp that starts a comment
   " :type comment: string
-  function! CodeToMd(comment)
-    let a:find = '\v^(\s*)  (' . a:comment . '#+)'
-    for a:n in range(line("'<"), line("'>"))
+  function! CodeToMd(line1, line2, ...)
+    if a:0 > 0
+      let l:comment = a:1
+    else
+      let l:comment = '#'
+    endif
+    let l:find = '\v^(\s*)  (' . l:comment . '#+)'
+    for a:n in range(a:line1, a:line2)
       let a:l = getline(a:n)
-      while a:l =~ a:find
-        execute string(a:n) . 's/' . a:find . '/\1#\2/'
+      while a:l =~ l:find
+        execute string(a:n) . 's/' . l:find . '/\1#\2/'
         let a:l = getline(a:n)
       endwhile
     endfor
 
-    silent! execute '''<,''>s/\v^\s*' . a:comment . '([^#])/\1/'
+    silent! execute a:line1 . ',' . a:line2 . 's/\v^\s*' . l:comment . '([^#])/\1/'
     "silent! execute '''<,''>s/\v^(#+)([^#])/\1 \2/'
-    silent! execute '''<,''>s/\v^\s+([^#])/  \1/'
+    silent! execute a:line1 . ',' . a:line2 . 's/\v^\s+([^#])/  \1/'
   endfunction
+  command! -range=% -nargs=? CodeToMd call CodeToMd(<line1>, <line2>, <f-args>)
 
 "#plugins
 
@@ -346,6 +347,8 @@
         "snippet ac
         "    <a href="`@+`">${0:`@+`}</a>
 
+  "#lint
+
   "#syntastic
 
     " Does syntax checking using external checkers.
@@ -359,6 +362,10 @@
     " Ones I have tried and approved on Ubuntu:
 
       "gem install ruby-lint
+
+    " TODO get working:
+
+      "npm install -g coffee-lint
 
     " This is specially useful when your are going to do a run / compile that takes some time,
     " allowing you to catch silly mistakes before wasting that time.
@@ -640,13 +647,15 @@
 
     " Once the list appears, navigate with Up and Down: letters will add to the search.
 
+  "#BufExporer
+
+      "Plugin 'jlanzarotta/bufexplorer'
+
   "#ctrlp
 
     " Fuzzy finder in files or buffers.
 
     " Seems more pupular than FuzzyFinder now.
-
-    " Tutorial: https://github.com/kien/ctrlp.vim
 
       Plugin 'kien/ctrlp.vim'
 
@@ -689,21 +698,28 @@
 
     " as explained in `:h NERDComment`.
 
+    " Wether to add inner spaces or not.
+    " Generally, comments look better like this
+
+      let g:NERDSpaceDelims = 1
+
   "#surround
 
-    "https://github.com/tpope/vim-surround
-    "Intelligent ''', '"', and html tags conversion
-    "ds": delete surrouding
-    "cs"' : change double to single quotes on cur word
-    "cs'<q : change apostrophe quote to xml <q html elemtn
-    "cst" : change tag to "
-    "ysiw] : add surrounding ] to word
-    "ysiw[ : add surrounding space + ] to word
-    "ysiw<em : add surrounding <em> to word
-    "ysiwtem : idem
-    "ysiw\tabuar{lc : latex envs
-    "< ({ [ work multiline, ' " ` dont
-    "linewise visual mode + S<p class="important">: surround lines with p.
+    " https://github.com/tpope/vim-surround
+    "
+    " Intelligent ''', '"', and html tags conversion
+    "
+    " - `ds"`: delete surrouding
+    " - `cs"'`: change double to single quotes on cur word
+    " - `cs'<q`: change apostrophe quote to xml <q html elemtn
+    " - `cst"`: change tag to "
+    " - `ysiw]`: add surrounding ] to word
+    " - `ysiw[`: add surrounding space + ] to word
+    " - `ysiw<em`: add surrounding <em> to word
+    " - `ysiwtem`: idem
+    " - `ysiw\tabuar{lc`: latex envs
+    " - `< ({[` work multiline, `'"` dont
+    " - linewise visual mode + `S<p class="important">`: surround lines with p.
 
       Plugin 'tpope/vim-surround'
 
@@ -888,13 +904,18 @@
 
       Plugin 'junegunn/vader.vim'
 
+      autocmd FileType vader call MapAllBuff('<F6>', ':write<cr>:Vader<cr>')
+
   "#editorconfig
 
     " Cross editor per project, prefiletpye, configuration parameters inside `.editorconfig` files.
 
     " http://editorconfig.org/
 
-      Plugin 'editorconfig/editorconfig-vim'
+      "Plugin 'editorconfig/editorconfig-vim'
+
+    " trim-space automatically removes trailine whitespaces on :w!
+    " Very intrusive!
 
 "#Options
 
@@ -1024,11 +1045,44 @@
   "#wrapping
 
     set nowrap
-    set nolinebreak             " Break only at characters in breakat or not.
-    "set breakat=               " At which characters it is possible to break. Default is good.
-    set wrapmargin=0            " Margin added to the new wrapped line at the left.
+    set nolinebreak                       " Break only at characters in breakat or not.
+    "set breakat=                         " At which characters it is possible to break. Default is good.
     "let &showbreak = '>'.repeat(' ', 8)  " What to show on the new broken line.
     set nolist
+
+    "#textwidth
+
+      " After given column width, Vim will automatically insert a newline (hard wrap)
+      " after the first space.
+
+      " 0 to disable.
+
+      " If you use filetype needs and autocommand because most of the default filetypes set this to true.
+      " I prefer to highlight long lines and break lines mysefl.
+
+        autocmd Bufenter * set textwidth=0
+
+    "#wrapmargin
+
+      " Like `textwidth`, but counts the number of columns from the right of the screen.
+
+      " Only takes effect if `textwidth=0`.
+
+      " Disabled by `wrapmargin=0`.
+
+        set wrapmargin=0
+
+    "#colorcolumn
+
+    "#Print margin
+
+      " Highlight given columns differently to help manually maintaining column width. E.g.:
+
+        "set colorcolumn=80,100
+
+      " Disable:
+
+        "set colorcolumn=
 
   "#startofline
 
@@ -1037,13 +1091,6 @@
     " Else, they keep the current column if possible.
 
       set startofline
-
-  " Maximum line width. Inserts newline automatically at first space.  0 to disable.
-
-  " If you use filetype needs and autocommand because most of the default filetypes set this to true.
-  " I prefer to highlight long lines and break lines mysefl.
-
-    autocmd Bufenter * set textwidth=0
 
   "#formatoptions
 
@@ -1115,20 +1162,46 @@
 
   "#tab
 
-    set expandtab   "insert spaces instead of tabs
-    set tabstop=4   "a tab viewed as 8 spaces
-    set shiftwidth=4  "number of spaces to use for autoindenting
-    set autoindent  "always set autoindenting on
-    set copyindent  "copy the previous indentation on autoindenting
-    set shiftround  "use multiple of shiftwidth when indenting with '<' and '>'
-    set smarttab    "insert tabs on the start of a line according to
-                      " shiftwidth, not tabstop
+    set expandtab     " Insert spaces instead of tabs.
+    set tabstop=4     " A tab viewed as 8 spaces.
+    " set softtabstop " TODO
+    set shiftwidth=4  " Number of spaces to use for autoindenting.
+    set autoindent    " Always set autoindenting on.
+    set copyindent    " Copy the previous indentation on autoindenting.
+    set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'.
+    set smarttab      " Insert tabs on the start of a line according to
+                      " shiftwidth, not tabstop.
 
-  "EOL
+  "#ff
 
-    " System independant end of line. `\n` on linux, `\r` on Mac OS X, `\n\r` on Windows.
+  "#fileformat
 
-  "#eol #endofline #newline at end of file #binary
+  "#fileformats
+
+    " `fileformat` determine what will be the line terminator for the current buffer:
+    " `unix`, `dos` or `mac`.
+
+    " Vim tries auto-detect this value on new buffers. Auto-detect can only yield values in `fileformats`.
+
+    " `fileformat` gives a default if auto-detect fails.
+
+    " When you do `set ff=X`, the buffer is modified such that every
+    " current EOF string is replaced by the new one.
+
+    " When searching for CR when `dos` is set does not find CR on LF CR pairs:
+    " only rogue CRs.
+
+  "#EOL
+
+    " System independant end of line. `\n` on Linux, `\r` on Mac OS X, `\n\r` on Windows.
+
+  "#eol
+
+  "#endofline
+
+  "#binary
+
+  "#newline at end of file
 
     " If `eol` and `binary` are on (default), Vim adds an <EOL> at the end of file if it does not have one already.
     "
@@ -1137,20 +1210,20 @@
     "
     " The downsides of having `binary` are that:
     "
-    " - you cannot view or remove the <EOL> easily.
+    " -   you cannot view or remove the <EOL> easily.
     "
-    "  Workaround: `!truncate -1 %` (-2 on Windows...)
+    "     Workaround: `!truncate -1 %` (-2 on Windows...)
     "
-    " - if you forget to set the default behavior for new files to match the projects standards, you may break them.
+    " -   if you forget to set the default behavior for new files to match the projects standards, you may break them.
     "     and there will be no immediate visual indiation of that (except for `git diff`).
     "
-    "  Workaround: never create, always copy existing files, or use a local vimrc that sets binary.
+    "     Workaround: never create, always copy existing files, or use a local vimrc that sets binary.
     "
-    " - it is confusing for the initiates
+    " -   it is confusing for the initiates
     "
     " If you keep the default magic you have the upside that:
     "
-    " - don't have to worry about different per project / per file type conventions.
+    " -   don't have to worry about different per project / per file type conventions.
     "
     " We feel that this default was a good design choice by Vim,
     " specially once you understand that there is magic going on.
@@ -1160,13 +1233,13 @@
 
     "set binary
 
-  "#binary file edit
+  "#Binary file edit
 
-    "TODO how to edit a binary file?
+    " TODO how to edit a binary file?
 
   "#encoding #fileenconding #utf8 #bomb
 
-    "http://stackoverflow.com/questions/16507777/vim-set-encoding-and-fileencoding-utf-8
+    " http://stackoverflow.com/questions/16507777/vim-set-encoding-and-fileencoding-utf-8
 
   "#fold
 
@@ -1176,7 +1249,7 @@
 
       " - `expr`: based on any expression or function. Most powerful.
 
-        "set foldmethod=indent
+          "set foldmethod=indent
 
     "#foldlevel
 
@@ -1213,8 +1286,8 @@
 
   "#spell
 
-    set spellfile=$HOME/.vim/spell/en.utf-8.add
-    autocmd BufNewFile,BufRead *.{md,rst,html,haml,tex} setlocal spell spelllang=en
+      set spellfile=$HOME/.vim/spell/en.utf-8.add
+      autocmd Filetype gitcommit,haml,html,latex,mkd,markdown,rst,tex setlocal spell spelllang=en
 
     " After editing the spell file:
 
@@ -1409,47 +1482,51 @@
 
   " #data languages
 
-  " #html, #xml
+    " #html, #xml
 
-    autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
-    autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
-    autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
+      autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
+      autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
+      autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
 
-    function! FtHtml()
-      call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
-      function! HeaderIncrease()
-        silent! %substitute/<h5/<h6/g
-        silent! %substitute/<h4/<h5/g
-        silent! %substitute/<h3/<h4/g
-        silent! %substitute/<h2/<h3/g
-        silent! %substitute/<h1/<h2/g
-        silent! %substitute/<\/h5/<\/h6/g
-        silent! %substitute/<\/h4/<\/h5/g
-        silent! %substitute/<\/h3/<\/h4/g
-        silent! %substitute/<\/h2/<\/h3/g
-        silent! %substitute/<\/h1/<\/h2/g
+      function! FtHtml()
+        call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
+        function! HeaderIncrease()
+          silent! %substitute/<h5/<h6/g
+          silent! %substitute/<h4/<h5/g
+          silent! %substitute/<h3/<h4/g
+          silent! %substitute/<h2/<h3/g
+          silent! %substitute/<h1/<h2/g
+          silent! %substitute/<\/h5/<\/h6/g
+          silent! %substitute/<\/h4/<\/h5/g
+          silent! %substitute/<\/h3/<\/h4/g
+          silent! %substitute/<\/h2/<\/h3/g
+          silent! %substitute/<\/h1/<\/h2/g
+        endfunction
       endfunction
-    endfunction
-    autocmd FileType html call FtHtml()
+      autocmd FileType html call FtHtml()
 
-  " #css and family
+    " #css family
 
-    autocmd BufEnter,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
+      autocmd BufEnter,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
 
-  " #javascript #js #coffee
+    " #javascript #js #coffee
 
-    autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
-    autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
-    autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
-    autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
-    autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
+      autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
+      autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
+      autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+      autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
+      autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
+
+    " #yaml
+
+      autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 
   "#compilable markup
 
     "#md #rst
 
       "au FileType *.md setlocal shiftwidth=4 tabstop=4
-      autocmd BufEnter,BufRead *.{md,rst} setl shiftwidth=4 tabstop=4
+      autocmd BufEnter,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
       "au BufEnter,BufRead *.{md,rst} setl filetype=text
       autocmd BufEnter,BufRead *.rst call MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
 
@@ -1527,7 +1604,7 @@
       endfunction
       "au BufEnter,BufRead *.tex call MapAllBuff('<F4>', ':cal LatexForwardOkular("_out/")<cr>')
 
-  "#interpreted languages #python #bash #perl #ruby
+  "#Interpreted languages #python #bash #perl #ruby
 
     autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
@@ -1536,7 +1613,7 @@
 
   "#compile to executable languages
 
-    "#c #c++ #cpp #lex #y #fortran #asm #s #java
+    "#c #c++ #cpp #haskell #lex #y #fortran #asm #s #java
 
     function! FileTypeCpp()
       call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
@@ -1551,13 +1628,15 @@
       call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
     endfunction
 
-    autocmd FileType c,cpp,fortran,asm,s,java call FileTypeCpp()
+    autocmd FileType c,cpp,fortran,asm,s,java,haskell call FileTypeCpp()
     autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
     autocmd BufNewFile,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
     " Because fortran has a max line length.
     autocmd FileType fortran setlocal shiftwidth=2 tabstop=2
 
   "#vimscript
+
+    autocmd FileType vim setlocal shiftwidth=2 tabstop=2
 
     " Reaload all visible buffers. TODO: multiple windows per tabpage.
     function! ReloadVisible()
@@ -1567,7 +1646,6 @@
     endfunction
     autocmd FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:sil call ReloadVisible()<cr>
 
-    autocmd FileType vim setlocal shiftwidth=2 tabstop=2
     " Write all buffers, source this vimrc, and reaload open
     " buffers so that changes in vimrc are applied:
 
@@ -1649,19 +1727,19 @@
     " General solution: only exists with plugins as of 2013:
     " <http://superuser.com/questions/211916/setting-up-multiple-highlight-rules-in-vim>
 
-    " #trailling whitespace
+    " #Trailing whitespace
 
       " Highlight tralling whitestpace.
       "
       " Also possible with set list + listchars, but this is better.
 
-        augroup TraillingWhitespaceAucmd
+        augroup TrailingWhitespaceAucmd
           autocmd!
-          autocmd BufEnter * highlight TraillingWhitespace ctermbg=brown guibg=brown
-          autocmd BufEnter * match TraillingWhitespace /\s\+$/
+          autocmd BufEnter * highlight TrailingWhitespace ctermbg=brown guibg=brown
+          autocmd BufEnter * match TrailingWhitespace /\s\+$/
         augroup END
 
-    " #highlight lines that are too long
+    " #Highlight lines that are too long
 
         augroup LineTooLongAucmd
           autocmd!
@@ -1690,7 +1768,7 @@
 
     " Add it to your status line. Great way to make small syntax developments:
 
-      "set laststatus=2
+      " set laststatus=2
       set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   "#syntax
@@ -1731,7 +1809,10 @@
 
     " Set the current leader:
 
-      let mapleader = ',' "default
+      let mapleader = ','
+
+    " Default is:
+
       "let mapleader = '\'
 
     " Use current leader:
@@ -1755,6 +1836,38 @@
       nn <leader>tb :tabedit<cr>:b<space>
       nn <leader>tm :tabmove<space>
 
+    " Go to previously selected tab / last tab:
+    " <http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim>
+
+      let g:lasttab = 1
+      autocmd TabLeave * let g:lasttab = tabpagenr()
+      nnoremap <leader>tl :execute 'tabn ' . g:lasttab<CR>
+
+      let g:reopenbuf = expand('%:p')
+      function! ReopenLastTabLeave()
+        let g:lastbuf = expand('%:p')
+        let g:lasttabcount = tabpagenr('$')
+      endfunction
+      function! ReopenLastTabEnter()
+        if tabpagenr('$') < g:lasttabcount
+          let g:reopenbuf = g:lastbuf
+        endif
+      endfunction
+      function! ReopenLastTab()
+        tabnew
+        execute 'buffer' . g:reopenbuf
+      endfunction
+      augroup ReopenLastTab
+        autocmd!
+        autocmd TabLeave * call ReopenLastTabLeave()
+        autocmd TabEnter * call ReopenLastTabEnter()
+      augroup END
+      " Tab Restore
+      nnoremap <leader>tr :call ReopenLastTab()<CR>
+
+    " Reopen last closed tab
+    " <http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim>
+
     " Currently using another shortcut for this:
 
       "nn <leader>tT :tabclose<cr>
@@ -1764,9 +1877,22 @@
 
   "#f keys
 
-      call MapAll('<F2>',   ':cal GuakeNewTabHere()<cr>')
-      call MapAll('<S-F2>',   ':ConqueTermTab bash<cr>')
-      call MapAll('<F3>',   ':NERDTreeToggle<cr>')
+      " Open new Guake tab in cur dir
+      function! GuakeNewTabHere()
+        execute ':silent ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
+      endfunction
+
+      call MapAll('<F2>', ':call GuakeNewTabHere()<cr>')
+
+      call MapAll('<S-F2>', ':ConqueTermTab bash<cr>')
+
+      function! KrusaderNewTabHere()
+        execute ':silent ! krusader ' . expand("%:p:h")
+      endfunction
+
+      call MapAll('<F3>', ':call KrusaderNewTabHere()<cr>')
+
+      call MapAll('<S-F3>', ':NERDTreeToggle<cr>')
 
   "#` #~
 
@@ -1909,7 +2035,14 @@
 
     " Close current window and move left:
 
-      call MapAll('<c-q>', ':q<cr>:tabprevious<cr>')
+      function! QuitToPreviousTab()
+        let l:last = (tabpagenr() == tabpagenr('$'))
+        quit
+        if !l:last
+          tabprevious
+        endif
+      endfunction
+      call MapAll('<c-q>', ':call QuitToPreviousTab()<cr>')
 
     " Useful because I don't use subwindows (each window becomes too small),
     " and often I open up Scrap tabs to the right of the current tab (program | program output),
@@ -2242,6 +2375,12 @@
       onoremap <silent> ]l :call NextIndent(0, 1, 0, 1)<CR>
       onoremap <silent> [L :call NextIndent(1, 0, 1, 1)<CR>
       onoremap <silent> ]L :call NextIndent(1, 1, 1, 1)<CR>
+
+  "#\
+
+    " Open tag in a new tab:
+
+      nnoremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 
   "#a
 
@@ -3090,6 +3229,12 @@
         "command! -nargs=* Echo1 echo "<args>"
         "Echo1 a b c
 
+        "command! -nargs=? Echo1 echo "a<args>"
+        "Echo1
+        " => a
+        "Echo1 b
+        " => ab
+
       " Pass arguments to function: use `f-args`:
 
         "command! -nargs=* Echo1 echo '<f-args>'
@@ -3211,11 +3356,11 @@
 
     " Try:
 
-      "let b:buffer = 1
+        "let b:buffer = 1
 
     " Change buffers and:
 
-      "let b:buffer = 2
+        "let b:buffer = 2
 
     " Come back to first buffer and:
 
@@ -3268,6 +3413,10 @@
 
     " The advantage of this is that you can make unique short names
     " for script only functions.
+
+  "#plug
+
+  "#<plug>
 
 "#variables
 
@@ -3416,7 +3565,7 @@
 
   " The only escape inside single quotes is `''` for `'`.
 
-  "special chars
+  "Special chars
 
     " C-like:
 
@@ -3664,7 +3813,7 @@
 
     " Concept does not exist in the language.
 
-    " Workaround;
+    " Workaround: varargs + counting.
 
       "function! F(a, ...)
         "if a:0 > 0
@@ -4053,25 +4202,22 @@
 
     " This behaviour can be orverriden with `keepalt`.
 
-  " Wipe all buffers without corresponding existing files:
+  "# Wipe all buffers without corresponding existing files
 
-    function! b:WipeBuffersWithoutFiles()
-      let l:bufs = filter(
-        range(1, bufnr('$')),
-        'bufexists(v:val) && '.
-        \'empty(getbufvar(v:val, "&buftype")) && '.
-        \'!filereadable(bufname(v:val))'
-      )
-      if !empty(l:bufs)
-        execute 'bwipe' join(l:bufs)
-      endif
-    endfunction
+    " http://stackoverflow.com/questions/8845400/vim-wiping-out-buffers-editing-nonexistent-files
 
-    "call it at every startup (TODO does not work)
+        function! WipeBuffersWithoutFiles()
+          let bufs=filter(range(1, bufnr('$')), 'bufexists(v:val) && '.
+                                               \'empty(getbufvar(v:val, "&buftype")) && '.
+                                               \'!filereadable(bufname(v:val))')
+          if !empty(bufs)
+            execute 'bwipeout' join(bufs)
+          endif
+        endfunction
+
+        command! Wbwf call s:WipeBuffersWithoutFiles()
 
       "call s:WipeBuffersWithoutFiles()
-
-    "command WBWF call s:WipeBuffersWithoutFiles()
 
   "#scratch buffer
 
@@ -4127,9 +4273,11 @@
 
   "#only
 
-    " Close all windows except cur one
+    " Close all windows except current one.
 
-  "#lines #columns
+  "#lines
+
+  "#columns
 
     " Total tab width, size of terminal window, not affected by splits.
 
@@ -4232,7 +4380,6 @@
 
   "#tab command
 
-
     "#tab command #:tab
 
       " Execute command, and if it would open a new window open a new tab
@@ -4242,15 +4389,30 @@
 
         "tab help
 
-"#exe
+  "#tabpagenr()
 
-  " Execute string as a vim command
+    " Get number of current tab:
 
-    "exe "let a = 10"
+      "echo tabpagenr()
+
+    " Get number of last tab:
+
+      "echo tabpagenr('$')
+
+"#execute
+
+  " Execute string as a Vim command:
+
+    "execute 'let a = 10'
+
+  " A command is anything that normally coes on a line of Vimscript.
+  " Multiple commands can often be concatenated with `|`:
+
+    "execute 'echo 1 | echo 1'
 
   " Multiple args are concatenated separated by space:
 
-    "exe "echo 1 |" "echo 1"
+    "execute 'echo 1 |' 'echo 1'
 
   " Application: pass parameters to functions.
 
@@ -4559,7 +4721,13 @@
 
         "doautocmd A BufEnter *
 
-"#map #noremap #nmap #nnoremap
+"#map
+
+"#noremap
+
+"#nmap
+
+"#nnoremap
 
   " Map keys and key sequences to other sequences of keys. and view what they are mapped to.
 
@@ -4779,14 +4947,15 @@
 
     "h map-operator
 
-"#abbreviate #noreabbrev
+"#abbreviate
+
+"#noreabbrev
 
   " Lists and creates abbreviations.
 
-  " Abbreviations expand only if the character that follows them is non
-  " alphanumeric.
+  " Abbreviations expand only if the character that follows them is non alphanumeric.
 
-  " For sanity always use hte nore version, which is analogous to mappings.
+  " For sanity always use the `nore` version.
 
   " Example:
 
@@ -4941,17 +5110,21 @@
 
       "Useful wiht setguilabel.
 
-  "#expand #%:p #filename-modifiers
+  "#expand
+
+  "#%:p
+
+  "#filename-modifiers
 
       "echo expand('%:r')
 
     " Important ones. Test path: `/a/b/f.ext`
 
-    "- `%`:   basename
-    "- `%:p`: full path
-    "- `%:r`: basename without extension
-    "- `%:e`: extension
-    "- `#`:   alternative file name
+    " - `%`:   basename
+    " - `%:p`: full path
+    " - `%:r`: basename without extension
+    " - `%:e`: extension
+    " - `#`:   alternative file name
 
     " `!` shell commands automatically expand % just like `expand`:
 
@@ -4966,7 +5139,24 @@
 
       "h filename-modifiers
 
-  "#position #line
+    " Expansion happens automatically in commands where a filename is expected
+    " like `edit`, but not otherwise like in `echo`.
+
+    "#cword
+
+      " Word under cursor like `*`:
+
+        "echo expand('<cword>')
+
+    "#cfile
+
+      " File path under cursor like `gf`:
+
+        "echo expand('<cfile>')
+
+  "#position
+
+  "#line
 
     "#line
 
@@ -4974,19 +5164,19 @@
 
       " Get cur line number:
 
-        "echo line(".")
+        " echo line(".")
 
       " Get last line number in buffer:
 
-        "echo line("$")
+        " echo line("$")
 
       " Get first line of last visual selection:
 
-        "echo line("'<")
+        " echo line("'<")
 
       " Last one:
 
-        "echo line("'>")
+        " echo line("'>")
 
     "#col()
 
@@ -4998,7 +5188,7 @@
 
       " Best way to get line and column in one call.
 
-        "getpos('.')
+        " getpos('.')
 
     "#setpos()
 
@@ -5008,7 +5198,7 @@
 
       " `setpos()` with same args to set (last can be ommitted):
 
-      "setpos('.', [0,2,3])
+        " setpos('.', [0,2,3])
 
       " If buf number 0 means in current buffer.
 
@@ -5018,20 +5208,20 @@
 
       " Set position. Subset of `setpos`. Does not affect the jump list:
 
-        "cursor(line, col)
+        " cursor(line, col)
 
     "#keepjumps
 
       " Do a motion but don't change the jumplist.
 
-        "normal! G
-        "keepjumps normal! gg
+        " normal! G
+        " keepjumps normal! gg
 
       " Useful to maintain editor state in automatic motions from functions.
 
     " Get initial position while on visual mode:
 
-       "getpos("'<")
+       " getpos("'<")
 
     " Set visual selection position from function:
 
@@ -5353,7 +5543,9 @@
 
       " Does not exist: https://groups.google.com/forum/#!topic/vim_use/BsfxglpkufQ
 
-  "#substitute #:substitute
+  "#substitute
+
+  "#:substitute
 
     " Replace in buffer.
 
@@ -5639,7 +5831,11 @@
     "py f()
     "endfunction
 
-"#configuration #startup #initialization
+"#configuration
+
+"#startup
+
+"#initialization
 
   "<http://www.22ideastreet.com/debug/vim-directory-structure/>
 
@@ -5656,7 +5852,7 @@
 
     " See verb.
 
-  "#verb
+  "#verbose
 
     " Verbose info on commands.
 

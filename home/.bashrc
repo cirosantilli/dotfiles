@@ -135,10 +135,11 @@ parse_svn_repository_root() {
     alias dfhs='df -h | sort -hrk2' # Disk Fill, Human readable, Sort by total size.
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
     alias fbr='find_basename_res.py'
-    alias g='grep'
-    alias gi='grep -i'
+    alias g='grep -E'
+    alias gi='grep -Ei'
+    alias rmrf='rm -rf'
     alias fmmmr='find-music-make-m3u .'
-    function gccs { echo "int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; } # gcc stdin
+    function gccs { echo "int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; } # GCC Stdin
     function gpps { echo "int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     alias md='mkdir'
@@ -147,7 +148,7 @@ parse_svn_repository_root() {
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
     alias ncl="while true; do printf '' | nc -l localhost 8000; done"
-    function noh { nohup $@ \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null & }
+    function noh { nohup $@ >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
     alias playa="$cmd" # play Alert
@@ -159,6 +160,7 @@ parse_svn_repository_root() {
     alias rbul='rename_basename_unidecode_lowercase.py'
     alias rifr='replace_in_files_regex.py'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
+    alias sha2="sha256sum"
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
     alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
@@ -174,9 +176,10 @@ parse_svn_repository_root() {
     alias xar="xargs -I'{}'"
     alias xar0="xargs -0I'{}'"
     alias xselb='xsel --clipboard'
+    function xselssh { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
-    alias pserve='python -m SimpleHTTPServer'
+    alias pyserve='python -m SimpleHTTPServer'
 
     ##Provision machines
 
@@ -288,17 +291,21 @@ parse_svn_repository_root() {
 
     export GIT_EDITOR="$vim"
 
-    alias gad='git add'
-    alias gadcm='git add . && git commit'
-    alias gadcp='git add . && git commit && git push'
+    alias gad='git add -A'
+    alias gadcm='git add -A . && git commit'
+    alias gadcp='git add -A . && git commit && git push'
     function gadcmp { git add . && git commit -m "$1" && git push; }
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbl='git blame'
     alias gbr='git branch'
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
+    alias gbra='git branch -a'
     alias gbrg='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration' # BRanch Graph
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
+    alias gclb='git clone --bare'
+    alias gcf='git cat-file'
+    alias gcfp='git cat-file -p'
     alias gcm='git commit'
     alias gcmm='git commit -m'
     alias gcma='git commit --amend'
@@ -362,7 +369,8 @@ parse_svn_repository_root() {
     alias grm='git rm'
     alias grt='git remote'
     alias grtv='git remote -v'
-    alias grtmou='git remote rename origin up && git remote add origin'
+    alias grtrou='git remote rename origin up && git remote add origin'
+    alias grtso='git remote set-url origin'
     alias gsa='git stash'
     alias gsaa='git stash apply'
     alias gsh='git show'
@@ -516,10 +524,10 @@ parse_svn_repository_root() {
 
   ##music
 
-    alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR/all.m3u\" >/dev/null &"
-    alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR/all.m3u\" >/dev/null &"
-    alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR/all.m3u\" >/dev/null &"
-    alias mroc="nohup vlc \"$MUSIC_DIR/rock/all.m3u\" >/dev/null &"
+    alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
+    alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
+    alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
+    alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
 
   ##npm
 
@@ -572,6 +580,11 @@ parse_svn_repository_root() {
         alias dmssi='./manage.py schemamigration --initial'
         alias dmssa='./manage.py schemamigration --auto'
 
+  ##rake
+
+    alias rk='rake'
+    alias rkc='rake clean'
+
   ##rails
 
     alias rdcm='rake db:drop db:migrate'
@@ -579,6 +592,7 @@ parse_svn_repository_root() {
     alias bei='bundle exec spinach'
     alias bec='bundle exec rspec'
     alias befs='bundle exec foreman start'
+    alias bejs='bundle exec jekyll serve -w'
     alias ber='bundle exec rake'
     alias berc='bundle exec rake clean'
     alias berco='bundle exec rake compile'
@@ -664,7 +678,7 @@ parse_svn_repository_root() {
       PATH="$PATH:$HOME/.rvm/bin"
     fi
 
-    # Not tracked by git.
+    # Not tracked in dotfiles.
     if [ -r "$HOME/.bashrc_local" ]; then
       . "$HOME/.bashrc_local"
     fi
