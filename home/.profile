@@ -40,11 +40,8 @@ fi
         # Linux from scratch home.
         export LFS=/media/lfs/
         # Texlive
-        export PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
-        # ~/bin
-        if [ -d "$HOME/bin" ] ; then
-            PATH="$HOME/bin:$PATH"
-        fi
+        PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
+        PATH="$HOME/bin:$PATH"
 
       # After.
 
@@ -113,12 +110,14 @@ fi
         export INDIAN_MUSIC_DIR="$MUSIC_DIR/indian classical"
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
 
-  ##for Gitlab development as git user so I can run X programs as Git.
+  ## For VM SSH development as git user so I can run X programs:
 
     xhost +
 
   # Texlive
   export MANPATH="/usr/local/texlive/2013/texmf-dist/doc/man:$MANPATH"
   export INFOPATH="/usr/local/texlive/2013/texmf-dist/doc/info:$INFOPATH"
+
+  export JAVA_JOME='/usr/lib/jvm/java-7-oracle'
 
 #</ciro>
