@@ -130,20 +130,25 @@ parse_svn_repository_root() {
 
     alias ack='ack-grep --smart-case'
     alias l='less'
-    alias eip='curl ipecho.net/plain' # External IP.
+    # External IP.
+    alias eip='curl ipecho.net/plain'
     alias cla11='clang++ -std=c++11'
-    alias dfhs='df -h | sort -hrk2' # Disk Fill, Human readable, Sort by total size.
+    # Disk Fill, Human readable, Sort by total size.
+    alias dfhs='df -h | sort -hrk2'
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
     alias fbr='find_basename_res.py'
     alias g='grep -E'
     alias gi='grep -Ei'
     alias rmrf='rm -rf'
     alias fmmmr='find-music-make-m3u .'
-    function gccs { echo "int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; } # GCC Stdin
-    function gpps { echo "int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
+    # GCC from String.
+    # Usage: gccs '1 + 1'
+    function gccs { echo "$2 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
+    function gpps { echo "$2 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     alias md='mkdir'
-    function mdc { mkdir "$1" && cd "$1"; } # Make Dir Cd
+    # Make Dir Cd
+    function mdc { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
@@ -151,8 +156,10 @@ parse_svn_repository_root() {
     function noh { nohup $@ >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
-    alias playa="$cmd" # play Alert
-    alias playi="bash -c 'while true; do $cmd; done'" # play alert Infinite. Stop with `kill %1`.
+    # play Alert
+    alias playa="$cmd"
+    # play alert Infinite. Stop with `kill %1`.
+    alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
     alias rmd='sleep 2 && playa && recordmydesktop --stop-shortcut 'Control+Mod1+z''
     alias pingg='ping google.com'
@@ -179,7 +186,6 @@ parse_svn_repository_root() {
     function xselssh { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
-    alias pyserve='python -m SimpleHTTPServer'
 
     ##Provision machines
 
@@ -199,6 +205,17 @@ parse_svn_repository_root() {
       alias saiu='sudo aptitude update'
       alias saip='sudo aptitude purge'
       function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
+
+  ##Bash options
+
+    # Bash set or shopt options.
+
+    set -o vi
+
+    # Check the window size after each command and,
+    # if necessary, update the values of LINES and COLUMNS.
+
+    shopt -s checkwinsize
 
   ##ctags
 
@@ -293,6 +310,7 @@ parse_svn_repository_root() {
 
     alias gad='git add -A'
     alias gadcm='git add -A . && git commit'
+    alias gadcmm='git add -A . && git commit -m'
     alias gadcp='git add -A . && git commit && git push'
     function gadcmp { git add . && git commit -m "$1" && git push; }
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
@@ -317,6 +335,7 @@ parse_svn_repository_root() {
     alias gco='git checkout'
     alias gcob='git checkout -b'
     function gcobm { git checkout -b "$1" master; }
+    alias gcod='git checkout --conflict=diff3'
     alias gcom='git checkout master'
     alias gcoo='git checkout --ours'
     alias gcot='git checkout --theirs'
@@ -326,15 +345,24 @@ parse_svn_repository_root() {
     alias gcp='git cp'
     alias gcr='git cherry-pick'
     alias gdf='git diff'
+    function gdf12 { git diff ":1:./$1" ":2:./$1"; }
+    function gdf13 { git diff ":1:./$1" ":3:./$1"; }
+    function gdf123 {
+      git --no-pager diff ":1:./$1" ":2:./$1";
+      python -c 'print "\n" + (80 * "=") + "\n"';
+      git --no-pager diff ":1:./$1" ":3:./$1";
+    }
     alias gdfc='git diff --cached'
     alias gdfhh='git diff HEAD~ HEAD'
     alias gfe='git fetch'
     alias gfeomm='git fetch origin master:master'
+    alias gfeumm='git fetch up master:master'
     function gfeommcob { git fetch origin master:master && git checkout -b "$1" master; }
     alias gg='git grep --color'
     alias ggi='git grep --color -i'
     alias gka='gitk --all'
-    alias giac='git init && git add . && git commit -m 'Init.'' # Init Add Commit
+    alias gin='git init'
+    alias ginac='git init && git add . && git commit -m 'Init.'' # Init Add Commit
     alias gls='git ls-files'
     alias glso='git ls-files --other'
     alias glsg='git ls-files | grep'
@@ -368,6 +396,8 @@ parse_svn_repository_root() {
     alias grshH='git reset --hard HEAD~'
     alias grm='git rm'
     alias grt='git remote'
+    alias grta='git remote add'
+    alias grtao='git remote add origin'
     alias grtv='git remote -v'
     alias grtrou='git remote rename origin up && git remote add origin'
     alias grtso='git remote set-url origin'
@@ -535,15 +565,6 @@ parse_svn_repository_root() {
     alias npmis='npm install --save'
     alias npmisd='npm install --save-dev'
 
-  ##options
-
-    # Bash set or shopt options.
-
-    set -o vi
-
-    # Check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
-    shopt -s checkwinsize
-
   ##power
 
     alias pmhi='sudo ps-hibernate'
@@ -559,6 +580,8 @@ parse_svn_repository_root() {
     alias py3='python3'
     alias ipy='ipython'
     alias tipy='touch __init__.py'
+    alias pyserve='python -m SimpleHTTPServer'
+    alias pydoc='python -m doctest'
 
     ##pip
 
@@ -592,7 +615,7 @@ parse_svn_repository_root() {
     alias bei='bundle exec spinach'
     alias bec='bundle exec rspec'
     alias befs='bundle exec foreman start'
-    alias bejs='bundle exec jekyll serve -w'
+    alias bejs='firefox localhost:4000 && bundle exec jekyll serve -tw'
     alias ber='bundle exec rake'
     alias berc='bundle exec rake clean'
     alias berco='bundle exec rake compile'
@@ -617,6 +640,10 @@ parse_svn_repository_root() {
     function ssta { sudo service --status-all ; }
     alias ssar='sudo service apache2 restart'
     alias sslr='sudo service lightdm restart'
+
+  ##update-rc.d
+
+    function surd { sudo update-rc.d "$1" disable; }
 
   ##vagrant
 

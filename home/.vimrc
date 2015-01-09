@@ -354,6 +354,7 @@
     " Does syntax checking using external checkers.
 
       Plugin 'scrooloose/syntastic'
+      let g:syntastic_always_populate_loc_list = 0
 
     " You must then install the external syntax checkers you will use.
 
@@ -451,6 +452,10 @@
     command! -nargs=1 Ggr Ggrep! <args> | tab copen
     command! Gps !git push
     command! Gpsf !git push -f
+
+    command! Gcod !git checkout --conflict=diff3 -- %
+    command! Gcoo !git checkout --ours -- %
+    command! Gcot !git checkout --theirs -- %
 
     command! -nargs=* Gcmbr execute '!git add ' . expand('%:p') ' && git commit -m "<args>" && git push && git browse-remote'
 
@@ -680,7 +685,7 @@
     " - `o`: open file in current buffer and jump to line
     " - `T`: open in new tab and jump to line
 
-  "#nerdcommenter
+  "#NERDcommenter
 
     " Does the right type of comment for each recognized filetype.
 
@@ -699,9 +704,20 @@
     " as explained in `:h NERDComment`.
 
     " Wether to add inner spaces or not.
-    " Generally, comments look better like this
+    " Generally, comments look better with the spaces:
 
       let g:NERDSpaceDelims = 1
+
+    " But sometimes I want to differentiate comments from neighbouring code,
+    " and do that by making the code have no spaces.
+
+      function! NERDSpaceDelimsOff()
+        let a:NERDSpaceDelimsOld = g:NERDSpaceDelims
+        let g:NERDSpaceDelims = 0
+        call NERDComment('n', 'toggle')
+        let g:NERDSpaceDelims = a:NERDSpaceDelimsOld
+      endfunction
+      autocmd Bufenter * noremap <leader>m<space> :call NERDSpaceDelimsOff()<cr>
 
   "#surround
 
@@ -800,24 +816,33 @@
 
       " Disable folding:
 
-        "let g:vim_markdown_folding_disabled=1
-        let g:vim_markdown_initial_foldlevel=6
-        let g:vim_markdown_math=1
-        let g:vim_markdown_frontmatter=1
+        " let g:vim_markdown_folding_disabled=1
+        let g:vim_markdown_initial_foldlevel = 6
+        let g:vim_markdown_math = 1
+        let g:instant_markdown_autostart = 0
 
-      " There is also a version by tpope, but plasticboy seems better:
+      " There is also a version by tpope, but plasticboy seems better.
+      " tpope's is present in the default Vim distribution.
 
-        "Bundle 'tpope/vim-markdown'
+        " Bundle 'tpope/vim-markdown'
 
-    "#instant markdown
+    "#Instant markdown
 
       " Preview server on localhost:8090.
-      "
+
       " Recompiles everytime you type with redcarpet.
-      "
+
       " Tons of external dependencies. I'd rather just compile and do `firefox output.html` for now.
 
-        "Plugin 'suan/vim-instant-markdown'
+        " gem install pygments.rb
+        " gem install redcarpet -v 2.3.0
+        " npm -g install instant-markdown-d
+        Plugin 'suan/vim-instant-markdown'
+        let g:instant_markdown_autostart = 0
+
+      " Start server with:
+
+        " InstantMarkdownPreview
 
   "#dockerfile
 
@@ -1257,7 +1282,7 @@
 
         "set foldlevel=3
 
-      " Level 0 menas everything is folded.
+      " Level `0` menas everything is folded.
 
       " This can be modified by many default mappings such as
       " zr, zR, zm and, zM
@@ -1507,7 +1532,7 @@
 
     " #css family
 
-      autocmd BufEnter,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
+      autocmd BufNew,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
 
     " #javascript #js #coffee
 
@@ -1525,28 +1550,28 @@
 
     "#md #rst
 
-      "au FileType *.md setlocal shiftwidth=4 tabstop=4
-      autocmd BufEnter,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
-      "au BufEnter,BufRead *.{md,rst} setl filetype=text
-      autocmd BufEnter,BufRead *.rst call MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
+      "autocmd FileType *.md setlocal shiftwidth=4 tabstop=4
+      autocmd BufNew,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
+      "autocmd BufNew,BufRead *.{md,rst} setlocal filetype=text
+      autocmd BufNew,BufRead *.rst call MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
 
-      "TODO this is broken still:
-      autocmd BufEnter,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
+      " TODO this is broken still:
+      autocmd BufNew,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
 
       " Make and open with firefox on curent point without a makefile.
       let s:out_dir = '_out'
-      autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>')
-      "au BufRead,BufNewFile *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<. html; firefox _out/%<.html<cr>
+      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>')
+      "autocmd BufNew,BufRead *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<. html; firefox _out/%<.html<cr>
 
-      autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>')
+      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>')
 
       " Clean default output dir.
-      autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
-      autocmd BufEnter,BufRead *.{md,rst} call MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
+      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
+      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
 
       " Markdown *cannot* be indented, and GFM forces us to have
       " infinitely long lines. because single newlines become line breaks.
-      autocmd BufRead,BufNewFile *.{md,rst} setlocal wrap
+      autocmd BufNew,BufRead *.{md,rst} setlocal wrap
 
       function! FtMkd()
         " Enter a good mode to edit markdown tables.
@@ -1608,7 +1633,7 @@
 
     autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
-    autocmd BufNewFile,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
+    autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
     autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
 
   "#compile to executable languages
@@ -1630,7 +1655,7 @@
 
     autocmd FileType c,cpp,fortran,asm,s,java,haskell call FileTypeCpp()
     autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
-    autocmd BufNewFile,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+    autocmd BufNew,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
     " Because fortran has a max line length.
     autocmd FileType fortran setlocal shiftwidth=2 tabstop=2
 
@@ -2736,6 +2761,11 @@
 
       nnoremap v V
       nnoremap V v
+
+    " Inset an unicoede character:
+
+      "<c-v>u XX
+
   "#c
 
   "#m
@@ -4613,6 +4643,12 @@
 
   "#Events
 
+    " Most useful event for something that must happen on all files:
+
+      " BufNew,BufRead
+
+    " Or if you have a filetype recognizer, use `FileType`.
+
     " List all events:
 
       "help event
@@ -4625,7 +4661,7 @@
 
       " Trigerred by: `:tabnext`, `<C-W>l`
 
-      " Huge precedence.
+      " Huge precedence, and worst performance than `BufNew,BufRead` since run more often.
 
         "autocmd BufEnter * echo input('BufEnter')
 
@@ -4633,19 +4669,21 @@
 
       " File is read into buffer.
 
-      " Trigerred by: `:e`, `:tabopen`, `vim file`.
+      " Trigerred by: `:e`, `:tabopen`, `vim file` on existing files.
+
+      " Not trigerred for new files.
 
         "autocmd BufRead * echo input('BufRead')
 
     "#BufNew
 
-      " TODO vs `BufRead`?
+      " New buffer created. Des not need to be a file that did not exist on the filesystem like for `BufNewFile`.
 
         "autocmd BufNew * echo input('BufNew')
 
     "#BufNewFile
 
-      " File path that does not exist was created.
+      " Buffer for file path that does not exist was created.
 
         "autocmd BufNewFile * echo input('BufNewFile')
 
@@ -5854,19 +5892,19 @@
 
   "#verbose
 
-    " Verbose info on commands.
+    " Run a single command with a given 'verbose' option level.
 
-    " Often shows which file last set something!
+    " If the level is not given, `'verbose'` option level is set to `1`.
 
     " Very useful to debug.
 
-    " Maps:
+    " Show what `a` is mapped to for each mode, and from which file it was mapped:
 
-      "verb map a
+      " verbose map a
 
-    " Options:
+    " Analogous for options:
 
-      "verb set ft?
+      " verbose set filetype?
 
   "#plugins
 
@@ -5955,7 +5993,7 @@
 
     " Extension only detection:
 
-      "au BufRead,BufNewFile *.test set filetype=test
+      "au BufNew,BufReadFile *.test set filetype=test
 
     " Extension + shebang detection:
 
@@ -5964,7 +6002,7 @@
       "    set filetype=test
       "endif
       "endfunction
-      "autocmd BufRead,BufNewFile * call s:Ft()
+      "autocmd BufNew,BufReadFile * call s:Ft()
 
   "#default ftplugin sourcing
 

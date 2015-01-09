@@ -1,6 +1,11 @@
+; The only ones that we really need are those who use tab autocomplete:
+; use bash aliases like `gco` for all others as it saves the space and compress `git`
+; without requiring `alias g=git`.
 [alias]
-	st = status
-	exec = "!exec "
+	co = checkout
+	; Usage: `git sh pwd`.
+	; Command is always run from the toplevel.
+	sh = "!exec "
 	pushall = "!for i in `git remote`; do git push --all $i; done;"
 [color]
 	grep = auto
@@ -18,7 +23,9 @@
 	keepBackup = false
 	prompt = false
 ; less -r to wrap long lines.
+; TODO make diff-highlight fall back to regular diff if not found.
 [pager]
+	;diff = "if diff-highlight &>/tmp/git-diff.out; then cat /tmp/git-diff.out; else echo fail; fi | less -R"
 	diff = diff-highlight | less -R
 	log = diff-highlight | less -R
 	show = diff-highlight | less -R
