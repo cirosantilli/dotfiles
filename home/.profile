@@ -118,6 +118,12 @@ fi
   export MANPATH="/usr/local/texlive/2013/texmf-dist/doc/man:$MANPATH"
   export INFOPATH="/usr/local/texlive/2013/texmf-dist/doc/info:$INFOPATH"
 
-  export JAVA_JOME='/usr/lib/jvm/java-7-oracle'
+  export JAVA_HOME='/usr/lib/jvm/java-7-oracle'
+  #export CATALINA_HOME=''
+
+  # Not tracked in dotfiles.
+  if [ -r "$HOME/.profile_local" ]; then
+    . "$HOME/.profile_local"
+  fi
 
 #</ciro>
