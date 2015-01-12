@@ -139,13 +139,15 @@ parse_svn_repository_root() {
     alias fbr='find_basename_res.py'
     alias g='grep -E'
     alias gi='grep -Ei'
-    alias rmrf='rm -rf'
     alias fmmmr='find-music-make-m3u .'
     # GCC from String.
     # Usage: gccs '1 + 1'
     function gccs { echo "$2 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
     function gpps { echo "$2 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
+    alias ja='java'
+    alias jac='javac'
+    alias jav='java -version'
     alias md='mkdir'
     # Make Dir Cd
     function mdc { mkdir "$1" && cd "$1"; }
@@ -166,6 +168,7 @@ parse_svn_repository_root() {
     alias psg='sudo ps aux | grep -i'
     alias rbul='rename_basename_unidecode_lowercase.py'
     alias rifr='replace_in_files_regex.py'
+    alias rmrf='rm -rf'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     alias sha2="sha256sum"
     # Filter tex Errors only:

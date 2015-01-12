@@ -1556,7 +1556,7 @@
       autocmd BufNew,BufRead *.rst call MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
 
       " TODO this is broken still:
-      autocmd BufNew,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:sil ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
+      autocmd BufNew,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:silent ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
 
       " Make and open with firefox on curent point without a makefile.
       let s:out_dir = '_out'
@@ -1636,20 +1636,21 @@
     autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
     autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
 
-  "#compile to executable languages
+  "#Compile to executable languages
 
     "#c #c++ #cpp #haskell #lex #y #fortran #asm #s #java
 
     function! FileTypeCpp()
       call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
-      call MapAllBuff('<S-F5>', ':w<cr>:sil ! make clean<cr>')
+      call MapAllBuff('<S-F5>', ':w<cr>:silent ! make clean<cr>')
       " Make run, stdout to a new file. Stdout is only seen when program stops.
-      call MapAllBuff('<F6>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make run")<cr>')
+      " If your Makefile supports, runs `make run RUN=main` to run the current file like `main.c`,
+      call MapAllBuff('<F6>'  , ':w<cr>:call RedirStdoutNewTabSingle("make run RUN=\"" . expand("%:r") . "\"")<cr>')
       " Same as above, but may allows you to type in command line args.
-      call MapAllBuff('<S-F6>', ':w<cr>:cal RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
+      call MapAllBuff('<S-F6>', ':w<cr>:call RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
       call MapAllBuff('<F7>'  , ':cnext<cr>')
       call MapAllBuff('<F8>'  , ':cprevious<cr>')
-      call MapAllBuff('<F9>'  , ':w<cr>:cal RedirStdoutNewTabSingle("make profile")<cr>')
+      call MapAllBuff('<F9>'  , ':w<cr>:call RedirStdoutNewTabSingle("make profile")<cr>')
       call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
     endfunction
 
