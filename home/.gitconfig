@@ -1,21 +1,31 @@
-; The only ones that we really need are those who use tab autocomplete:
-; use bash aliases like `gco` for all others as it saves the space and compress `git`
-; without requiring `alias g=git`.
 [alias]
+	; The only ones that we really need are those who use tab autocomplete:
+	; use bash aliases like `gco` for all others as it saves the space and compress `git`
+	; without requiring `alias g=git`.
 	co = checkout
+	lo = log
+	; But sometimes we need others for workflows that have use multiple Git repositories
+	; and use scripts to do a command on all of them.
+	cm = commit
+	pl = pull
+	st = status
 	; Usage: `git sh pwd`.
 	; Command is always run from the toplevel.
 	sh = "!exec "
 	pushall = "!for i in `git remote`; do git push --all $i; done;"
+[branch]
+	autosetuprebase = always
 [color]
 	grep = auto
 	ui = auto
 [core]
+    autocrlf = input
+    whitespace = fix,-indent-with-non-tab,trailing-space
 	excludesfile = ~/.gitignore_global
 	quotepath = false
 	pager = less -r
 [credential]
-	helper = cache --timeout=900
+	helper = cache --timeout=3600
 [grep]
 	extendedRegexp = true
 	lineNumber = true
@@ -34,5 +44,5 @@
 [rerere]
 	enabled = 1
 [user]
-	email = ciro.santilli@gmail.com
+	email = csa@quartetfs.com
 	name = Ciro Santilli

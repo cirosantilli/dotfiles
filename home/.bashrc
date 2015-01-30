@@ -129,6 +129,11 @@ parse_svn_repository_root() {
     # Misc aliases.
 
     alias ack='ack-grep --smart-case'
+    # Beep. Notify after a long command. Usage:
+    # long-command;b
+    alias b='zenity --info --text "BEEP!"'
+    # TODO make a version that also cats the command and pwd.
+    #function b { "$@"; zenity --info --text "$*"; }
     alias l='less'
     # External IP.
     alias eip='curl ipecho.net/plain'
@@ -311,8 +316,13 @@ parse_svn_repository_root() {
 
     export GIT_EDITOR="$vim"
 
+		# Fails for aliases that autocomplete like `g co branch<tab>`,
+		# still does not expand.
+    #alias i='git'
     alias gad='git add -A'
     alias gadcm='git add -A . && git commit'
+    alias gadcman='git add . && gcman'
+    alias gadcmanpsf='git add . && gcmanpsf'
     alias gadcmm='git add -A . && git commit -m'
     alias gadcp='git add -A . && git commit && git push'
     function gadcmp { git add . && git commit -m "$1" && git push; }
@@ -332,8 +342,7 @@ parse_svn_repository_root() {
     alias gcma='git commit --amend'
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
-    alias gadcman='git add . && gcman'
-    alias gadcmanpsf='git add . && gcmanpsf'
+    alias gce='git clean'
     function gcmp { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
     alias gcob='git checkout -b'
@@ -345,6 +354,7 @@ parse_svn_repository_root() {
     alias gcou='git checkout up'
     alias gcn='git config'
     alias gcng='git config --global'
+    alias gcngh='git config user.email "ciro.santilli@gmail.com"'
     alias gcp='git cp'
     alias gcr='git cherry-pick'
     alias gdf='git diff'
@@ -387,6 +397,7 @@ parse_svn_repository_root() {
     alias gpsum='git push -u mine'
     alias gpsom='git push --tags -u origin master'
     alias gpl='git pull'
+    alias gplr='git pull --rebase'
     alias gplum='git pull up master'
     alias gplrum='git pull --rebase up master'
     alias gplom='git pull origin master'
@@ -565,9 +576,12 @@ parse_svn_repository_root() {
   ##maven
 
     alias mvc='mvn clean'
+    alias mvct='mvn clean test'
     alias mvci='mvn clean install'
     alias mvcis='mvn clean install -DskipTests'
     alias mvi='mvn install'
+    alias mvj='mvn javadoc:javadoc && firefox target/site/apidocs/index.html'
+    alias mvt='mvn test'
 
   ##npm
 

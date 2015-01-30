@@ -1666,7 +1666,8 @@
     autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
     autocmd BufNew,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
     " Because fortran has a max line length.
-    autocmd FileType fortran setlocal shiftwidth=2 tabstop=2
+    autocmd FileType fortran setlocal expandtab shiftwidth=2 tabstop=2
+    autocmd FileType java setlocal expandtab
 
   "#vimscript
 
@@ -2662,10 +2663,10 @@
 
       "nn :
 
-    "swap ';' and ':', dispensing shift to start commands:
+    " swap ';' and ':', dispensing shift to start commands:
 
-      nn ; :
-      nn : ;
+      noremap ; :
+      noremap : ;
 
     "noremap <c-;> asd
 
@@ -4254,9 +4255,7 @@
           endif
         endfunction
 
-        command! Wbwf call s:WipeBuffersWithoutFiles()
-
-      "call s:WipeBuffersWithoutFiles()
+        command! Wbwf call WipeBuffersWithoutFiles()
 
   "#scratch buffer
 
@@ -5712,6 +5711,14 @@
 
       ":pe $a = 'b'
       ":perldo s/$a(.)/c\1/g
+
+  "#retab
+
+    " Replace tabs with spaces on the current file using Vim settings.
+
+    	"%retab
+
+    " TODO understand precisely.
 
 "#quickfix #makeprg
 
