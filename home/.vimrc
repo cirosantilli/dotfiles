@@ -1599,7 +1599,7 @@
         "endfunction
         "command! -buffer TableFormat call s:TableFormat()
       endfunction
-      autocmd FileType mkd call FtMkd()
+      autocmd FileType mkd,markdown call FtMkd()
 
     "#latex #tex
 
@@ -3375,29 +3375,29 @@
 
 "#scope
 
-  "- `g`: global. This is the default scope, even inside functions.
+  "-  `g`: global. This is the default scope, even inside functions.
 
-  "- `s`:     local to current  script file
+  "-  `s`:     local to current  script file
 
-  "- `w`:               editor window
+  "-  `w`:               editor window
 
-  "- `t`:               editor tab
+  "-  `t`:               editor tab
 
-  "- `b`:               editor buffer
+  "-  `b`:               editor buffer
 
-    " Try:
+      " Try:
 
         "let b:buffer = 1
 
-    " Change buffers and:
+      " Change buffers and:
 
         "let b:buffer = 2
 
-    " Come back to first buffer and:
+      " Come back to first buffer and:
 
-      "if b:buffer != 1 | throw 'assertion failed' | end
+        "if b:buffer != 1 | throw 'assertion failed' | end
 
-  "- `l`: defined inside a function function.
+  "-  `l`: defined inside a function.
 
       "function! F()
         "let l:var = 1

@@ -402,6 +402,8 @@ parse_svn_repository_root() {
     alias grta='git remote add'
     alias grtao='git remote add origin'
     alias grtv='git remote -v'
+    alias grtr='git remote rename'
+    alias grtro='git remote rename origin'
     alias grtrou='git remote rename origin up && git remote add origin'
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
