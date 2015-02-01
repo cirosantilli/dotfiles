@@ -114,9 +114,9 @@
 
     " Concurrence to Pathogen. Seems to be winning.
 
-    " Use this! Easy install and plugin update via single vimrc lines + git or github repos.
+    " Use this! Easy install and plugin update via single vimrc lines + Git or GitHub repos.
 
-    " View all avaliable bundles (searches github?):
+    " View all avaliable bundles (searches GitHub?):
 
       "Plugins
 
@@ -1228,10 +1228,14 @@
 
   "#newline at end of file
 
-    " If `eol` and `binary` are on (default), Vim adds an <EOL> at the end of file if it does not have one already.
+    " If `eol` and `binary` are on, Vim adds an <EOL>
+    " at the end of file if it does not have one already.
     "
-    " `eol` is automatically set when opening a new file if it ends in <EOL>. Therefore, if `binary` is on,
-    " Vim maintains the file state.
+    " `eol` is automatically set when opening a new file if it ends in <EOL>.
+    " Therefore, if `binary` is on, Vim maintains the file state,
+    " which is what you should to.
+    "
+    " If `binary` is off, `eol` is not used.
     "
     " The downsides of having `binary` are that:
     "
@@ -1239,24 +1243,28 @@
     "
     "     Workaround: `!truncate -1 %` (-2 on Windows...)
     "
-    " -   if you forget to set the default behavior for new files to match the projects standards, you may break them.
-    "     and there will be no immediate visual indiation of that (except for `git diff`).
+    " -   if you forget to set the default behavior for new files
+    "     to match the projects standards, you may break them
+    "     and there will be no immediate visual indiation of that
+    "     (except for `git diff`).
     "
-    "     Workaround: never create, always copy existing files, or use a local vimrc that sets binary.
+    "     Workaround: never create, always copy existing files,
+    "     or use a local vimrc that sets binary.
     "
-    " -   it is confusing for the initiates
+    " -   it is confusing for new Vim users.
     "
     " If you keep the default magic you have the upside that:
     "
-    " -   don't have to worry about different per project / per file type conventions.
+    " -   don't have to worry about different per project
+    "     / per file type conventions.
     "
-    " We feel that this default was a good design choice by Vim,
+    " This default is a good design choice by Vim,
     " specially once you understand that there is magic going on.
     "
-    " When you open a non-empty file that does not end in a newline, it shows [noeol] on the status line.
-    " You can see this anytime by doing `e`.
+    " When you open a non-empty file that does not end in a newline,
+    " it shows [noeol] on the status line. You can see this anytime by doing `e`.
 
-    "set binary
+    set binary
 
   "#Binary file edit
 

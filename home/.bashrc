@@ -564,6 +564,13 @@ parse_svn_repository_root() {
     alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
     alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
 
+  ##maven
+
+    alias mvc='mvn clean'
+    alias mvci='mvn clean install'
+    alias mvcis='mvn clean install -DskipTests'
+    alias mvi='mvn install'
+
   ##npm
 
     alias npmi='npm install'
