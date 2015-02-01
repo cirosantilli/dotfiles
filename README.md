@@ -12,26 +12,6 @@ Add new file:
     ln ~/.new-file .
     git add new-file
 
-There is no currently automation for files in subdirectories of home, but we want to implement it.
-
-## Reverse
-
-If you:
-
-- want to use this for you own dotfiles
-- deleted this repo and now want to push your files
-
-all you have to do is:
-
-    git clone https://github.com/cirosantilli/dotfiles
-    rm -rf .git
-    git init
-    ./install.sh -r
-    git add .
-    git commit -m 'Init.'
-
-and the files under `home/` will be replaced by hard links to the ones in your home.
-
 ## root
 
 The `root/` directory contains files whose path is relative to the root `/`.

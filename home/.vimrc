@@ -1,4 +1,4 @@
-"#functions and #commands
+"#Functions and #commands
 
   " Executes shell cmd and redirects output to a new unnammed buffer in
   " a new tab next to the current one.
@@ -99,6 +99,8 @@
     silent! execute a:line1 . ',' . a:line2 . 's/\v^\s+([^#])/  \1/'
   endfunction
   command! -range=% -nargs=? CodeToMd call CodeToMd(<line1>, <line2>, <f-args>)
+
+  command! Chmodx !chmod +x %
 
 "#plugins
 
