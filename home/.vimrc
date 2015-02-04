@@ -46,7 +46,7 @@
       " Store its number.
       let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
     end
-    execute 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
+    execute 'silent ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
   endfunction
 
   function! EchoReadable()
@@ -99,6 +99,8 @@
     silent! execute a:line1 . ',' . a:line2 . 's/\v^\s+([^#])/  \1/'
   endfunction
   command! -range=% -nargs=? CodeToMd call CodeToMd(<line1>, <line2>, <f-args>)
+
+  command! Chmodx !chmod +x %
 
 "#plugins
 
@@ -1509,11 +1511,13 @@
 
     endif
 
+"#Filetype spefic
+
 "#Language spefic
 
   " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
 
-  " #data languages
+  " #Data languages
 
     " #html, #xml
 
@@ -1554,7 +1558,7 @@
 
       autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 
-  "#compilable markup
+  "#Compilable markup
 
     "#md #rst
 
@@ -1686,6 +1690,10 @@
 
     " Save and source current script:
     autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>
+
+  "#Configuration files
+
+    autocmd BufNew,BufRead .gitconfig setlocal noexpandtab
 
   "#quickfix
 

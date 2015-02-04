@@ -1,11 +1,13 @@
 [alias]
 	; The only ones that we really need are those who use tab autocomplete:
 	; use bash aliases like `gco` for all others as it saves the space and compress `git`
-	; without requiring `alias g=git`.
-	co = checkout
-	lo = log
+	; without requiring `alias g=git`. Using aliases for git like `alias g='git'` does not work either.
+	a = add
+	c = checkout
+	l = log
 	; But sometimes we need others for workflows that have use multiple Git repositories
 	; and use scripts to do a command on all of them.
+	cl = clone
 	cm = commit
 	pl = pull
 	st = status
@@ -19,8 +21,8 @@
 	grep = auto
 	ui = auto
 [core]
-    autocrlf = input
-    whitespace = fix,-indent-with-non-tab,trailing-space
+	autocrlf = input
+	whitespace = fix,-indent-with-non-tab,trailing-space
 	excludesfile = ~/.gitignore_global
 	quotepath = false
 	pager = less -r
@@ -42,7 +44,11 @@
 [push]
 	default = current
 [rerere]
-	enabled = 1
+	enabled = true
+[status]
+	short = true
 [user]
 	email = csa@quartetfs.com
 	name = Ciro Santilli
+[pull]
+	rebase = true

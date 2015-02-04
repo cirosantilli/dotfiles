@@ -114,7 +114,7 @@ parse_svn_repository_root() {
 
 #<custom>
 
-  ##variables
+  ## variables
 
     # Variables that are required by multiple following commands.
     # Must come before everything else.
@@ -124,7 +124,7 @@ parse_svn_repository_root() {
       vim="gvim -v"
     fi
 
-  ##alias
+  ## alias
 
     # Misc aliases.
 
@@ -134,7 +134,8 @@ parse_svn_repository_root() {
     alias b='zenity --info --text "BEEP!"'
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
-    alias l='less'
+    # -r so that ANSI color will be shown.
+    alias l='less -r'
     # External IP.
     alias eip='curl ipecho.net/plain'
     alias cla11='clang++ -std=c++11'
@@ -152,6 +153,8 @@ parse_svn_repository_root() {
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     alias ja='java'
     alias jac='javac'
+    alias jaj='java -jar'
+    alias jartf='jar -tf'
     alias jav='java -version'
     alias md='mkdir'
     # Make Dir Cd
@@ -175,7 +178,9 @@ parse_svn_repository_root() {
     alias rifr='replace_in_files_regex.py'
     alias rmrf='rm -rf'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
-    alias sha2="sha256sum"
+    # Source Bashrc.
+    alias sb='. ~/.bashrc'
+    alias sha2='sha256sum'
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
     alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
@@ -195,12 +200,12 @@ parse_svn_repository_root() {
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
 
-    ##Provision machines
+    ## Provision machines
 
       alias provision-min-ssh='wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash'
       alias provision-min='wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-ssh.sh | bash'
 
-  ##aptitude
+  ## aptitude
 
       alias acse='apt-cache search'
       alias acde='apt-cache depends'
@@ -214,7 +219,7 @@ parse_svn_repository_root() {
       alias saip='sudo aptitude purge'
       function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
 
-  ##Bash options
+  ## Bash options
 
     # Bash set or shopt options.
 
@@ -225,13 +230,13 @@ parse_svn_repository_root() {
 
     shopt -s checkwinsize
 
-  ##ctags
+  ## ctags
 
       alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
 
-  ##dirs
+  ## dirs
 
-    ##bookmarks
+    ## bookmarks
 
       # These will open krusader where I want.
 
@@ -257,7 +262,7 @@ parse_svn_repository_root() {
 
       alias krusd='krusader "/usr/share/doc/"'
 
-    ##ls
+    ## ls
 
       alias ls='ls -1 --color=auto --group-directories-first'
       alias lsa='ls -A'
@@ -267,7 +272,7 @@ parse_svn_repository_root() {
       alias llas='ls -a -h -l | sort -k5hr' #by Size
       alias lsg='ls | grep -Ei'
 
-  ##docker
+  ## docker
 
     alias sdo='sudo docker'
     alias sdob='sudo docker build'
@@ -282,7 +287,7 @@ parse_svn_repository_root() {
     alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
     alias sdos='sudo docker stop'
 
-  ##export
+  ## export
 
     # MISC exports.
 
@@ -292,7 +297,7 @@ parse_svn_repository_root() {
     # OSX
     export CLICOLOR=1
 
-    ##PS1
+    ## PS1
 
       # Set variable identifying the chroot you work in (used in the prompt below).
       if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
@@ -312,7 +317,7 @@ parse_svn_repository_root() {
       # Add git and svn branch names
       export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
-  ##git
+  ## Git
 
     export GIT_EDITOR="$vim"
 
@@ -437,12 +442,12 @@ parse_svn_repository_root() {
       alias gpsbr='gps && git browse-remote'
       alias gcmanpsfbr='gcmanpsf && git browse-remote'
 
-  ##gitlab elearn ssh
+  ## gitlab elearn ssh
 
     alias sugqa='ssh ubuntu@gitlab-elearn-qa'
     alias sugpr='ssh ubuntu@gitlab-elearn-prod'
 
-  ##grunt
+  ## grunt
 
     alias gru='grunt'
     alias gruc='grunt clean'
@@ -451,7 +456,7 @@ parse_svn_repository_root() {
     alias grut='grunt test'
     alias gruw='grunt watch'
 
-  ##heroku
+  ## heroku
 
     alias hrk='heroku'
     alias hrkc='heroku create'
@@ -459,7 +464,7 @@ parse_svn_repository_root() {
     alias hrkr='heroku run'
     alias gphm='git push heroku master'
 
-  ##make
+  ## make
 
     alias mk='make'
     alias mkc='make clean'
@@ -481,16 +486,16 @@ parse_svn_repository_root() {
 
     # From Git root:
 
-      alias gmk='cd `git rev-parse --show-toplevel` && make'
-      alias gmkc='cd `git rev-parse --show-toplevel` && make clean'
-      alias gmkd='cd `git rev-parse --show-toplevel` && make dist'
-      alias gmkr='cd `git rev-parse --show-toplevel` && make run'
-      alias gmkt='cd `git rev-parse --show-toplevel` && make test'
+      alias gmk='git !exec make'
+      alias gmkc='git !exec make clean'
+      alias gmkd='git !exec make dist'
+      alias gmkr='git !exec make run'
+      alias gmkt='git !exec make test'
 
       alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
       alias cmkt='cmk && ctest -V .'
 
-  ##mass regex operations
+  ## mass regex operations
 
     # Mass Regex Refactor.
     #
@@ -554,7 +559,7 @@ parse_svn_repository_root() {
     # Mass rename refactoring.
     alias mvr='move_regex.py'
 
-  ##mysql
+  ## mysql
 
     alias myr='mysql -u root -p'
 
@@ -566,37 +571,45 @@ parse_svn_repository_root() {
     #'
     alias myt='mysql -u a -h localhost -pa a' #MYsql Test
 
-  ##music
+  ## music
 
     alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
     alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
     alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
     alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
 
-  ##maven
+  ## Maven
 
+    alias mva='mvn assembly:single'
     alias mvc='mvn clean'
+    alias mvca='mvn clean assembly:single'
+    alias mvcca='mvn clean compile assembly:single'
+    alias mvccej='mvn clean compile exec:java'
     alias mvct='mvn clean test'
     alias mvci='mvn clean install'
     alias mvcis='mvn clean install -DskipTests'
+    alias mvej='mvn exec:java'
     alias mvi='mvn install'
-    alias mvj='mvn javadoc:javadoc && firefox target/site/apidocs/index.html'
+    alias mvj='mvn javadoc:javadoc'
+    alias mvjo='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
+    alias mvo='mvn compile'
+    alias mvp='mvn package'
     alias mvt='mvn test'
 
-  ##npm
+  ## npm
 
     alias npmi='npm install'
     alias npmis='npm install --save'
     alias npmisd='npm install --save-dev'
 
-  ##power
+  ## power
 
     alias pmhi='sudo ps-hibernate'
     alias pmsh='sudo shutdown'
     alias pmsu='sudo ps-suspend'
     alias pmre='sudo reboot'
 
-  ##python
+  ## python
 
     export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
@@ -607,32 +620,32 @@ parse_svn_repository_root() {
     alias pyserve='python -m SimpleHTTPServer'
     alias pydoc='python -m doctest'
 
-    ##pip
+    ## pip
 
       alias spii='sudo pip install'
       alias spiu='sudo pip uninstall'
       alias pise='pip search'
       alias pifr='pip freeze'
 
-    ##django
+    ## django
 
       alias dmrs='./manage.py runserver' #Django Manage Run Server
       alias dmds='./manage.py dbshell' #Db Shell
       alias dmsd='./manage.py syncdb' #Sync Db
       alias dmcs='echo "yes" | ./manage.py collectstatic' #Collect Static
 
-      ##south
+      ## south
 
         alias dmscts='./manage.py convert_to_south'
         alias dmssi='./manage.py schemamigration --initial'
         alias dmssa='./manage.py schemamigration --auto'
 
-  ##rake
+  ## rake
 
     alias rk='rake'
     alias rkc='rake clean'
 
-  ##rails
+  ## rails
 
     alias rdcm='rake db:drop db:migrate'
     alias be='bundle exec'
@@ -655,7 +668,7 @@ parse_svn_repository_root() {
     alias ras='bundle exec rails server'
     alias rasp='bundle exec rails server -p4000'
 
-  ##services
+  ## services
 
     function sso { sudo service "$1" stop ; }
     function ssr { sudo service "$1" restart ; }
@@ -665,11 +678,11 @@ parse_svn_repository_root() {
     alias ssar='sudo service apache2 restart'
     alias sslr='sudo service lightdm restart'
 
-  ##update-rc.d
+  ## update-rc.d
 
     function surd { sudo update-rc.d "$1" disable; }
 
-  ##vagrant
+  ## vagrant
 
     alias vde='vagrant destroy'
     alias vdef='vagrant destroy -f'
@@ -681,7 +694,7 @@ parse_svn_repository_root() {
     alias vups='vagrant up && vagrant ssh'
     alias vus='vagrant up --no-provision && vagrant ssh'
 
-  ##vim
+  ## vim
 
     alias vim="$vim"
     # osx vim
@@ -689,7 +702,7 @@ parse_svn_repository_root() {
       PATH="/Applications/MacVim.app/Contents/MacOS/:${PATH}"
     fi
 
-  ##source lines and path modifications
+  ## source lines and path modifications
 
     # Should come at the end.
 
@@ -700,7 +713,7 @@ parse_svn_repository_root() {
         . '/etc/bash_completion'
     fi
 
-    ##GCE
+    ## GCE
     if [ -d "$HOME/google-cloud-sdk" ]; then
       # The next line updates PATH for the Google Cloud SDK.
       . "$HOME/google-cloud-sdk/path.bash.inc"
@@ -708,12 +721,12 @@ parse_svn_repository_root() {
       . "$HOME/google-cloud-sdk/completion.bash.inc"
     fi
 
-    ##Heroku Toolbelt
+    ## Heroku Toolbelt
     export PATH="/usr/local/heroku/bin:$PATH"
 
-    ##node
+    ## node
 
-      ##NVM
+      ## NVM
       if [ -r "$HOME/.nvm/nvm.sh" ]; then
         . "$HOME/.nvm/nvm.sh" &>'/dev/null'
         nvm use '0.10.26' &>'/dev/null'
@@ -722,7 +735,7 @@ parse_svn_repository_root() {
       # Use local executables at correct version.
       export PATH="./node_modules/.bin:$PATH"
 
-    ##RVM
+    ## RVM
     if [ -r "$HOME/.rvm/scripts/rvm" ]; then
       # Load RVM into a shell session *as a function*
       . "$HOME/.rvm/scripts/rvm"
