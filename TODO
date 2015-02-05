@@ -1,0 +1,3 @@
+# TODO
+
+- use symlinks instead of hard. Git destroys hardlinks, and works across partitions for mounted home.

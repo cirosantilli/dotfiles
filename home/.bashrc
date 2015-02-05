@@ -129,6 +129,7 @@ parse_svn_repository_root() {
     # Misc aliases.
 
     alias ack='ack-grep --smart-case'
+    alias c='cd'
     alias l='less'
     # External IP.
     alias eip='curl ipecho.net/plain'
@@ -189,6 +190,9 @@ parse_svn_repository_root() {
     function xselssh { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
+    # Usage: unizipd d.zip
+    # Outcome: unzips the content of `a.zip` into a newly created `d` directory
+    function unzipd { unzip -d "${1%.*}" "$1"; }
 
     ##Provision machines
 
@@ -365,15 +369,18 @@ parse_svn_repository_root() {
     alias ggi='git grep --color -i'
     alias gka='gitk --all'
     alias gin='git init'
-    alias ginac='git init && git add . && git commit -m 'Init.'' # Init Add Commit
+    # Init Add Commit
+    alias ginac='git init && git add . && git commit -m "init"'
     alias gls='git ls-files'
     alias glso='git ls-files --other'
     alias glsg='git ls-files | grep'
     alias glsr='git ls-remote'
     alias glo='git log'
     alias glog='git log --all --abbrev-commit --decorate --graph'
-    alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline' # One line
-    alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline' # One line Graph
+    # One line
+    alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
+    # One line Graph
+    alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
     #alias glop='git log --pretty=oneline --decorate'
     alias glop='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
     alias gme='git merge'
