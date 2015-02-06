@@ -1265,8 +1265,10 @@
     "
     " When you open a non-empty file that does not end in a newline,
     " it shows [noeol] on the status line. You can see this anytime by doing `e`.
+    "
+    " Setting binary automatically sets some other options, e.g. `expandtab` to off.
 
-    set binary
+			set nobinary
 
   "#Binary file edit
 

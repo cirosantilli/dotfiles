@@ -132,6 +132,10 @@ parse_svn_repository_root() {
     # Beep. Notify after a long command. Usage:
     # long-command;b
     alias b='zenity --info --text "BEEP!"'
+    alias c='cd'
+    function cdl { cd "$1" && ls; }
+    # cd Up
+    alias cdu='cd ..'
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
     # -r so that ANSI color will be shown.
@@ -179,7 +183,7 @@ parse_svn_repository_root() {
     alias rmrf='rm -rf'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
-    alias sb='. ~/.bashrc'
+    alias s='. ~/.bashrc'
     alias sha2='sha256sum'
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
@@ -354,6 +358,8 @@ parse_svn_repository_root() {
     function gcobm { git checkout -b "$1" master; }
     alias gcod='git checkout --conflict=diff3'
     alias gcom='git checkout master'
+    # Slash Dot
+    alias gcosd='git checkout -- .'
     alias gcoo='git checkout --ours'
     alias gcot='git checkout --theirs'
     alias gcou='git checkout up'
