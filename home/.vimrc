@@ -46,7 +46,7 @@
       " Store its number.
       let g:guakeTab = substitute(system('guake -g 2>/dev/null'), '[\n\r]', '', 'g')
     end
-    execute 'sil ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
+    execute 'silent ! guake -s ' . g:guakeTab . ' && guake -e cd ' . expand("%:p:h") . ' && guake -e ' . a:cmd . ' && guake -t'
   endfunction
 
   function! EchoReadable()
@@ -1265,8 +1265,10 @@
     "
     " When you open a non-empty file that does not end in a newline,
     " it shows [noeol] on the status line. You can see this anytime by doing `e`.
+    "
+    " Setting binary automatically sets some other options, e.g. `expandtab` to off.
 
-    set binary
+			set nobinary
 
   "#Binary file edit
 
@@ -1511,11 +1513,13 @@
 
     endif
 
+"#Filetype spefic
+
 "#Language spefic
 
   " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
 
-  " #data languages
+  " #Data languages
 
     " #html, #xml
 
@@ -1556,7 +1560,7 @@
 
       autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 
-  "#compilable markup
+  "#Compilable markup
 
     "#md #rst
 
@@ -1688,6 +1692,10 @@
 
     " Save and source current script:
     autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>
+
+  "#Configuration files
+
+    autocmd BufNew,BufRead .gitconfig setlocal noexpandtab
 
   "#quickfix
 
