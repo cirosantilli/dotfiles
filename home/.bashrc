@@ -483,6 +483,7 @@ parse_svn_repository_root() {
   ## homesick
 
     alias hs='homesick'
+    alias hscd='homesick cd'
     alias hsc='homesick commit'
     alias hsd='homesick diff'
     alias hsh='homesick help'
