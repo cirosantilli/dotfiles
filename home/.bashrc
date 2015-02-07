@@ -139,6 +139,7 @@ parse_svn_repository_root() {
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
     alias c='cd'
+    alias chmx='chmod +x'
     # -r so that ANSI color will be shown.
     alias l='less -r'
     # External IP.
@@ -478,6 +479,16 @@ parse_svn_repository_root() {
     alias hrko='heroku open'
     alias hrkr='heroku run'
     alias gphm='git push heroku master'
+
+  ## homesick
+
+    alias hs='homesick'
+    alias hsc='homesick commit'
+    alias hsd='homesick diff'
+    alias hsh='homesick help'
+    alias hsp='homesick pull'
+    alias hsu='homesick push'
+    alias hst='homesick track'
 
   ## make
 
