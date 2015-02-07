@@ -1,2 +1,3 @@
-.vim
 bin
+.vim/spell
+.vim/snippets
