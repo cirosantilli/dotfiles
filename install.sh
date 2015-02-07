@@ -2,12 +2,9 @@
 
 set -eu
 
-ORIGIN_DIR='home'
+SOURCE_DIR='home'
+SOURCE_DIR="$(cd "$(dirname "$SOURCE_DIR")"; pwd)/$(basename "$SOURCE_DIR")"
 BACKUP_SUFFIX='.dotfiles.bak'
 
-cd "$ORIGIN_DIR"
-for FILE in $(ls -A); do
-  ORIGIN="$FILE"
-  DEST="$HOME"
-  cp -blr --parents -S "$BACKUP_SUFFIX" "$ORIGIN" "$DEST"
-done
+echo cp -brs --parents -S "$BACKUP_SUFFIX" "$SOURCE_DIR"/* "$SOURCE_DIR"/.* "$HOME"
+cp -brs --parents -S "$BACKUP_SUFFIX" "$SOURCE_DIR"/* "$SOURCE_DIR"/.* "$HOME"
