@@ -356,6 +356,7 @@ parse_svn_repository_root() {
 		# still does not expand.
     #alias i='git'
     alias gad='git add -A'
+    alias gada='git add -A .'
     alias gadcm='git add -A . && git commit'
     alias gadcman='git add . && gcman'
     alias gadcmanpsf='git add . && gcmanpsf'
@@ -763,9 +764,9 @@ ${UBUNTU_DIR}
       sync-dirs | while read path; do
         printf "\n## $path\n\n"
         cd "$path"
-        git add .
+        git add -A .
         git commit -m "$(sync-msg)"
-        git push
+        git push -q
       done
     }
 
