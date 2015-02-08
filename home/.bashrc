@@ -761,7 +761,7 @@ ${UBUNTU_DIR}
       homesick commit dotfiles "$(sync-msg)"
       homesick push
       sync-dirs | while read path; do
-        echo "\n## $path\n\n"
+        printf "\n## $path\n\n"
         cd "$path"
         git add .
         git commit -m "$(sync-msg)"
