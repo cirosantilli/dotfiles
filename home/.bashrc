@@ -368,7 +368,8 @@ parse_svn_repository_root() {
     alias gbr='git branch'
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
     alias gbra='git branch -a'
-    alias gbrg='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration' # BRanch Graph
+    # BRanch Graph
+    alias gbrg='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
     alias gclb='git clone --bare'
@@ -746,6 +747,7 @@ parse_svn_repository_root() {
 
     function sync-dirs {
       printf "\
+${ART_DIR}
 ${BASH_DIR}
 ${JAVA_DIR}
 ${LINUX_DIR}
@@ -766,7 +768,7 @@ ${UBUNTU_DIR}
         cd "$path"
         git add -A .
         git commit -m "$(sync-msg)"
-        git push -q
+        git push
       done
     }
 

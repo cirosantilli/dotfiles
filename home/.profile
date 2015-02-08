@@ -33,6 +33,7 @@ fi
 
     export BAK_DIR="$HOME/bak"
       export PROGRAM_DIR="$BAK_DIR/git"
+        export ART_DIR="$PROGRAM_DIR/art"
         export ASSEMBLER_DIR="$PROGRAM_DIR/assembler"
         export BASH_DIR="$PROGRAM_DIR/bash-cheat"
         export CPP_DIR="$PROGRAM_DIR/cpp/cheat"

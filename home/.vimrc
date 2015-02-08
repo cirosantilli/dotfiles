@@ -1,4 +1,7 @@
-autocmd!
+" TODO why does this break things?
+" I wish I could use it to avoid having one per augroup block.
+
+"autocmd!
 
 " # Functions
 
@@ -106,8 +109,9 @@ autocmd!
 
 " # Commands
 
-  command! Eg tab drop ~/.gitconfig
   command! Eb tab drop ~/.bashrc
+  command! Eg tab drop ~/.gitconfig
+  command! Ep tab drop ~/.profile
   command! Ev tab drop ~/.vimrc
 
 " # Plugins
@@ -130,7 +134,7 @@ autocmd!
 
       "Plugins
 
-    " # install plugin
+    " # Install plugin
 
       " Add to `.vimrc`:
 
@@ -1536,7 +1540,10 @@ autocmd!
   " Autosave every N miliseconds or when losing focus.
 
     set updatetime=1000
-    autocmd CursorHoldI,CursorHold,BufLeave silent! :update
+    augroup AutoSave
+        autocmd!
+        autocmd! CursorHoldI,CursorHold,BufLeave * silent! :update
+    augroup END
 
 " # Filetype spefic
 
@@ -1544,9 +1551,11 @@ autocmd!
 
   " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
 
-  " #Data languages
+  " # Data languages
 
-    " #html, #xml
+  " # html
+
+  " # xml
 
       autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
       autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
@@ -1569,11 +1578,15 @@ autocmd!
       endfunction
       autocmd FileType html call FtHtml()
 
-    " #css family
+    " # CSS family
 
       autocmd BufNew,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
 
-    " #javascript #js #coffee
+    " # JavaScript
+
+    " # js
+
+    " # CoffeeScript
 
       autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
       autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
@@ -1581,13 +1594,15 @@ autocmd!
       autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
       autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
 
-    " #yaml
+    " # YAML
 
       autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
 
   " # Compilable markup
 
-    " # md #rst
+    " # md
+
+    " # rst
 
       "autocmd FileType *.md setlocal shiftwidth=4 tabstop=4
       autocmd BufNew,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
@@ -1677,7 +1692,25 @@ autocmd!
 
   " # Compile to executable languages
 
-    " # c #c++ #cpp #haskell #lex #y #fortran #asm #s #java
+    " # C
+
+    " # C++
+
+    " # cpp
+
+    " # Haskell
+
+    " # lex
+
+    " # y
+
+    " # Fortran
+
+    " # asm
+
+    " # s
+
+    " # Java
 
     function! FileTypeCpp()
       call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
@@ -1710,13 +1743,13 @@ autocmd!
       tabdo e
       set confirm
     endfunction
-    autocmd FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:sil call ReloadVisible()<cr>
+    autocmd FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:silent call ReloadVisible()<cr>
 
     " Write all buffers, source this vimrc, and reaload open
     " buffers so that changes in vimrc are applied:
 
     " Save and source current script:
-    autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>
+    autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>:e<cr>
 
   " # Configuration files
 
@@ -2683,7 +2716,7 @@ autocmd!
 
       noremap L $
 
-    " # TODO make this a motion so I can `yL` to yank
+    " TODO make this a motion so I can `yL` to yank
 
       "function! MoveRight()
         "normal! $
@@ -2691,7 +2724,9 @@ autocmd!
 
       "nn L :set opfunc=MoveRight<CR>g@
 
-  " # ; #:
+  " # ;
+
+  " # :
 
     " Repeat last f, F, t or T (like n,N)
 
@@ -4205,6 +4240,14 @@ autocmd!
 
       " sb 1
 
+    " Unlike `b`, can be configured to use existing buffers open in windows
+    " with `switchbuf`, much like `drop` does for `edit`.
+
+  " # drop
+
+    " Like `edit`, but focuses on an existing window
+    " if any already contains the file opened.
+    
   " # bunload
 
     " Unload current but don't remove it from buffer list.
@@ -6274,7 +6317,7 @@ autocmd!
 
       " :tn
       " :tp
- 
+
     " If there is more than one tag, show a tag list, else jump:
 
       " g <c-]>
