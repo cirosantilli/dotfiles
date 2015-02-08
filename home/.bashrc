@@ -748,7 +748,7 @@ parse_svn_repository_root() {
     }
 
     function sync-msg {
-      echo "sync $(date --rfc-3339=seconds)"
+      echo 'sync'
     }
 
     function sync-push {
