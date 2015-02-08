@@ -740,15 +740,34 @@ parse_svn_repository_root() {
 
     # Synchronize my computers.
 
-    # No automatic operations e.g. Dropbox: only explicit push and pulls.
+    # No automatic operations e.g. Dropbox:
+    # only explicit Git pushes and pulls.
 
     function sync-dirs {
-      echo "$LINUX_DIR\n"
+      echo "$JAVA_DIR\n$LINUX_DIR\n"
+    }
+
+    function sync-msg {
+      echo "sync $(date)"
     }
 
     function sync-push {
-      homesick commit -m
+      homesick commit dotfiles "$(sync-msg)"
       homesick push
+      sync-dirs | while read path; do
+        cd "$path"
+        git add .
+        git commit -m "$(sync-msg)"
+        git push
+      done
+    }
+
+    function sync-pull {
+      homesick pull
+      sync-dirs | while read path; do
+        cd "$path"
+        git pull
+      done
     }
 
   ## update-rc.d

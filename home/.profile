@@ -39,7 +39,7 @@ fi
       export DEVBIN="$PROGRAM_DIR/devbin"
       export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
       export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
-      export JAVA_DIR="$PYTHON_DIR/python/cheat/"
+      export JAVA_DIR="$PYTHON_DIR/java-cheat/"
       export PYTHON_DIR="$PYTHON_DIR/python/cheat/"
       export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
       export WEB_DIR="$PROGRAM_DIR/cirosantilli.com/web"
@@ -111,7 +111,7 @@ fi
 
   # For VM SSH development as git user so I can run X programs:
 
-    xhost +
+    xhost + &>/dev/null
 
   # Not tracked in dotfiles.
 
