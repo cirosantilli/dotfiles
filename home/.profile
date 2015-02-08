@@ -39,8 +39,10 @@ fi
       export DEVBIN="$PROGRAM_DIR/devbin"
       export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
       export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
-      export JAVA_DIR="$PYTHON_DIR/java-cheat/"
-      export PYTHON_DIR="$PYTHON_DIR/python/cheat/"
+      export JAVA_DIR="$PROGRAM_DIR/java-cheat/"
+      export PYTHON_BASE_DIR="$PROGRAM_DIR/python"
+        export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath/"
+        export PYTHON_DIR="$PYTHON_BASE_DIR/cheat/"
       export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
       export WEB_DIR="$PROGRAM_DIR/cirosantilli.com/web"
     export TEST_DIR="~/test"
@@ -55,7 +57,6 @@ fi
 
     # Before:
 
-      PATH="$PATH:$PYTHON_BIN_DIR"
       PATH="$PATH:$LATEX_BIN_DIR"
       # Linux from scratch home.
       export LFS=/media/lfs/
