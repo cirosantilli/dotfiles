@@ -128,6 +128,7 @@ parse_svn_repository_root() {
 
     # Misc aliases.
 
+    alias a='cat'
     alias ack='ack-grep --smart-case'
     # Beep. Notify after a long command. Usage:
     # long-command;b
@@ -143,11 +144,22 @@ parse_svn_repository_root() {
     # -r so that ANSI color will be shown.
     alias l='less -r'
     # External IP.
+    # DropBox Symlink. Move the given file into Dropbox,
+    # and symlink to it from the old location.
+    function dbs {
+      src="$1"
+      path="$(readlink -f "$src")"
+      dest="$(dirname "$HOME/Dropbox/home/${path#$HOME}")"
+      mkdir -p "$dest"
+      mv "$src" "$dest"
+      ln -s "$dest/$src" "$src"
+    }
     alias eip='curl ipecho.net/plain'
     alias cla11='clang++ -std=c++11'
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
+    alias e='echo'
     alias fbr='find_basename_res.py'
     alias g='grep -E'
     alias gi='grep -Ei'
@@ -162,6 +174,7 @@ parse_svn_repository_root() {
     alias jaj='java -jar'
     alias jartf='jar -tf'
     alias jav='java -version'
+    alias m='man'
     alias md='mkdir'
     # Make Dir Cd
     function mdc { mkdir "$1" && cd "$1"; }
@@ -177,7 +190,12 @@ parse_svn_repository_root() {
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
-    alias rmd='sleep 2 && playa && recordmydesktop --stop-shortcut 'Control+Mod1+z''
+    alias rmd='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
+    alias rl='readlink'
+    alias rlf='readlink -f'
+    # Remove a symlink, and move the file linked to to the symlink location.
+    # Usage: cmd symlink-location
+    function expand-move-symlink { path="$(readlink -f "$1";)" && rm "$1" && mv "$path" .; }
     alias pingg='ping google.com'
     alias psg='sudo ps aux | grep -i'
     alias rbul='rename_basename_unidecode_lowercase.py'
@@ -199,9 +217,10 @@ parse_svn_repository_root() {
     alias vrmm='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
     function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
+    alias x='xsel --clipboard'
+    alias y='xsel'
     alias xar="xargs -I'{}'"
     alias xar0="xargs -0I'{}'"
-    alias xselb='xsel --clipboard'
     function xselssh { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
@@ -276,12 +295,14 @@ parse_svn_repository_root() {
       alias ls='ls -1 --color=auto --group-directories-first'
       alias lsa='ls -A'
       alias ll='ls -hl'
-      alias lls='ls -hl | sort -k5hr' #by Size
+      # By Size
+      alias lls='ls -hl | sort -k5hr'
       alias lla='ll -A'
-      alias llas='ls -a -h -l | sort -k5hr' #by Size
+      # By Size
+      alias llas='ls -a -h -l | sort -k5hr'
       alias lsg='ls | grep -Ei'
 
-  ## docker
+  ## Docker
 
     alias sdo='sudo docker'
     alias sdob='sudo docker build'
@@ -373,6 +394,7 @@ parse_svn_repository_root() {
     alias gcngh='git config user.email "ciro.santilli@gmail.com"'
     alias gcp='git cp'
     alias gcr='git cherry-pick'
+    alias gd='git diff'
     alias gdf='git diff'
     function gdf12 { git diff ":1:./$1" ":2:./$1"; }
     function gdf13 { git diff ":1:./$1" ":3:./$1"; }
@@ -414,7 +436,8 @@ parse_svn_repository_root() {
     alias gps='git push'
     alias gpsf='git push -f'
     alias gpsum='git push -u mine'
-    alias gpsom='git push --tags -u origin master'
+    alias gpsu='git push -u'
+    alias gpsuom='git push -u origin master'
     alias gpl='git pull'
     alias gplr='git pull --rebase'
     alias gplum='git pull up master'
@@ -488,6 +511,7 @@ parse_svn_repository_root() {
     alias hsd='homesick diff'
     alias hsh='homesick help'
     alias hsp='homesick pull'
+    alias hss='homesick status'
     alias hsu='homesick push'
     alias hst='homesick track'
 
