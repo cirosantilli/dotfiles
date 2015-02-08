@@ -744,7 +744,13 @@ parse_svn_repository_root() {
     # only explicit Git pushes and pulls.
 
     function sync-dirs {
-      printf "${JAVA_DIR}\n${LINUX_DIR}\n"
+      printf "\
+${BASH_DIR}
+${JAVA_DIR}
+${LINUX_DIR}
+${QUARTET_DIR}
+${UBUNTU_DIR}
+"
     }
 
     function sync-msg {
@@ -755,7 +761,7 @@ parse_svn_repository_root() {
       homesick commit dotfiles "$(sync-msg)"
       homesick push
       sync-dirs | while read path; do
-        echo "$path"
+        echo "\n## $path\n\n"
         cd "$path"
         git add .
         git commit -m "$(sync-msg)"
