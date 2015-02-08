@@ -1,3 +1,5 @@
+autocmd!
+
 " # Functions
 
   " Executes shell cmd and redirects output to a new unnammed buffer in

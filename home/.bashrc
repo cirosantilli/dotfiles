@@ -152,7 +152,7 @@ parse_svn_repository_root() {
       dest="$(dirname "$HOME/Dropbox/home/${path#$HOME}")"
       mkdir -p "$dest"
       mv "$src" "$dest"
-      ln -s "$dest/$src" "$src"
+      ln -s "$dest/$src" "${src%/}"
     }
     alias eip='curl ipecho.net/plain'
     alias cla11='clang++ -std=c++11'
@@ -174,6 +174,15 @@ parse_svn_repository_root() {
     alias jaj='java -jar'
     alias jartf='jar -tf'
     alias jav='java -version'
+    alias lns='ln -s'
+    # Remove a symlink, and move the file linked to to the symlink location.
+    # Usage: cmd symlink-location
+    function lns-undo {
+      link_location="$1"
+      link_dest="$(readlink -f "$link_location")"
+      rm "$link_location"
+      mv "$link_dest" "$link_location"
+    }
     alias m='man'
     alias md='mkdir'
     # Make Dir Cd
@@ -193,9 +202,6 @@ parse_svn_repository_root() {
     alias rmd='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
     alias rlf='readlink -f'
-    # Remove a symlink, and move the file linked to to the symlink location.
-    # Usage: cmd symlink-location
-    function expand-move-symlink { path="$(readlink -f "$1";)" && rm "$1" && mv "$path" .; }
     alias pingg='ping google.com'
     alias psg='sudo ps aux | grep -i'
     alias rbul='rename_basename_unidecode_lowercase.py'
@@ -272,22 +278,17 @@ parse_svn_repository_root() {
 
       alias krpr='krusader "$PROGRAM_DIR"'
         alias kras='krusader "$ASSEMBLER_DIR"'
-        alias krba='krusader "$MY_BASH_DIR"'
+        alias krba='krusader "$BASH_DIR"'
         alias krcp='krusader "$CPP_DIR"'
-        alias krli='krusader "$MY_LINUX_DIR"'
-        alias krpy='krusader "$MY_PYTHON_DIR"'
+        alias krli='krusader "$LINUX_DIR"'
+        alias krpy='krusader "$PYTHON_DIR"'
         alias krpydp='krusader "$PYTHON_DIST_PKG_DIR"'
-        alias krror='krusader "$PROGRAM_DIR/rails-cheat/cirosantilli"'
-        alias krgitl='krusader "$PROGRAM_DIR/rails-cheat/cookbook-gitlab"'
-
+        alias krror='krusader "$RAILS_DIR'
       alias krtst='krusader "$TEST_DIR"'
-
       alias krmsc='krusader "$MUSIC_DIR"'
         alias krctm='krusader "$CHINESE_MUSIC_DIR"'
         alias kritm='krusader "$INDIAN_MUSIC_DIR"'
-
       alias krgm='krusader "$GAME_DIR"'
-
       alias krusd='krusader "/usr/share/doc/"'
 
     ## ls
@@ -481,10 +482,16 @@ parse_svn_repository_root() {
       alias gpsbr='gps && git browse-remote'
       alias gcmanpsfbr='gcmanpsf && git browse-remote'
 
-  ## gitlab elearn ssh
+  ## GitLab
 
-    alias sugqa='ssh ubuntu@gitlab-elearn-qa'
-    alias sugpr='ssh ubuntu@gitlab-elearn-prod'
+    # Start developping GitLab.
+    function dev-gitlab-startup {
+      guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
+      guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
+      guake -n 'server' -e 'cd ~/gitlab'
+      guake -n 'server' -e "cd \"$RAILS_DIR\""
+      guake -n 'server' -e 'cd ~/test'
+    }
 
   ## grunt
 
@@ -546,7 +553,7 @@ parse_svn_repository_root() {
       alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
       alias cmkt='cmk && ctest -V .'
 
-  ## mass regex operations
+  ## Mass regex operations
 
     # Mass Regex Refactor.
     #
@@ -728,6 +735,21 @@ parse_svn_repository_root() {
     function ssta { sudo service --status-all ; }
     alias ssar='sudo service apache2 restart'
     alias sslr='sudo service lightdm restart'
+
+  ## Synchronize
+
+    # Synchronize my computers.
+
+    # No automatic operations e.g. Dropbox: only explicit push and pulls.
+
+    function sync-dirs {
+      echo "$LINUX_DIR\n"
+    }
+
+    function sync-push {
+      homesick commit -m
+      homesick push
+    }
 
   ## update-rc.d
 

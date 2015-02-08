@@ -33,21 +33,16 @@ fi
 
     export BAK_DIR="$HOME/bak"
     export PROGRAM_DIR="$BAK_DIR/git"
-      export DEVBIN="$PROGRAM_DIR/devbin"
-      export DOTFILES="$PROGRAM_DIR/dotfiles"
-      export BASH_DIR="$PROGRAM_DIR/bash-cheat"
-        export BASH_BIN_DIR="$BASH_DIR/bin"
       export ASSEMBLER_DIR="$PROGRAM_DIR/assembler/"
+      export BASH_DIR="$PROGRAM_DIR/bash-cheat"
       export CPP_DIR="$PROGRAM_DIR/cpp/cheat"
+      export DEVBIN="$PROGRAM_DIR/devbin"
       export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
-      export WEBDEV_DIR="$PROGRAM_DIR/web"
       export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
-      export PYTHON_DIR="$PROGRAM_DIR/python"
-        export PYTHON_DEVPATH_DIR="$PYTHON_DIR/devpath"
-        export PYTHON_DIR="$PYTHON_DIR/cheat/"
-        export PYTHON_BIN_DIR="$PYTHON_DIR/devpath/"
-        export PYTHON_DIST_PKG_DIR="/usr/local/lib/python2.7/dist-packages"
+      export JAVA_DIR="$PYTHON_DIR/python/cheat/"
+      export PYTHON_DIR="$PYTHON_DIR/python/cheat/"
       export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
+      export WEB_DIR="$PROGRAM_DIR/cirosantilli.com/web"
     export TEST_DIR="~/test"
     export MEDIA_DIR="$HOME/media"
       export MUSIC_DIR="$MEDIA_DIR/music"
@@ -61,7 +56,6 @@ fi
     # Before:
 
       PATH="$PATH:$PYTHON_BIN_DIR"
-      PATH="$PATH:$BASH_BIN_DIR"
       PATH="$PATH:$LATEX_BIN_DIR"
       # Linux from scratch home.
       export LFS=/media/lfs/
