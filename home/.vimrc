@@ -109,10 +109,22 @@
 
 " # Commands
 
-  command! Eb tab drop ~/.bashrc
-  command! Eg tab drop ~/.gitconfig
-  command! Ep tab drop ~/.profile
-  command! Ev tab drop ~/.vimrc
+  " Edit important files
+
+    command! Eb edit ~/.bashrc
+    command! Eg edit ~/.gitconfig
+    command! Ep edit ~/.profile
+    command! Ev edit ~/.vimrc
+
+  " Go to important directories
+
+    command! Ca edit $ART_DIR
+    command! Cb edit $BASH_DIR
+    command! Cj edit $JAVA_DIR
+    command! Cl edit $LINUX_DIR
+    command! Cp edit $PROGRAM_DIR
+    command! Cq edit $QUARTET_DIR
+    command! Cu edit $UBUNTU_DIR
 
 " # Plugins
 
@@ -520,8 +532,9 @@
 
       "h nerdtree
 
-    " let NERDTreeKeepTreeInNewTab=0
-    " let loaded_nerd_tree=1  "stop opening nerd tree.
+      "let NERDTreeKeepTreeInNewTab=0
+      "let loaded_nerd_tree=1
+      let NERDTreeMinimalUI=1
 
     " - ?: help
 
