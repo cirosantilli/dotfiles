@@ -100,7 +100,7 @@ fi
       export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S '
       # Expressions that match will not be put on ~/.bash_history
       # and will not reappear on current bash session after <UP>.
-      export HISTIGNORE='ls:cd*:[bf]g:exit:history'
+      export HISTIGNORE='ls:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*'
       #export PROMPT_COMMAND='history -a' #this command is executed once when shell is ready
 
   ## Texlive

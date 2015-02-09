@@ -136,6 +136,7 @@ parse_svn_repository_root() {
     alias c='cd'
     function cdl { cd "$1" && ls; }
     # cd Up
+    alias cda="cd $ART_DIR"
     alias cdu='cd ..'
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
@@ -160,6 +161,8 @@ parse_svn_repository_root() {
     alias dfhs='df -h | sort -hrk2'
     function dpx { dropbox puburl "$1" | xsel --clipboard; }
     alias e='echo'
+    # echo Exit status
+    alias ece='echo "$?"'
     alias fbr='find_basename_res.py'
     alias g='grep -E'
     alias gi='grep -Ei'
@@ -204,6 +207,8 @@ parse_svn_repository_root() {
     alias rlf='readlink -f'
     alias pingg='ping google.com'
     alias psg='sudo ps aux | grep -i'
+    alias pscpu='sudo ps aux --sort "%cpu"'
+    alias psmem='sudo ps aux --sort "%mem"'
     alias rbul='rename_basename_unidecode_lowercase.py'
     alias rifr='replace_in_files_regex.py'
     alias rmrf='rm -rf'
@@ -767,14 +772,14 @@ ${UBUNTU_DIR}
         printf "\n## $path\n\n"
         cd "$path"
         git add -A .
-        git commit -m "$(sync-msg)"
-        git push
+        git commit -m "$(sync-msg)" && git push
       done
     }
 
     function sync-pull {
       homesick pull
       sync-dirs | while read path; do
+        printf "\n## $path\n\n"
         cd "$path"
         git pull
       done
