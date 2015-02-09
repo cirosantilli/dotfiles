@@ -137,7 +137,9 @@ parse_svn_repository_root() {
     function cdl { cd "$1" && ls; }
     # cd Up
     alias cda="cd $ART_DIR"
-    alias cdu='cd ..'
+    # cd Dot
+    alias cdd='cd ..'
+    alias cdu="cd $UBUNTU_DIR"
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
     alias c='cd'
@@ -769,7 +771,7 @@ ${UBUNTU_DIR}
       homesick commit dotfiles "$(sync-msg)"
       homesick push
       sync-dirs | while read path; do
-        printf "\n## $path\n\n"
+        printf "\n\e[1;33m## $path\e[0m\n\n"
         cd "$path"
         git add -A .
         git commit -m "$(sync-msg)" && git push

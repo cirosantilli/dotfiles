@@ -3,6 +3,7 @@
 	; use bash aliases like `gco` for all others as it saves the space and compress `git`
 	; without requiring `alias g=git`. Using aliases for git like `alias g='git'` does not work either.
 	a = add
+	b = branch
 	c = checkout
 	l = log
 	; But sometimes we need others for workflows that have use multiple Git repositories
