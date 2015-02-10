@@ -144,6 +144,7 @@ parse_svn_repository_root() {
     #function b { "$@"; zenity --info --text "$*"; }
     alias c='cd'
     alias chmx='chmod +x'
+    function f { find . -iname "*$1*"; }
     # -r so that ANSI color will be shown.
     alias l='less -r'
     # External IP.
@@ -781,7 +782,7 @@ ${UBUNTU_DIR}
     function sync-pull {
       homesick pull
       sync-dirs | while read path; do
-        printf "\n## $path\n\n"
+        printf "\n\e[1;33m## $path\e[0m\n\n"
         cd "$path"
         git pull
       done
