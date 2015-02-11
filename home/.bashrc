@@ -139,6 +139,8 @@ parse_svn_repository_root() {
     alias cda="cd $ART_DIR"
     # cd Dot
     alias cdd='cd ..'
+    alias cdj="cd $JAVA_DIR"
+    alias cdl="cd $LINUX_DIR"
     alias cdu="cd $UBUNTU_DIR"
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
@@ -394,7 +396,10 @@ parse_svn_repository_root() {
     alias gcob='git checkout -b'
     function gcobm { git checkout -b "$1" master; }
     alias gcod='git checkout --conflict=diff3'
+    alias gcoH='git checkout HEAD~'
     alias gcom='git checkout master'
+    # Slash
+    alias gcos='git checkout -'
     # Slash Dot
     alias gcosd='git checkout -- .'
     alias gcoo='git checkout --ours'
@@ -653,6 +658,7 @@ parse_svn_repository_root() {
     alias mvca='mvn clean assembly:single'
     alias mvcca='mvn clean compile assembly:single'
     alias mvccej='mvn clean compile exec:java'
+    alias mvco='mvn clean compile'
     alias mvct='mvn clean test'
     alias mvci='mvn clean install'
     alias mvcis='mvn clean install -DskipTests'

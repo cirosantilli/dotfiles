@@ -111,20 +111,20 @@
 
   " Edit important files
 
-    command! Eb edit ~/.bashrc
-    command! Eg edit ~/.gitconfig
-    command! Ep edit ~/.profile
-    command! Ev edit ~/.vimrc
+    command! Eb drop ~/.bashrc
+    command! Eg drop ~/.gitconfig
+    command! Ep drop ~/.profile
+    command! Ev drop ~/.vimrc
 
   " Go to important directories
 
-    command! Ca edit $ART_DIR
-    command! Cb edit $BASH_DIR
-    command! Cj edit $JAVA_DIR
-    command! Cl edit $LINUX_DIR
-    command! Cp edit $PROGRAM_DIR
-    command! Cq edit $QUARTET_DIR
-    command! Cu edit $UBUNTU_DIR
+    command! Ca drop $ART_DIR
+    command! Cb drop $BASH_DIR
+    command! Cj drop $JAVA_DIR
+    command! Cl drop $LINUX_DIR
+    command! Cp drop $PROGRAM_DIR
+    command! Cq drop $QUARTET_DIR
+    command! Cu drop $UBUNTU_DIR
 
 " # Plugins
 
