@@ -122,6 +122,7 @@
     command! Cb drop $BASH_DIR
     command! Cj drop $JAVA_DIR
     command! Cl drop $LINUX_DIR
+    command! Cn edit $NOTES_DIR
     command! Cp drop $PROGRAM_DIR
     command! Cq drop $QUARTET_DIR
     command! Cu drop $UBUNTU_DIR
@@ -2163,7 +2164,7 @@
           tabprevious
         endif
       endfunction
-      call MapAll('<c-q>', ':call QuitToPreviousTab()<cr>')
+      call MapAll('<c-q>', ':silent! write<cr>:call QuitToPreviousTab()<cr>')
 
     " Useful because I don't use subwindows (each window becomes too small),
     " and often I open up Scrap tabs to the right of the current tab (program | program output),
@@ -2181,7 +2182,7 @@
 
     " Close current window:
 
-      call MapAll('<c-w>', ':q<cr>')
+      call MapAll('<c-w>', ':wq<cr>')
 
     " Rationale: better with control mapping to allow navigating windows multiple times.
 

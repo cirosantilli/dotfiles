@@ -141,6 +141,8 @@ parse_svn_repository_root() {
     alias cdd='cd ..'
     alias cdj="cd $JAVA_DIR"
     alias cdl="cd $LINUX_DIR"
+    alias cdn="cd $NOTES_DIR"
+    alias cdp="cd $PROGRAM_DIR"
     alias cdu="cd $UBUNTU_DIR"
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
@@ -676,7 +678,7 @@ parse_svn_repository_root() {
     alias npmis='npm install --save'
     alias npmisd='npm install --save-dev'
 
-  ## power
+  ## power management
 
     alias pmhi='sudo ps-hibernate'
     alias pmsh='sudo shutdown'
@@ -765,6 +767,7 @@ ${ART_DIR}
 ${BASH_DIR}
 ${JAVA_DIR}
 ${LINUX_DIR}
+${NOTES_DIR}
 ${QUARTET_DIR}
 ${UBUNTU_DIR}
 "
@@ -793,6 +796,8 @@ ${UBUNTU_DIR}
         git pull
       done
     }
+
+    alias shutdown='sync-push && sudo shutdown'
 
   ## update-rc.d
 

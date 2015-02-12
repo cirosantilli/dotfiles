@@ -41,6 +41,7 @@ fi
         export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
         export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
         export JAVA_DIR="$PROGRAM_DIR/java-cheat"
+        export NOTES_DIR="$PROGRAM_DIR/notes"
         export PYTHON_BASE_DIR="$PROGRAM_DIR/python"
           export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath"
           export PYTHON_DIR="$PYTHON_BASE_DIR/cheat"
