@@ -194,6 +194,8 @@ parse_svn_repository_root() {
       mv "$link_dest" "$link_location"
     }
     alias m='man'
+    # mo because mv is taken by Maven.
+    function mob { mv "$1" "$1.bak"; }
     alias md='mkdir'
     # Make Dir Cd
     function mdc { mkdir "$1" && cd "$1"; }
@@ -209,7 +211,7 @@ parse_svn_repository_root() {
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
-    alias rmd='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
+    alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
     alias rlf='readlink -f'
     alias pingg='ping google.com'
@@ -218,6 +220,7 @@ parse_svn_repository_root() {
     alias psmem='sudo ps aux --sort "%mem"'
     alias rbul='rename_basename_unidecode_lowercase.py'
     alias rifr='replace_in_files_regex.py'
+    alias rmd='rmdir'
     alias rmrf='rm -rf'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
@@ -618,18 +621,18 @@ parse_svn_repository_root() {
     #
     # Highlight breaks if Perl pattern is not POSIX ERE.
     #
-    function grepb { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$";}
+    function grepb { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$"; }
 
     # Find files recursively filtering by regex.
     #
     # Basename only, prune hidden.
-    function fin { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1" ;}
+    function fin { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1"; }
     # Also Hidden.
-    function finh { find . ! -path . | sed "s|^\./||" | grepb "$1" ;}
+    function finh { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
     # full Path.
-    function finp { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/" ;}
+    function finp { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
 
-    function grr { grep -Er "$1" . ; }
+    function grr { grep -Er "$1" .; }
 
     # Mass rename refactoring.
     alias mvr='move_regex.py'
@@ -671,6 +674,7 @@ parse_svn_repository_root() {
     alias mvo='mvn compile'
     alias mvp='mvn package'
     alias mvt='mvn test'
+    function mvtt { mvn test "-Dtest=$1"; }
 
   ## npm
 
@@ -793,7 +797,7 @@ ${UBUNTU_DIR}
       sync-dirs | while read path; do
         printf "\n\e[1;33m## $path\e[0m\n\n"
         cd "$path"
-        git pull
+        git pull -q
       done
     }
 
