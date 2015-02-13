@@ -201,6 +201,7 @@ parse_svn_repository_root() {
     # Make Dir Cd
     function mdc { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
+    # Shutdown but run some scripts it.
     alias my-shutdown='sync-push && sudo shutdown'
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
