@@ -144,6 +144,8 @@ parse_svn_repository_root() {
     alias cdl="cd $LINUX_DIR"
     alias cdn="cd $NOTES_DIR"
     alias cdp="cd $PROGRAM_DIR"
+    # cd Slash
+    alias cds='cd -'
     alias cdu="cd $UBUNTU_DIR"
     # TODO make a version that also cats the command and pwd.
     #function b { "$@"; zenity --info --text "$*"; }
@@ -670,10 +672,11 @@ parse_svn_repository_root() {
     alias mvct='mvn clean test'
     alias mvci='mvn clean install'
     alias mvcis='mvn clean install -DskipTests'
+    alias mvd='mvn javadoc:javadoc'
+    # Doc View
+    alias mvdv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
     alias mvej='mvn exec:java'
     alias mvi='mvn install'
-    alias mvj='mvn javadoc:javadoc'
-    alias mvjo='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
     alias mvo='mvn compile'
     alias mvp='mvn package'
     alias mvt='mvn test'
