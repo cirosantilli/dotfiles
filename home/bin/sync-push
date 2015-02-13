@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Synchronize my computers: push changes to remote.
+
+sync_msg='sync'
+homesick commit dotfiles "$sync_msg"
+homesick push
+git-sync-dirs | while read path; do
+  printf "\n\e[1;33m## $path\e[0m\n\n"
+  cd "$path"
+  git add -A .
+  git commit -m "$sync_msg" && git push
+done

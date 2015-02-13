@@ -139,6 +139,7 @@ parse_svn_repository_root() {
     alias cda="cd $ART_DIR"
     # cd Dot
     alias cdd='cd ..'
+    alias cddd='cd .. && cd ..'
     alias cdj="cd $JAVA_DIR"
     alias cdl="cd $LINUX_DIR"
     alias cdn="cd $NOTES_DIR"
@@ -200,6 +201,7 @@ parse_svn_repository_root() {
     # Make Dir Cd
     function mdc { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
+    alias my-shutdown='sync-push && sudo shutdown'
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
     alias ncl="while true; do printf '' | nc -l localhost 8000; done"
@@ -748,7 +750,7 @@ parse_svn_repository_root() {
     alias ras='bundle exec rails server'
     alias rasp='bundle exec rails server -p4000'
 
-  ## services
+  ## Services
 
     function sso { sudo service "$1" stop ; }
     function ssr { sudo service "$1" restart ; }
@@ -757,51 +759,6 @@ parse_svn_repository_root() {
     function ssta { sudo service --status-all ; }
     alias ssar='sudo service apache2 restart'
     alias sslr='sudo service lightdm restart'
-
-  ## Synchronize
-
-    # Synchronize my computers.
-
-    # No automatic operations e.g. Dropbox:
-    # only explicit Git pushes and pulls.
-
-    function sync-dirs {
-      printf "\
-${ART_DIR}
-${BASH_DIR}
-${JAVA_DIR}
-${LINUX_DIR}
-${NOTES_DIR}
-${QUARTET_DIR}
-${UBUNTU_DIR}
-"
-    }
-
-    function sync-msg {
-      echo 'sync'
-    }
-
-    function sync-push {
-      homesick commit dotfiles "$(sync-msg)"
-      homesick push
-      sync-dirs | while read path; do
-        printf "\n\e[1;33m## $path\e[0m\n\n"
-        cd "$path"
-        git add -A .
-        git commit -m "$(sync-msg)" && git push
-      done
-    }
-
-    function sync-pull {
-      homesick pull
-      sync-dirs | while read path; do
-        printf "\n\e[1;33m## $path\e[0m\n\n"
-        cd "$path"
-        git pull -q
-      done
-    }
-
-    alias shutdown='sync-push && sudo shutdown'
 
   ## update-rc.d
 

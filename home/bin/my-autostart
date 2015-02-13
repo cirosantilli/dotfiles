@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# This script is run at startup by ~/.config/autostart/
+
+sync-pull

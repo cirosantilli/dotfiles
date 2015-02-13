@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# List of Git repositories to be synchronized.
+
+printf "\
+${ART_DIR}
+${BASH_DIR}
+${JAVA_DIR}
+${LINUX_DIR}
+${NOTES_DIR}
+${QUARTET_DIR}
+${UBUNTU_DIR}
+"
