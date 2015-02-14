@@ -240,6 +240,7 @@ parse_svn_repository_root() {
     # Normally, sudo cannot see your personal path variable. now it can:
     #alias sudo='sudo env PATH=$PATH'
     alias tree='tree --charset=ascii'
+    alias v='vim'
     alias vrmm='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
     function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
