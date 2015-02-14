@@ -1,4 +1,4 @@
 [Desktop Entry]
-Exec=myautostart
-Name=myautostart
+Exec=firefox
+Name=firefox
 Type=Application
