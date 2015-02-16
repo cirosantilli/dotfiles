@@ -452,8 +452,9 @@ parse_svn_repository_root() {
     alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
     # One line Graph
     alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
-    #alias glop='git log --pretty=oneline --decorate'
-    alias glop='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
+    alias glop='git log -p'
+    #alias glopf='git log --pretty=oneline --decorate'
+    alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
@@ -673,6 +674,7 @@ parse_svn_repository_root() {
     alias mvct='mvn clean test'
     alias mvci='mvn clean install'
     alias mvcis='mvn clean install -DskipTests'
+    alias mvciej='mvn clean install && mvn exec:java'
     alias mvd='mvn javadoc:javadoc'
     # Doc View
     alias mvdv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
