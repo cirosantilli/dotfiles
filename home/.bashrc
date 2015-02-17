@@ -254,6 +254,7 @@ parse_svn_repository_root() {
     # Usage: unizipd d.zip
     # Outcome: unzips the content of `a.zip` into a newly created `d` directory
     function unzipd { unzip -d "${1%.*}" "$1"; }
+    function zipd { zip -r "${1%/}.zip" "$1"; }
 
     ## Provision machines
 
