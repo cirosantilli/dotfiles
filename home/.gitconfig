@@ -6,6 +6,7 @@
 	b = branch
 	c = checkout
 	l = log
+	r = rebase
 	; But sometimes we need others for workflows that have use multiple Git repositories
 	; and use scripts to do a command on all of them.
 	cl = clone

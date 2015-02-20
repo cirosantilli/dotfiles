@@ -226,6 +226,7 @@ parse_svn_repository_root() {
     alias rbul='rename_basename_unidecode_lowercase.py'
     alias rifr='replace_in_files_regex.py'
     alias rmd='rmdir'
+    function rmext { rm *".$1"; }
     alias rmrf='rm -rf'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
