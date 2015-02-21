@@ -35,13 +35,13 @@
   endfunction
 
   " Run cmd in guake tab.
-  "
+
   " If done once already, reuses same tab for other cmds.
-  "
+
   " This tab is named GVIM.
-  "
+
   " Number of this tab is stored in g:guakeTab
-  "
+
   " If the tab gets closed, there is currently no way simple to detect it, and this method breaks.
   let g:guakeTab = ''
   function! GuakeSingleTabCmdHere(cmd)
@@ -62,26 +62,26 @@
   endfunction
 
   " Transform well formated selected line commented code to markdown.
-  "
+
   " Well formated for languages that don't have fixed indentation:
-  "
+
   " - use exact md, except that instead of header levels use 4 spaces for indentation
   "   and always a single `#`
-  "
+
   " for languages that have fixed inedentation (python):
-  "
+
   " - always add a space after each comment, except for the code
-  "
+
   "   this way, you can simply uncomment to try stuff out
-  "
+
   "   not yet implemented
-  "
+
   " this is only an heuristic, as nested lists are hard to tokenize
-  "
+
   " :param comment: the regex that starts the line comment.
-  "
+
   "   ex: `#` in python, `"` in vim
-  "
+
   " :param comment: regexp that starts a comment
   " :type comment: string
   function! CodeToMd(line1, line2, ...)
@@ -301,7 +301,7 @@
   " # snipmate
 
     " Two repos:
-    "
+
     " - original, innactive since 2011.
 
         "Plugin 'msanders/snipmate.vim'
@@ -426,17 +426,17 @@
     " Most useful commands:
 
     " -   Gdiff <ref>: vimdiff between commits. To exit simply close the old one.
-    "
+
     " -   Gmove <name>: rename buffer and `git mv`
-    "
+
     " -   Gremove <name>: close rename buffer and `git rm`
-    "
+
     " -   Gbrowse <ref>: open GitHub URL corresponding to file in browser.
-    "
+
     " -   Gblame <ref>: vplist a git blame. Corresponds line by line with the buffer. Both scroll together.
-    "
+
     " -   Gstatus <ref>: tons of per file quickfix like functionality like:
-    "
+
     "     - `-`: git add file on line under cursor
     "     - `O`: open file on line under cursor in new tab
     "     - `D`: open Gdiff on file under cursor on the window below
@@ -444,11 +444,11 @@
     "     - `cA`: Gcommit| --amend --reuse-message=HEAD
 
     " Open diff for current file in a new tab.
-    "
+
     " Requires:
-    "
+
     "   Plugin 'vim-scripts/AnsiEsc.vim'
-    "
+
     function! Gdf(path)
       tabnew
       setlocal buftype=nofile
@@ -465,11 +465,11 @@
     command! Gdfr call Gdf('')
 
     " Add and commit current file with given commit message.
-    "
+
     " Sample usage:
-    "
+
     "   Gadcm The commit message.
-    "
+
     command! -nargs=* Gcm execute '!git add ' . expand('%:p') ' && git commit -m "<args>"'
     command! -nargs=* Gcob execute '!git checkout -b "<args>"'
 
@@ -584,24 +584,24 @@
 
     " - hit esc and you can edit history as a vim buffer
     "   hit i, and you're back to terminal mode
-    "
+
     " - after C-D, shell history remains on normal buffer and you can vim edit it
-    "
+
     " :ConqueTerm bash
     " :ConqueTermSplit mysql -h localhost -u joe -p sock_collection
     " :ConqueTermTab Powershell.exe
     " :ConqueTermVSplit C:\Python27\python.exe
-    "
+
     " BETA feature, didn't work for me:
 
       " :let term = conque_term#open('bash', ['tabnew'])
-      "
+
       ":cal my_terminal.write("make run\n")
       ":cal my_terminal.writeln("make run")
-      "
+
       "let term = conque_term#get_instance()
       ""most recent
-      "
+
       "let term = conque_term#get_instance(3)
       ""specific instance
       ":ConqueTermTab bashx make run
@@ -750,13 +750,13 @@
   " # surround
 
     " https://github.com/tpope/vim-surround
-    "
+
     " Intelligent ''', '"', and html tags conversion
-    "
+
     " - `ds"`: delete surrouding
     " - `cs"'`: change double to single quotes on cur word
     " - `cs'<q`: change apostrophe quote to xml <q html elemtn
-    " - `cst"`: change tag to "
+    " - `cst"`: change tag to
     " - `ysiw]`: add surrounding ] to word
     " - `ysiw[`: add surrounding space + ] to word
     " - `ysiw<em`: add surrounding <em> to word
@@ -992,12 +992,12 @@
 
     " If on, Vim will read options from one of the first comment `modelines` lines (default 5)
     " at the top of the file.
-    "
+
     " This is specially useful for setting filetypes on files without extension not shebang
     " such as Vagrantfiles with something of the type:
-    "
+
     "   # vi: set ft=ruby :
-    "
+
     " Default: 5.
 
       "set modeline=5
@@ -1270,40 +1270,40 @@
 
     " If `eol` and `binary` are on, Vim adds an <EOL>
     " at the end of file if it does not have one already.
-    "
+
     " `eol` is automatically set when opening a new file if it ends in <EOL>.
     " Therefore, if `binary` is on, Vim maintains the file state,
     " which is what you should to.
-    "
+
     " If `binary` is off, `eol` is not used.
-    "
+
     " The downsides of having `binary` are that:
-    "
+
     " -   you cannot view or remove the <EOL> easily.
-    "
+
     "     Workaround: `!truncate -1 %` (-2 on Windows...)
-    "
+
     " -   if you forget to set the default behavior for new files
     "     to match the projects standards, you may break them
     "     and there will be no immediate visual indiation of that
     "     (except for `git diff`).
-    "
+
     "     Workaround: never create, always copy existing files,
     "     or use a local vimrc that sets binary.
-    "
+
     " -   it is confusing for new Vim users.
-    "
+
     " If you keep the default magic you have the upside that:
-    "
+
     " -   don't have to worry about different per project
     "     / per file type conventions.
-    "
+
     " This default is a good design choice by Vim,
     " specially once you understand that there is magic going on.
-    "
+
     " When you open a non-empty file that does not end in a newline,
     " it shows [noeol] on the status line. You can see this anytime by doing `e`.
-    "
+
     " Setting binary automatically sets some other options, e.g. `expandtab` to off.
 
 			set nobinary
@@ -1361,133 +1361,140 @@
 
   " # spell
 
-      set spellfile=$HOME/.vim/spell/en.utf-8.add
+      let s:spellfile = $HOME . "/.vim/spell/en.utf-8.add"
+      let &spellfile = s:spellfile
+      " In which file types to spellcheck.
       autocmd Filetype gitcommit,haml,html,latex,mkd,markdown,rst,tex setlocal spell spelllang=en
 
     " After editing the spell file:
 
-    "runtime spell/cleanadd.vim
-    "mkspell! ~/.vim/spell/en.utf-8.add.spl ~/.vim/spell/en.utf-8.add
+      execute 'silent mkspell! ' . s:spellfile . '.spl ' . s:spellfile
 
     " On the fly spell checker that underlines errors.
-    "
+
     " Features:
-    "
+
     " - to add word under cursor to the dictionary
+
     " - view correction suggestions and possibly correct
+
     " - jump to next incorrect word
+
     " - for code filetypes, only checks spelling on comments and strings.
+
     " - spell can be done only at certain syntax highlighing regions. This allows for example to
     "   check spell only in comments of `.c` files, or ignore `<div>` tags in HTML.
-    "
+
     " Main help page:
-    "
+
     "   help spell
-    "
+
     " Enable for all files by default:
-    "
+
     "   set spell
-    "
+
     " Set language:
-    "
+
     "   set spelllang=en_us
-    "
+
     " Enable only for certain filetypes:
-    "
+
     "   autocmd BufEnter *.{md,rst,html,haml,tex} setlocal spell spelllang=en_us
-    "
+
     " Keymaps:
-    "
-    " -   `]s`: move to next misspelled word
-    "
-    " -   `z=`: show and select from suggestion list
-    "
-    " -   `zg`: add words under cursor to dict (Good).
-    "
-    " -   `zw`: add word negated to dict `word/!` and comment out if existing by replacing first char.
-    "
-    "   Rationale: performance. Deleting a line requires to rewrite the entire file:
-    "   appending and replacing one char not.
-    "
-    "   This mess can be cleaned up with:
-    "
-    "     :runtime spell/cleanadd.vim
-    "
-    " -   `zug` and `zuw`: undo `zg` and `zw`, removing entry from spellfile.
-    "
-    "   Those words are added to a separate file from the main dictionary,
-    "   determined by the spellfile option.
-    "
-    "   zw does not simply remove words: it adds it as wrong as `word/!`
-    "
-    " #spellfile
-    "
-    " Where words added via `zg` and `zw` will be stored.
-    "
-    " If empty, use the first writable directory of `'runtimepath'` and add a `spell` subdir to it.
-    "
-    " Must end in `.{encoding}.add`:
-    "
-    "   set spellfile=$HOME/.vim/spell/en.utf-8.add
-    "
-    " This file is plaintext.
-    "
-    " ##mkspell
-    "
-    " To speed things up, Vim uses a binary cache file with extension `.spl`. in the same directory.
-    "
-    " For a spellfile with name `en.utf-8.add`, the corresponding `.spl` is: `en.utf-8.add.spl`.
-    "
-    " Note that `add` is still part of the filename!
-    "
-    " The cache is updated automatically by `zg` and `zw`.
-    "
-    " Renerate the cache after manually editing the `.add` file:
-    "
-    "   mkspell! ~/.vim/spell/en.utf-8.add.spl ~/.vim/spell/en.utf-8.add
-    "
-    " ## Syntax
-    "
-    " Comments:
-    "
-    "   # Comment
-    "
-    " Use two number signs `##` for manual comments:
-    "
-    "   ## Comment
-    "
-    " as comments with a single sign can be removed with the cleanup script.
-    "
-    " Mark word as wrong:
-    "
-    "   word\!
-    "
-    " Smart case: words with at least one capital are automatically case sensitive.
-    " Every word also matches the same word with all capitals.
-    "
-    " Fix case given word:
-    "
-    "   word\=
-    "
-    " TODO: is there a map that does `gz` bu adds as /= ?
-    " TODO: how to prevent Git from marking fixed case words
-    "       that start with lowercase as wrong if at start of sentence?
-    "
-    " Optionally add an s to the end of the word.
-    "
-    "   word\S
-    "
-    " TODO how to set possessive apostrophe to correct automatically, i.e.: `abc's` correct if `abc` correct?
+
+    " - `]s`: move to next misspelled word
+
+    " - `z=`: show and select from suggestion list
+
+    " - `zg`: add words under cursor to dict (Good).
+
+    " - `zw`: add word negated to dict `word/!` and comment out if existing by replacing first char.
+
+      " Rationale: performance. Deleting a line requires to rewrite the entire file:
+      " appending and replacing one char not.
+
+      " This mess can be cleaned up with:
+
+      " :runtime spell/cleanadd.vim
+
+    " - `zug` and `zuw`: undo `zg` and `zw`, removing entry from spellfile.
+
+      " Those words are added to a separate file from the main dictionary,
+      " determined by the spellfile option.
+
+      " zw does not simply remove words: it adds it as wrong as `word/!`
+
+    " # spellfile
+
+      " Where words added via `zg` and `zw` will be stored.
+
+      " If empty, use the first writable directory of `'runtimepath'` and add a `spell` subdir to it.
+
+      " Must end in `.{encoding}.add`:
+
+        " set spellfile=$HOME/.vim/spell/en.utf-8.add
+
+      " This file is plaintext.
+
+      " # mkspell
+
+      " To speed things up, Vim uses a binary cache file with extension `.spl`. in the same directory.
+
+      " For a spellfile with name `en.utf-8.add`, the corresponding `.spl` is: `en.utf-8.add.spl`.
+
+      " Note that `add` is still part of the filename!
+
+      " The cache is updated automatically by `zg` and `zw`.
+
+      " Renerate the cache after manually editing the `.add` file:
+
+        " mkspell! ~/.vim/spell/en.utf-8.add.spl ~/.vim/spell/en.utf-8.add
+
+        " # Syntax
+
+        " Comments:
+
+          " # Comment
+
+        " Use two number signs `##` for manual comments:
+
+          " ## Comment
+
+        " as comments with a single sign can be removed with the cleanup script.
+
+        " Mark word as wrong:
+
+          " word\!
+
+        " Smart case: words with at least one capital are automatically case sensitive.
+        " Every word also matches the same word with all capitals.
+
+        " Fix case given word:
+
+          " word\=
+
+        " TODO: is there a map that does `gz` bu adds as /= ?
+        " TODO: how to prevent Git from marking fixed case words
+        "       that start with lowercase as wrong if at start of sentence?
+
+        " Optionally add an s to the end of the word.
+
+        "   word\S
+
+        " TODO how to set possessive apostrophe to correct automatically, i.e.: `abc's` correct if `abc` correct?
 
   " # matchit
 
-    " allows '%' to jump between open 'if' 'else', 'do', 'done', etc. instead.
+    " Allows '%' to jump between open 'if' 'else', 'do', 'done', etc. instead.
     " of just parenthesis like chars
     " marcros/matchit.vim has been a standard file for years
 
       runtime macros/matchit.vim
 
-  " # sessions #views
+  " # sessions
+
+  " # views
 
     " Vim has a built-in session system.
 
@@ -1495,19 +1502,20 @@
 
     " Create a session file called Session.vim
 
-      "mksession
+      " mksession
 
     " Overwrite if existing:
 
-      "mksession!
+      " mksession!
 
     " Custom name:
 
-      "mksession Custom_name.vim
+      " mksession Custom_name.vim
 
     " What exactly to save is controlled by the vim
 
     " This saves a lot of trash to the sessionoptions option, such as:
+
     " - global variables, which are already set from your vimrc
     " - options which you only changed once, and do not to pass to the next session.
 
@@ -1563,13 +1571,14 @@
 
 " # Language spefic
 
-  " The right place for those is in a ftplugin, but I'm lazy to put such small settings in separate files.
+  " The right place for those is in a ftplugin file,
+  " but I'm lazy to put such small settings in separate files.
 
   " # Data languages
 
-  " # html
+  " # HTML
 
-  " # xml
+  " # XML
 
       autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
       autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
@@ -1757,13 +1766,13 @@
       tabdo e
       set confirm
     endfunction
-    autocmd FileType vim noremap <buffer> <F5> :wa<cr>:so %<cr>:silent call ReloadVisible()<cr>
+    autocmd FileType vim noremap <buffer> <F5> :wa<cr>:source %<cr>:silent call ReloadVisible()<cr>
 
     " Write all buffers, source this vimrc, and reaload open
     " buffers so that changes in vimrc are applied:
 
     " Save and source current script:
-    autocmd FileType vim noremap <buffer> <F6> :w<cr>:so %<cr>:e<cr>
+    autocmd FileType vim noremap <buffer> <F6> :write<cr>:source %<cr>:edit<cr>
 
   " # Configuration files
 
@@ -1789,27 +1798,27 @@
   " # gui #cterm #term
 
     " There are three types of highlight arguments:
-    "
+
     " - term:
     " - cterm: TODO vs term
     " - gui: GVim
-    "
+
     " For both cterm and gui, foreground `fg` and background `bg` colors can be set.
-    "
+
     " For all ot them, `term`, `cterm` and `gui` options can be set: a comma separate list
     " with options such as underline and boldface:
-    "
+
     "   highlight CursorLine term=underline cterm=bold gui=italic
-    "
+
     " gui can have more colors as it is free from terminal color limitations.
-    "
+
     "   highlight CursorLine ctermfg=red
     "   highlight CursorLine guifg=red
-    "
+
     " TODO is it possible to use cterm colors for gui? http://vim.wikia.com/wiki/Using_GUI_color_settings_in_a_terminal
-    "
+
     " TODO what is:
-    "
+
     "   set term?
 
   " Disable highlight for one group:
@@ -1828,9 +1837,9 @@
     "highlight CursorLine ctermfg=red guifg=blue
 
   " Get the highlight group under the cursor:
-  "
+
   " <http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor>
-  "
+
   "     set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   " # match
@@ -1847,7 +1856,7 @@
     " #Trailing whitespace
 
       " Highlight tralling whitestpace.
-      "
+
       " Also possible with set list + listchars, but this is better.
 
         augroup TrailingWhitespaceAucmd
@@ -2182,7 +2191,7 @@
 
     " Close current window:
 
-      call MapAll('<c-w>', ':wq<cr>')
+      call MapAll('<c-w>', ':q<cr>')
 
     " Rationale: better with control mapping to allow navigating windows multiple times.
 
@@ -2453,7 +2462,7 @@
 
       " Jump to the next or previous line that has the same level or a lower
       " level of indentation than the current line.
-      "
+
       " exclusive (bool): true: Motion is exclusive
       " false: Motion is inclusive
       " fwd (bool): true: Go to next line
@@ -2854,7 +2863,7 @@
       "<c-v><tab>
 
     " Swap visual and line visual:
-    "
+
     " Visual line is more useful because on a single line it is often easier to predict
     " up to where the jump can be done on a single motion.
 
@@ -3471,7 +3480,7 @@
 
     "funcction F() | echo 1 | endfunction
 
-" # scope
+" # Scope
 
   "-  `g`: global. This is the default scope, even inside functions.
 
@@ -3551,50 +3560,52 @@
 
   " Must use let always to assign:
 
-    "let a = 2 | if a != 2 | throw 'assertion failed' | end
+    " let a = 2 | if a != 2 | throw 'assertion failed' | end
 
-  "can reassign:
+  " Can reassign:
 
-    "let a = "abc"
-    "let a = 1
+    " let a = "abc"
+    " let a = 1
 
   " # exists
 
     " Check if variable is set or not:
 
-      "if !exists('asdf')
-      "  let asdf = 'qwer'
-      "endif
+      " if !exists('asdf')
+      "   let asdf = 'qwer'
+      " endif
 
-" # environment variables
+  " # Environment variables
 
-  " Just prefix with a dollar `$`.
+    " Just prefix with a dollar `$`.
 
-  " For example, the home variable, inherited from the calling environment:
+    " For example, the home variable, inherited from the calling environment:
 
-    "echo $HOME
+        " echo $HOME
 
-  " Empty if not defined
+    " Empty if not defined
 
-  " Some environment variables are given default values if undefined at startup,
-  " and are set for programmatic use inside Vim.
+    " Some environment variables are given default values if undefined at startup,
+    " and are set for programmatic use inside Vim.
 
-  " Shared root:
+    " Shared root:
 
-    "echo $VIM
-    "echo $VIMRUNTIME
+        " echo $VIM
+        " echo $VIMRUNTIME
 
-  " Location of .vimrc:
+    " Location of .vimrc:
 
-    "echo $MYVIMRC
+        " echo $MYVIMRC
 
-  " Environment variables can also be set. They are exported to subshells:
+    " Environment variables can also be set. They are exported to subshells:
 
-    "let $a = 'b'
-    "echo $a
-    "!echo $a
+        " let $a = 'b'
+        " echo $a
+        " !echo $a
 
-" # list #array
+" # List
+
+" # Array
 
   " Literals:
 
@@ -3683,7 +3694,7 @@
       "let x = remove(d, 1)
       "if x != 'one' | throw 'assertion failed' | end
 
-" # string
+" # String
 
   " Escape:
 
@@ -3694,37 +3705,37 @@
 
   " The only escape inside single quotes is `''` for `'`.
 
-  "Special chars
+  " Special chars
 
     " C-like:
 
-      "echo "\n"
+      " echo "\n"
 
     " Control chars:
 
-      "echo "\<s-v>"
+      " echo "\<s-v>"
 
     " Appear like ^V
 
     " Must use double quotes:
 
-      "echo '\n'
+      " echo '\n'
 
     " Outputs literal '\n'
 
-  " #compare
+  " # compare
 
     " Case sensitive:
 
-      "abc" ==# "Abc"
+      " "abc" ==# "Abc"
 
     " Case insensitive:
 
-      "abc" ==? "Abc"
+      " "abc" ==? "Abc"
 
     " Sensitive or insensitive depending on `'ignorecase'`.
 
-      "abc" ==  "Abc"
+      " "abc" ==  "Abc"
 
     " Always use either `==#` or `==?` when comparing strings!!**,
     " since `==` can be broken by an option.
@@ -3853,7 +3864,7 @@
 
     " Start at current character, don't wrap: same as above, but treat the currrent line specially,
     " then restart at line + 1. Check if not last line.
-    "
+
     " Wrap: same as above, then after do line 0 to line - 1.
 
 " # while
@@ -3987,12 +3998,12 @@
   " # preserve state after function
 
     " When writting plugins, many convenient commands only exist in the usual interactive form.
-    "
+
     " The problem is that such commands may have unwanted side effects, such as
     " modifying registers after `d`, or the last jump positions.
-    "
+
     " I am yet to find a general way to prevent such state loss.
-    "
+
     " The cleanest solution would for Vim to provide better commands for plugin writers.
 
 " # exceptions
@@ -4378,6 +4389,14 @@
     " If true prevents file modification.
 
     " Less strict than modifiable.
+
+  " # modifiable
+
+    " If false, buffer cannot be saved.
+
+    " This option is not local only! Setting it to false,
+    " sets `nomodifiable` on new buffers.
+    " So you almost always want to use `setlocal` with it.
 
   " # readonly
 
@@ -4836,15 +4855,15 @@
     " To avoid this you can:
 
     " -   add `autocmd!` to the top of your `.vimrc`.
-    "
+
     "     TODO this had a downside but I forgot which.
-    "
+
     " -   use `autocmd! cmd`.
-    "
+
     "     But this only allows you to have one autocmd per event type.
-    "
+
     " -   use `augroup` with `autocmd!` on top.
-    "
+
     "     You have to think up unique names, but it is one of the best options.
 
   " # augroup
@@ -5172,25 +5191,29 @@
 
   " Set value of boolean option to true:
 
-    "set expandtab
+    " set expandtab
 
   " Set value of boolean option to false:
 
-    "set noexpandtab
+    " set noexpandtab
 
   " All non-negated boolean options support a `<no>name` version.
 
   " Toogle value of boolean optoin (only applicable to boolean options):
 
-    "set wrapscan!
+    " set wrapscan!
 
   " Get value of option programatically / to a variable.
 
-    "echo &ft
+    " echo &ft
 
-  " Set variable from option (USE `let`!!):
+  " Set option from variable (uses `let`, how insane):
 
-    "let &option=variable
+    " let &option=variable
+
+  " Set variable from option:
+
+    " let &option=variable
 
   " Just add ampersand.
 
@@ -5849,19 +5872,19 @@
     "copen
 
   " - :make  runs commands based on the `makeprg` option on a shell and captures its output.
-  "
+
   "     The default value for `makeprg` is `make`, so by default `:make` runs `make`.
-  "
+
   "     See h makeprg
-  "
+
   " - :copen   open everything that came out of the :make command or :vimgrep command, one per line.
-  "
+
   "     Works well with tab:
-  "
+
   "       tab copen
-  "
+
   "     <enter> jumps to the line of the error on the buffer.
-  "
+
   " - :cc    see the current error
   " - :cn    jump to next error on buffer.
   " - :cp    jump to previous error
@@ -5989,7 +6012,7 @@
 
   " # python to vim
 
-    "
+
 
   " Multiline python code:
 
