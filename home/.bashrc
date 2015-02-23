@@ -178,9 +178,21 @@ parse_svn_repository_root() {
     alias gi='grep -Ei'
     alias fmmmr='find-music-make-m3u .'
     # GCC from String.
-    # Usage: gccs '1 + 1'
-    function gccs { echo "$2 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
-    function gpps { echo "$2 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
+    #
+    # Better than crepl.
+    #
+    # Usage:
+    #
+    #   gccs <main> <c-version> <before-main>
+    #
+    # Examples:
+    #
+    #   gccs 'printf('%d', 1 + 1)'
+    #   gccs 'printf('%d', f(1))' '99' 'int f(int i) { return i + 1; }'
+    #
+    # Expected output: `2`
+    function gccs { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
+    function gpps { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     alias ja='java'
     alias jac='javac'
