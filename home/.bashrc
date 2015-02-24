@@ -396,8 +396,10 @@ parse_svn_repository_root() {
     alias gadcman='git add . && gcman'
     alias gadcmanpsf='git add . && gcmanpsf'
     alias gadcmm='git add -A . && git commit -m'
+    alias gadcmmt='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
     function gadcmp { git add . && git commit -m "$1" && git push; }
+    alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbl='git blame'
     alias gbr='git branch'
