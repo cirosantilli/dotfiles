@@ -111,6 +111,8 @@
 
   " Misc:
 
+    " All Copy.
+    command! Ac normal! ggVG"+y<c-o><c-o>
     command! Sw set wrap!
 
   " Go to important directories:
@@ -1232,17 +1234,17 @@
 
     set backspace=indent,eol,start
 
-  " # tab characters
+  " # indentation
 
     set expandtab     " Insert spaces instead of tabs.
     set tabstop=4     " A tab viewed as 8 spaces.
     " set softtabstop " TODO
+    set smarttab      " Insert tabs on the start of a line according to
+                      " shiftwidth, not tabstop.
     set shiftwidth=4  " Number of spaces to use for autoindenting.
     set autoindent    " Always set autoindenting on.
     set copyindent    " Copy the previous indentation on autoindenting.
     set shiftround    " Use multiple of shiftwidth when indenting with '<' and '>'.
-    set smarttab      " Insert tabs on the start of a line according to
-                      " shiftwidth, not tabstop.
 
   " # ff
 
@@ -2128,7 +2130,7 @@
 
     " See also: `[i`.
 
-  " # ( #) #0
+  " # ( # ) # 0
 
     " - (previous sentence
     " -) next
@@ -2992,8 +2994,6 @@
 
     " Only expressions are valid, not commands.
 
-    " But 
-
 " # vimrc
 
   " Default location: ~/.vimrc.
@@ -3449,7 +3449,7 @@
   " - `-`: content of last `d` that deleted less than one line
   " - `+`: clipboard
   " - `*`: selection buffer on X11 (last selected text, can be pasted with middle click),
-  "     same as `+` on windows.
+  "     same as `+` on Windows.
   " - `_`: black hole register: `/dev/null` of registers.
   " - `/`: last `/` search
 	" - `.`: last inserted text
@@ -6045,9 +6045,7 @@
 
   " # python to vim
 
-
-
-  " Multiline python code:
+    " Multiline python code:
 
 "py << EOF
 "def f():

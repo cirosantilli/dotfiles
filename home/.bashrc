@@ -458,6 +458,8 @@ parse_svn_repository_root() {
     alias gin='git init'
     # Init Add Commit
     alias ginac='git init && git add . && git commit -m "init"'
+    # Restore deleted file to its latest version.
+    function git-restore-file { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
     alias gls='git ls-files'
     alias glso='git ls-files --other'
     alias glsg='git ls-files | grep'
@@ -564,6 +566,12 @@ parse_svn_repository_root() {
     alias hss='homesick status'
     alias hsu='homesick push'
     alias hst='homesick track'
+
+  ## jekyll
+
+    alias bej='bundle exec jekyll'
+    alias bejb='bundle exec jekyll build'
+    alias bejs='firefox localhost:4000 && bundle exec jekyll serve -tw'
 
   ## make
 
@@ -757,7 +765,6 @@ parse_svn_repository_root() {
     alias bei='bundle exec spinach'
     alias bec='bundle exec rspec'
     alias befs='bundle exec foreman start'
-    alias bejs='firefox localhost:4000 && bundle exec jekyll serve -tw'
     alias ber='bundle exec rake'
     alias berc='bundle exec rake clean'
     alias berco='bundle exec rake compile'
