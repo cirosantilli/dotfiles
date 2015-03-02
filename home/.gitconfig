@@ -29,7 +29,7 @@
 	quotepath = false
 	pager = less -r
 [credential]
-	helper = cache --timeout=3600
+	helper = cache --timeout=999999
 [grep]
 	extendedRegexp = true
 	lineNumber = true

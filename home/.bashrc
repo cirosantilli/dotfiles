@@ -472,7 +472,7 @@ parse_svn_repository_root() {
     alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
     alias glop='git log -p'
     #alias glopf='git log --pretty=oneline --decorate'
-    alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=short | column -ts"|" | less -r'
+    alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
