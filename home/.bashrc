@@ -448,6 +448,7 @@ parse_svn_repository_root() {
     }
     alias gdfc='git diff --cached'
     alias gdfhh='git diff HEAD~ HEAD'
+    alias gdfst='git diff --stat'
     alias gfe='git fetch'
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
@@ -490,8 +491,9 @@ parse_svn_repository_root() {
     alias gplrum='git pull --rebase up master'
     alias gplom='git pull origin master'
     alias grb='git rebase'
-    alias grbm='git rebase master'
     alias grbc='git rebase --continue'
+    alias grbi='git rebase -i'
+    alias grbm='git rebase master'
     alias grs='git reset'
     alias grsh='git reset --hard'
     alias grsH='git reset HEAD~'
