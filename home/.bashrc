@@ -140,6 +140,7 @@ parse_svn_repository_root() {
     # cd Dot
     alias cdd='cd ..'
     alias cddd='cd .. && cd ..'
+    alias cdddd='cd .. && cd .. && cd ..'
     alias cdj="cd $JAVA_DIR"
     alias cdl="cd $LINUX_DIR"
     alias cdn="cd $NOTES_DIR"
