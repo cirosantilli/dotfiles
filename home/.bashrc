@@ -415,6 +415,7 @@ parse_svn_repository_root() {
     alias gcfp='git cat-file -p'
     alias gcm='git commit'
     alias gcmm='git commit -m'
+    alias gcmmt='git commit -m tmp'
     alias gcma='git commit --amend'
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
