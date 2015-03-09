@@ -113,6 +113,8 @@
 
     " All Copy.
     command! Ac normal! ggVG"+y<c-o><c-o>
+    " Search in all files under current directory recursively.
+    command! -nargs=1 Vim vimgrep/\v<args>/ **
     command! Sw set wrap!
 
   " Go to important directories:
@@ -1008,7 +1010,7 @@
 
       " set modeline=5
 
-  " # search options
+  " # Search options
 
     " Control parameters of `/` search
 
@@ -1026,6 +1028,30 @@
       " noh
 
     " Will be automatically turned back on on next search
+
+  " # Tab completion options
+
+    " # wildchar
+
+      " Character that opens tab completion. Default: `<tab>`...
+
+        " set wildchar=<tab>
+
+    " # wildignore
+
+      " Patterns to ignore on several types of expandion,
+      " including command tab expansion.
+
+      " Default value: empty.
+
+      " Great to avoid expanding built files like .o and .pdf
+      " when those are placed in the current directory, which
+      " is a very common convention!
+
+        set wildignore+=*.class,*.pyc,*.o,*.pdf
+
+      " Then in the rare cases that you want to open those up,
+      " just expand and change the extenion, or change wildignore for a session.
 
   " Working directory is always the same as the file being edited
 
@@ -3270,7 +3296,9 @@
       " ------------------------------
       " 1.1Header name     *h2-tag*
 
-" # ex command #command
+" # ex command
+
+" # commands
 
   " Is anything that can come after you type ':'
 
@@ -3294,6 +3322,10 @@
   " short version for interactive sessions.
 
   " Every vimscript statement starts with a command.
+
+  " Commands are saner than mappings because they have no timeout and generate no conflicts.
+
+  " The only downside of commands is that they must start with an upper case letter.
 
   " - variables
 
@@ -3334,7 +3366,7 @@
 
   " You can create you own commands with `command`.
 
-  " # command command #:command
+  " # command command
 
     " View all user defined commands (including those in plugins):
 
@@ -3349,7 +3381,11 @@
     " `!` to override existing without error. It is usually the better to use
     " it always and leave end result to precedence.
 
-    " # args #f-args #nargs
+    " # args
+
+    " # f-args
+
+    " # nargs
 
       " `-nargs=0` is the default:
 
@@ -5896,70 +5932,71 @@
 
 " # quickfix
 
-" # makeprg
-
   " Try it out:
 
     " set makeprg='cat'
     " make %
     " copen
 
-  " - :make  runs commands based on the `makeprg` option on a shell and captures its output.
+  " # make
 
-  "     The default value for `makeprg` is `make`, so by default `:make` runs `make`.
+  " # makeprg
 
-  "     See h makeprg
+    " Runs commands based on the `makeprg` option on a shell and captures its output.
 
-  " - :copen   open everything that came out of the :make command or :vimgrep command, one per line.
-
-  "     Works well with tab:
-
-  "       tab copen
-
-  "     <enter> jumps to the line of the error on the buffer.
-
-  " - :cc    see the current error
-  " - :cn    jump to next error on buffer.
-  " - :cp    jump to previous error
-  " - :clist   list all errors
-
-  " On the quickfix window:
-
-  " - <enter>:   jump to file and line of error under cursor. Where it is opened in controlled by the switchbuf option.
-
-  " # grep
-
-  " # vimgrep
+    " The default value for `makeprg` is `make`, so by default `:make` runs `!make`.
 
   " # copen
 
-  " # quickfix
+    " Everything that came out of commands like :make :vimgrep command, one per line.
 
-    " Same as `:make` , but specialized for generating output by grepping files.
+    " Works well with tab:
 
-    " `errorformat` is replaced by `grepformat`.
-
-    " - vimgrep uses Vim's internal regexes and is threrefore more portable
-    " - grep uses the external utility.
-
-    " Don't jump to first match automatically:
-
-      " :vimgrep YourPattern **/*
-
-    " Recursive search with:
-
-      " :vimgrep YourPattern **/*
-
-    " By default searches only on the current buffer.
-
-    " For a single file extension:
-
-      " :vimgrep YourPattern **/*.rb
-
-    " Perfect for file navigation or multifile searches. On a markdown file, try:
-
-      " vimgrep '^#' %
       " tab copen
+
+    " <enter> jumps to the line of the error on the buffer.
+
+  " # cc
+
+    " Jump the current error.
+
+  " # cn
+
+    " Jump to next error on buffer.
+
+  " # cp
+
+    " Jump to previous error.
+
+  " # clist
+
+    " List all errors.
+
+  " # grep
+
+  " # grepprg
+
+  " # vimgrep
+
+    " Grep files, and add the output lines to the quickfix.
+
+    " Hitting `<enter>` on the lines jumps to the match.
+
+    " `grep` uses the external command given by the `'grepgrp'` option, `grep -n` by defualt.
+
+    " `grepformat` is used instead of `errorformat` to parse the output.
+
+    " `vimgrep` (`vim`), uses the internal vim regexp engine.
+
+    " Search for pattern recursively under current directory:
+
+      " :vim /\vthe.pattern/ **
+
+    " Fix file extension:
+
+      " :vim /\vthe.pattern/ **.c
+
+    " Fix file extension:
 
     " And you now have a navigable index!
 
@@ -5974,11 +6011,14 @@
 
         " :help location-list
 
-  " # errorformat #grepformat
+  " # errorformat
+
+  " # grepformat
 
     " Those options affect **only** how the input is parsed, not how the quickfix looks.
 
-    " There seems to be no way of doing that: <http://stackoverflow.com/questions/11199068/how-to-format-vim-quickfix-entry/11202758#11202758>
+    " There seems to be no way of doing that:
+    " <http://stackoverflow.com/questions/11199068/how-to-format-vim-quickfix-entry/11202758#11202758>
 
 " # Python Vim scripting
 
@@ -6009,11 +6049,11 @@
 
   " Window:
 
-    " :py w = vim.windows[n]       "gets window "n"
-    " :py cw = vim.current.window    "gets the current window
-    " :py w.height = lines         "sets the window height
-    " :py w.cursor = (row, col)      "sets the window cursor position
-    " :py pos = w.cursor         "gets a tuple (row, col)
+    " :py w = vim.windows[n]      " Get window "n"
+    " :py cw = vim.current.window " Get the current window
+    " :py w.height = lines        " Set the window height
+    " :py w.cursor = (row, col)   " Set the window cursor position
+    " :py pos = w.cursor          " Get a tuple (row, col)
 
   " Buffer:
 

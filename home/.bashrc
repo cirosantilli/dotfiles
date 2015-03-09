@@ -135,22 +135,6 @@ parse_svn_repository_root() {
     alias b='zenity --info --text "BEEP!"'
     alias c='cd'
     function cdl { cd "$1" && ls; }
-    # cd Up
-    alias cda="cd $ART_DIR"
-    # cd Dot
-    alias cdd='cd ..'
-    alias cddd='cd .. && cd ..'
-    alias cdddd='cd .. && cd .. && cd ..'
-    alias cdj="cd $JAVA_DIR"
-    alias cdl="cd $LINUX_DIR"
-    alias cdn="cd $NOTES_DIR"
-    alias cdp="cd $PROGRAM_DIR"
-    # cd Slash
-    alias cds='cd -'
-    alias cdu="cd $UBUNTU_DIR"
-    # TODO make a version that also cats the command and pwd.
-    #function b { "$@"; zenity --info --text "$*"; }
-    alias c='cd'
     alias chmx='chmod +x'
     function f { find . -iname "*$1*"; }
     # -r so that ANSI color will be shown.
@@ -200,6 +184,7 @@ parse_svn_repository_root() {
     alias jaj='java -jar'
     alias jartf='jar -tf'
     alias jav='java -version'
+    function h { "$1" --help | less; }
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
     # Usage: cmd symlink-location
@@ -300,6 +285,26 @@ parse_svn_repository_root() {
 
     shopt -s checkwinsize
 
+  ## cd
+
+    alias c='cd'
+    # cd Up
+    alias cda="cd $ART_DIR"
+    # cd Dot
+    alias cdd='cd ..'
+    alias cddd='cd .. && cd ..'
+    alias cdddd='cd .. && cd .. && cd ..'
+    alias cdj="cd $JAVA_DIR"
+    alias cdl="cd $LINUX_DIR"
+    alias cdn="cd $NOTES_DIR"
+    alias cdp="cd $PROGRAM_DIR"
+    alias cdq="cd $QUARTET_DIR"
+    # cd Slash
+    alias cds='cd -'
+    alias cdu="cd $UBUNTU_DIR"
+    # TODO make a version that also cats the command and pwd.
+    #function b { "$@"; zenity --info --text "$*"; }
+
   ## ctags
 
       alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
@@ -397,6 +402,7 @@ parse_svn_repository_root() {
     alias gadcman='git add . && gcman'
     alias gadcmanpsf='git add . && gcmanpsf'
     alias gadcmm='git add -A . && git commit -m'
+    alias gadcmmp='git add -A . && git commit -m publish'
     alias gadcmmt='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
     function gadcmp { git add . && git commit -m "$1" && git push; }

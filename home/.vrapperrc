@@ -1,3 +1,4 @@
 set hlsearch
 set ignorecase
+set shiftwidth=4
 set smartcase
