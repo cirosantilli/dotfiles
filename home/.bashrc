@@ -469,6 +469,7 @@ parse_svn_repository_root() {
     # Init Add Commit
     alias ginac='git init && git add . && git commit -m "init"'
     # Restore deleted file to its latest version.
+    # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
     function git-restore-file { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
     alias gls='git ls-files'
     alias glso='git ls-files --other'
