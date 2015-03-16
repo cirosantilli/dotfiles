@@ -600,6 +600,7 @@ parse_svn_repository_root() {
     # Stop background watch.
     alias mkk='make kill'
     alias mkr='make run'
+    function mkrr { make run RUN="${1%.*}"; }
     alias mkt='make test'
     alias mku='sudo make uninstall'
     alias mkv='make view'
