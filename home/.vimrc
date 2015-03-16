@@ -11,7 +11,7 @@
     tabnext
     if expand('%:p') != ''
       tabprevious
-      execute "tabnew"
+      execute 'tabnew'
       setlocal buftype=nofile
       setlocal bufhidden=wipe
       setlocal noswapfile
@@ -1203,7 +1203,9 @@
 
       set ruler
 
-  " # statusline #laststatus
+  " # statusline
+
+  " # laststatus
 
     " Line that always shows at the bottom, above the command line.
 
@@ -1662,6 +1664,8 @@
 
   " # Compilable markup
 
+    " # Markdown
+
     " # md
 
     " # rst
@@ -1690,6 +1694,7 @@
       autocmd BufNew,BufRead *.{md,rst} setlocal wrap
 
       function! FtMkd()
+
         " Enter a good mode to edit markdown tables.
         " Always shows leftmost column.
         function! s:TableMode()
@@ -1706,18 +1711,12 @@
         endfunction
         command! -buffer TableMode call s:TableMode()
 
-        " Format table under cursor.
-        " Depends on Tabularize.
-        " function! s:TableFormat()
-        "  Tabularize /|
-        "  normal! {jj
-        "  s/ /-/g
-        " endfunction
-        " command! -buffer TableFormat call s:TableFormat()
       endfunction
       autocmd FileType mkd,markdown call FtMkd()
 
-    " # latex #tex
+    " # latex
+
+    " # tex
 
       autocmd FileType tex setlocal shiftwidth=2 tabstop=2 foldlevel=999
 
@@ -2438,24 +2437,24 @@
       while num
         let files = s:entries(fnamemodify(file,':h'))
         if a:num < 0
-        call reverse(sort(filter(files,'v:val < file')))
+          call reverse(sort(filter(files,'v:val < file')))
         else
-        call sort(filter(files,'v:val > file'))
+          call sort(filter(files,'v:val > file'))
         endif
         let temp = get(files,0,'')
         if temp == ''
-        let file = fnamemodify(file,':h')
+          let file = fnamemodify(file,':h')
         else
-        let file = temp
-        while isdirectory(file)
-          let files = s:entries(file)
-          if files == []
-      " TODO: walk back up the tree and continue
-          break
-          endif
-          let file = files[num > 0 ? 0 : -1]
-        endwhile
-        let num += num > 0 ? -1 : 1
+          let file = temp
+          while isdirectory(file)
+            let files = s:entries(file)
+            if files == []
+              " TODO: walk back up the tree and continue
+              break
+            endif
+            let file = files[num > 0 ? 0 : -1]
+          endwhile
+          let num += num > 0 ? -1 : 1
         endif
       endwhile
       return file
@@ -2671,16 +2670,20 @@
 
       " Open URL (local file / internet) under cursor using appropriate program.
 
-      " Program used to open:
+      " This is decided by the netrw built-in plugin.
 
-        let g:netrw_browsex_viewer = "xdg-open"
+      " # netrw
 
-      " If the input passed to xdg-open does not start with the protocol (http://)
-      " file:// is assumed.
+        " Program used to open:
 
-      " The function that opens the URL is:
+          let g:netrw_browsex_viewer = 'xdg-open'
 
-        " call netrw#NetrwBrowseX('http://example.com', 0)
+        " If the input passed to xdg-open does not start with the protocol (http://)
+        " file:// is assumed.
+
+        " The function that opens the URL is:
+
+           "call netrw#NetrwBrowseX('http://example.com', 0)
 
     " # gt
 
@@ -3531,15 +3534,22 @@
 
 " # Scope
 
-  " -  `g`: global. This is the default scope, even inside functions.
+  " -  `g:`: global. This is the default scope, even inside functions.
 
-  " -  `s`:     local to current  script file
+  " -  `s:`: local to current script file.
 
-  " -  `w`:               editor window
+       " If you are going to call such a function from a mapping,
+       " you need to define the mapping with `<SID>` as `nnoremap call <SID>Function<cr>
+       " which magically expands to a unique internal name.
 
-  " -  `t`:               editor tab
+       " `s:` is also magic in the sense that `s:` functions
+       " don't need to start with a capital letter.
 
-  " -  `b`:               editor buffer
+  " -  `w:`: editor window
+
+  " -  `t:`: editor tab
+
+  " -  `b:`: editor buffer
 
       " Try:
 
@@ -3553,7 +3563,7 @@
 
         " if b:buffer != 1 | throw 'assertion failed' | end
 
-  " -  `l`: defined inside a function.
+  " -  `l:`: defined inside a function.
 
       " function! F()
         " let l:var = 1
@@ -3564,6 +3574,8 @@
     " globals.
 
   " - `a`: a parameter passed to the current function
+
+      " They are readonly.
 
       " function! F(param)
         " echo a:param
@@ -3582,30 +3594,73 @@
 
       " if !get(g:, "option_name", 0) | echo "undefined or 0" | fi
 
-  " # sid
+" # How to define a mapping in a plugin
 
-    " Make helper functions or variables that are unique to the script
-    " and cannot be called from outside.
+    " help 41
+
+  " # Fully blown map
+
+    " Features:
+
+    " - with GUI menu item
+
+    " - helper function Add invisible outside script
+
+    " - mapping can be customized from `~/.vimrc` with
+
+      " - leader
+      " - `map anything <plug>TypecorrAd`
+
+    " In ftplugin:
+
+      "	if !hasmapto('<plug>PluginNameLocalFunction')
+        " map <unique> <leader>a  <plug>PluginNameLocalFunction
+      "	endif
+      "	noremap <unique> <script> <plug>PluginNameLocalFunction  <sid>LocalFunction
+      "	noremenu <script> Plugin.Local\ Function\ label  <sid>LocalFunction
+      "	noremap <sid>LocalFunction  :call <sid>LocalFunction(expand("<cword>"), 1)<cr>
+      "	function s:LocalFunction(from, correct)
+      " endfunction
+
+    " Note that `noremap <script>` is the same as `map <script>`.
+
+  " # SID
 
     " Example, in a plugin:
 
       " function! s:F()
-        " retu 1
-        " endfunction
+        " return 1
+      " endfunction
 
-      " nn <buffer> call <SID>F()
+      " nnoremap f call <SID>F()<cr>
 
-    " Now F can only be called as a helper inside the plugin
+    " Now `F` can only be called as a helper inside the mapping,
     " and not directly to users of the plugin.
 
+    " SID is needed here because otherwise `F` would not be found
+    " from the calling context, since `F` is script specific.
+
     " The advantage of this is that you can make unique short names
-    " for script only functions.
+    " for script helper functions, i.e. `F` instead of `MyScript_F`.
 
-  " # plug
+  " # Plug
 
-  " # <plug>
+  " # <Plug>
 
-" # variables
+    " Generate a mapping that cannot be run with any keyboard input sequence.
+
+    " Application: defining mappings in script while allowing the user to override them,
+    " without exposing script specific helper functions.
+
+    " This works because while it is not possible to input the sequence via keyboard,
+    " `map` commands can still expand recursively to it, e.g.:
+
+       "nnoremap <Plug>a :echo 1<cr>
+       "map b <Plug>a
+
+    " Now `normal b` will echo `1`.
+
+" # Variables
 
   " Must use let always to assign:
 
@@ -3613,7 +3668,7 @@
 
   " Can reassign:
 
-    " let a = "abc"
+    " let a = 'abc'
     " let a = 1
 
   " # exists
@@ -3743,6 +3798,10 @@
       " let x = remove(d, 1)
       " if x != 'one' | throw 'assertion failed' | end
 
+" # Character
+
+  " No such variable type. Use string instead.
+
 " # String
 
   " Escape:
@@ -3777,6 +3836,7 @@
     " Case sensitive:
 
       " "abc" ==# "Abc"
+      " "abc" !=# "abcd"
 
     " Case insensitive:
 
@@ -3853,13 +3913,18 @@
       " echo 1
     " en
 
-  " single line:
+  " Single line:
 
     " if 0 | echo 0 | elseif 1 | echo 1 | else | echo 2 | end
 
   " # boolean operations
 
-    " Like in C, all that matters is =0 or !=0:
+  " # true
+
+  " # false
+
+    " Like in C, all that matters is `== 0` or `!= 0`:
+    " there is no buil-in true or false types or constants.
 
       " if !0   != 1 | throw 'assertion failed' | end
       " if !1   != 0 | throw 'assertion failed' | end
@@ -3928,9 +3993,10 @@
 
 " # function
 
-  " Must start with uppercase char
+  " Name must start with uppercase character, or be `s:` scoped.
+  " The name may also contain `#` in the context of autoloading.
 
-  " '!' means can override existing func
+  " '!' means can override existing function.
 
   " Cannot use | for single line
 
@@ -3940,7 +4006,9 @@
 
     " if F(1, 2) != 3 | throw 'assertion failed' | end
 
-  " # vararg #...
+  " # vararg
+
+  " # ...
 
       " function! F(a, b, ...)
         " for i in range(a:0)
@@ -3980,7 +4048,7 @@
 
       " if G(0, 1) != [0,1] | throw 'assertion failed' | end
 
-  " # multiple return values
+  " # Multiple return values
 
     " Put them inside a list, and unpack at return time:
 
@@ -4024,7 +4092,7 @@
       " if F(2, 20) != 122 | throw 'assertion failed' | end
       " if F(3, 30, 300) != 333 | throw 'assertion failed' | end
 
-  " # assign function to a variable
+  " # Assign function to a variable
 
     " Must use the `function` function:
 
@@ -4111,6 +4179,8 @@
 
     " LIke `echomsg`, but highlight the message with the error highlight,
     " which is much more visible in sane colorthemes.
+
+    " Requires the user to hit Enter afterwards.
 
   " # messages
 
@@ -5012,7 +5082,8 @@
   " # ! versions
 
     " Without exclamation: map on all command like modes: normal, visual, ...
-    " With         :      insert      : insert, command, ...
+
+    " With: map on insert      : insert, command, ...
 
       " noremap  a b
       " noremap! a b
@@ -5034,7 +5105,7 @@
 
   " # unmap
 
-    " rever a map to its vim default:
+    " Revert a map to its vim default:
 
       " map a b
       " unmap a
@@ -5445,7 +5516,7 @@
 
     " # cursor()
 
-      " Set position. Subset of `setpos`. Does not affect the jump list:
+      " Set cursor position. Subset of `setpos`. Does not affect the jump list:
 
         " cursor(line, col)
 
@@ -5544,7 +5615,7 @@
 
       " Get content of cur line:
 
-        " echo getline(".")
+        " echo getline('.')
 
       " Get a list of line strings from line 1 to line 3:
 
@@ -5668,7 +5739,7 @@
 
   " Slightly Pearl like but... not really. Tons of extensions. This shall focus on differences from perl.
 
-  " #magic
+  " # magic
 
     " By default must escape some chars for them *to be* magic but not others...
 
@@ -5754,9 +5825,9 @@
       " - \1       mathing group 1. can be used on search
       " - /\(\w\)\1  search equal adjacent chars
 
-  " #Major differences from Perl
+  " # Major differences from Perl
 
-    " #Classes
+    " # Classes
 
       " - \_s  a whitespace (space or tab) or newline character
       " - \_^  the beginning of a line (zero width)
@@ -5765,7 +5836,11 @@
 
       " Many more.
 
-    " #lookahead #lookbehind #@=
+    " # Lookahead
+
+    " # lookbehind
+
+    " # @=
 
       " Unlike Perl notation, comes outside the parenthesis with an `@` sign:
 
@@ -5775,13 +5850,17 @@
       " - `foo(bar)@<!`: negative lookbehind
       " - `foo(bar)@>`: TODO
 
-      " #\zs #\ze
+      " # \zs
+
+      " # \ze
 
         " Also possible in a more restricted but sometimes convenient notation `\zs`,  `\ze` notation:
 
         " - `ab\zscd\zeef` is the same as: `(ab)@<=cd(ef)@=`
 
-    " #percent #%
+    "  #percent
+
+    "  # %
 
       " The percent sign does a bunch of non-Perl new stuff:
 
@@ -6100,9 +6179,9 @@
 
 " # startup
 
-" # initialization
+" # Initialization
 
-  " <http://www.22ideastreet.com/debug/vim-directory-structure/>
+  " http://www.22ideastreet.com/debug/vim-directory-structure/
 
   " Help on startup sequence:
 
@@ -6113,9 +6192,7 @@
 
     " :scriptnames
 
-  " # where something is set
-
-    " See verb.
+  " # Where something is set
 
   " # verbose
 
@@ -6135,13 +6212,18 @@
 
   " # plugins
 
-    " One very important thing that is executed **after** reading `.vimrc`:
+    " One very important thing that is executed *after* reading `.vimrc`:
 
       " runtime! plugin/**/*.vim
 
-    " This is how plugins are loaded automatically.
+    " This is how plugins are loaded automatically once every time Vim starts.
 
-  " # runtimepath #rtp
+    " The other major way is through ftplugin, but those have to be run once per
+    " buffer since they depend on the file type.
+
+  " # runtimepath
+
+  " # rtp
 
       " set rtp?
 
@@ -6149,11 +6231,11 @@
 
     " Comma separated list of palces where TODO
 
-    " Important stuff that is there by default on linux:
+    " Important stuff that is there by default on Linux:
 
     " - `/usr/share/vim` and some subdirs. Installation default.
     " - `~/.vim/`.     User managed.
-    " - `~/.vim/after/`. User managed. Comes after plugins.
+    " - `~/.vim/after/`. User managed. Comes after Plugins.
 
     " # runtime
 
