@@ -7,6 +7,6 @@ success=0
 homesick pull || success=1
 git-sync-dirs | while read path; do
   printf "\n\e[1;33m## $path\e[0m\n\n"
-  cd "$path" && git pull -q || success=1
+  cd "$path" && git pull || success=1
 done
 exit "$success"
