@@ -1714,9 +1714,9 @@
       endfunction
       autocmd FileType mkd,markdown call FtMkd()
 
-    " # latex
+    " # LaTeX
 
-    " # tex
+    " # TeX
 
       autocmd FileType tex setlocal shiftwidth=2 tabstop=2 foldlevel=999
 
@@ -1744,8 +1744,17 @@
       endfunction
       " au BufEnter,BufRead *.tex call MapAllBuff('<F4>', ':cal LatexForwardOkular("_out/")<cr>')
 
-  " # Interpreted languages #python #bash #perl #ruby
+  " # Interpreted languages
 
+  " # Bash
+
+  " # Python
+
+  " # Perl
+
+  " # Ruby
+
+    autocmd BufNew,BufRead Vagrantfile setlocal filetype=ruby
     autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
     autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
