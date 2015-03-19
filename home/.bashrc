@@ -132,7 +132,7 @@ parse_svn_repository_root() {
     alias ack='ack-grep --smart-case'
     # Beep. Notify after a long command. Usage:
     # long-command;b
-    alias b='zenity --info --text "BEEP!"'
+    alias b='zenity --info --text "$(echo "$?"; pwd; )"'
     alias c='cd'
     function cdl { cd "$1" && ls; }
     alias chmx='chmod +x'
