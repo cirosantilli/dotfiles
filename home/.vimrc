@@ -4491,7 +4491,7 @@
           endif
         endfunction
 
-        command! Wbwf call WipeBuffersWithoutFiles()
+        command! WipeBuffersWithoutFiles call WipeBuffersWithoutFiles()
 
   " # scratch buffer
 
