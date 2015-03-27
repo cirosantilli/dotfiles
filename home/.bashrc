@@ -719,6 +719,7 @@ parse_svn_repository_root() {
     alias mvej='mvn exec:java'
     alias mvi='mvn install'
     alias mvo='mvn compile'
+    alias mvs='mvn surefire-report:report-only && xdg-open target/site/surefire-report.html'
     alias mvp='mvn package'
     alias mvt='mvn test'
     function mvtt { mvn test "-Dtest=$1"; }
