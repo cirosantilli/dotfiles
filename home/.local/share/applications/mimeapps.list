@@ -1,0 +1,35 @@
+[Added Associations]
+application/epub+zip=fbreader-3.desktop;
+application/pdf=kde4-okular.desktop;
+application/vnd.rn-realmedia=vlc-6.desktop;
+application/x-mobipocket-ebook=fbreader-2.desktop;
+application/zip=file-roller.desktop;
+audio/flac=totem.desktop;
+audio/mpeg=vlc-8.desktop;totem.desktop;
+audio/x-mpegurl=vlc-7.desktop;
+image/gif=xdg-open-2.desktop;
+image/jpeg=eog.desktop;evince.desktop;
+image/png=xdg-open.desktop;
+image/svg+xml=firefox.desktop;
+image/vnd.microsoft.icon=xdg-open-3.desktop;
+text/html=firefox.desktop;
+text/plain=totem.desktop;
+text/x-bibtex=texmaker.desktop;
+text/x-makefile=gvim-3.desktop;
+text/x-python=gvim-2.desktop;
+video/mp4=vlc-2.desktop;
+video/mpeg=vlc-3.desktop;
+video/ogg=vlc-4.desktop;
+video/x-matroska=vlc-10.desktop;totem.desktop;vlc-5.desktop;
+video/x-msvideo=vlc-9.desktop;vlc.desktop;
+video/x-ogm+ogg=vlc-3-2.desktop;
+
+[Default Applications]
+audio/x-vorbis+ogg=rhythmbox.desktop
+image/jpeg=eog.desktop
+text/calendar=xfcalendar.desktop
+video/x-ogm+ogg=totem.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/mailto=thunderbird.desktop
+application//usr/share/substance-composer/mime/x-sdf=/usr/share/substance-composer/substance-composer.desktop

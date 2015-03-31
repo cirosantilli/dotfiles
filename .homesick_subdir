@@ -2,3 +2,4 @@ bin
 .vim/spell
 .vim/snippets
 .config/autostart
+.local/share/applications
