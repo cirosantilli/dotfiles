@@ -708,7 +708,7 @@ parse_svn_repository_root() {
     alias mvca='mvn clean assembly:single'
     alias mvcca='mvn clean compile assembly:single'
     alias mvccej='mvn clean compile exec:java'
-    alias mvco='mvn clean compile'
+    alias mvcc='mvn clean compile'
     alias mvct='mvn clean test'
     alias mvci='mvn clean install'
     alias mvcis='mvn clean install -DskipTests'
