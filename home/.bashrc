@@ -500,6 +500,7 @@ parse_svn_repository_root() {
     alias gplr='git pull --rebase'
     alias gplum='git pull up master'
     alias gplrum='git pull --rebase up master'
+    alias gplo='git pull origin'
     alias gplom='git pull origin master'
     alias grb='git rebase'
     alias grbc='git rebase --continue'
