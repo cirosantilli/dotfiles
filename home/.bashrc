@@ -416,6 +416,7 @@ parse_svn_repository_root() {
     # BRanch Graph
     alias gbrg='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     alias gbrm='git branch -m'
+    function gbruo { git branch -u "origin/$1"; }
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
     alias gclb='git clone --bare'
