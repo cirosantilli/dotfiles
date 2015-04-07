@@ -179,12 +179,6 @@ parse_svn_repository_root() {
     function gccs { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
     function gpps { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
-    function ja { java "${1%.*}"; }
-    alias jac='javac'
-    function jae { java -ea "${1%.*}"; }
-    alias jaj='java -jar'
-    alias jartf='jar -tf'
-    alias jav='java -version'
     function h { "$1" --help | less; }
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
@@ -581,6 +575,16 @@ parse_svn_repository_root() {
     alias hss='homesick status'
     alias hsu='homesick push'
     alias hst='homesick track'
+
+  ## Java
+
+    function ja { java "${1%.*}"; }
+    alias jac='javac'
+    function jae { java -ea "${1%.*}"; }
+    alias jaj='java -jar'
+    alias jartf='jar -tf'
+    alias jav='java -version'
+    function jap { javap -c -constants -private -verbose "${1%.*}.class"; }
 
   ## jekyll
 

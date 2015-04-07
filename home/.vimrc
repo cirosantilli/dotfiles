@@ -2987,20 +2987,42 @@
 
 " # invocation
 
-  " # c #+
+  " # c
 
-    " Run Vim commands from the command line:
+  " # +
 
-      " vim +PluginInstall +qall
+      " vim -c 'let a = 1' -c 'let b = 2'
 
     " Same as:
 
-      " vim -c PluginInstall -c qall
+      " vim +'let a = 1' +'let b = 2'
 
-    " Same as doing form inside of Vim:
+    " Leaves you in a new Vim session, and:
 
-      " PluginInstall
-      " qall
+      " echo a
+      " echo b
+
+    " Shows:
+
+      " 1
+      " 2
+
+    " Run Vim commands from the command line
+
+      " http://stackoverflow.com/questions/23322744/vim-run-commands-from-bash-script-and-exit-without-leaving-shell-in-a-bad-state
+
+      " Use case: install plugins:
+
+        " vim +PluginInstall +qall
+
+      " Same as:
+
+        " vim -c PluginInstall -c qall
+
+      " Same as doing form inside of Vim:
+
+        " PluginInstall
+        " qall
 
   " # u
 
@@ -3207,6 +3229,10 @@
 
       " h range()
 
+    " For registers, use double quotes:
+
+      " h "%
+
     " For default mappings, use:
 
       " h a
@@ -3308,7 +3334,7 @@
       " ------------------------------
       " 1.1Header name     *h2-tag*
 
-" # ex command
+" # ex commands
 
 " # commands
 
@@ -3475,7 +3501,36 @@
 
         " sort u
 
-" # registers
+    " # !
+
+      " Execute bash command:
+
+        " ! echo a
+
+      " `%` and family get expanded by default as with `expand`:
+
+        " ! echo %
+
+      " With a range, execute a command, pass range as stdin,
+      " and replace the contents of the range with the stdout.
+
+      " E.g.: before:
+
+        " d
+        " c
+        " b
+        " a
+
+      " Command: `2,3!sort`
+
+      " After:
+
+        " d
+        " b
+        " c
+        " a
+
+" # Registers
 
   " Store user defined text, and things used as side effects of other commands,
   " e.g. q` macro recording or `%` for the name of the current file.
@@ -3501,7 +3556,7 @@
   " - `_`: black hole register: `/dev/null` of registers.
   " - `/`: last `/` search
 	" - `.`: last inserted text
-	" - `%`: name of the current file.
+	" - `%`: basename name of the current file
 	" - `#`: alternate file.
 	" - `:`: last executed command-line
 
@@ -4149,15 +4204,16 @@
     " finally:
       " echo 'finnally'
     " endt
+
 " # so
 
   " exe from given file (Source)
 
-  " source this file:
+  " Source this file:
 
     " so %
 
-  " any vim output (ex `ec 1`) done in that file will be interpreted as an error.
+  " Any vim output (ex `ec 1`) done in that file will be interpreted as an error.
 
   " # fini
 
@@ -5088,7 +5144,7 @@
       " noremap! a b
       " noremap! b c
 
-  " # ! versions
+  " # ! version of commands
 
     " Without exclamation: map on all command like modes: normal, visual, ...
 
@@ -5103,9 +5159,9 @@
 
     " Makes no sense
 
-  " # override
+  " # Override map
 
-    " whatever comes after wins:
+    " Whatever comes after wins:
 
       " map! a b
       " map! a c
