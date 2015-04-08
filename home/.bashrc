@@ -578,9 +578,9 @@ parse_svn_repository_root() {
 
   ## Java
 
-    function ja { java "${1%.*}"; }
+    function ja { java "${1%.*}" "${*:2}"; }
     alias jac='javac'
-    function jae { java -ea "${1%.*}"; }
+    function jae { java -ea "${1%.*}" "${*:2}"; }
     alias jaj='java -jar'
     alias jartf='jar -tf'
     alias jav='java -version'
@@ -712,13 +712,10 @@ parse_svn_repository_root() {
     alias mva='mvn assembly:single'
     alias mvc='mvn clean'
     alias mvca='mvn clean assembly:single'
-    alias mvcca='mvn clean compile assembly:single'
-    alias mvccej='mvn clean compile exec:java'
-    alias mvcc='mvn clean compile'
+    alias mvca='mvn clean install -DskipTests assembly:single'
+    alias mvci='mvn clean install -DskipTests'
+    alias mvcj='mvn clean install -DskipTests && mvn exec:java'
     alias mvct='mvn clean test'
-    alias mvci='mvn clean install'
-    alias mvcis='mvn clean install -DskipTests'
-    alias mvciej='mvn clean install && mvn exec:java'
     alias mvd='mvn javadoc:javadoc'
     # Doc View
     alias mvdv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
