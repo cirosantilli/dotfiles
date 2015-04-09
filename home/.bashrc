@@ -523,6 +523,7 @@ parse_svn_repository_root() {
     alias gsu='git submodule'
     alias gsua='git submodule add'
     alias gta='git tag'
+    alias gtac='git tag --contains'
     alias gtas='git tag | sort -V'
     alias gtr='git ls-tree HEAD'
 
