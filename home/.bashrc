@@ -137,8 +137,7 @@ parse_svn_repository_root() {
     function cdl { cd "$1" && ls; }
     alias chmx='chmod +x'
     function f { find . -iname "*$1*"; }
-    # -r so that ANSI color will be shown.
-    alias l='less -r'
+    alias l='less'
     # External IP.
     # DropBox Symlink. Move the given file into Dropbox,
     # and symlink to it from the old location.
@@ -150,7 +149,6 @@ parse_svn_repository_root() {
       mv "$src" "$dest"
       ln -s "$dest/$src" "${src%/}"
     }
-    alias eip='curl ipecho.net/plain'
     alias cla11='clang++ -std=c++11'
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
@@ -158,9 +156,15 @@ parse_svn_repository_root() {
     alias e='echo'
     # echo Exit status
     alias ece='echo "$?"'
+    alias eclipse='nohup ~/bin/eclipse/eclipse >/dev/null &'
+    alias eip='curl ipecho.net/plain'
+    alias envg='env | grep -E'
     alias fbr='find_basename_res.py'
+    function filw { file "$(which "$1")"; }
     alias g='grep -E'
     alias gi='grep -Ei'
+    alias gr='grep -ER'
+    alias gri='grep -ERi'
     alias fmmmr='find-music-make-m3u .'
     # GCC from String.
     #
@@ -190,8 +194,9 @@ parse_svn_repository_root() {
       mv "$link_dest" "$link_location"
     }
     alias m='man'
-    # mo because mv is taken by Maven.
-    function mob { mv "$1" "$1.bak"; }
+    alias m2='man 2'
+    function bak { mv "${1%/}" "${1%/}.bak"; }
+    function kab { p="${1%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; }
     alias md='mkdir'
     # Make Dir Cd
     function mdc { mkdir "$1" && cd "$1"; }
@@ -212,6 +217,19 @@ parse_svn_repository_root() {
     alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
     alias rlf='readlink -f'
+    # Run N times. Parallel programming tests.
+    function runn {
+      n="$1"
+      shift
+      i=0
+      while [ "$i" -lt "$n" ]; do
+          if ! $*; then
+            echo "FAIL i = $i"
+            break
+          fi
+          i="$(($i + 1))"
+      done
+    }
     alias pingg='ping google.com'
     alias psg='sudo ps aux | grep -i'
     alias pscpu='sudo ps aux --sort "%cpu"'
@@ -234,12 +252,12 @@ parse_svn_repository_root() {
     # Normally, sudo cannot see your personal path variable. now it can:
     #alias sudo='sudo env PATH=$PATH'
     alias tree='tree --charset=ascii'
+    alias t='type'
     alias v='vim'
-    alias vrmm='vim README.md'
+    function viw { vim "$(which "$1")"; }
+    alias vir='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
     function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
-    alias x='xsel --clipboard'
-    alias y='xsel'
     alias xar="xargs -I'{}'"
     alias xar0="xargs -0I'{}'"
     function xselssh { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
@@ -260,11 +278,21 @@ parse_svn_repository_root() {
       alias acse='apt-cache search'
       alias acde='apt-cache depends'
       alias acsh='apt-cache show'
+      alias afls='apt-file list'
       alias afse='apt-file search'
-      alias afsh='apt-file show'
+      # Binary
+      function afseb { apt-file search "$(which "$1")"; }
+      alias agbd='apt-get build-dep'
+      alias agso='apt-get source'
+      alias dpL='dpkg -L'
+      alias dpS='dpkg -S'
+      # Binary
+      function dpSb { dpkg -S "$(which "$1")"; }
+      alias dpSb='dpkg -S'
       alias dplg='dpkg -l | grep -Ei'
       alias saii='sudo aptitude install'
       alias sair='sudo aptitude remove'
+      alias sais='sudo aptitude source'
       alias saiu='sudo aptitude update'
       alias saip='sudo aptitude purge'
       function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
@@ -279,6 +307,14 @@ parse_svn_repository_root() {
     # if necessary, update the values of LINES and COLUMNS.
 
     shopt -s checkwinsize
+
+  ## Binutils
+
+    alias obd='objdump -Cdr'
+    alias obS='objdump -CSr'
+    alias rea='readelf -aW'
+    alias reS='readelf -SW'
+    alias res='readelf -sW'
 
   ## cd
 
@@ -302,7 +338,8 @@ parse_svn_repository_root() {
 
   ## ctags
 
-      alias ctam="ctags -R --c-kinds=-m" #ctags without member fields!
+      # ctags Recursive and without member fields (-m)
+      alias ctagsr='ctags -R --c-kinds=-m'
 
   ## dirs
 
@@ -384,6 +421,11 @@ parse_svn_repository_root() {
       # Add git and svn branch names
       export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
 
+  ## gdb
+
+    alias gdbm='gdb -ex "break main" -ex "run"'
+    alias gdbs='gdb -ex "break _start" -ex "run"'
+
   ## Git
 
     export GIT_EDITOR="$vim"
@@ -408,7 +450,6 @@ parse_svn_repository_root() {
     function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
     alias gbra='git branch -a'
     # BRanch Graph
-    alias gbrg='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     alias gbrm='git branch -m'
     function gbruo { git branch -u "origin/$1"; }
     alias gbrv='git branch -vv'
@@ -416,8 +457,10 @@ parse_svn_repository_root() {
     alias gclb='git clone --bare'
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
+    alias gcft='git cat-file -t'
     alias gcm='git commit'
     alias gcmm='git commit -m'
+    alias gcmmb='git commit -m bak'
     alias gcmmt='git commit -m tmp'
     alias gcma='git commit --amend'
     alias gcman='git commit --amend --no-edit'
@@ -440,6 +483,7 @@ parse_svn_repository_root() {
     alias gcn='git config'
     alias gcng='git config --global'
     alias gcngh='git config user.email "ciro.santilli@gmail.com"'
+    alias gcnls='git config user.name "Ciro Santilli 六四事件 法轮功"'
     alias gcp='git cp'
     alias gcr='git cherry-pick'
     alias gd='git diff'
@@ -458,6 +502,8 @@ parse_svn_repository_root() {
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
     function gfeommcob { git fetch origin master:master && git checkout -b "$1" master; }
+    alias gfp='git format-patch'
+    alias gfpx='git format-patch --stdout HEAD~ | xsel --clipboard'
     alias gg='git grep --color'
     alias ggi='git grep --color -i'
     alias gka='gitk --all'
@@ -477,7 +523,10 @@ parse_svn_repository_root() {
     alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
     # One line Graph
     alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
+    alias gloogs='git log --all --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     alias glop='git log -p'
+    # Find where that feature entered the code base.
+    alias glopr='git log -p --reverse'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
     alias gme='git merge'
@@ -488,6 +537,8 @@ parse_svn_repository_root() {
     alias gppp='git push prod prod'
     alias gps='git push'
     alias gpsf='git push -f'
+    # Wobble
+    alias gpsfw='git push -f origin HEAD~:master && git push -f'
     alias gpsum='git push -u mine'
     alias gpsu='git push -u'
     alias gpsuom='git push -u origin master'
@@ -524,6 +575,8 @@ parse_svn_repository_root() {
     alias gsua='git submodule add'
     alias gta='git tag'
     alias gtac='git tag --contains'
+    # Git TAg Date
+    alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
     alias gtas='git tag | sort -V'
     alias gtr='git ls-tree HEAD'
 
@@ -601,18 +654,26 @@ parse_svn_repository_root() {
     alias mkdc='make distclean'
     alias mkde='make deps'
     alias mkh='make help'
+    alias mkhl='make help | less'
     # It is better to `make` first without the sudo so that the generated build
     # will not be owned, or else it could only be cleaned with by sudo.
-    alias mki='make && sudo make install'
+    alias mki='make install'
+    alias smki='sudo make install'
     alias mkir='make && sudo make install && make install-run'
+    alias mkj='make -j5'
     # Stop background watch.
     alias mkk='make kill'
+    #echo "'\$#'"
+    # List targets.
+    alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
+                                                    # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
     alias mkr='make run'
     function mkrr { make run RUN="${1%.*}"; }
     alias mkt='make test'
     alias mku='sudo make uninstall'
     alias mkv='make view'
     alias mkw='make watch'
+    alias tmkjb='time make -j5;b'
 
     # From Git root:
 
@@ -694,12 +755,13 @@ parse_svn_repository_root() {
     alias myr='mysql -u root -p'
 
     # Before using this you ran:
-    #mysql -u root -h localhost -p -e '
-      #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
-      #CREATE DATABASE test;
-      #GRANT ALL ON a.* TO 'a'@'localhost';
-    #'
-    alias myt='mysql -u a -h localhost -pa a' #MYsql Test
+      #mysql -u root -h localhost -p -e '
+        #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
+        #CREATE DATABASE test;
+        #GRANT ALL ON a.* TO 'a'@'localhost';
+      #'
+    # MYsql Test
+    alias myt='mysql -u a -h localhost -pa a'
 
   ## music
 
@@ -819,6 +881,7 @@ parse_svn_repository_root() {
     alias vdef='vagrant destroy -f'
     alias vdu='vagrant destroy -f && vagrant up'
     alias vdus='vagrant destroy -f && vagrant up && vagrant ssh'
+    alias vha='vagrant halt'
     alias vpr='vagrant provision'
     alias vss='vagrant ssh'
     alias vup='vagrant up'
@@ -833,7 +896,19 @@ parse_svn_repository_root() {
       PATH="/Applications/MacVim.app/Contents/MacOS/:${PATH}"
     fi
 
-  ## source lines and path modifications
+  ## x clipboard
+
+    alias exx='expand | x'
+    alias x='xsel --clipboard'
+    alias xex='x | expand | x'
+    alias y='xsel'
+    # Add 4 spaces to every line and save to clipboard.
+    # For markdown, so also expand.
+    alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | x'
+    # Last Command to clipboard.
+    alias xlc='fc -ln -1 | sed "s/\t //" | x'
+
+  ## Source lines and path modifications
 
     # Should come at the end.
 

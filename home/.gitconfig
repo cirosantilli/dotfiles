@@ -50,7 +50,7 @@
 [status]
 	short = true
 [user]
-	email = csa@quartetfs.com
+	email = ciro.santilli@gmail.com
 	name = Ciro Santilli
 [pull]
 	rebase = true

@@ -3,3 +3,4 @@ bin
 .vim/snippets
 .config/autostart
 .local/share/applications
+.cups

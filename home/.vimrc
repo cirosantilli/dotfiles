@@ -1,6 +1,5 @@
 " TODO why does this break things?
 " I wish I could use it to avoid having one per augroup block.
-
 "autocmd!
 
 " # Functions
@@ -113,9 +112,21 @@
 
     " All Copy.
     command! Ac normal! ggVG"+y<c-o><c-o>
+    command! -range Ex <line1>,<line2>!expand -t4
+    " Find Git conflict
+    command! Hd HeaderDecrease
+    command! Hi HeaderIncrease
+    command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
+    " Toggle the status bar between mode 0 and 2.
+    command! Sl let &laststatus = ((!&laststatus) * 2)
+    command! Ss set spell!
+    command! St set tabstop=8
+    command! Sw set wrap!
+    command! -nargs=1 Tt tab tag <args>
     " Search in all files under current directory recursively.
     command! -nargs=1 Vim vimgrep/\v<args>/ **
-    command! Sw set wrap!
+    " Write current file with sudo.
+    command! Wsudo write !sudo tee %
 
   " Go to important directories:
 
@@ -130,10 +141,10 @@
 
   " Edit important files:
 
-    command! Eb drop ~/.bashrc
-    command! Eg drop ~/.gitconfig
-    command! Ep drop ~/.profile
-    command! Ev drop ~/.vimrc
+    command! Eb tabedit ~/.bashrc
+    command! Eg tabedit ~/.gitconfig
+    command! Ep tabedit ~/.profile
+    command! Ev tabedit ~/.vimrc
 
 " # Plugins
 
@@ -238,6 +249,10 @@
 
     " It would be cool however if the popups kept opening automatically after the first <c-p>
     " until I select a choice.
+
+  " # cscope
+
+    Plugin 'vim-scripts/cscope.vim'
 
   " # neocomplcache
 
@@ -747,13 +762,16 @@
     " But sometimes I want to differentiate comments from neighbouring code,
     " and do that by making the code have no spaces.
 
-      function! NERDSpaceDelimsOff()
-        let a:NERDSpaceDelimsOld = g:NERDSpaceDelims
-        let g:NERDSpaceDelims = 0
-        call NERDComment('n', 'toggle')
-        let g:NERDSpaceDelims = a:NERDSpaceDelimsOld
-      endfunction
-      autocmd Bufenter * noremap <leader>m<space> :call NERDSpaceDelimsOff()<cr>
+      augroup NerdCommenter
+        autocmd!
+        function! NERDSpaceDelimsOff()
+          let a:NERDSpaceDelimsOld = g:NERDSpaceDelims
+          let g:NERDSpaceDelims = 0
+          call NERDComment('n', 'toggle')
+          let g:NERDSpaceDelims = a:NERDSpaceDelimsOld
+        endfunction
+        autocmd Bufenter * noremap <leader>m<space> :call NERDSpaceDelimsOff()<cr>
+      augroup END
 
   " # surround
 
@@ -862,6 +880,10 @@
 
         " Bundle 'tpope/vim-markdown'
 
+      " Turn off a map:
+
+        "map <Plug> <Plug>Markdown_OpenUrlUnderCursor
+
     " # Instant markdown
 
       " Preview server on localhost:8090.
@@ -965,7 +987,10 @@
 
       Plugin 'junegunn/vader.vim'
 
-      autocmd FileType vader call MapAllBuff('<F6>', ':write<cr>:Vader<cr>')
+      augroup Vader
+        autocmd!
+        autocmd FileType vader call MapAllBuff('<F6>', ':write<cr>:Vader<cr>')
+      augroup END
 
   " # editorconfig
 
@@ -1048,7 +1073,7 @@
       " when those are placed in the current directory, which
       " is a very common convention!
 
-        set wildignore+=*.class,*.pyc,*.o,*.pdf
+        set wildignore+=*.class,*.pyc,*.o,*.out,*.pdf
 
       " Then in the rare cases that you want to open those up,
       " just expand and change the extenion, or change wildignore for a session.
@@ -1262,10 +1287,10 @@
 
     set backspace=indent,eol,start
 
-  " # indentation
+  " # Indentation
 
     set expandtab     " Insert spaces instead of tabs.
-    set tabstop=4     " A tab viewed as 8 spaces.
+    set tabstop=4     " A tab viewed as N spaces.
     " set softtabstop " TODO
     set smarttab      " Insert tabs on the start of a line according to
                       " shiftwidth, not tabstop.
@@ -1525,6 +1550,12 @@
 
         " TODO how to set possessive apostrophe to correct automatically, i.e.: `abc's` correct if `abc` correct?
 
+      " Chinese spelling
+
+        " To ignore it: http://unix.stackexchange.com/questions/192817/complete-language-abbreviation-list-for-vims-set-spelllang-option
+
+        " On recent Vim versions, the magic `cjk` value for `spelllang` ignores Chinese.
+
   " # matchit
 
     " Allows '%' to jump between open 'if' 'else', 'do', 'done', etc. instead.
@@ -1621,10 +1652,6 @@
 
   " # XML
 
-      autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
-      autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
-      autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
-
       function! FtHtml()
         call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
         function! HeaderIncrease()
@@ -1640,11 +1667,21 @@
           silent! %substitute/<\/h1/<\/h2/g
         endfunction
       endfunction
-      autocmd FileType html call FtHtml()
+
+      augroup Html
+        autocmd!
+        autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
+        autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
+        autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
+        autocmd FileType html call FtHtml()
+      augroup END
 
     " # CSS family
 
-      autocmd BufNew,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
+      augroup Css
+        autocmd!
+        autocmd BufNew,BufRead *.{css,sass,scss} setlocal shiftwidth=2 tabstop=2
+      augroup END
 
     " # JavaScript
 
@@ -1652,15 +1689,21 @@
 
     " # CoffeeScript
 
-      autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
-      autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
-      autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
-      autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
-      autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
+      augroup Javascript
+        autocmd!
+        autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
+        autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
+        autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+        autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
+        autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
+      augroup END
 
     " # YAML
 
-      autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
+      augroup Yaml
+        autocmd!
+        autocmd FileType yaml setlocal shiftwidth=2 tabstop=2
+      augroup END
 
   " # Compilable markup
 
@@ -1670,79 +1713,83 @@
 
     " # rst
 
-      " autocmd FileType *.md setlocal shiftwidth=4 tabstop=4
-      autocmd BufNew,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
-      " autocmd BufNew,BufRead *.{md,rst} setlocal filetype=text
-      autocmd BufNew,BufRead *.rst call MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
+      augroup Markdown
+        autocmd!
+        " autocmd FileType *.md setlocal shiftwidth=4 tabstop=4
+        autocmd BufNew,BufRead *.{md,rst} setlocal shiftwidth=4 tabstop=4
+        " autocmd BufNew,BufRead *.{md,rst} setlocal filetype=text
+        autocmd BufNew,BufRead *.rst call MapAllBuff('<F5>', 'w<cr>:sil ! make<cr>')
 
-      " TODO this is broken still:
-      autocmd BufNew,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:silent ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
+        " TODO this is broken still:
+        autocmd BufNew,BufRead *.rst call MapAllBuff('<F6>', 'o<cr><ESC>k:pu=''.. _vimhere:''<cr>:w<cr>:sil ! make<cr>k:d<cr>:d<cr>:d<cr>:w<cr>:silent ! make firefox RUN_NOEXT="%:r" ID="\#vimhere"<cr>')
 
-      " Make and open with firefox on curent point without a makefile.
-      let s:out_dir = '_out'
-      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>')
-      " autocmd BufNew,BufRead *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<. html; firefox _out/%<.html<cr>
+        " Make and open with firefox on curent point without a makefile.
+        let s:out_dir = '_out'
+        autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<S-F6>', ':pu=''<span id=\"VIMHERE\"></span>''<cr>:w<cr>:silent ! mkdir -p ' . s:out_dir . '; pandoc -s --toc % -o ' . s:out_dir . '/%<.html<cr>:d<cr>:w<cr>:silent ! firefox ' . s:out_dir . '/%<.html\#VIMHERE<cr>')
+        " autocmd BufNew,BufRead *.{md,rst} noremap <buffer> <F6> <ESC>:! mkdir -p _out; pandoc -s --toc % -o _out/%<. html; firefox _out/%<.html<cr>
 
-      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>')
+        autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<F7>', ':w<cr>:sil ! make<cr>:sil ! make firefox RUN_NOEXT="%:r"<cr>')
 
-      " Clean default output dir.
-      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
-      autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
+        " Clean default output dir.
+        autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<S-F7>', ':sil !rm -r ' . s:out_dir . '<cr>')
+        autocmd BufNew,BufRead *.{md,rst} call MapAllBuff('<F8>', ':w<cr>:sil ! make<cr>:sil ! make okular  RUN_NOEXT="%:r"<cr>')
 
-      " Markdown *cannot* be indented, and GFM forces us to have
-      " infinitely long lines. because single newlines become line breaks.
-      autocmd BufNew,BufRead *.{md,rst} setlocal wrap
+        " Markdown *cannot* be indented, and GFM forces us to have
+        " infinitely long lines. because single newlines become line breaks.
+        autocmd BufNew,BufRead *.{md,rst} setlocal wrap
 
-      function! FtMkd()
-
-        " Enter a good mode to edit markdown tables.
-        " Always shows leftmost column.
-        function! s:TableMode()
-          setlocal nowrap
-          vsplit
-          vertical resize 35
-          normal! ^
-          set scrollbind
-          wincmd l
-          set scrollbind
-          set cursorline
-          setlocal nostartofline
-          highlight clear LineTooLong
+        function! FtMkd()
+          " Enter a good mode to edit markdown tables.
+          " Always shows leftmost column.
+          function! s:TableMode()
+            setlocal nowrap
+            vsplit
+            vertical resize 35
+            normal! ^
+            set scrollbind
+            wincmd l
+            set scrollbind
+            set cursorline
+            setlocal nostartofline
+            highlight clear LineTooLong
+          endfunction
+          command! -buffer TableMode call s:TableMode()
         endfunction
-        command! -buffer TableMode call s:TableMode()
-
-      endfunction
-      autocmd FileType mkd,markdown call FtMkd()
+        autocmd FileType mkd,markdown call FtMkd()
+      augroup END
 
     " # LaTeX
 
     " # TeX
 
-      autocmd FileType tex setlocal shiftwidth=2 tabstop=2 foldlevel=999
+      augroup Markdown
+        autocmd!
+        autocmd FileType tex setlocal shiftwidth=2 tabstop=2 foldlevel=999
 
-      " autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>')
-      " autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>')
-      " Okular forward search.
-      " TODO why does `make &&` not work?!?! I have to use `make;`!
-      autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<F6>', ':write<cr>:execute "silent !make; okular --caption OkularVIM --unique %:p:r.pdf\\#src:" . line(".") . "%:p && wmctrl -a OkularVIM &"<cr>')
-      " With special Makefile that does SyncTeX for us:
-      " autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>', ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r.pdf"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
-      " au BufEnter,BufRead *{.tex,.md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
+        " autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<F5>'  , ':w<cr>:! cd `git rev-parse --show-toplevel` && make<cr>')
+        " autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<S-F5>', ':w<cr>:! cd `git rev-parse --show-toplevel` && make clean<cr>')
+        " Okular forward search.
+        " TODO why does `make &&` not work?!?! I have to use `make;`!
+        autocmd BufEnter,BufRead *.{tex} call MapAllBuff('<F6>', ':write<cr>:execute "silent !make; okular --caption OkularVIM --unique %:p:r.pdf\\#src:" . line(".") . "%:p && wmctrl -a OkularVIM &"<cr>')
+        " With special Makefile that does SyncTeX for us:
+        " autocmd BufEnter,BufRead *.{tex,md} call MapAllBuff('<F6>', ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:r.pdf"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
+        " au BufEnter,BufRead *{.tex,.md} call MapAllBuff('<F6>'  , ':w<cr>:exe '':sil ! cd `git rev-parse --show-toplevel` && make view VIEW=''''"%:p"'''' LINE=''''"'' . line(".") . ''"''''''<cr>')
 
-      " This works but the problem is: in which dir is the output file?
-      " This is something only the Makefile knows about.
-      function! LatexForwardOkular(pdfdir)
-        let pdf = a:pdfdir . expand('%:r') . '.pdf'
-        let synctex_out = system('synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"')
-        let page = 1
-        for l in split(synctex_out, '\n')
-          if l =~ '^Page:'
-            let page = substitute(l, '^Page:\(\d\+\)$', '\1', '')
-          end
-        endfor
-        execute 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
-      endfunction
-      " au BufEnter,BufRead *.tex call MapAllBuff('<F4>', ':cal LatexForwardOkular("_out/")<cr>')
+        " This works but the problem is: in which dir is the output file?
+        " This is something only the Makefile knows about.
+        function! LatexForwardOkular(pdfdir)
+          let pdf = a:pdfdir . expand('%:r') . '.pdf'
+          let synctex_out = system('synctex view -i "' . line(".") . ':1:' . expand('%') . '" -o "' . pdf . '"')
+          let page = 1
+          for l in split(synctex_out, '\n')
+            if l =~ '^Page:'
+              let page = substitute(l, '^Page:\(\d\+\)$', '\1', '')
+            end
+          endfor
+          execute 'sil! ! nohup okular --unique -p ' . page . ' ' . pdf . ' &'
+        endfunction
+        " au BufEnter,BufRead *.tex call MapAllBuff('<F4>', ':cal LatexForwardOkular("_out/")<cr>')
+      augroup END
 
   " # Interpreted languages
 
@@ -1754,11 +1801,14 @@
 
   " # Ruby
 
-    autocmd BufNew,BufRead Vagrantfile setlocal filetype=ruby
-    autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
-    autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
-    autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
-    autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+    augroup Interpreted
+      autocmd!
+      autocmd BufNew,BufRead Vagrantfile setlocal filetype=ruby
+      autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
+      autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
+      autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
+      autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+    augroup END
 
   " # Compile to executable languages
 
@@ -1782,44 +1832,52 @@
 
     " # Java
 
-    function! FileTypeCpp()
-      call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
-      call MapAllBuff('<S-F5>', ':w<cr>:silent ! make clean<cr>')
-      " Make run, stdout to a new file. Stdout is only seen when program stops.
-      " If your Makefile supports, runs `make run RUN=main` to run the current file like `main.c`,
-      call MapAllBuff('<F6>'  , ':w<cr>:call RedirStdoutNewTabSingle("make run RUN=\"" . expand("%:r") . "\"")<cr>')
-      " Same as above, but may allows you to type in command line args.
-      call MapAllBuff('<S-F6>', ':w<cr>:call RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
-      call MapAllBuff('<F7>'  , ':cnext<cr>')
-      call MapAllBuff('<F8>'  , ':cprevious<cr>')
-      call MapAllBuff('<F9>'  , ':w<cr>:call RedirStdoutNewTabSingle("make profile")<cr>')
-      call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
-    endfunction
+    augroup Cpp
+      autocmd!
 
-    autocmd FileType c,cpp,fortran,asm,s,java,haskell call FileTypeCpp()
-    autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
-    autocmd BufNew,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
-    " Because fortran has a max line length.
-    autocmd FileType fortran setlocal expandtab shiftwidth=2 tabstop=2
-    autocmd FileType java setlocal expandtab
+      function! FileTypeCpp()
+        call MapAllBuff('<F5>'  , ':w<cr>:make<cr>') "vim make quickfix
+        call MapAllBuff('<S-F5>', ':w<cr>:silent ! make clean<cr>')
+        " Make run, stdout to a new file. Stdout is only seen when program stops.
+        " If your Makefile supports, runs `make run RUN=main` to run the current file like `main.c`,
+        call MapAllBuff('<F6>'  , ':w<cr>:call RedirStdoutNewTabSingle("make run RUN=\"" . expand("%:r") . "\"")<cr>')
+        " Same as above, but may allows you to type in command line args.
+        call MapAllBuff('<S-F6>', ':w<cr>:call RedirStdoutNewTabSingle("make run RUN_ARGS=''\"\"''")<LEFT><LEFT><LEFT><LEFT><LEFT>')
+        call MapAllBuff('<F7>'  , ':cnext<cr>')
+        call MapAllBuff('<F8>'  , ':cprevious<cr>')
+        call MapAllBuff('<F9>'  , ':w<cr>:call RedirStdoutNewTabSingle("make profile")<cr>')
+        call MapAllBuff('<S-F9>', ':w<cr>:! make assembler<cr>')
+      endfunction
+      autocmd FileType c,cpp,fortran,asm,s,java,haskell call FileTypeCpp()
+
+      autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
+      autocmd BufNew,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
+      " Because fortran has a max line length.
+      autocmd FileType fortran setlocal expandtab shiftwidth=2 tabstop=2
+      autocmd FileType java setlocal expandtab
+    augroup END
 
   " # vimscript
 
-    autocmd FileType vim setlocal shiftwidth=2 tabstop=2
+    augroup Vim
+      autocmd!
 
-    " Reaload all visible buffers. TODO: multiple windows per tabpage.
-    function! ReloadVisible()
-      set noconfirm
-      tabdo e
-      set confirm
-    endfunction
-    autocmd FileType vim noremap <buffer> <F5> :wa<cr>:source %<cr>:silent call ReloadVisible()<cr>
+      autocmd FileType vim setlocal shiftwidth=2 tabstop=2
 
-    " Write all buffers, source this vimrc, and reaload open
-    " buffers so that changes in vimrc are applied:
+      " Reaload all visible buffers. TODO: multiple windows per tabpage.
+      function! ReloadVisible()
+        set noconfirm
+        tabdo e
+        set confirm
+      endfunction
+      autocmd FileType vim noremap <buffer> <F5> :wa<cr>:source %<cr>:silent call ReloadVisible()<cr>
 
-    " Save and source current script:
-    autocmd FileType vim noremap <buffer> <F6> :write<cr>:source %<cr>:edit<cr>
+      " Write all buffers, source this vimrc, and reaload open
+      " buffers so that changes in vimrc are applied:
+
+      " Save and source current script:
+      autocmd FileType vim noremap <buffer> <F6> :write<cr>:source %<cr>:edit<cr>
+    augroup END
 
   " # Configuration files
 
@@ -2012,33 +2070,34 @@
       nnoremap <leader>tm :tabmove<space>
 
     " Go to previously selected tab / last tab:
-    " <http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim>
+    " http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim
 
-      let g:lasttab = 1
-      autocmd TabLeave * let g:lasttab = tabpagenr()
-      nnoremap <leader>tl :execute 'tabn ' . g:lasttab<CR>
-
-      let g:reopenbuf = expand('%:p')
-      function! ReopenLastTabLeave()
-        let g:lastbuf = expand('%:p')
-        let g:lasttabcount = tabpagenr('$')
-      endfunction
-      function! ReopenLastTabEnter()
-        if tabpagenr('$') < g:lasttabcount
-          let g:reopenbuf = g:lastbuf
-        endif
-      endfunction
-      function! ReopenLastTab()
-        tabnew
-        execute 'buffer' . g:reopenbuf
-      endfunction
-      augroup ReopenLastTab
+      augroup LastTab
         autocmd!
+
+        let g:lasttab = 1
+        autocmd TabLeave * let g:lasttab = tabpagenr()
+        nnoremap <leader>tl :execute 'tabn ' . g:lasttab<CR>
+
+        let g:reopenbuf = expand('%:p')
+        function! ReopenLastTabLeave()
+          let g:lastbuf = expand('%:p')
+          let g:lasttabcount = tabpagenr('$')
+        endfunction
+        function! ReopenLastTabEnter()
+          if tabpagenr('$') < g:lasttabcount
+            let g:reopenbuf = g:lastbuf
+          endif
+        endfunction
+        function! ReopenLastTab()
+          tabnew
+          execute 'buffer' . g:reopenbuf
+        endfunction
         autocmd TabLeave * call ReopenLastTabLeave()
         autocmd TabEnter * call ReopenLastTabEnter()
+        " Tab Restore
+        nnoremap <leader>tr :call ReopenLastTab()<CR>
       augroup END
-      " Tab Restore
-      nnoremap <leader>tr :call ReopenLastTab()<CR>
 
     " Reopen last closed tab
     " <http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim>
@@ -2367,7 +2426,9 @@
 
     " See `:h ins-completion`.
 
-  " # [ #]
+  " # [
+
+  " # ]
 
     " Miscelaneous commands, mostly section motions.
 
@@ -2384,7 +2445,7 @@
 
       " h sect
 
-    " - c-] go to location of link under cursor used in Vim docs TODO how to make one of those?
+    " - c-] go to location of link under cursor used in Vim docs. ctags based.
 
     " - [(last unmatched open par. Same for),[,],{,}.=, but not for <>
     " - [z fold move
@@ -3483,9 +3544,14 @@
 
       " By default commands take no range. Change that.
 
-      " Default to current:
+      " Default to current line:
 
         " command! -range Echo echo "<line1> <line2>"
+
+      " - If the command if run without a range,
+      "   both `<line1>` and `<line2>` expand to the same current line
+
+      " - if run with a range, `<line1>` and `<line2>` expand to that range
 
       " Default to whole file:
 
@@ -3995,6 +4061,13 @@
       " if !-1  != 0 | throw 'assertion failed' | end
       " if 0 && 1 != 0 | throw 'assertion failed' | end
       " if 0 || 1 != 1 | throw 'assertion failed' | end
+
+" # switch
+
+" # case
+
+  " Nope:
+  " http://vim.1045645.n5.nabble.com/Vim-script-optimization-tips-td5708524.html
 
 " # for
 
@@ -4967,7 +5040,7 @@
 
       " Cursor enter buffers.
 
-      " Trigerred by: `:tabnext`, `<C-W>l`
+      " Triggered by: `:tabnext`, `<C-W>l`
 
       " Huge precedence, and worst performance than `BufNew,BufRead` since run more often.
 
@@ -4977,9 +5050,9 @@
 
       " File is read into buffer.
 
-      " Trigerred by: `:e`, `:tabopen`, `vim file` on existing files.
+      " Triggered by: `:e`, `:b`, `vim file` on existing files
 
-      " Not trigerred for new files.
+      " Not triggered for new files.
 
         " autocmd BufRead * echo input('BufRead')
 
@@ -5871,33 +5944,38 @@
 
       " Escape to be literal:
 
-      " - .    wildcard
-      " - a*   repetition
-      " - [abc]  char classes
-      " - ^    begin. Only magic in certain positions, like beginning of pattern.
-      "     Use `\_^` for saner always magic version.
-      " - $    end
+      " - `.`: wildcard
+
+      " - `a*`: repetition
+
+      " - `[abc]`: char classes
+
+      " - `^`: begin. Only magic in certain positions, like beginning of pattern.
+
+        " Use `\_^` for saner always magic version.
+
+      " - `$`: end
 
       " Escape to be magic:
 
-      " - a\+
+      " - `a\+`
       " - `a\(b\|c\)`: alternative and capture group. For a non capturing group, use `\%(\)`.
-      " - a\|b
-      " - a\{1,3}
-      " - a\{-}    non greedy repeat. Analogous to {,}, mnemonic: match less because of `-` sign.
-      " - \<       word boundary left
-      " - \>       word boundary right
-      " - \1       mathing group 1. can be used on search
-      " - /\(\w\)\1  search equal adjacent chars
+      " - `a\|b`
+      " - `a\{1,3}`
+      " - `a\{-}`: non # greedy repeat. Analogous to {,}, mnemonic: match less because of `-` sign.
+      " - `\<`: word boundary left
+      " - `\>`: word boundary right
+      " - `\1`: mathing group 1. can be used on search
+      " - `/\(\w\)\1`:  search equal adjacent chars
 
   " # Major differences from Perl
 
     " # Classes
 
-      " - \_s  a whitespace (space or tab) or newline character
-      " - \_^  the beginning of a line (zero width)
-      " - \_$  the end of a line (zero width)
-      " - \_.  any character including a newline
+      " - `\_s`: a whitespace (space or tab) or newline character
+      " - `\_^`: the beginning of a line (zero width)
+      " - `\_$`: the end of a line (zero width)
+      " - `\_.`: any character including a newline
 
       " Many more.
 
@@ -6530,10 +6608,12 @@
 
 " # tags
 
+" # ctags
+
   " Vim can read the ctags file format,
   " which allows you to quickly jump to the definition of functions and varaibles.
 
-  " <http://vim.wikia.com/wiki/Browsing_programs_with_tags>
+  " http://vim.wikia.com/wiki/Browsing_programs_with_tags
 
   " # Generate tags
 
@@ -6575,6 +6655,10 @@
       " :tn
       " :tp
 
+    " Show a list of all matched tags;
+
+      " :ts
+
     " If there is more than one tag, show a tag list, else jump:
 
       " g <c-]>
@@ -6582,3 +6666,5 @@
     " Jump to tag with given name:
 
       " :ta dentry
+
+    " Can auto complete.

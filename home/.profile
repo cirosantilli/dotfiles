@@ -23,7 +23,10 @@ fi
     export LC_PAPER='en_US.UTF-8'
     export LC_TELEPHONE='en_US.UTF-8'
     export LC_TIME='en_US.UTF-8'
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+    # Remove leading : or else the current directory is added to the search path.
+    LD_LIBRARY_PATH="${LD_LIBRARY_PATH#:}"
+    export LD_LIBRARY_PATH
 
   ## Directory structure
 
