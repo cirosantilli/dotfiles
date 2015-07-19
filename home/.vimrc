@@ -104,7 +104,7 @@
   endfunction
   command! -range=% -nargs=? CodeToMd call CodeToMd(<line1>, <line2>, <f-args>)
 
-  command! Chmodx !chmod +x %
+  command! Chmodx silent !chmod +x %
 
 " # Commands
 
@@ -187,7 +187,7 @@
       set nocompatible
       filetype off
       set rtp+=~/.vim/bundle/Vundle.vim
-      call vundle#rc()
+      call vundle#begin()
 
     " Let Vundle manage Vundle:
 
@@ -218,18 +218,24 @@
 
       " TODO
 
-  " # local-vimrc #auto source local .vimrc
+  " # local-vimrc
 
-    " A bit buggish / hard to use correctly:
-
-      " Plugin 'MarcWeber/vim-addon-local-vimrc'
-      " autocmd BufEnter * SourceLocalVimrc
+  " # auto source local .vimrc
 
     " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
-    " Start from root, ans source every file with a given basename (.vimrc by default).
+    " MarcWebber
 
-    " Security is hash based: you have to accept only once for each filename / content hash.
+      " A bit buggish / hard to use correctly:
+
+        "Plugin 'MarcWeber/vim-addon-local-vimrc'
+        "autocmd BufEnter * SourceLocalVimrc
+
+      " Start from root, ans source every file with a given basename (.vimrc by default).
+
+      " Security is hash based: you have to accept only once for each filename / content hash.
+
+        "Plugin 'embear/vim-localvimrc'
 
   " # AutoComplPop
 
@@ -803,6 +809,8 @@
 
     " - does not complete inside strings
 
+    " Breaks Ubuntu ibus Chinese input: https://github.com/Townk/vim-autoclose/issues/38
+
   " # align
 
     " Better documented than tabular, and more vim like interface.
@@ -955,7 +963,7 @@
 
     " Python refactoring.
 
-      Plugin 'klen/rope-vim'
+      "Plugin 'klen/rope-vim'
 
   " # coffee-script
 
@@ -1002,6 +1010,8 @@
 
     " trim-space automatically removes trailine whitespaces on :w!
     " Very intrusive!
+
+  call vundle#end()
 
 " # Options
 
@@ -5568,7 +5578,8 @@
 
     " Important ones. Test path: `/a/b/f.ext`
 
-    " - `%`:   basename
+    " - `%`: relative path of of file being edited
+    " - `<sfile>`: like `%` but for file being sourced: http://stackoverflow.com/questions/4976776/how-to-get-path-to-the-current-vimscript-being-executed
     " - `%:p`: full path
     " - `%:r`: basename without extension
     " - `%:e`: extension
@@ -6242,7 +6253,7 @@
     " There seems to be no way of doing that:
     " <http://stackoverflow.com/questions/11199068/how-to-format-vim-quickfix-entry/11202758#11202758>
 
-" # Python Vim scripting
+" # Python scripting
 
   " You can script vim with python instead of vimscript!!!
 
@@ -6668,3 +6679,14 @@
       " :ta dentry
 
     " Can auto complete.
+
+" # Internals
+
+  " # Compile
+
+      " hg clone https://vim.googlecode.com/hg/
+      " cd vim
+      " ./configure --with-features=huge --enable-pythoninterp --with-python-config-dir=/usr/lib/python2.7/config//usr/lib/python2.7/config-x86_64-linux-gnu
+      " make -j5
+      " # To /usr/local/bin by default.
+      " sudo make install

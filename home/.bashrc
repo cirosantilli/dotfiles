@@ -126,7 +126,7 @@ parse_svn_repository_root() {
 
   ## alias
 
-    # Misc aliases.
+    # Misc aliases and functions.
 
     alias a='cat'
     alias ack='ack-grep --smart-case'
@@ -134,14 +134,16 @@ parse_svn_repository_root() {
     # long-command;b
     alias b='zenity --info --text "$(echo "$?"; pwd; )"'
     alias c='cd'
-    function cdl { cd "$1" && ls; }
+    cdls() { cd "$1" && ls; }
+    # Start bash in a clean test environment.
+    alias clean='env -i bash --norc'
     alias chmx='chmod +x'
-    function f { find . -iname "*$1*"; }
+    f() { find . -iname "*$1*"; }
     alias l='less'
     # External IP.
     # DropBox Symlink. Move the given file into Dropbox,
     # and symlink to it from the old location.
-    function dbs {
+    dbs() {
       src="$1"
       path="$(readlink -f "$src")"
       dest="$(dirname "$HOME/Dropbox/home/${path#$HOME}")"
@@ -152,7 +154,7 @@ parse_svn_repository_root() {
     alias cla11='clang++ -std=c++11'
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
-    function dpx { dropbox puburl "$1" | xsel --clipboard; }
+    dpx() { dropbox puburl "$1" | xsel --clipboard; }
     alias e='echo'
     # echo Exit status
     alias ece='echo "$?"'
@@ -160,7 +162,7 @@ parse_svn_repository_root() {
     alias eip='curl ipecho.net/plain'
     alias envg='env | grep -E'
     alias fbr='find_basename_res.py'
-    function filw { file "$(which "$1")"; }
+    filw() { file "$(which "$1")"; }
     alias g='grep -E'
     alias gi='grep -Ei'
     alias gr='grep -ER'
@@ -180,14 +182,14 @@ parse_svn_repository_root() {
     #   gccs 'printf('%d', f(1))' '99' 'int f(int i) { return i + 1; }'
     #
     # Expected output: `2`
-    function gccs { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
-    function gpps { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
+    gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
+    gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
-    function h { "$1" --help | less; }
+    h() { "$1" --help | less; }
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
     # Usage: cmd symlink-location
-    function lns-undo {
+    lns-undo() {
       link_location="$1"
       link_dest="$(readlink -f "$link_location")"
       rm "$link_location"
@@ -195,18 +197,19 @@ parse_svn_repository_root() {
     }
     alias m='man'
     alias m2='man 2'
-    function bak { mv "${1%/}" "${1%/}.bak"; }
-    function kab { p="${1%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; }
+    alias m3='man 3'
+    bak() { mv "${1%/}" "${1%/}.bak"; }
+    kab() { p="${1%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; }
     alias md='mkdir'
     # Make Dir Cd
-    function mdc { mkdir "$1" && cd "$1"; }
+    mdc() { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
     # Shutdown but run some scripts it.
     alias my-shutdown='sync-push && sudo shutdown'
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
     alias ncl="while true; do printf '' | nc -l localhost 8000; done"
-    function noh { nohup $@ >/dev/null & }
+    noh() { nohup $@ >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
     # play Alert
@@ -218,7 +221,7 @@ parse_svn_repository_root() {
     alias rl='readlink'
     alias rlf='readlink -f'
     # Run N times. Parallel programming tests.
-    function runn {
+    runn() {
       n="$1"
       shift
       i=0
@@ -237,7 +240,7 @@ parse_svn_repository_root() {
     alias rbul='rename_basename_unidecode_lowercase.py'
     alias rifr='replace_in_files_regex.py'
     alias rmd='rmdir'
-    function rmext { rm *".$1"; }
+    rmext() { rm *".$1"; }
     alias rmrf='rm -rf'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
@@ -254,19 +257,27 @@ parse_svn_repository_root() {
     alias tree='tree --charset=ascii'
     alias t='type'
     alias v='vim'
-    function viw { vim "$(which "$1")"; }
+    viw() { vim "$(which "$1")"; }
     alias vir='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
-    function u1pc { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
+    u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
     alias xar="xargs -I'{}'"
     alias xar0="xargs -0I'{}'"
-    function xselssh { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
+    xselssh() { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
     # Usage: unizipd d.zip
     # Outcome: unzips the content of `a.zip` into a newly created `d` directory
-    function unzipd { unzip -d "${1%.*}" "$1"; }
-    function zipd { zip -r "${1%/}.zip" "$1"; }
+    unzipd() { unzip -d "${1%.*}" "$1"; }
+    zipd() { zip -r "${1%/}.zip" "$1"; }
+
+
+    bdiff() (
+      f() (
+        od -An -tx1c -w1 -v "$1" | paste -d '' - -
+      )
+      diff -u <(f "$1") <(f "$2")
+    )
 
     ## Provision machines
 
@@ -281,21 +292,20 @@ parse_svn_repository_root() {
       alias afls='apt-file list'
       alias afse='apt-file search'
       # Binary
-      function afseb { apt-file search "$(which "$1")"; }
+      afseb() { apt-file search "$(which "$1")"; }
       alias agbd='apt-get build-dep'
       alias agso='apt-get source'
       alias dpL='dpkg -L'
       alias dpS='dpkg -S'
       # Binary
-      function dpSb { dpkg -S "$(which "$1")"; }
-      alias dpSb='dpkg -S'
+      dpSb() { dpkg -S "$(which "$1")"; }
       alias dplg='dpkg -l | grep -Ei'
       alias saii='sudo aptitude install'
       alias sair='sudo aptitude remove'
       alias sais='sudo aptitude source'
       alias saiu='sudo aptitude update'
       alias saip='sudo aptitude purge'
-      function saap { sudo apt-add-repository -y "$1" && sudo aptitude update; }
+      saap() { sudo apt-add-repository -y "$1" && sudo aptitude update; }
 
   ## Bash options
 
@@ -311,8 +321,10 @@ parse_svn_repository_root() {
   ## Binutils
 
     alias obd='objdump -Cdr'
+    alias obD='objdump -CDr'
     alias obS='objdump -CSr'
     alias rea='readelf -aW'
+    alias reh='readelf -h'
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
@@ -334,7 +346,7 @@ parse_svn_repository_root() {
     alias cds='cd -'
     alias cdu="cd $UBUNTU_DIR"
     # TODO make a version that also cats the command and pwd.
-    #function b { "$@"; zenity --info --text "$*"; }
+    #b() { "$@"; zenity --info --text "$*"; }
 
   ## ctags
 
@@ -380,14 +392,14 @@ parse_svn_repository_root() {
 
     alias sdo='sudo docker'
     alias sdob='sudo docker build'
-    function sdobt { sudo docker build -t "$1" .; }
+    sdobt() { sudo docker build -t "$1" .; }
     alias sdoh='sudo docker help'
     alias sdoi='sudo docker images'
     alias sdop='sudo docker ps'
     alias sdor='sudo docker run'
-    function sdorit { sudo docker run -it "$1" /bin/bash; }
-    function sdorp { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
-    function sdornp { sudo docker run -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
+    sdorit() { sudo docker run -it "$1" /bin/bash; }
+    sdorp() { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
+    sdornp() { sudo docker run -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
     alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
     alias sdos='sudo docker stop'
 
@@ -425,6 +437,7 @@ parse_svn_repository_root() {
 
     alias gdbm='gdb -ex "break main" -ex "run"'
     alias gdbs='gdb -ex "break _start" -ex "run"'
+    alias gdbx='gdb --batch -x'
 
   ## Git
 
@@ -442,16 +455,16 @@ parse_svn_repository_root() {
     alias gadcmmp='git add -A . && git commit -m publish'
     alias gadcmmt='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
-    function gadcmp { git add . && git commit -m "$1" && git push; }
+    gadcmp() { git add . && git commit -m "$1" && git push; }
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbl='git blame'
     alias gbr='git branch'
-    function gbrdd { git branch -d "$1"; git push --delete origin "$1"; }
+    gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
     alias gbra='git branch -a'
     # BRanch Graph
     alias gbrm='git branch -m'
-    function gbruo { git branch -u "origin/$1"; }
+    gbruo() { git branch -u "origin/$1"; }
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
     alias gclb='git clone --bare'
@@ -466,10 +479,10 @@ parse_svn_repository_root() {
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gce='git clean'
-    function gcmp { git commit -am "$1"; git push --tags -u origin master; }
+    gcmp() { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
     alias gcob='git checkout -b'
-    function gcobm { git checkout -b "$1" master; }
+    gcobm() { git checkout -b "$1" master; }
     alias gcod='git checkout --conflict=diff3'
     alias gcoH='git checkout HEAD~'
     alias gcom='git checkout master'
@@ -488,9 +501,9 @@ parse_svn_repository_root() {
     alias gcr='git cherry-pick'
     alias gd='git diff'
     alias gdf='git diff'
-    function gdf12 { git diff ":1:./$1" ":2:./$1"; }
-    function gdf13 { git diff ":1:./$1" ":3:./$1"; }
-    function gdf123 {
+    gdf12() { git diff ":1:./$1" ":2:./$1"; }
+    gdf13() { git diff ":1:./$1" ":3:./$1"; }
+    gdf123() {
       git --no-pager diff ":1:./$1" ":2:./$1";
       python -c 'print "\n" + (80 * "=") + "\n"';
       git --no-pager diff ":1:./$1" ":3:./$1";
@@ -501,7 +514,7 @@ parse_svn_repository_root() {
     alias gfe='git fetch'
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
-    function gfeommcob { git fetch origin master:master && git checkout -b "$1" master; }
+    gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
     alias gfp='git format-patch'
     alias gfpx='git format-patch --stdout HEAD~ | xsel --clipboard'
     alias gg='git grep --color'
@@ -512,7 +525,7 @@ parse_svn_repository_root() {
     alias ginac='git init && git add . && git commit -m "init"'
     # Restore deleted file to its latest version.
     # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
-    function git-restore-file { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
+    git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
     alias gls='git ls-files'
     alias glso='git ls-files --other'
     alias glsg='git ls-files | grep'
@@ -564,12 +577,13 @@ parse_svn_repository_root() {
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
     alias grtrou='git remote rename origin up && git remote add origin'
+    alias grts='git remote set-url'
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
     alias gsaa='git stash apply'
     alias gsh='git show'
-    function gshm { git show "master:./$1"; }
-    function gshmo { git show "master:./$1" > "old_$1"; }
+    gshm() { git show "master:./$1"; }
+    gshmo() { git show "master:./$1" > "old_$1"; }
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'
@@ -593,7 +607,7 @@ parse_svn_repository_root() {
   ## GitLab
 
     # Start developping GitLab.
-    function dev-gitlab-startup {
+    dev-gitlab-startup() {
       guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
       guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
       guake -n 'server' -e 'cd ~/gitlab'
@@ -618,6 +632,11 @@ parse_svn_repository_root() {
     alias hrkr='heroku run'
     alias gphm='git push heroku master'
 
+  ## hg
+
+    alias hgg='hg grep'
+    alias hggi='hg grep -i'
+
   ## homesick
 
     alias hs='homesick'
@@ -632,13 +651,13 @@ parse_svn_repository_root() {
 
   ## Java
 
-    function ja { java "${1%.*}" "${*:2}"; }
+    ja() { java "${1%.*}" "${*:2}"; }
     alias jac='javac'
-    function jae { java -ea "${1%.*}" "${*:2}"; }
+    jae() { java -ea "${1%.*}" "${*:2}"; }
     alias jaj='java -jar'
     alias jartf='jar -tf'
     alias jav='java -version'
-    function jap { javap -c -constants -private -verbose "${1%.*}.class"; }
+    jap() { javap -c -constants -private -verbose "${1%.*}.class"; }
 
   ## jekyll
 
@@ -668,7 +687,7 @@ parse_svn_repository_root() {
     alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
                                                     # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
     alias mkr='make run'
-    function mkrr { make run RUN="${1%.*}"; }
+    mkrr() { make run RUN="${1%.*}"; }
     alias mkt='make test'
     alias mku='sudo make uninstall'
     alias mkv='make view'
@@ -716,7 +735,7 @@ parse_svn_repository_root() {
     # - will transform symlinks into files
     # - will add trailing newlines to files that end without them
     #
-    function mrr {
+    mrr() {
       if [ $# -gt 1 ]; then
         if [ "$2" = "D" ]; then
           xargs perl -lapi -e "s/$1"
@@ -734,18 +753,18 @@ parse_svn_repository_root() {
     #
     # Highlight breaks if Perl pattern is not POSIX ERE.
     #
-    function grepb { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$"; }
+    grepb() { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$"; }
 
     # Find files recursively filtering by regex.
     #
     # Basename only, prune hidden.
-    function fin { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1"; }
+    fin() { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1"; }
     # Also Hidden.
-    function finh { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
+    finh() { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
     # full Path.
-    function finp { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
+    finp() { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
 
-    function grr { grep -Er "$1" .; }
+    grr() { grep -Er "$1" .; }
 
     # Mass rename refactoring.
     alias mvr='move_regex.py'
@@ -788,7 +807,7 @@ parse_svn_repository_root() {
     alias mvs='mvn surefire-report:report-only && xdg-open target/site/surefire-report.html'
     alias mvp='mvn package'
     alias mvt='mvn test'
-    function mvtt { mvn test "-Dtest=$1"; }
+    mvtt() { mvn test "-Dtest=$1"; }
 
   ## npm
 
@@ -863,17 +882,17 @@ parse_svn_repository_root() {
 
   ## Services
 
-    function sso { sudo service "$1" stop ; }
-    function ssr { sudo service "$1" restart ; }
-    function sss { sudo service "$1" start ; }
-    function sst { sudo service "$1" status ; }
-    function ssta { sudo service --status-all ; }
+    sso() { sudo service "$1" stop ; }
+    ssr() { sudo service "$1" restart ; }
+    sss() { sudo service "$1" start ; }
+    sst() { sudo service "$1" status ; }
+    ssta() { sudo service --status-all ; }
     alias ssar='sudo service apache2 restart'
     alias sslr='sudo service lightdm restart'
 
   ## update-rc.d
 
-    function surd { sudo update-rc.d "$1" disable; }
+    surd() { sudo update-rc.d "$1" disable; }
 
   ## vagrant
 
