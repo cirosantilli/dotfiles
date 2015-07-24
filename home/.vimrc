@@ -132,6 +132,7 @@
 
     command! Ca drop $ART_DIR
     command! Cb drop $BASH_DIR
+    command! Cc drop $CPP_DIR
     command! Cj drop $JAVA_DIR
     command! Cl drop $LINUX_DIR
     command! Cn edit $NOTES_DIR
@@ -145,6 +146,12 @@
     command! Eg tabedit ~/.gitconfig
     command! Ep tabedit ~/.profile
     command! Ev tabedit ~/.vimrc
+
+    function! Csc()
+      cscope find c <cword>
+      copen
+    endfunction
+    command! Csc call Csc()
 
 " # Plugins
 
@@ -235,7 +242,11 @@
 
       " Security is hash based: you have to accept only once for each filename / content hash.
 
-        "Plugin 'embear/vim-localvimrc'
+      " # embear
+
+        " Default file name: `.lvimrc`
+
+          Plugin 'embear/vim-localvimrc'
 
   " # AutoComplPop
 
@@ -259,6 +270,20 @@
   " # cscope
 
     Plugin 'vim-scripts/cscope.vim'
+
+  " # taglist
+
+      Plugin 'vim-scripts/taglist.vim'
+
+    " Help:
+
+      " help taglist.txt
+
+    " Open a list of tags in the current file to serve as a navigation view:
+
+      " TlistOpen
+
+    " Enter click on line to jump to it.
 
   " # neocomplcache
 
@@ -986,8 +1011,7 @@
     " Therefore this should come before user highlight modifications.
 
       Plugin 'tpope/vim-vividchalk'
-      " Silent because on the first run it is not yet installed.
-      silent! colorscheme vividchalk
+      " Using colorscheme here does not work. Must do it after vundle#end().
 
   " # Vader
 
@@ -1017,6 +1041,8 @@
 
   " # filetype
 
+    " Must be hte first thing after vundle#end().
+
     " Set autodetect filetype and set it for buffers:
 
       filetype on
@@ -1030,6 +1056,14 @@
     " Indent for specific filetypes
 
       filetype indent on
+
+  " # colorscheme
+
+    " Silent because on the first run it is not yet installed.
+
+    " Must come after vundle#end.
+
+      silent! colorscheme vividchalk
 
   " # modeline
 
@@ -6679,6 +6713,22 @@
       " :ta dentry
 
     " Can auto complete.
+
+" # cscope
+
+    augroup Cscope
+      autocmd!
+      function! LoadCscope()
+        let db = findfile("cscope.out", ".;")
+        if (!empty(db))
+          let path = strpart(db, 0, match(db, "/cscope.out$"))
+          set nocscopeverbose " suppress 'duplicate connection' error
+          exe "cs add " . db . " " . path
+          set cscopeverbose
+        endif
+      endfunction
+      autocmd BufEnter * call LoadCscope()
+    augroup END
 
 " # Internals
 

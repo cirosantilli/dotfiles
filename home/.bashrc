@@ -167,22 +167,14 @@ parse_svn_repository_root() {
     alias gi='grep -Ei'
     alias gr='grep -ER'
     alias gri='grep -ERi'
+    # GNU changelogs.
+    gnuc() {
+      {
+        printf "$(date "+%Y-%m-%d")  Ciro Santilli  <ciro.santilli@gmail.com>\n\n"
+        git diff-tree --no-commit-id --name-only -r HEAD | sed 's/^/\t* /; s/$/ (): ./'
+      } | tee /dev/tty | xsel -b
+    }
     alias fmmmr='find-music-make-m3u .'
-    # GCC from String.
-    #
-    # Better than crepl.
-    #
-    # Usage:
-    #
-    #   gccs <main> <c-version> <before-main>
-    #
-    # Examples:
-    #
-    #   gccs 'printf('%d', 1 + 1)'
-    #   gccs 'printf('%d', f(1))' '99' 'int f(int i) { return i + 1; }'
-    #
-    # Expected output: `2`
-    gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     h() { "$1" --help | less; }
@@ -432,6 +424,26 @@ parse_svn_repository_root() {
 
       # Add git and svn branch names
       export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
+
+  ## GCC
+
+    # GCC from String.
+    #
+    # Better than crepl.
+    #
+    # Usage:
+    #
+    #   gccs <main> <c-version> <before-main>
+    #
+    # Examples:
+    #
+    #   gccs 'printf('%d', 1 + 1)'
+    #   gccs 'printf('%d', f(1))' '99' 'int f(int i) { return i + 1; }'
+    #
+    # Expected output: `2`
+    gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
+
+    alias gcc5='/home/ciro/git/gcc/install-o0/bin/gcc'
 
   ## gdb
 
@@ -693,6 +705,7 @@ parse_svn_repository_root() {
     alias mkv='make view'
     alias mkw='make watch'
     alias tmkjb='time make -j5;b'
+    alias tmkcb='time make check;b'
 
     # From Git root:
 
