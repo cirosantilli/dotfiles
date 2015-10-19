@@ -112,17 +112,25 @@ parse_svn_repository_root() {
   svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
 }
 
-#<custom>
+# <custom>
 
-  ## variables
+  ## Variables
 
     # Variables that are required by multiple following commands.
     # Must come before everything else.
 
-    vim=`type -P vim`
-    if [ "$vim" == "" ]; then
-      vim="gvim -v"
-    fi
+      vim=`type -P vim`
+      if [ "$vim" == "" ]; then
+        vim="gvim -v"
+      fi
+
+    # Variables instead of aliases so that I can debug them with `gdb "$PROG"`:
+
+      mygdb='/home/ciro/git/binutils-gdb/install/bin/gdb'
+      mygcc_path='/home/ciro/git/gcc/install/bin'
+      mygcc="$mygcc_path/gcc"
+      mycc1='/home/ciro/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1'
+      export KBUILD_OUTPUT='../build'
 
   ## alias
 
@@ -137,7 +145,7 @@ parse_svn_repository_root() {
     cdls() { cd "$1" && ls; }
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'
-    alias chmx='chmod +x'
+    alias chmodx='chmod +x'
     f() { find . -iname "*$1*"; }
     alias l='less'
     # External IP.
@@ -154,10 +162,11 @@ parse_svn_repository_root() {
     alias cla11='clang++ -std=c++11'
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
-    dpx() { dropbox puburl "$1" | xsel --clipboard; }
+    dpx() { dropbox puburl "$1" | xclip -selection clipboard; }
     alias e='echo'
     # echo Exit status
     alias ece='echo "$?"'
+    alias epa='echo "$PATH"'
     alias eclipse='nohup ~/bin/eclipse/eclipse >/dev/null &'
     alias eip='curl ipecho.net/plain'
     alias envg='env | grep -E'
@@ -165,15 +174,9 @@ parse_svn_repository_root() {
     filw() { file "$(which "$1")"; }
     alias g='grep -E'
     alias gi='grep -Ei'
+    alias gnup='gnuplot -p'
     alias gr='grep -ER'
     alias gri='grep -ERi'
-    # GNU changelogs.
-    gnuc() {
-      {
-        printf "$(date "+%Y-%m-%d")  Ciro Santilli  <ciro.santilli@gmail.com>\n\n"
-        git diff-tree --no-commit-id --name-only -r HEAD | sed 's/^/\t* /; s/$/ (): ./'
-      } | tee /dev/tty | xsel -b
-    }
     alias fmmmr='find-music-make-m3u .'
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
@@ -209,9 +212,11 @@ parse_svn_repository_root() {
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
+    alias R='R --no-save'
     alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
     alias rlf='readlink -f'
+    rlw() { readlink -f "$(which "$1")"; }
     # Run N times. Parallel programming tests.
     runn() {
       n="$1"
@@ -238,11 +243,15 @@ parse_svn_repository_root() {
     # Source Bashrc.
     alias s='. ~/.bashrc'
     alias sha2='sha256sum'
+    alias stra='sudo strace -f -s999 -v'
+    # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
+    alias sudo='sudo '
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
     alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
       # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
-      alias dush="du -sh .[^.]* * 2>/dev/null | sort -hr"
+      alias duh='du -h'
+      alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
       alias dushf='dush | tee ".dush$(timestamp)"' # to File
     # Normally, sudo cannot see your personal path variable. now it can:
     #alias sudo='sudo env PATH=$PATH'
@@ -252,10 +261,9 @@ parse_svn_repository_root() {
     viw() { vim "$(which "$1")"; }
     alias vir='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
-    u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xsel -b; }
+    u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
     alias xar="xargs -I'{}'"
     alias xar0="xargs -0I'{}'"
-    xselssh() { xsel -b < "$HOME/.ssh/id_rsa${1}.pub"; }
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
     # Usage: unizipd d.zip
@@ -281,6 +289,7 @@ parse_svn_repository_root() {
       alias acse='apt-cache search'
       alias acde='apt-cache depends'
       alias acsh='apt-cache show'
+      alias acshs='apt-cache showsrc'
       alias afls='apt-file list'
       alias afse='apt-file search'
       # Binary
@@ -288,6 +297,7 @@ parse_svn_repository_root() {
       alias agbd='apt-get build-dep'
       alias agso='apt-get source'
       alias dpL='dpkg -L'
+      alias dps='dpkg -s'
       alias dpS='dpkg -S'
       # Binary
       dpSb() { dpkg -S "$(which "$1")"; }
@@ -314,8 +324,10 @@ parse_svn_repository_root() {
 
     alias obd='objdump -Cdr'
     alias obD='objdump -CDr'
+    alias obimg='objdump -D -b binary -mi386 -Maddr16,data16'
     alias obS='objdump -CSr'
     alias rea='readelf -aW'
+    alias red='readelf -dW'
     alias reh='readelf -h'
     alias reS='readelf -SW'
     alias res='readelf -sW'
@@ -325,6 +337,7 @@ parse_svn_repository_root() {
     alias c='cd'
     # cd Up
     alias cda="cd $ART_DIR"
+    alias cdc="cd $CPP_DIR"
     # cd Dot
     alias cdd='cd ..'
     alias cddd='cd .. && cd ..'
@@ -339,6 +352,28 @@ parse_svn_repository_root() {
     alias cdu="cd $UBUNTU_DIR"
     # TODO make a version that also cats the command and pwd.
     #b() { "$@"; zenity --info --text "$*"; }
+
+    ## build src navigation
+
+      # If you are in directory:
+
+        # /a/b/c/src/d/e/f
+
+      # `gob` puts you in:
+
+        # /a/b/c/build/d/e/f
+
+      # gos does the opposite.
+
+      # This is to navigate projects with separate build and source trees.
+
+        cdb() {
+          cd "$(pwd | sed -E 's%^(.*)/src(/.*|$)%\1/build/\2%')"
+        }
+
+        cdB() {
+          cd "$(pwd | sed -E 's%^(.*)/build(/.*|$)%\1/src/\2%')"
+        }
 
   ## ctags
 
@@ -423,9 +458,30 @@ parse_svn_repository_root() {
       esac
 
       # Add git and svn branch names
-      export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch) "
+      export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch)"
 
-  ## GCC
+  ## extract
+
+    # Decompress anything. https://xkcd.com/1168/
+
+      extract () {
+        case $1 in
+          *.7z)      7z x "$1";;
+          *.tar.gz)  tar xzf "$1";;
+          *.gz)      gunzip "$1";;
+          *.tar)     tar xf "$1";;
+          *.tgz)     tar xzf "$1";;
+          *.tar.bz2) tar xjf "$1";;
+          *.bz2)     bunzip2 "$1";;
+          *.rar)     rar x "$1";;
+          *.tbz2)    tar xjf "$1";;
+          *.zip)     unzip "$1";;
+          *.Z)       uncompress "$1";;
+          *)         echo "error: unknown extension: $1";;
+        esac
+      }
+
+  ## gcc
 
     # GCC from String.
     #
@@ -447,9 +503,30 @@ parse_svn_repository_root() {
 
   ## gdb
 
-    alias gdbm='gdb -ex "break main" -ex "run"'
-    alias gdbs='gdb -ex "break _start" -ex "run"'
+    alias gdbm='gdb -ex "break main" -ex "run" -q'
+    alias gdbs='gdb -ex "break _start" -ex "run" -q'
     alias gdbx='gdb --batch -x'
+
+
+  ## GNU changelogs from Git
+
+      # Helper.
+      gnu-changelog() {
+        {
+          printf "$(date '+%Y-%m-%d')  Ciro Santilli  <ciro.santilli@gmail.com>\n\n"
+          git diff --name-only $1 HEAD | sed 's/^/\t* /; s/$/ (): ./'
+        } | tee /dev/tty | xclip -selection clipboard
+      }
+
+      # After Commit, Compare HEAD and HEAD~.
+      gnuc() {
+        gnu-changelog HEAD~
+      }
+
+      # Before commit. Diff. Compare working tree and HEAD.
+      gnud() {
+        gnu-changelog
+      }
 
   ## Git
 
@@ -485,8 +562,8 @@ parse_svn_repository_root() {
     alias gcft='git cat-file -t'
     alias gcm='git commit'
     alias gcmm='git commit -m'
-    alias gcmmb='git commit -m bak'
-    alias gcmmt='git commit -m tmp'
+    alias gcmbak='git commit -m bak'
+    alias gcmtmp='git commit -m tmp'
     alias gcma='git commit --amend'
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
@@ -528,7 +605,7 @@ parse_svn_repository_root() {
     alias gfeumm='git fetch up master:master'
     gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
     alias gfp='git format-patch'
-    alias gfpx='git format-patch --stdout HEAD~ | xsel --clipboard'
+    alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
     alias gg='git grep --color'
     alias ggi='git grep --color -i'
     alias gka='gitk --all'
@@ -585,6 +662,7 @@ parse_svn_repository_root() {
     alias grt='git remote'
     alias grta='git remote add'
     alias grtao='git remote add origin'
+    alias grtau='git remote add up'
     alias grtv='git remote -v'
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
@@ -613,8 +691,16 @@ parse_svn_repository_root() {
 
       alias ghb='git browse-remote'
       alias ghpb='git push && git browse-remote'
+      ghmail() { curl "https://api.github.com/users/$1/events/public" | grep email; }
       alias gpsbr='gps && git browse-remote'
       alias gcmanpsfbr='gcmanpsf && git browse-remote'
+      # Pull Request.
+      ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
+
+
+    ## Hub
+
+      alias huco='hub checkout'
 
   ## GitLab
 
@@ -681,7 +767,7 @@ parse_svn_repository_root() {
 
     alias mk='make'
     alias mkc='make clean'
-    alias mkd='make dist'
+    alias mkd='make debug'
     alias mkdc='make distclean'
     alias mkde='make deps'
     alias mkh='make help'
@@ -691,10 +777,9 @@ parse_svn_repository_root() {
     alias mki='make install'
     alias smki='sudo make install'
     alias mkir='make && sudo make install && make install-run'
-    alias mkj='make -j5'
+    alias mkj='make -j"$(($(nproc) + 1))"'
     # Stop background watch.
     alias mkk='make kill'
-    #echo "'\$#'"
     # List targets.
     alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
                                                     # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
@@ -704,8 +789,9 @@ parse_svn_repository_root() {
     alias mku='sudo make uninstall'
     alias mkv='make view'
     alias mkw='make watch'
-    alias tmkjb='time make -j5;b'
+    alias tmkjb='time make -j"$(($(nproc) + 1))";b'
     alias tmkcb='time make check;b'
+    alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
 
     # From Git root:
 
@@ -750,7 +836,7 @@ parse_svn_repository_root() {
     #
     mrr() {
       if [ $# -gt 1 ]; then
-        if [ "$2" = "D" ]; then
+        if [ "$2" = 'D' ]; then
           xargs perl -lapi -e "s/$1"
         fi
       else
@@ -822,6 +908,16 @@ parse_svn_repository_root() {
     alias mvt='mvn test'
     mvtt() { mvn test "-Dtest=$1"; }
 
+  ## PATH operations
+
+    # Prepend to a colon : separated path. Usage: `pre PATH /some/path`
+    pre() { eval "export $1=$2:\$$1"; }
+
+    prel() { pre 'LIBRARY_PATH' "$1"; pre 'LD_LIBRARY_PATH' "$1"; }
+    prep() { pre 'PATH' "$1"; }
+    #prepop() { eval "$1=$(printf "$1" | sed -E 's/^[^:]*://')"; }
+    prepop() { eval "$1=\${$1#*:}"; }
+
   ## npm
 
     alias npmi='npm install'
@@ -855,16 +951,35 @@ parse_svn_repository_root() {
 
     ## django
 
-      alias dmrs='./manage.py runserver' #Django Manage Run Server
-      alias dmds='./manage.py dbshell' #Db Shell
-      alias dmsd='./manage.py syncdb' #Sync Db
-      alias dmcs='echo "yes" | ./manage.py collectstatic' #Collect Static
+      # Django Manage Run Server.
+      alias dmrs='./manage.py runserver'
+      # Db Shell.
+      alias dmds='./manage.py dbshell'
+      # Sync DB.
+      alias dmsd='./manage.py syncdb'
+      # Collect Static.
+      alias dmcs='echo "yes" | ./manage.py collectstatic'
 
-      ## south
+      ## South
 
         alias dmscts='./manage.py convert_to_south'
         alias dmssi='./manage.py schemamigration --initial'
         alias dmssa='./manage.py schemamigration --auto'
+
+  ## qemu
+
+    alias qemu='qemu-system-x86_64'
+    alias qemu32='qemu-system-i386'
+    # Debug.
+    qemud() {
+      qemu-system-x86_64 -hda "$1" -S -s &
+      gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
+    }
+    qemud32() {
+      qemu-system-i386 -hda "$1" -S -s &
+      gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
+    }
+
 
   ## rake
 
@@ -930,15 +1045,21 @@ parse_svn_repository_root() {
 
   ## x clipboard
 
-    alias exx='expand | x'
-    alias x='xsel --clipboard'
-    alias xex='x | expand | x'
+    alias exx='expand | xclip -selection'
+    # Use xclip instead of xsel while I have this bug:
+    # http://askubuntu.com/questions/652254/xsel-output-contains-trash-at-the-end-if-a-long-input-is-piped-into-it-to-set-th
+    alias x='xclip -selection clipboard -o'
+    # input
+    alias xi='xclip -selection clipboard'
+    alias xex='x | expand | xclip -selection clipboard'
     alias y='xsel'
     # Add 4 spaces to every line and save to clipboard.
     # For markdown, so also expand.
-    alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | x'
+    alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | xclip -selection clipboard'
     # Last Command to clipboard.
-    alias xlc='fc -ln -1 | sed "s/\t //" | x'
+    alias xlc='fc -ln -1 | sed "s/\t //" | xclip -selection clipboard'
+    alias xsh='xclip -selection clipboard -o | bash'
+    xssh() { xclip -selection clipboard < "$HOME/.ssh/id_rsa${1}.pub"; }
 
   ## Source lines and path modifications
 
@@ -987,4 +1108,11 @@ parse_svn_repository_root() {
 
     [ -s "$HOME/.gvm/scripts/gvm" ] && . "$HOME/.gvm/scripts/gvm"
 
-#</custom>
+    # https://github.com/cirosantilli/runlinux
+    PATH="$PATH:/home/ciro/bak/git/runlinux"
+
+# </custom>
+[[ -s "/home/ciro/.gvm/scripts/gvm" ]] && source "/home/ciro/.gvm/scripts/gvm"
+
+# added by travis gem
+[ -f /home/ciro/.travis/travis.sh ] && source /home/ciro/.travis/travis.sh

@@ -55,24 +55,27 @@ fi
         export INDIAN_MUSIC_DIR="$MUSIC_DIR/indian classical"
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
       export GAME_DIR="$MEDIA_DIR/game"
+    export GOPATH="$HOME/.go"
+
+    # Linux from scratch home.
+    export LFS=/media/lfs/
 
   ## PATH
 
     # Before:
 
       PATH="$PATH:$LATEX_BIN_DIR"
-      # Linux from scratch home.
-      export LFS=/media/lfs/
       # Texlive
       PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
       PATH="$HOME/bin:$PATH"
-
-    # After:
-
       PATH="$ANDROID_ADT_DIR/tools/:$PATH"
       PATH="$ANDROID_ADT_DIR/platform-tools/:$PATH"
       PATH="$DEVBIN:$PATH"
+
+    # After:
+
       PATH="$PATH:$HOME/.cabal/bin"
+      PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
       export PATH
 
   ## PYTHONPATH
@@ -92,15 +95,23 @@ fi
     # <UP> <DOWN>: first goes back on commands you did
     # in current section, and then goes back on ~/.bash_history
 
-      shopt -s histappend # append to the history file, don't overwrite it
-      export HISTCONTROL=ignoreboth #ignores both whitespace only commands and dupes
-      export HISTSIZE=10000
-      export HISTFILESIZE=100000
+      # Append to the history file, don't overwrite it
+      shopt -s histappend
+      # ignoredups: ignore duplicate commands
+      # ignorespace: ignore commands that start with space
+      # ignoreboth: both the above
+      export HISTCONTROL='ignoredups:erasedups'
+      export HISTSIZE=1000000
+      export HISTFILESIZE=10000000
       #export HISTFILE=~/.new_bash_history
       export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S '
       # Expressions that match will not be put on ~/.bash_history
       # and will not reappear on current bash session after <UP>.
-      export HISTIGNORE='ls:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*'
+      # TODO ignore anything that contains only whitespace, not just space.
+      # Could be achieved with `HISTCONTROL=ignorespace`, but I copy paste
+      # from Markdown indented code blocks too often. ` *` does not work
+      # as it is BRE that does the same as `ignorespace.`
+      export HISTIGNORE=' :  :   :    :ls:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*'
       #export PROMPT_COMMAND='history -a' #this command is executed once when shell is ready
 
   ## Texlive
@@ -110,7 +121,7 @@ fi
 
   ## Java
 
-    export JAVA_HOME='/usr/lib/jvm/java-7-oracle'
+    export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
     #export CATALINA_HOME=''
 
   # For VM SSH development as git user so I can run X programs:

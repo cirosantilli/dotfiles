@@ -52,5 +52,3 @@
 [user]
 	email = ciro.santilli@gmail.com
 	name = Ciro Santilli
-[pull]
-	rebase = true

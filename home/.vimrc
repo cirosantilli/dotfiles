@@ -112,11 +112,15 @@
 
     " All Copy.
     command! Ac normal! ggVG"+y<c-o><c-o>
+    " Cat a given file into buffer.
+    command! -complete=file -nargs=1 Cat silent r! cat <args>
     command! -range Ex <line1>,<line2>!expand -t4
     " Find Git conflict
-    command! Hd HeaderDecrease
-    command! Hi HeaderIncrease
+    command! -range=% Hd <line1>,<line2>HeaderDecrease
+    command! -range=% Hi <line1>,<line2>HeaderIncrease
     command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
+    " Delete the curent file.
+    command! Rm !rm %
     " Toggle the status bar between mode 0 and 2.
     command! Sl let &laststatus = ((!&laststatus) * 2)
     command! Ss set spell!
@@ -152,6 +156,12 @@
       copen
     endfunction
     command! Csc call Csc()
+
+    function! Css()
+      cscope find s <cword>
+      copen
+    endfunction
+    command! Css call Css()
 
 " # Plugins
 
@@ -632,7 +642,7 @@
 
     " Runs terminal inside vim.
 
-    " Github mirror of the Google code main repo:
+    " GitHub mirror of the Google code main repo:
 
       Plugin 'rosenfeld/conque-term'
 
@@ -1108,7 +1118,7 @@
 
     " # wildignore
 
-      " Patterns to ignore on several types of expandion,
+      " Patterns to ignore on several types of expansion,
       " including command tab expansion.
 
       " Default value: empty.
@@ -1117,10 +1127,10 @@
       " when those are placed in the current directory, which
       " is a very common convention!
 
-        set wildignore+=*.class,*.pyc,*.o,*.out,*.pdf
+        set wildignore+=*.class,*.elf,*.jpg,*.jpeg,*.o,*.out,*.pdf,*.png,*.pyc,*.img
 
       " Then in the rare cases that you want to open those up,
-      " just expand and change the extenion, or change wildignore for a session.
+      " just expand and change the extension, or change wildignore for a session.
 
   " Working directory is always the same as the file being edited
 
@@ -1472,7 +1482,7 @@
       let s:spellfile = $HOME . "/.vim/spell/en.utf-8.add"
       let &spellfile = s:spellfile
       " In which file types to spellcheck.
-      autocmd Filetype gitcommit,haml,html,latex,mkd,markdown,rst,tex setlocal spell spelllang=en
+      autocmd Filetype gitcommit,haml,html,latex,markdown,rst,tex setlocal spell spelllang=en
 
     " After editing the spell file, use this to generate
     " the machine readable file that Vim really uses:
@@ -1782,7 +1792,7 @@
         " infinitely long lines. because single newlines become line breaks.
         autocmd BufNew,BufRead *.{md,rst} setlocal wrap
 
-        function! FtMkd()
+        function! FiletypeMarkdown()
           " Enter a good mode to edit markdown tables.
           " Always shows leftmost column.
           function! s:TableMode()
@@ -1799,7 +1809,7 @@
           endfunction
           command! -buffer TableMode call s:TableMode()
         endfunction
-        autocmd FileType mkd,markdown call FtMkd()
+        autocmd FileType markdown call FiletypeMarkdown()
       augroup END
 
     " # LaTeX
@@ -1845,13 +1855,15 @@
 
   " # Ruby
 
+  " # Tcl
+
     augroup Interpreted
       autocmd!
       autocmd BufNew,BufRead Vagrantfile setlocal filetype=ruby
       autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
       autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
       autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
-      autocmd FileType sh,python,perl,ruby call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+      autocmd FileType perl,python,r,ruby,sh,tcl call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
     augroup END
 
   " # Compile to executable languages
@@ -1933,6 +1945,13 @@
 
     " Open in new tab.
     " autocmd FileType qf nnoremap <buffer> T :let b:switchbuf_old = &switchbuf | set switchbuf+=usetab,newtab<cr>:tabprevioux
+
+  " # gnuplot
+
+      augroup Gnuplot
+        autocmd!
+        autocmd FileType gnuplot noremap <buffer> <F6> :write<cr>:silent !gnuplot -p %<cr>
+      augroup END
 
 " # highlight
 
@@ -3264,7 +3283,7 @@
 
   " Is the built-in language for scripting Vim.
 
-  " #style guides
+  " # style guides
 
     " - <http://google-styleguide.googlecode.com/svn/trunk/vimscriptguide.xml>
 
@@ -3597,7 +3616,7 @@
 
       " - if run with a range, `<line1>` and `<line2>` expand to that range
 
-      " Default to whole file:
+      " Default to whole file instad of current line:
 
         " command! -range=% Echo echo "<line1> <line2>"
 
@@ -4247,7 +4266,9 @@
 
     " if F() != 0 | throw 'assertion failed' | end
 
-  " # default values #optional arguments
+  " # Default values
+
+  " # Optional arguments
 
     " Concept does not exist in the language.
 
@@ -4955,6 +4976,11 @@
       " r a.txt
 
       " r !ls
+
+    " Preventing it from staring on next line is hard:
+
+    " - http://superuser.com/questions/457944/vim-r-in-cursor-position
+    " - http://vi.stackexchange.com/questions/862/read-after-cursor-instead-of-after-line
 
   " # yank
 
@@ -6072,13 +6098,15 @@
 
     " Replace in buffer.
 
+    " Don't use it in scripts because `gdefault` breaks it: <https://google-styleguide.googlecode.com/svn/trunk/vimscriptfull.xml#Portability>
+
     " # Special replacement patterns
 
         " h sub-replace-special
 
       " Used by `:substitute` and `substitute()`.
 
-      " - `\=`: replace by expression, like in Perl. Catpure groups referred as `submatch(0)`.
+      " - `\=`: replace by expression, like in Perl. Capture groups referred as `submatch(0)`.
 
       " Capture group:
 
