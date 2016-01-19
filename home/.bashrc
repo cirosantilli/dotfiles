@@ -194,7 +194,9 @@ parse_svn_repository_root() {
     alias m2='man 2'
     alias m3='man 3'
     bak() { mv "${1%/}" "${1%/}.bak"; }
+    bakk() { cp -r "${1%/}" "${1%/}.bak"; }
     kab() { p="${1%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; }
+    kabb() { p="${1%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; }
     alias md='mkdir'
     # Make Dir Cd
     mdc() { mkdir "$1" && cd "$1"; }
@@ -207,6 +209,14 @@ parse_svn_repository_root() {
     noh() { nohup $@ >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
+    randlog () {
+      (
+        cat /dev/urandom | tr -dc 'a-z0-9' | head -c 10
+        echo
+        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 10 | tr -d '\n'
+        echo '0@'
+        ) | tee >(xclip -selection clipboard)
+    }
     # play Alert
     alias playa="$cmd"
     # play alert Infinite. Stop with `kill %1`.
@@ -246,6 +256,7 @@ parse_svn_repository_root() {
     alias stra='sudo strace -f -s999 -v'
     # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
     alias sudo='sudo '
+    alias t='type'
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
     alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
@@ -253,10 +264,14 @@ parse_svn_repository_root() {
       alias duh='du -h'
       alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
       alias dushf='dush | tee ".dush$(timestamp)"' # to File
+    # tr Colon to newline. To see paths better.
+    alias trc="tr ':' '\n'"
     # Normally, sudo cannot see your personal path variable. now it can:
     #alias sudo='sudo env PATH=$PATH'
     alias tree='tree --charset=ascii'
-    alias t='type'
+    # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
+    alias tornewip='sudo killall -HUP tor'
+    alias torbrowser='cd ~/bin && ./start-tor-browser.desktop'
     alias v='vim'
     viw() { vim "$(which "$1")"; }
     alias vir='vim README.md'
@@ -271,13 +286,25 @@ parse_svn_repository_root() {
     unzipd() { unzip -d "${1%.*}" "$1"; }
     zipd() { zip -r "${1%/}.zip" "$1"; }
 
-
     bdiff() (
       f() (
         od -An -tx1c -w1 -v "$1" | paste -d '' - -
       )
       diff -u <(f "$1") <(f "$2")
     )
+
+    # http://data.stackexchange.com/stackoverflow/query/edit/392827
+    socsv() {
+      ls -t ~/down/QueryResults* | head -1
+      cat "$(ls -t ~/down/QueryResults* | head -1)" | tr -d '\r' | \
+      sed -E \
+      -e 's|,.*||' \
+      -e 's|"||g' \
+      -e 's|^|<a href="https://stackoverflow.com/questions/|' \
+      -e 's|$|">aaaaaaaaaaaaaaaaaaa</a><br/>|' \
+      -e '0~16s|$|<br/>|' \
+      > ~/down/a.html
+    }
 
     ## Provision machines
 
@@ -294,7 +321,7 @@ parse_svn_repository_root() {
       alias afse='apt-file search'
       # Binary
       afseb() { apt-file search "$(which "$1")"; }
-      alias agbd='apt-get build-dep'
+      alias sagbd='apt-get build-dep'
       alias agso='apt-get source'
       alias dpL='dpkg -L'
       alias dps='dpkg -s'
@@ -467,16 +494,17 @@ parse_svn_repository_root() {
       extract () {
         case $1 in
           *.7z)      7z x "$1";;
-          *.tar.gz)  tar xzf "$1";;
-          *.gz)      gunzip "$1";;
-          *.tar)     tar xf "$1";;
-          *.tgz)     tar xzf "$1";;
-          *.tar.bz2) tar xjf "$1";;
-          *.bz2)     bunzip2 "$1";;
-          *.rar)     rar x "$1";;
-          *.tbz2)    tar xjf "$1";;
-          *.zip)     unzip "$1";;
           *.Z)       uncompress "$1";;
+          *.cpio)    cpio -i <"$1";;
+          *.bz2)     bunzip2 "$1";;
+          *.gz)      gunzip "$1";;
+          *.rar)     rar x "$1";;
+          *.tar)     tar xf "$1";;
+          *.tar.bz2) tar xjf "$1";;
+          *.tar.gz)  tar xzf "$1";;
+          *.tbz2)    tar xjf "$1";;
+          *.tgz)     tar xzf "$1";;
+          *.zip)     unzip "$1";;
           *)         echo "error: unknown extension: $1";;
         esac
       }
@@ -547,6 +575,7 @@ parse_svn_repository_root() {
     gadcmp() { git add . && git commit -m "$1" && git push; }
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
+    alias gbi='git bisect'
     alias gbl='git blame'
     alias gbr='git branch'
     gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -585,7 +614,8 @@ parse_svn_repository_root() {
     alias gcn='git config'
     alias gcng='git config --global'
     alias gcngh='git config user.email "ciro.santilli@gmail.com"'
-    alias gcnls='git config user.name "Ciro Santilli 六四事件 法轮功"'
+    # Git config anti-commie.
+    alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
     alias gcp='git cp'
     alias gcr='git cherry-pick'
     alias gd='git diff'
@@ -618,8 +648,9 @@ parse_svn_repository_root() {
     alias gls='git ls-files'
     alias glso='git ls-files --other'
     alias glsg='git ls-files | grep'
+    alias glsgi='git ls-files | grep -i'
     alias glsr='git ls-remote'
-    alias glo='git log'
+    alias glo='git log --decorate'
     alias glog='git log --all --abbrev-commit --decorate --graph'
     # One line
     alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
@@ -783,14 +814,19 @@ parse_svn_repository_root() {
     # List targets.
     alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
                                                     # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
+    alias mkq='make qemu'
     alias mkr='make run'
     mkrr() { make run RUN="${1%.*}"; }
     alias mkt='make test'
     alias mku='sudo make uninstall'
     alias mkv='make view'
     alias mkw='make watch'
-    alias tmkjb='time make -j"$(($(nproc) + 1))";b'
-    alias tmkcb='time make check;b'
+    alias tmkb='time make; b'
+    # Time the build, use many processors, alert me when done.
+    alias tmkjb='time make -j"$(($(nproc) + 1))"; b'
+    # Like above, but also do a local `make install`.
+    alias tmkjbi='time make -j"$(($(nproc) + 1))"; make install; b'
+    alias tmkcb='time make check; b'
     alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
 
     # From Git root:
@@ -872,13 +908,13 @@ parse_svn_repository_root() {
 
     alias myr='mysql -u root -p'
 
-    # Before using this you ran:
-      #mysql -u root -h localhost -p -e '
-        #CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
-        #CREATE DATABASE test;
-        #GRANT ALL ON a.* TO 'a'@'localhost';
-      #'
-    # MYsql Test
+    # Before using this you must run:
+      #mysql -u root -h localhost -p -e "
+      #  CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
+      #  CREATE DATABASE test;
+      #  GRANT ALL ON a.* TO 'a'@'localhost';
+      #"
+    # Mnemonic: MYsql Test
     alias myt='mysql -u a -h localhost -pa a'
 
   ## music
@@ -944,6 +980,7 @@ parse_svn_repository_root() {
 
     ## pip
 
+      alias eba='. .env/bin/activate'
       alias spii='sudo pip install'
       alias spiu='sudo pip uninstall'
       alias pise='pip search'
@@ -952,6 +989,8 @@ parse_svn_repository_root() {
     ## django
 
       # Django Manage Run Server.
+      alias dmmi='./manage.py migrate'
+      alias dmsp='./manage.py startproject && ./manage.py migrate'
       alias dmrs='./manage.py runserver'
       # Db Shell.
       alias dmds='./manage.py dbshell'
@@ -979,7 +1018,6 @@ parse_svn_repository_root() {
       qemu-system-i386 -hda "$1" -S -s &
       gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
     }
-
 
   ## rake
 
@@ -1015,8 +1053,14 @@ parse_svn_repository_root() {
     sss() { sudo service "$1" start ; }
     sst() { sudo service "$1" status ; }
     ssta() { sudo service --status-all ; }
-    alias ssar='sudo service apache2 restart'
-    alias sslr='sudo service lightdm restart'
+    alias ssra='sudo service apache2 restart'
+    # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
+    alias ssrn='sudo service network-manager restart'
+    alias ssrl='sudo service lightdm restart'
+
+  ## sqlite
+
+    alias sql='sqlite3'
 
   ## update-rc.d
 
@@ -1060,6 +1104,20 @@ parse_svn_repository_root() {
     alias xlc='fc -ln -1 | sed "s/\t //" | xclip -selection clipboard'
     alias xsh='xclip -selection clipboard -o | bash'
     xssh() { xclip -selection clipboard < "$HOME/.ssh/id_rsa${1}.pub"; }
+
+  ## SFL
+
+    sflx() { echo 'ciro.santilli@savoirfairelinux.com' | xsel -b; }
+
+    # Git
+    sflg() {
+      git config --local user.email 'ciro.santilli@savoirfairelinux.com'
+      git config --local remote.origin.push HEAD:refs/for/master
+      curl -Lo .git/hooks/commit-msg http://review.example.com/tools/hooks/commit-msg 
+      #gitdir=$(git rev-parse --git-dir); scp -p -P 29420 username@gerrit-ring.savoirfairelinux.com:hooks/commit-msg ${gitdir}/hooks/
+      git remote add ssh://<username>@gerrit-ring.savoirfairelinux.com:29420/ring-daemon
+      git config --local push.draft.url :refs/drafts/master
+    }
 
   ## Source lines and path modifications
 

@@ -119,6 +119,9 @@
     command! -range=% Hd <line1>,<line2>HeaderDecrease
     command! -range=% Hi <line1>,<line2>HeaderIncrease
     command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
+    " Current path to clipboard.
+    " http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
+    command! Pc :let @+ = expand('%:p')
     " Delete the curent file.
     command! Rm !rm %
     " Toggle the status bar between mode 0 and 2.
@@ -151,6 +154,7 @@
     command! Ep tabedit ~/.profile
     command! Ev tabedit ~/.vimrc
 
+    " Find where the function under the cursor is called from.
     function! Csc()
       cscope find c <cword>
       copen
@@ -1816,7 +1820,7 @@
 
     " # TeX
 
-      augroup Markdown
+      augroup Latex
         autocmd!
         autocmd FileType tex setlocal shiftwidth=2 tabstop=2 foldlevel=999
 
