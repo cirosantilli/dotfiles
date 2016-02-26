@@ -474,7 +474,7 @@
 
     " Check is done at save time.
 
-    " C++11:
+  " C++11:
 
       let g:syntastic_cpp_compiler = 'g++'
       let g:syntastic_cpp_compiler_options = ' -std=c++11'
@@ -1106,6 +1106,16 @@
       set wrapscan    " wrap around end of document (default)
       " set nowrapscan " do not wrap around
 
+    " # find
+
+    " # path
+
+      " Path of the `find` command.
+      " The default path is useless because it does not find recursively,
+      " so just wipe it.
+
+        set path=./**,/usr/include/**,/usr/local/include/**
+
     " Stop current highlighting:
 
       " noh
@@ -1671,7 +1681,7 @@
 
     if has('gui_running')
 
-        " Maximize screen at startup.
+        " TODO Maximize screen at startup.
         " http://stackoverflow.com/questions/4722684/how-do-i-start-gvim-with-a-maximized-window
         " Possibilities:
         " - `gvim -geometry 9999x9999` but on Ubuntu 12.04 cannot launch Vim from command line.
@@ -1878,6 +1888,12 @@
 
     " # cpp
 
+      " TODO switch between source and header files easily:
+      " http://stackoverflow.com/questions/17170902/in-vim-how-to-switch-quickly-between-h-and-cpp-files-with-the-same-name
+
+      " TODO: C++ class hierarchy.
+      " http://stackoverflow.com/questions/25655673/c-cscope-ctags-and-vim-finding-classes-that-inherit-from-this-one
+
     " # Haskell
 
     " # lex
@@ -1915,6 +1931,10 @@
       " Because fortran has a max line length.
       autocmd FileType fortran setlocal expandtab shiftwidth=2 tabstop=2
       autocmd FileType java setlocal expandtab
+
+      autocmd FileType cpp command! -buffer Swh tabedit %:r.h
+      autocmd FileType cpp command! -buffer Swc tabedit %:r.cpp
+      autocmd FileType c command! -buffer Swc tabedit %:r.c
     augroup END
 
   " # vimscript
@@ -4046,7 +4066,7 @@
     " Always use either `==#` or `==?` when comparing strings!!**,
     " since `==` can be broken by an option.
 
-  " cat:
+  " Concatenate:
 
     " if "ab" . "cd" != 'abcd' | throw 'assertion failed' | end
 
@@ -5560,6 +5580,16 @@
 
     " Should always be used instead of `:set` in ftplugin files which are
     " sourced for every file of a given type.
+
+  " # set+=
+
+    " help set+=
+
+    " E.g.:
+
+      " set path+=new_component
+
+    " Ensures that duplicates don't appear in char separated lists, thus magic.
 
   " # misc options
 

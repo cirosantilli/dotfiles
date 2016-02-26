@@ -4,3 +4,4 @@ bin
 .config/autostart
 .local/share/applications
 .cups
+.gradle

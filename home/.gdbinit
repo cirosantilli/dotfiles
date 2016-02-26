@@ -1,5 +1,8 @@
 set pagination off
 
+# http://stackoverflow.com/questions/10937289/how-can-i-disable-new-thread-thread-exited-messages-in-gdb
+set print thread-events off
+
 # Make prompt line red and bold.
 set prompt \033[1;31m(gdb) \033[m
 

@@ -177,6 +177,7 @@ parse_svn_repository_root() {
     alias gnup='gnuplot -p'
     alias gr='grep -ER'
     alias gri='grep -ERi'
+    alias fgb='fg;b'
     alias fmmmr='find-music-make-m3u .'
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
@@ -311,6 +312,39 @@ parse_svn_repository_root() {
       alias provision-min-ssh='wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-min-ssh.sh | bash'
       alias provision-min='wget -O- https://raw.githubusercontent.com/cirosantilli/linux/master/ubuntu/install-ssh.sh | bash'
 
+  ## android
+
+    alias ands='nohup studio.sh >/dev/null 2>&1 &'
+    alias adbd='adb devices -l'
+    alias adbs='adb shell'
+    alias adbks='sudo "$(which adb)" kill-server && sudo "$(which adb)" start-server'
+    alias adbl="adb logcat"
+    alias adbls="adb logcat -s"
+    alias adblsc="adb logcat -s com.cirosantilli"
+    alias adble="adb logcat '*:E'"
+    # Run app in current directory. Must be run from top level
+    # of a project created with `android create project`.
+    # Only works if there is only a single file in the `src/` directory.
+    adbr() (
+      cd 'src/'
+      file="$(find * -type f | head -n1)"
+      dir="$(dirname "$file")"
+      file="$(echo "$file" | sed -r 's/.java$//' | tr '/' '.')"
+      dir="$(echo "$dir" | tr '/' '.')"
+      adb shell am start -n "${dir}/${file}"
+    )
+    alias antcdi='ant clean && ant debug && ant installd'
+    # Clean, build, install and run on device.
+    alias antcdir='antcdi && adbr'
+    alias antc='ant clean'
+    alias antd='ant debug'
+    alias antid='ant installd'
+    alias grai='./gradlew installDebug'
+    alias grad='./gradlew assembleDebug'
+    alias gradi='./gradlew assembleDebug'
+    alias gradi='./gradlew assembleDebug && ./gradlew installDebug'
+    alias gracdi='./gradlew clean && ./gradlew assembleDebug && ./gradlew installDebug'
+
   ## aptitude
 
       alias acse='apt-cache search'
@@ -404,7 +438,11 @@ parse_svn_repository_root() {
 
   ## ctags
 
-      # ctags Recursive and without member fields (-m)
+      # ctags default command:
+      # - R: Recursive
+      # - m: without member fields
+      # Consider:
+      # - --extra=+f: algo generate tags for files
       alias ctagsr='ctags -R --c-kinds=-m'
 
   ## dirs
@@ -461,8 +499,9 @@ parse_svn_repository_root() {
 
     # MISC exports.
 
+    export LESS='-Ri'
     export EDITOR="$vim"
-    export LC_COLLATE=C
+    export LC_COLLATE='C'
 
     # OSX
     export CLICOLOR=1
@@ -597,6 +636,7 @@ parse_svn_repository_root() {
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gce='git clean'
+    alias gcexdf='git clean -xdf'
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
     alias gcob='git checkout -b'
@@ -612,519 +652,526 @@ parse_svn_repository_root() {
     alias gcot='git checkout --theirs'
     alias gcou='git checkout up'
     alias gcn='git config'
-    alias gcng='git config --global'
-    alias gcngh='git config user.email "ciro.santilli@gmail.com"'
-    # Git config anti-commie.
-    alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
-    alias gcp='git cp'
-    alias gcr='git cherry-pick'
-    alias gd='git diff'
-    alias gdf='git diff'
-    gdf12() { git diff ":1:./$1" ":2:./$1"; }
-    gdf13() { git diff ":1:./$1" ":3:./$1"; }
-    gdf123() {
-      git --no-pager diff ":1:./$1" ":2:./$1";
-      python -c 'print "\n" + (80 * "=") + "\n"';
-      git --no-pager diff ":1:./$1" ":3:./$1";
-    }
-    alias gdfc='git diff --cached'
-    alias gdfhh='git diff HEAD~ HEAD'
-    alias gdfst='git diff --stat'
-    alias gfe='git fetch'
-    alias gfeomm='git fetch origin master:master'
-    alias gfeumm='git fetch up master:master'
-    gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
-    alias gfp='git format-patch'
-    alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
-    alias gg='git grep --color'
-    alias ggi='git grep --color -i'
-    alias gka='gitk --all'
-    alias gin='git init'
-    # Init Add Commit
-    alias ginac='git init && git add . && git commit -m "init"'
-    # Restore deleted file to its latest version.
-    # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
-    git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
-    alias gls='git ls-files'
-    alias glso='git ls-files --other'
-    alias glsg='git ls-files | grep'
-    alias glsgi='git ls-files | grep -i'
-    alias glsr='git ls-remote'
-    alias glo='git log --decorate'
-    alias glog='git log --all --abbrev-commit --decorate --graph'
-    # One line
-    alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
-    # One line Graph
-    alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
-    alias gloogs='git log --all --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
-    alias glop='git log -p'
-    # Find where that feature entered the code base.
-    alias glopr='git log -p --reverse'
-    #alias glopf='git log --pretty=oneline --decorate'
-    alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
-    alias gme='git merge'
-    alias gmea='git merge --abort'
-    alias gmem='git merge master'
-    alias gmt='git mergetool'
-    alias gmv='git mv'
-    alias gppp='git push prod prod'
-    alias gps='git push'
-    alias gpsf='git push -f'
-    # Wobble
-    alias gpsfw='git push -f origin HEAD~:master && git push -f'
-    alias gpsum='git push -u mine'
-    alias gpsu='git push -u'
-    alias gpsuom='git push -u origin master'
-    alias gpl='git pull'
-    alias gplr='git pull --rebase'
-    alias gplum='git pull up master'
-    alias gplrum='git pull --rebase up master'
-    alias gplo='git pull origin'
-    alias gplom='git pull origin master'
-    alias grb='git rebase'
-    alias grbc='git rebase --continue'
-    alias grbi='git rebase -i'
-    alias grbm='git rebase master'
-    alias grs='git reset'
-    alias grsh='git reset --hard'
-    alias grsH='git reset HEAD~'
-    alias grshH='git reset --hard HEAD~'
-    alias grm='git rm'
-    alias grt='git remote'
-    alias grta='git remote add'
-    alias grtao='git remote add origin'
-    alias grtau='git remote add up'
-    alias grtv='git remote -v'
-    alias grtr='git remote rename'
-    alias grtro='git remote rename origin'
-    alias grtrou='git remote rename origin up && git remote add origin'
-    alias grts='git remote set-url'
-    alias grtso='git remote set-url origin'
-    alias gsa='git stash'
-    alias gsaa='git stash apply'
-    alias gsh='git show'
-    gshm() { git show "master:./$1"; }
-    gshmo() { git show "master:./$1" > "old_$1"; }
-    alias gst='git status'
-    alias gsu='git submodule'
-    alias gsua='git submodule add'
-    alias gta='git tag'
-    alias gtac='git tag --contains'
-    # Git TAg Date
-    alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
-    alias gtas='git tag | sort -V'
-    alias gtr='git ls-tree HEAD'
+  alias gcng='git config --global'
+  alias gcngh='git config user.email "ciro.santilli@gmail.com"'
+  # Git config anti-commie.
+  alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
+  alias gcp='git cp'
+  alias gcr='git cherry-pick'
+  alias gd='git diff'
+  alias gdf='git diff'
+  alias gdfmh='git diff master...HEAD'
+  alias gdfc='git diff --cached'
+  alias gdfhh='git diff HEAD~ HEAD'
+  alias gdfst='git diff --stat'
+  alias gfe='git fetch'
+  alias gfeomm='git fetch origin master:master'
+  alias gfeumm='git fetch up master:master'
+  gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
+  alias gfp='git format-patch'
+  alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
+  alias gdfx='git diff | xsel -b'
+  gdf12() { git diff ":1:./$1" ":2:./$1"; }
+  gdf13() { git diff ":1:./$1" ":3:./$1"; }
+  gdf123() {
+    git --no-pager diff ":1:./$1" ":2:./$1";
+    python -c 'print "\n" + (80 * "=") + "\n"';
+    git --no-pager diff ":1:./$1" ":3:./$1";
+  }
+  alias gg='git grep --color'
+  alias ggi='git grep --color -i'
+  alias gka='gitk --all'
+  alias gin='git init'
+  # Init Add Commit
+  alias ginac='git init && git add . && git commit -m "init"'
+  # Restore deleted file to its latest version.
+  # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
+  git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
+  alias gls='git ls-files'
+  alias glso='git ls-files --other'
+  alias glsg='git ls-files | grep'
+  alias glsgi='git ls-files | grep -i'
+  alias glsr='git ls-remote'
+  alias glo='git log --decorate'
+  alias glog='git log --all --abbrev-commit --decorate --graph'
+  # One line
+  alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
+  # One line Graph
+  alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
+  alias gloogs='git log --all --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
+  alias glop='git log -p'
+  # Find where that feature entered the code base.
+  alias glopr='git log -p --reverse'
+  #alias glopf='git log --pretty=oneline --decorate'
+  alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
+  alias gme='git merge'
+  alias gmea='git merge --abort'
+  alias gmem='git merge master'
+  alias gmt='git mergetool'
+  alias gmv='git mv'
+  alias gppp='git push prod prod'
+  alias gps='git push'
+  alias gpsf='git push -f'
+  # Wobble
+  alias gpsfw='git push -f origin HEAD~:master && git push -f'
+  alias gpsum='git push -u mine'
+  alias gpsu='git push -u'
+  alias gpsuom='git push -u origin master'
+  alias gpl='git pull'
+  alias gplr='git pull --rebase'
+  alias gplum='git pull up master'
+  alias gplrum='git pull --rebase up master'
+  alias gplo='git pull origin'
+  alias gplom='git pull origin master'
+  alias grb='git rebase'
+  alias grbc='git rebase --continue'
+  alias grbi='git rebase -i'
+  alias grbm='git rebase master'
+  alias grs='git reset'
+  alias grsh='git reset --hard'
+  alias grsH='git reset HEAD~'
+  alias grshH='git reset --hard HEAD~'
+  alias grm='git rm'
+  alias grt='git remote'
+  alias grta='git remote add'
+  alias grtao='git remote add origin'
+  alias grtau='git remote add up'
+  alias grtv='git remote -v'
+  alias grtr='git remote rename'
+  alias grtro='git remote rename origin'
+  alias grtrou='git remote rename origin up && git remote add origin'
+  alias grts='git remote set-url'
+  alias grtso='git remote set-url origin'
+  alias gsa='git stash'
+  alias gsaa='git stash apply'
+  alias gsh='git show'
+  gshm() { git show "master:./$1"; }
+  gshmo() { git show "master:./$1" > "old_$1"; }
+  alias gst='git status'
+  alias gsu='git submodule'
+  alias gsua='git submodule add'
+  alias gsuf='git submodule foreach'
+  alias gsufp='git submodule foreach git pull'
+  alias gsuu='git submodule update'
+  alias gta='git tag'
+  alias gtac='git tag --contains'
+  # Git TAg Date
+  alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
+  alias gtas='git tag | sort -V'
+  alias gtr='git ls-tree HEAD'
 
-    alias vgig='vim .gitignore'
-    alias lngp='latex-new-github-project.sh cirosantilli'
+  alias vgig='vim .gitignore'
+  alias lngp='latex-new-github-project.sh cirosantilli'
 
-    # GitHub
+  # GitHub
 
-      alias ghb='git browse-remote'
-      alias ghpb='git push && git browse-remote'
-      ghmail() { curl "https://api.github.com/users/$1/events/public" | grep email; }
-      alias gpsbr='gps && git browse-remote'
-      alias gcmanpsfbr='gcmanpsf && git browse-remote'
-      # Pull Request.
-      ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
+    alias ghb='git browse-remote'
+    alias ghpb='git push && git browse-remote'
+    ghmail() { curl "https://api.github.com/users/$1/events/public" | grep email; }
+    alias gpsbr='gps && git browse-remote'
+    alias gcmanpsfbr='gcmanpsf && git browse-remote'
+    # Pull Request.
+    ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
 
 
-    ## Hub
+  ## Hub
 
-      alias huco='hub checkout'
+    alias huco='hub checkout'
 
-  ## GitLab
+## GitLab
 
-    # Start developping GitLab.
-    dev-gitlab-startup() {
-      guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
-      guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
-      guake -n 'server' -e 'cd ~/gitlab'
-      guake -n 'server' -e "cd \"$RAILS_DIR\""
-      guake -n 'server' -e 'cd ~/test'
-    }
+  # Start developping GitLab.
+  dev-gitlab-startup() {
+    guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
+    guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
+    guake -n 'server' -e 'cd ~/gitlab'
+    guake -n 'server' -e "cd \"$RAILS_DIR\""
+    guake -n 'server' -e 'cd ~/test'
+  }
 
-  ## grunt
+## grunt
 
-    alias gru='grunt'
-    alias gruc='grunt clean'
-    alias gruh='grunt --help'
-    alias grur='grunt run'
-    alias grut='grunt test'
-    alias gruw='grunt watch'
+  alias gru='grunt'
+  alias gruc='grunt clean'
+  alias gruh='grunt --help'
+  alias grur='grunt run'
+  alias grut='grunt test'
+  alias gruw='grunt watch'
 
-  ## heroku
+## heroku
 
-    alias hrk='heroku'
-    alias hrkc='heroku create'
-    alias hrko='heroku open'
-    alias hrkr='heroku run'
-    alias gphm='git push heroku master'
+  alias hrk='heroku'
+  alias hrkc='heroku create'
+  alias hrko='heroku open'
+  alias hrkr='heroku run'
+  alias gphm='git push heroku master'
 
-  ## hg
+## hg
 
-    alias hgg='hg grep'
-    alias hggi='hg grep -i'
+  alias hgg='hg grep'
+  alias hggi='hg grep -i'
 
-  ## homesick
+## homesick
 
-    alias hs='homesick'
-    alias hscd='homesick cd'
-    alias hsc='homesick commit'
-    alias hsd='homesick diff'
-    alias hsh='homesick help'
-    alias hsp='homesick pull'
-    alias hss='homesick status'
-    alias hsu='homesick push'
-    alias hst='homesick track'
+  alias hs='homesick'
+  alias hscd='homesick cd'
+  alias hsc='homesick commit'
+  alias hsd='homesick diff'
+  alias hsh='homesick help'
+  alias hsp='homesick pull'
+  alias hss='homesick status'
+  alias hsu='homesick push'
+  alias hst='homesick track'
 
-  ## Java
+## Java
 
-    ja() { java "${1%.*}" "${*:2}"; }
-    alias jac='javac'
-    jae() { java -ea "${1%.*}" "${*:2}"; }
-    alias jaj='java -jar'
-    alias jartf='jar -tf'
-    alias jav='java -version'
-    jap() { javap -c -constants -private -verbose "${1%.*}.class"; }
+  ja() { java "${1%.*}" "${*:2}"; }
+  alias jac='javac'
+  jae() { java -ea "${1%.*}" "${*:2}"; }
+  alias jaj='java -jar'
+  alias jartf='jar -tf'
+  alias jav='java -version'
+  jap() { javap -c -constants -private -verbose "${1%.*}.class"; }
 
-  ## jekyll
+## jekyll
 
-    alias bej='bundle exec jekyll'
-    alias bejb='bundle exec jekyll build'
-    alias bejs='firefox localhost:4000 && bundle exec jekyll serve -tw'
+  alias bej='bundle exec jekyll'
+  alias bejb='bundle exec jekyll build'
+  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -tw'
 
-  ## make
+## make
 
-    alias mk='make'
-    alias mkc='make clean'
-    alias mkd='make debug'
-    alias mkdc='make distclean'
-    alias mkde='make deps'
-    alias mkh='make help'
-    alias mkhl='make help | less'
-    # It is better to `make` first without the sudo so that the generated build
-    # will not be owned, or else it could only be cleaned with by sudo.
-    alias mki='make install'
-    alias smki='sudo make install'
-    alias mkir='make && sudo make install && make install-run'
-    alias mkj='make -j"$(($(nproc) + 1))"'
-    # Stop background watch.
-    alias mkk='make kill'
-    # List targets.
-    alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
-                                                    # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
-    alias mkq='make qemu'
-    alias mkr='make run'
-    mkrr() { make run RUN="${1%.*}"; }
-    alias mkt='make test'
-    alias mku='sudo make uninstall'
-    alias mkv='make view'
-    alias mkw='make watch'
-    alias tmkb='time make; b'
-    # Time the build, use many processors, alert me when done.
-    alias tmkjb='time make -j"$(($(nproc) + 1))"; b'
-    # Like above, but also do a local `make install`.
-    alias tmkjbi='time make -j"$(($(nproc) + 1))"; make install; b'
-    alias tmkcb='time make check; b'
-    alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
+  alias mk='make'
+  alias mkc='make clean'
+  alias mkd='make debug'
+  alias mkdc='make distclean'
+  alias mkde='make deps'
+  alias mkh='make help'
+  alias mkhl='make help | less'
+  # It is better to `make` first without the sudo so that the generated build
+  # will not be owned, or else it could only be cleaned with by sudo.
+  alias mki='make install'
+  alias smki='sudo make install'
+  alias mkir='make && sudo make install && make install-run'
+  alias mkj='make -j"$(($(nproc) + 1))"'
+  # Stop background watch.
+  alias mkk='make kill'
+  # List targets.
+  alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
+                                                  # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
+  alias mkq='make qemu'
+  alias mkr='make run'
+  mkrr() { make run RUN="${1%.*}"; }
+  alias mkt='make test'
+  alias mku='sudo make uninstall'
+  alias mkv='make view'
+  alias mkw='make watch'
+  tb() { time "$@"; b; }
+  alias tmkb='time make; b'
+  # Time the build, use many processors, alert me when done.
+  alias tmkjb='time make -j"$(($(nproc) + 1))"; b'
+  # Like above, but also do a local `make install`.
+  alias tmkjbi='time make -j"$(($(nproc) + 1))"; make install; b'
+  alias tmkcb='time make check; b'
+  alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
 
-    # From Git root:
+  # From Git root:
 
-      alias gmk='git !exec make'
-      alias gmkc='git !exec make clean'
-      alias gmkd='git !exec make dist'
-      alias gmkr='git !exec make run'
-      alias gmkt='git !exec make test'
+    alias gmk='git !exec make'
+    alias gmkc='git !exec make clean'
+    alias gmkd='git !exec make dist'
+    alias gmkr='git !exec make run'
+    alias gmkt='git !exec make test'
 
-      alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
-      alias cmkt='cmk && ctest -V .'
+    alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
+    alias cmkt='cmk && ctest -V .'
 
-  ## Mass regex operations
+## Mass regex operations
 
-    # Mass Regex Refactor.
-    #
-    # Shows old and new lines.
-    #
-    # Dry run:
-    #
-    #    find . -type f | mrr 'a/b/g'
-    #    git ls-files | mrr 'a/b/g'
-    #
-    # Sample output:
-    #
-    #   a:1
-    #   a
-    #   c
-    #
-    #   b:1
-    #   b
-    #   c
-    #
-    # Replace (Not Dry run)
-    #
-    #  find . -type f | mrr "a/b/g" D
-    #
-    # # Caveats
-    #
-    # - will transform symlinks into files
-    # - will add trailing newlines to files that end without them
-    #
-    mrr() {
-      if [ $# -gt 1 ]; then
-        if [ "$2" = 'D' ]; then
-          xargs perl -lapi -e "s/$1"
-        fi
-      else
-        sed "s|^\./||" | xargs -L1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
+  # Mass Regex Refactor.
+  #
+  # Shows old and new lines.
+  #
+  # Dry run:
+  #
+  #    find . -type f | mrr 'a/b/g'
+  #    git ls-files | mrr 'a/b/g'
+  #
+  # Sample output:
+  #
+  #   a:1
+  #   a
+  #   c
+  #
+  #   b:1
+  #   b
+  #   c
+  #
+  # Replace (Not Dry run)
+  #
+  #  find . -type f | mrr "a/b/g" D
+  #
+  # # Caveats
+  #
+  # - will transform symlinks into files
+  # - will add trailing newlines to files that end without them
+  #
+  mrr() {
+    if [ $# -gt 1 ]; then
+      if [ "$2" = 'D' ]; then
+        xargs perl -lapi -e "s/$1"
       fi
-    }
-
-    # "grep" only in Basename.
-    #
-    # Sample usage:
-    #
-    #   git ls-files | grepb a.c
-    #
-    # Highlight breaks if Perl pattern is not POSIX ERE.
-    #
-    grepb() { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$"; }
-
-    # Find files recursively filtering by regex.
-    #
-    # Basename only, prune hidden.
-    fin() { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1"; }
-    # Also Hidden.
-    finh() { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
-    # full Path.
-    finp() { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
-
-    grr() { grep -Er "$1" .; }
-
-    # Mass rename refactoring.
-    alias mvr='move_regex.py'
-
-  ## mysql
-
-    alias myr='mysql -u root -p'
-
-    # Before using this you must run:
-      #mysql -u root -h localhost -p -e "
-      #  CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
-      #  CREATE DATABASE test;
-      #  GRANT ALL ON a.* TO 'a'@'localhost';
-      #"
-    # Mnemonic: MYsql Test
-    alias myt='mysql -u a -h localhost -pa a'
-
-  ## music
-
-    alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
-    alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
-    alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
-    alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
-
-  ## Maven
-
-    alias mva='mvn assembly:single'
-    alias mvc='mvn clean'
-    alias mvca='mvn clean assembly:single'
-    alias mvca='mvn clean install -DskipTests assembly:single'
-    alias mvci='mvn clean install -DskipTests'
-    alias mvcj='mvn clean install -DskipTests && mvn exec:java'
-    alias mvct='mvn clean test'
-    alias mvd='mvn javadoc:javadoc'
-    # Doc View
-    alias mvdv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
-    alias mvej='mvn exec:java'
-    alias mvi='mvn install'
-    alias mvo='mvn compile'
-    alias mvs='mvn surefire-report:report-only && xdg-open target/site/surefire-report.html'
-    alias mvp='mvn package'
-    alias mvt='mvn test'
-    mvtt() { mvn test "-Dtest=$1"; }
-
-  ## PATH operations
-
-    # Prepend to a colon : separated path. Usage: `pre PATH /some/path`
-    pre() { eval "export $1=$2:\$$1"; }
-
-    prel() { pre 'LIBRARY_PATH' "$1"; pre 'LD_LIBRARY_PATH' "$1"; }
-    prep() { pre 'PATH' "$1"; }
-    #prepop() { eval "$1=$(printf "$1" | sed -E 's/^[^:]*://')"; }
-    prepop() { eval "$1=\${$1#*:}"; }
-
-  ## npm
-
-    alias npmi='npm install'
-    alias npmis='npm install --save'
-    alias npmisd='npm install --save-dev'
-
-  ## power management
-
-    alias pmhi='sudo ps-hibernate'
-    alias pmsh='sudo shutdown'
-    alias pmsu='sudo ps-suspend'
-    alias pmre='sudo reboot'
-
-  ## python
-
-    export PYTHONSTARTUP="$HOME/.pythonrc.py"
-
-    alias py='python'
-    alias py3='python3'
-    alias ipy='ipython'
-    alias tipy='touch __init__.py'
-    alias pyserve='python -m SimpleHTTPServer'
-    alias pydoc='python -m doctest'
-
-    ## pip
-
-      alias eba='. .env/bin/activate'
-      alias spii='sudo pip install'
-      alias spiu='sudo pip uninstall'
-      alias pise='pip search'
-      alias pifr='pip freeze'
-
-    ## django
-
-      # Django Manage Run Server.
-      alias dmmi='./manage.py migrate'
-      alias dmsp='./manage.py startproject && ./manage.py migrate'
-      alias dmrs='./manage.py runserver'
-      # Db Shell.
-      alias dmds='./manage.py dbshell'
-      # Sync DB.
-      alias dmsd='./manage.py syncdb'
-      # Collect Static.
-      alias dmcs='echo "yes" | ./manage.py collectstatic'
-
-      ## South
-
-        alias dmscts='./manage.py convert_to_south'
-        alias dmssi='./manage.py schemamigration --initial'
-        alias dmssa='./manage.py schemamigration --auto'
-
-  ## qemu
-
-    alias qemu='qemu-system-x86_64'
-    alias qemu32='qemu-system-i386'
-    # Debug.
-    qemud() {
-      qemu-system-x86_64 -hda "$1" -S -s &
-      gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
-    }
-    qemud32() {
-      qemu-system-i386 -hda "$1" -S -s &
-      gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
-    }
-
-  ## rake
-
-    alias rk='rake'
-    alias rkc='rake clean'
-
-  ## rails
-
-    alias rdcm='rake db:drop db:migrate'
-    alias be='bundle exec'
-    alias bei='bundle exec spinach'
-    alias bec='bundle exec rspec'
-    alias befs='bundle exec foreman start'
-    alias ber='bundle exec rake'
-    alias berc='bundle exec rake clean'
-    alias berco='bundle exec rake compile'
-    alias berr='bundle exec rake routes'
-    alias berrl='bundle exec rake routes | less'
-    alias bert='bundle exec rake test'
-    alias bers='bundle exec rake spec'
-    alias berT='bundle exec rake -T'
-    alias bes='bundle exec spring'
-    alias bi='bundle install'
-    alias ra='bundle exec rails'
-    alias rac='bundle exec rails console'
-    alias ras='bundle exec rails server'
-    alias rasp='bundle exec rails server -p4000'
-
-  ## Services
-
-    sso() { sudo service "$1" stop ; }
-    ssr() { sudo service "$1" restart ; }
-    sss() { sudo service "$1" start ; }
-    sst() { sudo service "$1" status ; }
-    ssta() { sudo service --status-all ; }
-    alias ssra='sudo service apache2 restart'
-    # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
-    alias ssrn='sudo service network-manager restart'
-    alias ssrl='sudo service lightdm restart'
-
-  ## sqlite
-
-    alias sql='sqlite3'
-
-  ## update-rc.d
-
-    surd() { sudo update-rc.d "$1" disable; }
-
-  ## vagrant
-
-    alias vde='vagrant destroy'
-    alias vdef='vagrant destroy -f'
-    alias vdu='vagrant destroy -f && vagrant up'
-    alias vdus='vagrant destroy -f && vagrant up && vagrant ssh'
-    alias vha='vagrant halt'
-    alias vpr='vagrant provision'
-    alias vss='vagrant ssh'
-    alias vup='vagrant up'
-    alias vups='vagrant up && vagrant ssh'
-    alias vus='vagrant up --no-provision && vagrant ssh'
-
-  ## vim
-
-    alias vim="$vim"
-    # osx vim
-    if [ -x '/Applications/MacVim.app/Contents/MacOS/Vim' ]; then
-      PATH="/Applications/MacVim.app/Contents/MacOS/:${PATH}"
+    else
+      sed "s|^\./||" | xargs -L1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
     fi
+  }
 
-  ## x clipboard
+  # "grep" only in Basename.
+  #
+  # Sample usage:
+  #
+  #   git ls-files | grepb a.c
+  #
+  # Highlight breaks if Perl pattern is not POSIX ERE.
+  #
+  grepb() { perl -ne "print if m/$1(?!.*\/.)/i" | grep --color -Ei "$1|\$"; }
 
-    alias exx='expand | xclip -selection'
-    # Use xclip instead of xsel while I have this bug:
-    # http://askubuntu.com/questions/652254/xsel-output-contains-trash-at-the-end-if-a-long-input-is-piped-into-it-to-set-th
-    alias x='xclip -selection clipboard -o'
-    # input
-    alias xi='xclip -selection clipboard'
-    alias xex='x | expand | xclip -selection clipboard'
-    alias y='xsel'
-    # Add 4 spaces to every line and save to clipboard.
-    # For markdown, so also expand.
-    alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | xclip -selection clipboard'
-    # Last Command to clipboard.
-    alias xlc='fc -ln -1 | sed "s/\t //" | xclip -selection clipboard'
-    alias xsh='xclip -selection clipboard -o | bash'
-    xssh() { xclip -selection clipboard < "$HOME/.ssh/id_rsa${1}.pub"; }
+  # Find files recursively filtering by regex.
+  #
+  # Basename only, prune hidden.
+  fin() { find . -path '*/.*' -prune -o ! -name '.' -print | sed "s|^\./||" | grepb "$1"; }
+  # Also Hidden.
+  finh() { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
+  # full Path.
+  finp() { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
 
-  ## SFL
+  grr() { grep -Er "$1" .; }
 
-    sflx() { echo 'ciro.santilli@savoirfairelinux.com' | xsel -b; }
+  # Mass rename refactoring.
+  alias mvr='move_regex.py'
 
-    # Git
-    sflg() {
-      git config --local user.email 'ciro.santilli@savoirfairelinux.com'
-      git config --local remote.origin.push HEAD:refs/for/master
-      curl -Lo .git/hooks/commit-msg http://review.example.com/tools/hooks/commit-msg 
-      #gitdir=$(git rev-parse --git-dir); scp -p -P 29420 username@gerrit-ring.savoirfairelinux.com:hooks/commit-msg ${gitdir}/hooks/
-      git remote add ssh://<username>@gerrit-ring.savoirfairelinux.com:29420/ring-daemon
-      git config --local push.draft.url :refs/drafts/master
-    }
+## mysql
 
-  ## Source lines and path modifications
+  alias myr='mysql -u root -p'
 
-    # Should come at the end.
+  # Before using this you must run:
+    #mysql -u root -h localhost -p -e "
+    #  CREATE USER 'a'@'localhost' IDENTIFIED BY 'a';
+    #  CREATE DATABASE test;
+    #  GRANT ALL ON a.* TO 'a'@'localhost';
+    #"
+  # Mnemonic: MYsql Test
+  alias myt='mysql -u a -h localhost -pa a'
 
-    # Enable programmable completion features (you don't need to enable
-    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+## music
+
+  alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
+  alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
+  alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
+  alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
+
+## Maven
+
+  alias mva='mvn assembly:single'
+  alias mvc='mvn clean'
+  alias mvca='mvn clean assembly:single'
+  alias mvca='mvn clean install -DskipTests assembly:single'
+  alias mvci='mvn clean install -DskipTests'
+  alias mvcj='mvn clean install -DskipTests && mvn exec:java'
+  alias mvct='mvn clean test'
+  alias mvd='mvn javadoc:javadoc'
+  # Doc View
+  alias mvdv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
+  alias mvej='mvn exec:java'
+  alias mvi='mvn install'
+  alias mvo='mvn compile'
+  alias mvs='mvn surefire-report:report-only && xdg-open target/site/surefire-report.html'
+  alias mvp='mvn package'
+  alias mvt='mvn test'
+  mvtt() { mvn test "-Dtest=$1"; }
+
+## PATH operations
+
+  # Prepend to a colon : separated path. Usage: `pre PATH /some/path`
+  pre() { eval "export $1=$2:\$$1"; }
+
+  prel() { pre 'LIBRARY_PATH' "$1"; pre 'LD_LIBRARY_PATH' "$1"; }
+  prep() { pre 'PATH' "$1"; }
+  #prepop() { eval "$1=$(printf "$1" | sed -E 's/^[^:]*://')"; }
+  prepop() { eval "$1=\${$1#*:}"; }
+
+## npm
+
+  alias npmi='npm install'
+  alias npmis='npm install --save'
+  alias npmisd='npm install --save-dev'
+
+## power management
+
+  alias pmhi='sudo ps-hibernate'
+  alias pmsh='sudo shutdown'
+  alias pmsu='sudo ps-suspend'
+  alias pmre='sudo reboot'
+
+## python
+
+  export PYTHONSTARTUP="$HOME/.pythonrc.py"
+
+  alias py='python'
+  alias py3='python3'
+  alias ipy='ipython'
+  alias tipy='touch __init__.py'
+  alias pyserve='python -m SimpleHTTPServer'
+  alias pydoc='python -m doctest'
+
+  ## pip
+
+    alias eba='. .env/bin/activate'
+    alias spii='sudo pip install'
+    alias spiu='sudo pip uninstall'
+    alias pise='pip search'
+    alias pifr='pip freeze'
+
+  ## django
+
+    # Django Manage Run Server.
+    alias dmmi='./manage.py migrate'
+    alias dmsp='./manage.py startproject && ./manage.py migrate'
+    alias dmrs='./manage.py runserver'
+    # Db Shell.
+    alias dmds='./manage.py dbshell'
+    # Sync DB.
+    alias dmsd='./manage.py syncdb'
+    # Collect Static.
+    alias dmcs='echo "yes" | ./manage.py collectstatic'
+
+    ## South
+
+      alias dmscts='./manage.py convert_to_south'
+      alias dmssi='./manage.py schemamigration --initial'
+      alias dmssa='./manage.py schemamigration --auto'
+
+## qemu
+
+  alias qemu='qemu-system-x86_64'
+  alias qemu32='qemu-system-i386'
+  # Debug.
+  qemud() {
+    qemu-system-x86_64 -hda "$1" -S -s &
+    gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
+  }
+  qemud32() {
+    qemu-system-i386 -hda "$1" -S -s &
+    gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
+  }
+
+## rake
+
+  alias rk='rake'
+  alias rkc='rake clean'
+
+## rails
+
+  alias rdcm='rake db:drop db:migrate'
+  alias be='bundle exec'
+  alias bei='bundle exec spinach'
+  alias bec='bundle exec rspec'
+  alias befs='bundle exec foreman start'
+  alias ber='bundle exec rake'
+  alias berc='bundle exec rake clean'
+  alias berco='bundle exec rake compile'
+  alias berr='bundle exec rake routes'
+  alias berrl='bundle exec rake routes | less'
+  alias bert='bundle exec rake test'
+  alias bers='bundle exec rake spec'
+  alias berT='bundle exec rake -T'
+  alias bes='bundle exec spring'
+  alias bi='bundle install'
+  alias ra='bundle exec rails'
+  alias rac='bundle exec rails console'
+  alias ras='bundle exec rails server'
+  alias rasp='bundle exec rails server -p4000'
+
+## Services
+
+  sso() { sudo service "$1" stop ; }
+  ssr() { sudo service "$1" restart ; }
+  sss() { sudo service "$1" start ; }
+  sst() { sudo service "$1" status ; }
+  ssta() { sudo service --status-all ; }
+  alias ssra='sudo service apache2 restart'
+  # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
+  alias ssrn='sudo service network-manager restart'
+  alias ssrl='sudo service lightdm restart'
+
+## sqlite
+
+  alias sql='sqlite3'
+
+## update-rc.d
+
+  surd() { sudo update-rc.d "$1" disable; }
+
+## vagrant
+
+  alias vde='vagrant destroy'
+  alias vdef='vagrant destroy -f'
+  alias vdu='vagrant destroy -f && vagrant up'
+  alias vdus='vagrant destroy -f && vagrant up && vagrant ssh'
+  alias vha='vagrant halt'
+  alias vpr='vagrant provision'
+  alias vss='vagrant ssh'
+  alias vup='vagrant up'
+  alias vups='vagrant up && vagrant ssh'
+  alias vus='vagrant up --no-provision && vagrant ssh'
+
+## vim
+
+  alias vim="$vim"
+  # osx vim
+  if [ -x '/Applications/MacVim.app/Contents/MacOS/Vim' ]; then
+    PATH="/Applications/MacVim.app/Contents/MacOS/:${PATH}"
+  fi
+
+## x clipboard
+
+  alias exx='expand | xclip -selection'
+  # Use xclip instead of xsel while I have this bug:
+  # http://askubuntu.com/questions/652254/xsel-output-contains-trash-at-the-end-if-a-long-input-is-piped-into-it-to-set-th
+  alias x='xclip -selection clipboard -o'
+  # input
+  alias xi='xclip -selection clipboard'
+  alias xex='x | expand | xclip -selection clipboard'
+  alias y='xsel'
+  # Add 4 spaces to every line and save to clipboard.
+  # For markdown, so also expand.
+  alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | xclip -selection clipboard'
+  # Last Command to clipboard.
+  alias xlc='fc -ln -1 | sed "s/\t //" | xclip -selection clipboard'
+  alias xsh='xclip -selection clipboard -o | bash -xv'
+  xssh() { xclip -selection clipboard < "$HOME/.ssh/id_rsa${1}.pub"; }
+
+## SFL
+
+  sflx() { echo 'ciro.santilli@savoirfairelinux.com' | xsel -b; }
+
+  # Git. Must be run on each Git repo we will push for.
+  sflg() {
+    git config --local user.email 'ciro.santilli@savoirfairelinux.com'
+    git config --local remote.origin.push HEAD:refs/for/master
+    gitdir=$(git rev-parse --git-dir); scp -p -P 29420 cirosantilli@gerrit-ring.savoirfairelinux.com:hooks/commit-msg ${gitdir}/hooks/
+    git config --local push.draft.url :refs/drafts/master
+  }
+
+  alias ring-run='"$RING_DIR/ubuntu-15.10-run.sh"'
+  alias psgr='ps aux | grep ring'
+
+## Source lines and path modifications
+
+  # Should come at the end.
+
+  # Enable programmable completion features (you don't need to enable
+  # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
     # sources /etc/bash.bashrc).
     if [ -f '/etc/bash_completion' ] && ! shopt -oq 'posix'; then
         . '/etc/bash_completion'

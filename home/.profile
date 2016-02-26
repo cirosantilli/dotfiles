@@ -56,27 +56,10 @@ fi
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
       export GAME_DIR="$MEDIA_DIR/game"
     export GOPATH="$HOME/.go"
+    export RING_DIR="$HOME/git/ring"
 
     # Linux from scratch home.
     export LFS=/media/lfs/
-
-  ## PATH
-
-    # Before:
-
-      PATH="$PATH:$LATEX_BIN_DIR"
-      # Texlive
-      PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
-      PATH="$HOME/bin:$PATH"
-      PATH="$ANDROID_ADT_DIR/tools/:$PATH"
-      PATH="$ANDROID_ADT_DIR/platform-tools/:$PATH"
-      PATH="$DEVBIN:$PATH"
-
-    # After:
-
-      PATH="$PATH:$HOME/.cabal/bin"
-      PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
-      export PATH
 
   ## PYTHONPATH
 
@@ -121,8 +104,38 @@ fi
 
   ## Java
 
-    export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
+    #export JAVA_HOME='/usr/lib/jvm/java-7-openjdk-amd64'
+    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
+    #export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
     #export CATALINA_HOME=''
+
+    # Android
+
+      export ANDROID_SDK="$HOME/android-sdk"
+      export ANDROID_HOME="$ANDROID_SDK"
+      export ANDROID_NDK="$HOME/android-ndk"
+      export ANDROID_NDK_ROOT="$ANDROID_NDK"
+      export ANDROID_NDK_HOME="$ANDROID_NDK"
+      export ANDROID_ABI='armeabi-v7a'
+      export ANDROID_JAVA_HOME="$JAVA_HOME"
+      export ANDROID_STUDIO="$HOME/android-studio/"
+      export PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${PATH}"
+
+  ## PATH
+
+    # Before:
+
+      PATH="$PATH:$LATEX_BIN_DIR"
+      # Texlive
+      PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
+      PATH="$HOME/bin:$PATH"
+      PATH="$DEVBIN:$PATH"
+
+    # After:
+
+      PATH="$PATH:$HOME/.cabal/bin"
+      PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
+      export PATH
 
   # For VM SSH development as git user so I can run X programs:
 
