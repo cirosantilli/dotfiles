@@ -5,3 +5,4 @@ bin
 .local/share/applications
 .cups
 .gradle
+.config/ranger

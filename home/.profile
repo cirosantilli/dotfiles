@@ -114,8 +114,8 @@ fi
       export ANDROID_SDK="$HOME/android-sdk"
       export ANDROID_HOME="$ANDROID_SDK"
       export ANDROID_NDK="$HOME/android-ndk"
-      export ANDROID_NDK_ROOT="$ANDROID_NDK"
       export ANDROID_NDK_HOME="$ANDROID_NDK"
+      export ANDROID_NDK_ROOT="$ANDROID_NDK"
       export ANDROID_ABI='armeabi-v7a'
       export ANDROID_JAVA_HOME="$JAVA_HOME"
       export ANDROID_STUDIO="$HOME/android-studio/"

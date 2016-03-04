@@ -142,6 +142,7 @@ parse_svn_repository_root() {
     # long-command;b
     alias b='zenity --info --text "$(echo "$?"; pwd; )"'
     alias c='cd'
+    alias cdg='cd "$(git rev-parse --show-toplevel)"'
     cdls() { cd "$1" && ls; }
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'
@@ -223,6 +224,7 @@ parse_svn_repository_root() {
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
+    alias r='ranger'
     alias R='R --no-save'
     alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
@@ -273,6 +275,7 @@ parse_svn_repository_root() {
     # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
     alias tornewip='sudo killall -HUP tor'
     alias torbrowser='cd ~/bin && ./start-tor-browser.desktop'
+    alias ulimsv='ulimit -Sv 500000'
     alias v='vim'
     viw() { vim "$(which "$1")"; }
     alias vir='vim README.md'
@@ -408,6 +411,9 @@ parse_svn_repository_root() {
     alias cdn="cd $NOTES_DIR"
     alias cdp="cd $PROGRAM_DIR"
     alias cdq="cd $QUARTET_DIR"
+    RING_DIR="$HOME/git/ring"
+    alias cdr='cd "$RING_DIR"'
+    alias cdra='cd "$RING_DIR/client-android"'
     # cd Slash
     alias cds='cd -'
     alias cdu="cd $UBUNTU_DIR"
@@ -1158,9 +1164,16 @@ parse_svn_repository_root() {
   # Git. Must be run on each Git repo we will push for.
   sflg() {
     git config --local user.email 'ciro.santilli@savoirfairelinux.com'
+    # git push creates patches.
     git config --local remote.origin.push HEAD:refs/for/master
+    # Automatically add the dreaded Change-Id.
     gitdir=$(git rev-parse --git-dir); scp -p -P 29420 cirosantilli@gerrit-ring.savoirfairelinux.com:hooks/commit-msg ${gitdir}/hooks/
-    git config --local push.draft.url :refs/drafts/master
+    # `git push draft` creates drafts.
+    # TODO: git remote add draft X
+    git config --local push.draft.url HEAD:refs/drafts/master
+    # `git fetch` fetchs *all* patches locally.
+    git config --local --add 'remote.origin.fetch +refs/changes/*:refs/remotes/origin/changes/*'
+    # TODO: git remote add origin X
   }
 
   alias ring-run='"$RING_DIR/ubuntu-15.10-run.sh"'

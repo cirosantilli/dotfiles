@@ -1,2 +1,8 @@
+# This file controls the GNU readline utility,
+# which Bash and other GNU programs use to offer common REPL convenience.
+# https://wiki.archlinux.org/index.php/Readline
+
+# By default EMACS-like shortcuts are provided.
+# Use vi instead.
 set editing-mode vi
 set keymap vi

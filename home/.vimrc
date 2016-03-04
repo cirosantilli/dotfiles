@@ -131,21 +131,22 @@
     command! Sw set wrap!
     command! -nargs=1 Tt tab tag <args>
     " Search in all files under current directory recursively.
+    command! -bar -nargs=1 Gre silent grep -Ir '<args>' . | copen
     command! -nargs=1 Vim vimgrep/\v<args>/ **
     " Write current file with sudo.
     command! Wsudo write !sudo tee %
 
   " Go to important directories:
 
-    command! Ca drop $ART_DIR
-    command! Cb drop $BASH_DIR
-    command! Cc drop $CPP_DIR
-    command! Cj drop $JAVA_DIR
-    command! Cl drop $LINUX_DIR
-    command! Cn edit $NOTES_DIR
-    command! Cp drop $PROGRAM_DIR
-    command! Cq drop $QUARTET_DIR
-    command! Cu drop $UBUNTU_DIR
+    command! Cda drop $ART_DIR
+    command! Cdb drop $BASH_DIR
+    command! Cdc drop $CPP_DIR
+    command! Cdj drop $JAVA_DIR
+    command! Cdl drop $LINUX_DIR
+    command! Cdn drop $NOTES_DIR
+    command! Cdp drop $PROGRAM_DIR
+    command! Cdq drop $QUARTET_DIR
+    command! Cdu drop $UBUNTU_DIR
 
   " Edit important files:
 
@@ -604,6 +605,7 @@
       " let NERDTreeKeepTreeInNewTab=0
       " let loaded_nerd_tree=1
       let NERDTreeMinimalUI=1
+      let NERDTreeChDirMode=2
 
     " - ?: help
 
@@ -952,6 +954,10 @@
   " # dockerfile
 
       Plugin 'ekalinin/Dockerfile.vim'
+
+  " # .gradle files (Groovy).
+
+      Plugin 'tfnico/vim-gradle'
 
   " # node
 
@@ -1932,6 +1938,7 @@
       autocmd FileType fortran setlocal expandtab shiftwidth=2 tabstop=2
       autocmd FileType java setlocal expandtab
 
+      " Switch between header and cpp files naively.
       autocmd FileType cpp command! -buffer Swh tabedit %:r.h
       autocmd FileType cpp command! -buffer Swc tabedit %:r.cpp
       autocmd FileType c command! -buffer Swc tabedit %:r.c
@@ -2402,6 +2409,9 @@
 
     " Mnemonic: Extra lines!!
 
+    nnoremap <c-e> 10<c-e>
+    nnoremap <c-y> 10<c-y>
+
   " # r
 
     " Replace mode (insert but overwritting):
@@ -2780,6 +2790,8 @@
 
       nn dD ^v$"+ygv
 
+      nnoremap <c-e> 10<c-e>
+
   " # f
 
     " one screen Forward:
@@ -2875,6 +2887,9 @@
 
       cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
 
+      nnoremap <c-h> :tabprevious<cr>
+      nnoremap <c-l> :tabnext<cr>
+
   " # j
 
     " Use screen lines instead of real lines:
@@ -2969,7 +2984,9 @@
 
     " noremap <c-;> asd
 
-  " # enter #cr
+  " # enter
+
+  " # cr
 
     " - <c-m> is equivalent to <cr> becuse of terminals: http://stackoverflow.com/questions/3935970/vim-how-to-map-ctrl-m-without-affecting-return-keypress-as-well
     " - <cr> and <enter> are the same thing, so just use <cr> always
@@ -6329,9 +6346,13 @@
 
     " And you now have a navigable index!
 
+    " TODO very slow. Why?
+
+    " TODO ignore binary files like `grep -I`?
+
   " # lvimgrep
 
-  " # copen
+  " # lopen
 
     " Use location list instead of quickfix. Similar, but there is one per window.
 
