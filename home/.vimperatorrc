@@ -1,29 +1,34 @@
 " Vs pentadactil: http://superuser.com/questions/261174/whats-the-difference-between-vimperator-and-pentadactyl
 
+" This takes a long time to run when changed.
+colorscheme indigo
+
 " Reload .vimperatorrc
 nnoremap 1 1gt
 nnoremap 2 2gt
 nnoremap 3 3gt
 nnoremap . <c-i>
+nnoremap , <c-o>
 nnoremap j 20j
 nnoremap <c-r> :source ~/.vimperatorrc<cr>:echo 'sourced vimperatorrc'<cr>
 nnoremap h gT
 nnoremap j 20j
 nnoremap k 20k
 nnoremap l gt
-" TODO: Google selected / clipboard text.
 "nnoremap sc :open <c-p>
 nnoremap sy :open youtube 
 nnoremap Sy :tabopen youtube 
 nnoremap sw :open wikipedia 
 nnoremap Sw :tabopen wikipedia 
+nnoremap u <s-space>
+nnoremap U u
 nnoremap v F
 " Restore private browsing.
 " http://superuser.com/questions/470173/using-private-browsing-keyboard-shortcut-with-firefox-and-vimperator/1048421#1048421
 nnoremap <c-s-p> i<c-s-p>
 
 " goX to open bookmark
-qmark q https://www.google.com/analytics/web/
+qmark a https://www.google.com/analytics/web/
 qmark e http://techcrunch.com
 qmark f https://facebook.com
 qmark g https://github.com
@@ -31,6 +36,7 @@ qmark m https://gmail.com
 qmark r https://reddit.com
 qmark s https://stackoverflow.com
 qmark t https://twitter.com
+qmark w http://www.cirosantilli.com
 qmark y https://youtube.com
 qmark z https://zimbra.savoirfairelinux.com
 
@@ -49,3 +55,6 @@ set editor='gvim -f'
 " http://superuser.com/questions/368911/in-vimperator-pentadactyl-how-can-i-disable-almost-everything
 
 " Mouseover: nope http://stackoverflow.com/questions/18034369/how-to-use-vimperator-to-interact-with-sites-that-use-sub-menus
+
+" Conflict with tab-mix plus: does not restore tabs from last session:
+" http://tabmixplus.org/forum/viewtopic.php?f=2&t=19057

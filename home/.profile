@@ -32,6 +32,7 @@ fi
 
     export BAK_DIR="$HOME/bak"
       export PROGRAM_DIR="$BAK_DIR/git"
+        export ALGORITHM_DIR="$PROGRAM_DIR/algorithm-cheat"
         export ART_DIR="$PROGRAM_DIR/art"
         export ASSEMBLER_DIR="$PROGRAM_DIR/assembler"
         export BASH_DIR="$PROGRAM_DIR/bash-cheat"
@@ -40,13 +41,14 @@ fi
         export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
         export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
         export JAVA_DIR="$PROGRAM_DIR/java-cheat"
+        export NETWORKING_DIR="$PROGRAM_DIR/networking-cheat"
         export NOTES_DIR="$PROGRAM_DIR/notes"
         export PYTHON_BASE_DIR="$PROGRAM_DIR/python"
           export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath"
           export PYTHON_DIR="$PYTHON_BASE_DIR/cheat"
         export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
-        export QUARTET_DIR="$PROGRAM_DIR/quartet"
-        export WEB_DIR="$PROGRAM_DIR/cirosantilli.com/web"
+        export WEBSITE_DIR="$PROGRAM_DIR/cirosantilli.com"
+          export WEB_DIR="$WEBSITE_DIR/web"
         export UBUNTU_DIR="$PROGRAM_DIR/ubuntu-cheat"
       export TEST_DIR="~/test"
     export MEDIA_DIR="$HOME/media"
@@ -57,6 +59,17 @@ fi
       export GAME_DIR="$MEDIA_DIR/game"
     export GOPATH="$HOME/.go"
     export RING_DIR="$HOME/git/ring"
+
+    # Single char shortcuts.
+    export BASH_DIR_SHORTCUT='b'
+    export CPP_DIR_SHORTCUT='c'
+    export LINUX_DIR_SHORTCUT='l'
+    export NETWORKING_SHORTCUT='n'
+    export PROGRAM_DIR_SHORTCUT='p'
+    export TEST_DIR_SHORTCUT='t'
+    export UBUNTU_DIR_SHORTCUT='u'
+    export WEBSITE_DIR_SHORTCUT='w'
+    export WEB_DIR_SHORTCUT='W'
 
     # Linux from scratch home.
     export LFS=/media/lfs/

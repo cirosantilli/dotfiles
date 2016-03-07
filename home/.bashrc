@@ -178,6 +178,7 @@ parse_svn_repository_root() {
     alias gnup='gnuplot -p'
     alias gr='grep -ER'
     alias gri='grep -ERi'
+    alias gv='gvim --remote-tab-silent'
     alias fgb='fg;b'
     alias fmmmr='find-music-make-m3u .'
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
@@ -224,6 +225,7 @@ parse_svn_repository_root() {
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
+    alias pwdx='pwd | xsel -b'
     alias r='ranger'
     alias R='R --no-save'
     alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
@@ -322,9 +324,9 @@ parse_svn_repository_root() {
     alias adbs='adb shell'
     alias adbks='sudo "$(which adb)" kill-server && sudo "$(which adb)" start-server'
     alias adbl="adb logcat"
-    alias adbls="adb logcat -s"
-    alias adblsc="adb logcat -s com.cirosantilli"
-    alias adble="adb logcat '*:E'"
+    alias adbls="adb logcat -v time -s"
+    alias adblsc="adb logcat -v time -s com.cirosantilli"
+    alias adble="adb logcat -v time '*:E'"
     # Run app in current directory. Must be run from top level
     # of a project created with `android create project`.
     # Only works if there is only a single file in the `src/` directory.
@@ -406,17 +408,17 @@ parse_svn_repository_root() {
     alias cdd='cd ..'
     alias cddd='cd .. && cd ..'
     alias cdddd='cd .. && cd .. && cd ..'
-    alias cdj="cd $JAVA_DIR"
-    alias cdl="cd $LINUX_DIR"
-    alias cdn="cd $NOTES_DIR"
-    alias cdp="cd $PROGRAM_DIR"
-    alias cdq="cd $QUARTET_DIR"
-    RING_DIR="$HOME/git/ring"
-    alias cdr='cd "$RING_DIR"'
-    alias cdra='cd "$RING_DIR/client-android"'
+    alias cdj='cd "$JAVA_DIR"'
+    alias cdl='cd "$LINUX_DIR"'
+    alias cdn='cd "$NOTES_DIR"'
+    alias cdp='cd "$PROGRAM_DIR"'
+    alias cdq='cd "$QUARTET_DIR"'
     # cd Slash
     alias cds='cd -'
-    alias cdu="cd $UBUNTU_DIR"
+    alias cdt='cd "$TEST_DIR"'
+    alias cdu='cd "$UBUNTU_DIR"'
+    alias cdx='cd "$(xsel -b)"'
+    alias cdw='cd "$WEBSITE_DIR"'
     # TODO make a version that also cats the command and pwd.
     #b() { "$@"; zenity --info --text "$*"; }
 
@@ -614,8 +616,9 @@ parse_svn_repository_root() {
     alias gadcman='git add . && gcman'
     alias gadcmanpsf='git add . && gcmanpsf'
     alias gadcmm='git add -A . && git commit -m'
-    alias gadcmmp='git add -A . && git commit -m publish'
-    alias gadcmmt='git add -A . && git commit -m tmp'
+    alias gadcmt='git add -A . && git commit -m publish'
+    alias gadcmtps='git add -A . && git commit -m publish && git push'
+    alias gadcmt='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
     gadcmp() { git add . && git commit -m "$1" && git push; }
     alias gadrbc='git add -A . && git rebase --continue'
@@ -630,6 +633,7 @@ parse_svn_repository_root() {
     gbruo() { git branch -u "origin/$1"; }
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
+    alias gclc='git clone --recursive "$(xsel -b)"'
     alias gclb='git clone --bare'
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
@@ -671,6 +675,7 @@ parse_svn_repository_root() {
   alias gdfhh='git diff HEAD~ HEAD'
   alias gdfst='git diff --stat'
   alias gfe='git fetch'
+  gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
   alias gfeomm='git fetch origin master:master'
   alias gfeumm='git fetch up master:master'
   gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
@@ -779,7 +784,6 @@ parse_svn_repository_root() {
     # Pull Request.
     ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
 
-
   ## Hub
 
     alias huco='hub checkout'
@@ -880,6 +884,7 @@ parse_svn_repository_root() {
   alias tmkjbi='time make -j"$(($(nproc) + 1))"; make install; b'
   alias tmkcb='time make check; b'
   alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
+  alias tf='tail -f'
 
   # From Git root:
 
@@ -1176,7 +1181,10 @@ parse_svn_repository_root() {
     # TODO: git remote add origin X
   }
 
-  alias ring-run='"$RING_DIR/ubuntu-15.10-run.sh"'
+  RING_DIR="$HOME/git/ring"
+  alias cdr='cd "$RING_DIR"'
+  alias cdra='cd "$RING_DIR/client-android"'
+  alias rr='"$RING_DIR/ubuntu-15.10-run.sh"'
   alias psgr='ps aux | grep ring'
 
 ## Source lines and path modifications

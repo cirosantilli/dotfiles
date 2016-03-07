@@ -6,3 +6,8 @@
 # Use vi instead.
 set editing-mode vi
 set keymap vi
+
+# http://stackoverflow.com/questions/7179642/how-can-i-make-bash-tab-completion-behave-like-vim-tab-completion
+# http://unix.stackexchange.com/questions/24419/terminal-autocomplete-cycle-through-suggestions
+# But it misses http://stackoverflow.com/questions/7179642/how-can-i-make-bash-tab-completion-behave-like-vim-tab-completion#comment8629200_7179810
+#bind TAB:menu-complete

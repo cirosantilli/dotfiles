@@ -6,3 +6,4 @@ bin
 .cups
 .gradle
 .config/ranger
+.vimperator/colors

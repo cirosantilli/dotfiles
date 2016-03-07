@@ -138,22 +138,42 @@
 
   " Go to important directories:
 
-    command! Cda drop $ART_DIR
-    command! Cdb drop $BASH_DIR
-    command! Cdc drop $CPP_DIR
-    command! Cdj drop $JAVA_DIR
-    command! Cdl drop $LINUX_DIR
-    command! Cdn drop $NOTES_DIR
-    command! Cdp drop $PROGRAM_DIR
-    command! Cdq drop $QUARTET_DIR
-    command! Cdu drop $UBUNTU_DIR
+    command! Ca drop $ART_DIR
+    command! Cb drop $BASH_DIR
+    command! Cc drop $CPP_DIR
+    command! Cj drop $JAVA_DIR
+    command! Cl drop $LINUX_DIR
+    command! Cn drop $NOTES_DIR
+    command! Co drop $ALGORITHM_DIR
+    command! Cp drop $PROGRAM_DIR
+    command! Cq drop $QUARTET_DIR
+    command! Cu drop $UBUNTU_DIR
+
+  " <leader>eX opens :e SOME_DIRECTORY,
+  " where SOME_DIRECTORY is given as an environment variable.
+
+    for pair in [
+      \['a', 'ART_DIR'],
+      \['l', 'LINUX_DIR'],
+      \['n', 'NETWORKING_DIR'],
+      \['p', 'PROGRAM_DIR'],
+      \['u', 'UBUNTU_DIR'],
+    \]
+      execute 'nnoremap <leader>e' . pair[0] . ' :e <c-r>=expand($' . pair[1] . ')<cr>/'
+    endfor
 
   " Edit important files:
 
     command! Eb tabedit ~/.bashrc
     command! Eg tabedit ~/.gitconfig
+    command! Ei tabedit .gitignore
+    command! En tabedit $NOTES_DIR/note.md
     command! Ep tabedit ~/.profile
+    command! Er tabedit README.md
+    command! Et tabedit $NOTES_DIR/TODO.md
     command! Ev tabedit ~/.vimrc
+
+  " Cscope:
 
     " Find where the function under the cursor is called from.
     function! Csc()
@@ -555,6 +575,11 @@
 
     command! -nargs=* Gcmbr execute '!git add ' . expand('%:p') ' && git commit -m "<args>" && git push && git browse-remote'
 
+    " # TODO
+
+      " git ls-files
+      " https://github.com/tpope/vim-fugitive/issues/132
+
   " # AnsiEsc
 
     " Show ANSI escapes as color.
@@ -598,7 +623,9 @@
 
     " File manager.
 
-      Plugin 'scrooloose/nerdtree'
+    " Note that vim already comes with nertw which contains much of this functionality.
+
+      "Plugin 'scrooloose/nerdtree'
 
       " h nerdtree
 
@@ -1120,7 +1147,8 @@
       " The default path is useless because it does not find recursively,
       " so just wipe it.
 
-        set path=./**,/usr/include/**,/usr/local/include/**
+        set path=./**/
+        "set path=./**,/usr/include/**,/usr/local/include/**
 
     " Stop current highlighting:
 
@@ -1183,8 +1211,12 @@
   " Command tab completion
 
     set wildmenu
-    set wildmode=list:longest
-    set history=1000  " command history size
+    " First tab lists all matching options, then if you don't enter any more characters,
+    " the following tab loop through the matching options.
+    "http://stackoverflow.com/questions/526858/how-do-i-make-vim-do-normal-bash-like-tab-completion-for-file-names
+    set wildmode=longest,list,full
+    " command history size
+    set history=1000
 
   " # undo
 
@@ -2206,6 +2238,9 @@
       nnoremap <leader>3 /#<space>
       nnoremap <leader>4 /##<space>
 
+      nnoremap <leader>co :copen<cr>
+      nnoremap <leader>gcd :Gcd<cr>
+
   " # f keys
 
       " Open new Guake tab in cur dir
@@ -2841,18 +2876,11 @@
 
       " This is decided by the netrw built-in plugin.
 
-      " # netrw
+      " Uses netrw.
 
-        " Program used to open:
+      " Configured with:
 
           let g:netrw_browsex_viewer = 'xdg-open'
-
-        " If the input passed to xdg-open does not start with the protocol (http://)
-        " file:// is assumed.
-
-        " The function that opens the URL is:
-
-           "call netrw#NetrwBrowseX('http://example.com', 0)
 
     " # gt
 
@@ -3948,6 +3976,9 @@
   " Literals:
 
     " let a = [1, 2, 3]
+
+  " Multiline:
+  " http://stackoverflow.com/questions/20936519/vimscript-can-list-creation-be-split-over-multiple-lines
 
   " Equality:
 
@@ -5224,15 +5255,15 @@
 
     " -   add `autocmd!` to the top of your `.vimrc`.
 
-    "     TODO this had a downside but I forgot which.
+        " TODO this had a downside but I forgot which.
 
     " -   use `autocmd! cmd`.
 
-    "     But this only allows you to have one autocmd per event type.
+        " But this only allows you to have one autocmd per event type.
 
-    " -   use `augroup` with `autocmd!` on top.
+        " - use `augroup` with `autocmd!` on top.
 
-    "     You have to think up unique names, but it is one of the best options.
+    " You have to think up unique names, but it is one of the best options.
 
   " # augroup
 
@@ -6823,3 +6854,44 @@
       " make -j5
       " # To /usr/local/bin by default.
       " sudo make install
+
+" # netrw
+
+  " Set of scripts to do file operations, distribyted with Vim by default.
+
+  " If the input passed to xdg-open does not start with the protocol (http://)
+  " file:// is assumed.
+
+  " The function that opens the URL is:
+
+      "call netrw#NetrwBrowseX('http://example.com', 0)
+
+  " # Explore
+
+    " Open a file browser on current directory:
+
+      ":Explore
+
+    " Could be great, but is so crappy that you should just use ranger or something.
+
+    " In any case, for opening files you can just do:
+
+      ":e $SOME_DIR
+
+    " and tab complete away.
+
+    " NERDTree is a super popular plugin, but it is not that much better either.
+
+    " Mappings:
+
+      ":h netrw-quickmap
+
+    " Change dirctory automatically to the current dir:
+
+      let g:netrw_keepdir=0
+
+    " But Vim is so crappy that `set autochdir` cannot differentiate directories from files,
+    " and sets the `pwd` to the parent directory... https://groups.google.com/forum/#!topic/vim_use/0f8HcCI1W8U
+    " c is the best option...
+
+
