@@ -2,3 +2,4 @@
 Exec=pidgin
 Name=pidgin
 Type=Application
+X-GNOME-Autostart-enabled=false

@@ -2,11 +2,34 @@
 
 # Synchronize my computers: pull remote changes.
 
+reset=false
+while getopts r OPT; do
+  case "$OPT" in
+    r)
+      # Data loss!! Also reset and clean before pulling.
+      # http://stackoverflow.com/questions/1125968/force-git-to-overwrite-local-files-on-pull
+      reset=true
+      ;;
+    \?)
+      exit 2
+      ;;
+  esac
+done
+
 success=0
 # TODO: homesick does not return 1 on unstaged changes.
 homesick pull || success=1
 git-sync-dirs | while read path; do
   printf "\n\e[1;33m## $path\e[0m\n\n"
-  cd "$path" && git pull || success=1
+  (
+    set -e
+    cd "$path"
+    if $reset; then
+      git reset --hard HEAD
+      git clean -xdf
+    fi
+    git pull
+  ) || success=1
 done
 exit "$success"
+

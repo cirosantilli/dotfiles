@@ -3,11 +3,16 @@
 # List of Git repositories to be synchronized.
 
 printf "\
+${ALGORITHM_DIR}
 ${ART_DIR}
 ${BASH_DIR}
+${CPP_DIR}
 ${JAVA_DIR}
 ${LINUX_DIR}
+${NETWORKING_DIR}
 ${NOTES_DIR}
-${QUARTET_DIR}
+${PYTHON_DIR}
 ${UBUNTU_DIR}
+${WEBSITE_DIR}
+${WEB_DIR}
 "

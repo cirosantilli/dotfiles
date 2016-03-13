@@ -136,32 +136,6 @@
     " Write current file with sudo.
     command! Wsudo write !sudo tee %
 
-  " Go to important directories:
-
-    command! Ca drop $ART_DIR
-    command! Cb drop $BASH_DIR
-    command! Cc drop $CPP_DIR
-    command! Cj drop $JAVA_DIR
-    command! Cl drop $LINUX_DIR
-    command! Cn drop $NOTES_DIR
-    command! Co drop $ALGORITHM_DIR
-    command! Cp drop $PROGRAM_DIR
-    command! Cq drop $QUARTET_DIR
-    command! Cu drop $UBUNTU_DIR
-
-  " <leader>eX opens :e SOME_DIRECTORY,
-  " where SOME_DIRECTORY is given as an environment variable.
-
-    for pair in [
-      \['a', 'ART_DIR'],
-      \['l', 'LINUX_DIR'],
-      \['n', 'NETWORKING_DIR'],
-      \['p', 'PROGRAM_DIR'],
-      \['u', 'UBUNTU_DIR'],
-    \]
-      execute 'nnoremap <leader>e' . pair[0] . ' :e <c-r>=expand($' . pair[1] . ')<cr>/'
-    endfor
-
   " Edit important files:
 
     command! Eb tabedit ~/.bashrc
@@ -2239,7 +2213,29 @@
       nnoremap <leader>4 /##<space>
 
       nnoremap <leader>co :copen<cr>
+      nnoremap <leader>cc :cclose<cr>
       nnoremap <leader>gcd :Gcd<cr>
+
+    " <leader>eX opens :e SOME_DIRECTORY,
+    " where SOME_DIRECTORY is given as an environment variable.
+
+      for pair in [
+        \['a', 'ART_DIR'],
+        \['A', 'ALGORITHM_DIR'],
+        \['b', 'BASH_DIR'],
+        \['c', 'CPP_DIR'],
+        \['d', 'ANDROID_DIR'],
+        \['j', 'JAVA_DIR'],
+        \['l', 'LINUX_DIR'],
+        \['n', 'NETWORKING_DIR'],
+        \['o', 'NOTES_DIR'],
+        \['p', 'PROGRAM_DIR'],
+        \['u', 'UBUNTU_DIR'],
+        \['w', 'WEBSITE_DIR'],
+        \['W', 'WEB_DIR'],
+      \]
+        execute 'nnoremap <leader>e' . pair[0] . ' :tabedit <c-r>=expand($' . pair[1] . ')<cr>/'
+      endfor
 
   " # f keys
 
@@ -5618,7 +5614,13 @@
 
     " let &option=variable
 
-  " Just add ampersand.
+  " Option value that contains spaces: backslash space:
+
+    " set grepprg=grep\ -nH\ $*
+
+  " Restore default Vim value:
+
+    " set option&
 
   " # setlocal
 
@@ -6337,6 +6339,11 @@
 
     " Jump the current error.
 
+  " # Toggle the quickfix
+
+    " Nope:
+    " http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
+
   " # cn
 
     " Jump to next error on buffer.
@@ -6353,17 +6360,40 @@
 
   " # grepprg
 
-  " # vimgrep
+  " # grepformat
 
     " Grep files, and add the output lines to the quickfix.
 
     " Hitting `<enter>` on the lines jumps to the match.
 
-    " `grep` uses the external command given by the `'grepgrp'` option, `grep -n` by defualt.
+    " `grep` uses the external command given by the `'grepgrp'` option.
 
     " `grepformat` is used instead of `errorformat` to parse the output.
 
+      " - -s to skip errors like symlinks with missing targets
+      " - recursive by default, but if you pass filenames to it it won't recurse
+      set grepprg=grep\ -HIRns\ $*
+
+    " TODO also get the column (not parsed by the default grepformat):
+    " http://stackoverflow.com/questions/16443544/how-to-print-column-offset-within-each-matching-line-in-grep
+
+    " TODO don't block vim while results are coming in:
+    " http://stackoverflow.com/questions/4865332/is-there-a-way-to-configure-vim-grepprg-option-to-avoid-waiting-until-the-extern
+
+    " No useless enter confirmation (silent),
+    " and open a fullscreen error list instead of jumping to a match.
+
+        command! -nargs=+ Grep execute 'silent grep! <args>' | tab copen
+
+  " # vimgrep
+
     " `vimgrep` (`vim`), uses the internal vim regexp engine.
+
+    " Tradeoff:
+
+    " - very slow, likely because implemented in Vimscript!
+    " - less optoins than GNU grep, e.g., ignore binary files like `grep -I`? `wildignore` works sometimes.
+    " - integrates better with Vim features, e.g. `wildignore`.
 
     " Search for pattern recursively under current directory:
 
@@ -6376,10 +6406,6 @@
     " Fix file extension:
 
     " And you now have a navigable index!
-
-    " TODO very slow. Why?
-
-    " TODO ignore binary files like `grep -I`?
 
   " # lvimgrep
 
@@ -6394,12 +6420,23 @@
 
   " # errorformat
 
-  " # grepformat
-
     " Those options affect **only** how the input is parsed, not how the quickfix looks.
-
     " There seems to be no way of doing that:
-    " <http://stackoverflow.com/questions/11199068/how-to-format-vim-quickfix-entry/11202758#11202758>
+    " http://stackoverflow.com/questions/11199068/how-to-format-vim-quickfix-entry/11202758#11202758
+
+" # find
+
+  " Find recursively by file name.
+
+  " Not good like `grep`, as it requires an exact basename match,
+  " and does not fill the location list.
+
+  " Vim 7.3 supports tab completion of it,
+  " which helps a lot, but it is still not very good.
+
+  " :find
+  " :sfind
+  " :tabfind find in vim path var, and edit here, split, new tab
 
 " # Python scripting
 
@@ -6732,29 +6769,6 @@
 
       " set ofu=syntaxcomplete#Complete
 
-" # find
-
-  " :find
-  " :sfind
-  " :tabfind
-  " find in vim path var, and edit here, split, new tab
-
-" # ftp
-
-  " Vim has built-in ftp! =)
-
-  " Open file browser:
-
-    " vim ftp://username@host:port/
-
-  " You will be asked for password
-
-  " Navigate file browser (TODO):
-
-  " Open file:
-
-    " vim ftp://username@host:port/path/to/file.html
-
 " # diff
 
   " Open vertical split representing diff between current file and the other:
@@ -6894,4 +6908,19 @@
     " and sets the `pwd` to the parent directory... https://groups.google.com/forum/#!topic/vim_use/0f8HcCI1W8U
     " c is the best option...
 
+  " # ftp
+
+    " Vim has built-in ftp! =)
+
+    " Open file browser:
+
+      " vim ftp://username@host:port/
+
+    " You will be asked for password
+
+    " Navigate file browser (TODO):
+
+    " Open file:
+
+      " vim ftp://username@host:port/path/to/file.html
 

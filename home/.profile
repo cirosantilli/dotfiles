@@ -33,6 +33,7 @@ fi
     export BAK_DIR="$HOME/bak"
       export PROGRAM_DIR="$BAK_DIR/git"
         export ALGORITHM_DIR="$PROGRAM_DIR/algorithm-cheat"
+        export ANDROID_DIR="$PROGRAM_DIR/android-cheat"
         export ART_DIR="$PROGRAM_DIR/art"
         export ASSEMBLER_DIR="$PROGRAM_DIR/assembler"
         export BASH_DIR="$PROGRAM_DIR/bash-cheat"
@@ -48,6 +49,8 @@ fi
           export PYTHON_DIR="$PYTHON_BASE_DIR/cheat"
         export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
         export WEBSITE_DIR="$PROGRAM_DIR/cirosantilli.com"
+          export GIT_TUTORIAL_DIR="$WEBSITE_DIR/git-tutorial"
+          export DB_DIR="$WEBSITE_DIR/db"
           export WEB_DIR="$WEBSITE_DIR/web"
         export UBUNTU_DIR="$PROGRAM_DIR/ubuntu-cheat"
       export TEST_DIR="~/test"
@@ -61,10 +64,13 @@ fi
     export RING_DIR="$HOME/git/ring"
 
     # Single char shortcuts.
+    export ART_DIR_SHORTCUT='a'
     export BASH_DIR_SHORTCUT='b'
     export CPP_DIR_SHORTCUT='c'
+    export ANDROID_SHORTCUT='d'
     export LINUX_DIR_SHORTCUT='l'
-    export NETWORKING_SHORTCUT='n'
+    export NETWORKING_DIR_SHORTCUT='n'
+    export NOTES_DIR_SHORTCUT='o'
     export PROGRAM_DIR_SHORTCUT='p'
     export TEST_DIR_SHORTCUT='t'
     export UBUNTU_DIR_SHORTCUT='u'

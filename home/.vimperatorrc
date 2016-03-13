@@ -29,6 +29,7 @@ nnoremap <c-s-p> i<c-s-p>
 
 " goX to open bookmark
 qmark a https://www.google.com/analytics/web/
+qmark c http://calendar.google.com
 qmark e http://techcrunch.com
 qmark f https://facebook.com
 qmark g https://github.com

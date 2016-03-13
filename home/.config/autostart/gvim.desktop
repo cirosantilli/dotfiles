@@ -2,3 +2,4 @@
 Exec=gvim
 Name=gvim
 Type=Application
+X-GNOME-Autostart-enabled=true

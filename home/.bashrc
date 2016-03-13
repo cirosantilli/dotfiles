@@ -284,6 +284,7 @@ parse_svn_repository_root() {
     # Ubuntu 1 Public url to Clipboard:
     u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
     alias xar="xargs -I'{}'"
+    alias xo='xdg-open'
     alias xar0="xargs -0I'{}'"
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
@@ -540,19 +541,19 @@ parse_svn_repository_root() {
 
       extract () {
         case $1 in
-          *.7z)      7z x "$1";;
-          *.Z)       uncompress "$1";;
-          *.cpio)    cpio -i <"$1";;
-          *.bz2)     bunzip2 "$1";;
-          *.gz)      gunzip "$1";;
-          *.rar)     rar x "$1";;
-          *.tar)     tar xf "$1";;
-          *.tar.bz2) tar xjf "$1";;
-          *.tar.gz)  tar xzf "$1";;
-          *.tbz2)    tar xjf "$1";;
-          *.tgz)     tar xzf "$1";;
-          *.zip)     unzip "$1";;
-          *)         echo "error: unknown extension: $1";;
+          *.7z)        7z x "$1";;
+          *.Z)         uncompress "$1";;
+          *.cpio)      cpio -i <"$1";;
+          *.bz2)       bunzip2 "$1";;
+          *.gz)        gunzip "$1";;
+          *.rar)       rar x "$1";;
+          *.tar)       tar xf "$1";;
+          *.tar.bz2)   tar xjf "$1";;
+          *.tar.gz)    tar xzf "$1";;
+          *.tbz2)      tar xjf "$1";;
+          *.tgz)       tar xzf "$1";;
+          *.jar|*.zip) unzip "$1";;
+          *)           echo "error: unknown extension: $1";;
         esac
       }
 
