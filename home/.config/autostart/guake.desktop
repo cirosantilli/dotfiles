@@ -2,3 +2,4 @@
 Exec=guake
 Name=guake
 Type=Application
+X-GNOME-Autostart-enabled=false

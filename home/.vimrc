@@ -6619,6 +6619,10 @@
 
     " TODO should use this instead of `set filetype=X?
 
+    " http://stackoverflow.com/questions/16337811/vim-configuration-to-turn-on-syntax-for-conf-files
+
+      autocmd BufRead,BufNewFile *.conf setfiletype dosini
+
   " #detect filetype
 
     " Turn on filetype detection:

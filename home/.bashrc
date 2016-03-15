@@ -161,6 +161,8 @@ parse_svn_repository_root() {
       ln -s "$dest/$src" "${src%/}"
     }
     alias cla11='clang++ -std=c++11'
+    alias dconfl='dconf load / <~/.config/dconf/user.conf'
+    alias dconfw='dconf watch /'
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
     dpx() { dropbox puburl "$1" | xclip -selection clipboard; }
@@ -262,6 +264,7 @@ parse_svn_repository_root() {
     # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
     alias sudo='sudo '
     alias t='type'
+    alias tm='tmux'
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
     alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
@@ -284,6 +287,9 @@ parse_svn_repository_root() {
     # Ubuntu 1 Public url to Clipboard:
     u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
     alias xar="xargs -I'{}'"
+    # Execute clipboard.
+    alias xb='xsel -b | bash'
+    alias xl='xsel -b | less'
     alias xo='xdg-open'
     alias xar0="xargs -0I'{}'"
     # wget Mirror. My favorite mirror command:
