@@ -28,11 +28,14 @@ nnoremap v F
 nnoremap <c-s-p> i<c-s-p>
 
 " goX to open bookmark
+qmark 4 http://localhost:4000
 qmark a https://www.google.com/analytics/web/
 qmark c http://calendar.google.com
 qmark e http://techcrunch.com
 qmark f https://facebook.com
 qmark g https://github.com
+qmark i https://twitch.tv
+qmark l https://linkedin.com
 qmark m https://gmail.com
 qmark r https://reddit.com
 qmark s https://stackoverflow.com
@@ -59,3 +62,6 @@ set editor='gvim -f'
 
 " Conflict with tab-mix plus: does not restore tabs from last session:
 " http://tabmixplus.org/forum/viewtopic.php?f=2&t=19057
+
+" Regex search. Nope?
+" http://superuser.com/questions/891963/vimperator-searching-hinting-diacritics-issue

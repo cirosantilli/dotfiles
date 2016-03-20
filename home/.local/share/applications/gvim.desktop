@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=sh -c "gvim --remote-tab-silent %F && wmctrl -xa 'gvim'"
+Icon=gvim
+Name=gvim
+StartupNotify=false
+StartupWMClass=gvim
+Type=Application
+Version=1.0

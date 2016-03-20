@@ -180,7 +180,6 @@ parse_svn_repository_root() {
     alias gnup='gnuplot -p'
     alias gr='grep -ER'
     alias gri='grep -ERi'
-    alias gv='gvim --remote-tab-silent'
     alias fgb='fg;b'
     alias fmmmr='find-music-make-m3u .'
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
@@ -222,12 +221,12 @@ parse_svn_repository_root() {
         echo '0@'
         ) | tee >(xclip -selection clipboard)
     }
+    alias o='xdg-open'
     # play Alert
     alias playa="$cmd"
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
-    alias pwdx='pwd | xsel -b'
     alias r='ranger'
     alias R='R --no-save'
     alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
@@ -287,10 +286,6 @@ parse_svn_repository_root() {
     # Ubuntu 1 Public url to Clipboard:
     u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
     alias xar="xargs -I'{}'"
-    # Execute clipboard.
-    alias xb='xsel -b | bash'
-    alias xl='xsel -b | less'
-    alias xo='xdg-open'
     alias xar0="xargs -0I'{}'"
     # wget Mirror. My favorite mirror command:
     alias wgetm='wget -E -k -l inf -np -p -r'
@@ -531,11 +526,11 @@ parse_svn_repository_root() {
 
       # If this is an xterm set the title to user@host:dir
       case "$TERM" in
-      xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        ;;
-      *)
-        ;;
+        xterm*|rxvt*)
+          PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+          ;;
+        *)
+          ;;
       esac
 
       # Add git and svn branch names
@@ -688,7 +683,7 @@ parse_svn_repository_root() {
   gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
   alias gfp='git format-patch'
   alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
-  alias gdfx='git diff | xsel -b'
+  alias gdfx='git diff | xsel -bi'
   gdf12() { git diff ":1:./$1" ":2:./$1"; }
   gdf13() { git diff ":1:./$1" ":3:./$1"; }
   gdf123() {
@@ -1153,25 +1148,32 @@ parse_svn_repository_root() {
 
 ## x clipboard
 
-  alias exx='expand | xclip -selection'
+  alias x='xsel -b'
+  alias y='xsel -bi'
+
+  alias exx='expand | y'
   # Use xclip instead of xsel while I have this bug:
   # http://askubuntu.com/questions/652254/xsel-output-contains-trash-at-the-end-if-a-long-input-is-piped-into-it-to-set-th
-  alias x='xclip -selection clipboard -o'
-  # input
-  alias xi='xclip -selection clipboard'
-  alias xex='x | expand | xclip -selection clipboard'
-  alias y='xsel'
+  alias xex='x | expand | y'
   # Add 4 spaces to every line and save to clipboard.
   # For markdown, so also expand.
-  alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | xclip -selection clipboard'
+  alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | y'
   # Last Command to clipboard.
-  alias xlc='fc -ln -1 | sed "s/\t //" | xclip -selection clipboard'
-  alias xsh='xclip -selection clipboard -o | bash -xv'
-  xssh() { xclip -selection clipboard < "$HOME/.ssh/id_rsa${1}.pub"; }
+  alias xlc='fc -ln -1 | sed "s/\t //" | y'
+  alias xsh='x | bash -xv'
+  xssh() { y < "$HOME/.ssh/id_rsa${1}.pub"; }
+  alias xb='x | bash'
+  alias xl='x | less'
+  alias pwdx='pwd | y'
+
+## xdg
+
+  alias o='xdg-open'
+  alias mime='xdg-mime query filetype'
 
 ## SFL
 
-  sflx() { echo 'ciro.santilli@savoirfairelinux.com' | xsel -b; }
+  sflx() { echo 'ciro.santilli@savoirfairelinux.com' | xsel -bi; }
 
   # Git. Must be run on each Git repo we will push for.
   sflg() {

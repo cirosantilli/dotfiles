@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Focus on my default terminal.
+#guake -t
+wmctrl -x -a terminator

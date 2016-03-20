@@ -2244,7 +2244,11 @@
         execute ':silent ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
       endfunction
 
-      call MapAll('<F2>', ':call GuakeNewTabHere()<cr>')
+      function! TmuxNewTabHere()
+        execute ':silent ! tmux new-window -c ' . expand("%:p:h") ' && focus-terminal'
+      endfunction
+
+      call MapAll('<F2>', ':call TmuxNewTabHere()<cr>')
 
       call MapAll('<S-F2>', ':ConqueTermTab bash<cr>')
 

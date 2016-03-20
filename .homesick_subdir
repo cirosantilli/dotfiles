@@ -8,3 +8,4 @@ bin
 .config/ranger
 .vimperator/colors
 .config/dconf
+.config

@@ -3,5 +3,4 @@
 # This script is run at startup by ~/.config/autostart/my-autostart.desktop.
 
 #sync-pull
-
-dconf load / <"$HOME/.config/dconf/user.conf"
+#dconf load / <"$HOME/.config/dconf/user.conf"
