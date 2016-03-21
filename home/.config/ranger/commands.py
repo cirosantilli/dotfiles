@@ -1,6 +1,7 @@
 # https://github.com/hut/ranger/blob/master/ranger/config/commands.py
 
 import os.path
+import subprocess
 
 from ranger.api.commands import *
 
@@ -26,10 +27,7 @@ class file(Command):
             path = str(self.fm.thisfile)
         else:
             path= self.arg(1)
-        # TODO. It does return a process. See Runner(). How to get stdout?
-        process = self.fm.run(['file', path])
-        stdout, stderr = process.communicate()
-        self.fm.notify(stdout)
+        self.fm.notify(subprocess.check_output(['file', path]))
 
 class cdg(Command):
     """:cdg
@@ -37,10 +35,21 @@ class cdg(Command):
     cd to the root of the current git repository.
     """
     def execute(self):
-        process = self.fm.run(['git', 'rev-parse', '--show-toplevel'])
-        # TODO get stdout here.
-        # stdout =
-        self.fm.cd(stdout)
+        cmd = ['git', 'rev-parse', '--show-toplevel']
+        process = subprocess.Popen(
+            cmd,
+            shell  = False,
+            stdin  = subprocess.PIPE,
+            stdout = subprocess.PIPE,
+            stderr = subprocess.PIPE,
+            universal_newlines = True
+        )
+        stdout, stderr = process.communicate()
+        exit_status = process.wait()
+        if exit_status == 0:
+            self.fm.cd(stdout[:-1])
+        else:
+            self.fm.notify('  '.join(cmd) + ' failed', bad=True)
 
 class vim_edit(Command):
     """:vim_edit <filename>

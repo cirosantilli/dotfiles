@@ -143,12 +143,11 @@ parse_svn_repository_root() {
     alias b='zenity --info --text "$(echo "$?"; pwd; )"'
     alias c='cd'
     alias cdg='cd "$(git rev-parse --show-toplevel)"'
+    alias cdG='cd "$GIT_DIR"'
     cdls() { cd "$1" && ls; }
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'
-    alias chmodx='chmod +x'
-    f() { find . -iname "*$1*"; }
-    alias l='less'
+    alias chmx='chmod +x'
     # External IP.
     # DropBox Symlink. Move the given file into Dropbox,
     # and symlink to it from the old location.
@@ -173,6 +172,9 @@ parse_svn_repository_root() {
     alias eclipse='nohup ~/bin/eclipse/eclipse >/dev/null &'
     alias eip='curl ipecho.net/plain'
     alias envg='env | grep -E'
+    alias ex='extract'
+    f() { find . -iname "*$1*"; }
+    alias l='less'
     alias fbr='find_basename_res.py'
     filw() { file "$(which "$1")"; }
     alias g='grep -E'
@@ -205,6 +207,7 @@ parse_svn_repository_root() {
     # Make Dir Cd
     mdc() { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
+    mvc() { mv "$1" "$2" && cd "$2"; }
     # Shutdown but run some scripts it.
     alias my-shutdown='sync-push && sudo shutdown'
     alias nets='sudo netstat -tupan'
@@ -404,8 +407,9 @@ parse_svn_repository_root() {
 
     alias c='cd'
     # cd Up
-    alias cda="cd $ART_DIR"
-    alias cdc="cd $CPP_DIR"
+    alias cda='cd "$ART_DIR"'
+    alias cdc='cd "$CPP_DIR"'
+    alias cdD='cD "$DOWNLOAD_DIR"'
     # cd Dot
     alias cdd='cd ..'
     alias cddd='cd .. && cd ..'
@@ -481,14 +485,15 @@ parse_svn_repository_root() {
     ## ls
 
       alias ls='ls -1 --color=auto --group-directories-first'
-      alias lsa='ls -A'
-      alias ll='ls -hl'
-      # By Size
-      alias lls='ls -hl | sort -k5hr'
-      alias lla='ll -A'
-      # By Size
-      alias llas='ls -a -h -l | sort -k5hr'
       alias lsg='ls | grep -Ei'
+      alias ll='ls -hl --time-style="+%Y-%m-%d_%H:%M:%S"'
+      alias lla='ll -A'
+      # Sort by size.
+      alias lls='lla -Sr'
+      alias llS='lla -S'
+      # Sort by ctime
+      alias llc='lla -crt'
+      alias llC='lla -ct'
 
   ## Docker
 
@@ -635,7 +640,8 @@ parse_svn_repository_root() {
     gbruo() { git branch -u "origin/$1"; }
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
-    alias gclc='git clone --recursive "$(xsel -b)"'
+    gclc() { gcl "$1" && cd "$(basename "${1%.git}")"; }
+    alias gclx='gclc "$(xsel -b)"'
     alias gclb='git clone --bare'
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
@@ -655,6 +661,8 @@ parse_svn_repository_root() {
     gcobm() { git checkout -b "$1" master; }
     alias gcod='git checkout --conflict=diff3'
     alias gcoH='git checkout HEAD~'
+    # Last tag.
+    alias gcol='git checkout "$(git describe --tags --abbrev=0)"'
     alias gcom='git checkout master'
     # Slash
     alias gcos='git checkout -'
@@ -985,23 +993,23 @@ parse_svn_repository_root() {
 
 ## Maven
 
-  alias mva='mvn assembly:single'
-  alias mvc='mvn clean'
-  alias mvca='mvn clean assembly:single'
-  alias mvca='mvn clean install -DskipTests assembly:single'
-  alias mvci='mvn clean install -DskipTests'
-  alias mvcj='mvn clean install -DskipTests && mvn exec:java'
-  alias mvct='mvn clean test'
-  alias mvd='mvn javadoc:javadoc'
+  alias maa='mvn assembly:single'
+  alias mac='mvn clean'
+  alias maca='mvn clean assembly:single'
+  alias maca='mvn clean install -DskipTests assembly:single'
+  alias maci='mvn clean install -DskipTests'
+  alias macj='mvn clean install -DskipTests && mvn exec:java'
+  alias mact='mvn clean test'
+  alias mad='mvn javadoc:javadoc'
   # Doc View
-  alias mvdv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
-  alias mvej='mvn exec:java'
-  alias mvi='mvn install'
-  alias mvo='mvn compile'
-  alias mvs='mvn surefire-report:report-only && xdg-open target/site/surefire-report.html'
-  alias mvp='mvn package'
-  alias mvt='mvn test'
-  mvtt() { mvn test "-Dtest=$1"; }
+  alias madv='mvn javadoc:javadoc && xdg-open target/site/apidocs/index.html'
+  alias maej='mvn exec:java'
+  alias mai='mvn install'
+  alias mao='mvn compile'
+  alias mas='mvn surefire-report:report-only && xdg-open target/site/surefire-report.html'
+  alias map='mvn package'
+  alias mat='mvn test'
+  matt() { mvn test "-Dtest=$1"; }
 
 ## PATH operations
 

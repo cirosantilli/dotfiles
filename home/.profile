@@ -54,6 +54,8 @@ fi
           export WEB_DIR="$WEBSITE_DIR/web"
         export UBUNTU_DIR="$PROGRAM_DIR/ubuntu-cheat"
       export TEST_DIR="~/test"
+    export DOWNLOAD_DIR="$HOME/down"
+    export GIT_DIR="$HOME/git"
     export MEDIA_DIR="$HOME/media"
       export MUSIC_DIR="$MEDIA_DIR/music"
         export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
@@ -61,13 +63,13 @@ fi
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
       export GAME_DIR="$MEDIA_DIR/game"
     export GOPATH="$HOME/.go"
-    export RING_DIR="$HOME/git/ring"
 
     # Single char shortcuts.
     export ART_DIR_SHORTCUT='a'
     export BASH_DIR_SHORTCUT='b'
     export CPP_DIR_SHORTCUT='c'
     export ANDROID_SHORTCUT='d'
+    export DOWNLOAD_SHORTCUT='D'
     export LINUX_DIR_SHORTCUT='l'
     export NETWORKING_DIR_SHORTCUT='n'
     export NOTES_DIR_SHORTCUT='o'

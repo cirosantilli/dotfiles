@@ -1,0 +1,30 @@
+# You have to use email a lot for this to be worth learning
+# but once you do, you can show off like a pro :-)
+
+# As usual, the best tutorial is at:
+# https://wiki.archlinux.org/index.php/mutt#IMAP
+
+# Resource this with:
+# :source ~/.muttrc
+# TODO
+#bind index R source ~/.muttrc
+
+# Man pages:
+# man mutt
+# man muttrc
+
+# Minimum configuration to fetch email.
+# Does not play well with Gmail tabs?
+# http://superuser.com/questions/719677/how-to-use-gmail-tabs-with-imap
+set imap_user = ciro.santilli@gmail.com
+set folder = imaps://imap.gmail.com/
+set spoolfile = +INBOX
+mailboxes = +INBOX
+
+# Format for each line of the index.
+set date_format="!%Y %b %d %a %I:%M:%S"
+set index_format = "%4C %Z %d %-15.15L (%?l?%4l&%4c?) %s"
+# Status flags:
+# http://www.mutt.org/doc/manual/manual-2.html
+# O status flag:
+# http://unix.stackexchange.com/questions/39228/what-does-it-mean-for-an-email-message-to-be-old

@@ -1,9 +1,13 @@
 [Default Applications]
 
 application/epub+zip=fbreader.desktop;
-application/pdf=evince.desktop;
 application/x-mobipocket-ebook=fbreader.desktop;
+
+application/pdf=evince.desktop;
 application/zip=file-roller.desktop;
+# Executable binary. TODO how to execute it?
+# Dummy .desktop Terminal=true sh command that executes file?
+#application/x-executable=;
 
 audio/x-vorbis+ogg=vlc.desktop
 audio/flac=vlc.desktop;
@@ -20,6 +24,9 @@ image/gif=eog.desktop
 image/jpeg=eog.desktop
 image/png=eog.desktop
 image/svg+xml=firefox.desktop;
+
+# Mimetype for directories, should open with file manager. Or vim to :grep.
+#inode/directory=;
 
 text/plain=gvim.desktop;
 text/x-bibtex=gvim.desktop;

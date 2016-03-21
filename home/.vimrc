@@ -1320,6 +1320,8 @@
 
         set laststatus=0
 
+    " Disable because it takes on extra line. If only I could format the *command line* instead.
+
     " Set what you want it to contain. Accepts % substitutions.
 
     " Filename:
@@ -1347,13 +1349,12 @@
 
     " Controls how buffers are opened. Used by several commands, including `quickfix` and `sbuffer`.
 
-    " - `newtab`: open buffers on a new tab
-
+    " - `newtab`: open buffers on a new tab. But it does not work very we
     " - `usetab`: if an existing window exists with buffer, use it
 
-       set switchbuf+=usetab,newtab
+       set switchbuf=usetab,newtab
 
-    " For a plugin that defines some mappings, see: <https://github.com/yssl/QFEnter>.
+    " For a plugin that defines some mappings, see: https://github.com/yssl/QFEnter
 
   " # showtabline
 
@@ -1492,6 +1493,9 @@
       " `zi` toogles this by default.
 
       " Useful to turn fold on and off. The current foldlevel is kept.
+
+    set cmdheight=1
+    set title
 
   " # conceal
 
@@ -1689,7 +1693,9 @@
 
       set shellcmdflag=-ic
 
-  " # gvim specific #gui specific
+  " # gvim specific
+
+  " # GUI specific
 
     if has('gui_running')
 
@@ -1708,6 +1714,19 @@
       " Vim only needs vimrc!
 
         set winaltkeys=no
+
+      " TODO: start gvim fullscreen:
+
+      " - http://superuser.com/questions/140419/how-to-start-gvim-maximized
+      " - http://askubuntu.com/questions/2140/is-there-a-way-to-turn-gvim-into-fullscreen-mode
+      " - http://stackoverflow.com/questions/14044004/gvim-7-3-in-fullscreen-mode
+
+      " wmctrl -xa gvim -b toggle,fullscreen has the following downsides:
+
+      " - hides the full file path on the window title.
+      "   I'd like to show it on the command line, but seems impossible?
+      " - Alt + tab does not show the window list on Ubuntu 15.10,
+      "   although it still changes windows.
 
     endif
 
@@ -2212,9 +2231,14 @@
       nnoremap <leader>3 /#<space>
       nnoremap <leader>4 /##<space>
 
+      " quickfix toggle requires script:
+      " http://stackoverflow.com/questions/11198382/how-to-create-a-key-map-to-open-and-close-the-quickfix-window-in-vim
+      " http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window
       nnoremap <leader>co :copen<cr>
       nnoremap <leader>cc :cclose<cr>
       nnoremap <leader>gcd :Gcd<cr>
+      nnoremap <leader>gr :Grep 
+      nnoremap <leader>gg :Ggrep 
 
     " <leader>eX opens :e SOME_DIRECTORY,
     " where SOME_DIRECTORY is given as an environment variable.
@@ -4436,6 +4460,17 @@
 
   " The line at the bottom (where `:` commands appear) is called the Vim
   " comand line or command prompt.
+
+  " # Hide command line
+
+    " Impossible?
+    " - http://stackoverflow.com/questions/7770413/remove-vim-bottom-line-with-mode-line-column-etc
+    " - http://superuser.com/questions/619765/hiding-vim-command-line-when-its-not-being-used
+    " - http://unix.stackexchange.com/questions/140898/vim-hide-status-line-in-the-bottom
+
+  " # Format command line
+
+    " E.g., I'd like to show the full path there. TODO: couldn't even find feature request.
 
   " # echo
 
