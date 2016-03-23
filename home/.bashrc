@@ -143,7 +143,7 @@ parse_svn_repository_root() {
     alias b='zenity --info --text "$(echo "$?"; pwd; )"'
     alias c='cd'
     alias cdg='cd "$(git rev-parse --show-toplevel)"'
-    alias cdG='cd "$GIT_DIR"'
+    alias cdG='cd "$MY_GIT_DIR"'
     cdls() { cd "$1" && ls; }
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'

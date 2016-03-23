@@ -9,7 +9,6 @@ fi
 
   # Misc preferences:
 
-    export EDITOR=vim
     export LANGUAGE='en_US:en'
     export LC_ADDRESS='en_US.UTF-8'
     export LC_COLLATE=C
@@ -27,6 +26,12 @@ fi
     # Remove leading : or else the current directory is added to the search path.
     LD_LIBRARY_PATH="${LD_LIBRARY_PATH#:}"
     export LD_LIBRARY_PATH
+
+  ## Default programs
+
+    #export BROWSER=firefox
+    export EDITOR=vim
+    #export PAGER=less
 
   ## Directory structure
 
@@ -55,7 +60,7 @@ fi
         export UBUNTU_DIR="$PROGRAM_DIR/ubuntu-cheat"
       export TEST_DIR="~/test"
     export DOWNLOAD_DIR="$HOME/down"
-    export GIT_DIR="$HOME/git"
+    export MY_GIT_DIR="$HOME/git"
     export MEDIA_DIR="$HOME/media"
       export MUSIC_DIR="$MEDIA_DIR/music"
         export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"

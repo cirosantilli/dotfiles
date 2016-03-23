@@ -29,8 +29,8 @@ class file(Command):
             path= self.arg(1)
         self.fm.notify(subprocess.check_output(['file', path]))
 
-class cdg(Command):
-    """:cdg
+class cd_git(Command):
+    """:cd_git
 
     cd to the root of the current git repository.
     """
@@ -50,16 +50,3 @@ class cdg(Command):
             self.fm.cd(stdout[:-1])
         else:
             self.fm.notify('  '.join(cmd) + ' failed', bad=True)
-
-class vim_edit(Command):
-    """:vim_edit <filename>
-
-    Edit <filename> in Vim.
-    """
-    def execute(self):
-        if not self.arg(1):
-            path = 'README.md'
-        else:
-            path = self.arg(1)
-        self.fm.run(['gvim', '--remote-tab-silent', path])
-        self.fm.run(['wmctrl', '-a', '- gvim'])

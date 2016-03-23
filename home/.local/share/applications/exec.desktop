@@ -1,0 +1,19 @@
+[Desktop Entry]
+
+# Simple working method: put output directly on a less, on exit quit.
+# The problem is that you cannot take program stdin, and tmux is already a good pager for stdout. 
+#Exec=sh -c "tmux new-window '%f |& less' && focus-terminal"
+
+Exec=sh -c "tmux new-window 'bash --rcfile <(echo \". ~/.bashrc; %f\")' && focus-terminal"
+
+# Impossible to use multple times %f?
+#Exec=sh -c "echo %f %f"
+# to add the `-c` as well:
+#Exec=sh -c "tmux new-window -c \"\$(dirname %f)\" 'bash --rcfile <(echo \". ~/.bashrc; %f\")' && focus-terminal"
+
+Name=exec
+NoDisplay=true
+StartupNotify=false
+Terminal=false
+Type=Application
+Version=1.0

@@ -551,7 +551,7 @@
 
     " # TODO
 
-      " git ls-files
+      " git ls-files + grep to find files
       " https://github.com/tpope/vim-fugitive/issues/132
 
   " # AnsiEsc
@@ -684,7 +684,7 @@
 
     " tmux integration.
 
-      Plugin 'benmills/vimux'
+      "Plugin 'benmills/vimux'
 
     " Split a tmux pane and run given command on it:
 
@@ -762,6 +762,10 @@
     " Seems more pupular than FuzzyFinder now.
 
       Plugin 'kien/ctrlp.vim'
+
+    " Find file in... where?:
+
+      " Ctrl-p
 
   " # ack.vim
 
@@ -1752,7 +1756,7 @@
   " # XML
 
       function! FtHtml()
-        call MapAllBuff('<F6>', ':w<cr>:silent ! firefox %<cr>')
+        call MapAllBuff('<F6>', ':w<cr>:silent !xdg-open % &<cr>')
         function! HeaderIncrease()
           silent! %substitute/<h5/<h6/g
           silent! %substitute/<h4/<h5/g
@@ -2184,6 +2188,7 @@
     " Tab navigation in normal mode.
     " In terminal, alt tab is not possible, but should be used in GVim.
 
+      nnoremap <leader>a :tabedit<space>
       nnoremap <leader>tt :tabedit<space>
       nnoremap <leader>tb :tab sbuffer<space>
       nnoremap <leader>tm :tabmove<space>
@@ -2269,6 +2274,7 @@
       endfunction
 
       function! TmuxNewTabHere()
+        " TODO: breaks rvm.
         execute ':silent ! tmux new-window -c ' . expand("%:p:h") ' && focus-terminal'
       endfunction
 
@@ -4565,7 +4571,11 @@
       " echo 1
     " redir END
 
-" # shell commands #! #external commands
+" # shell commands
+
+" # !
+
+" # External commands
 
   " Excecute shell commands:
 
@@ -4576,8 +4586,14 @@
     " let a = 1
     " exe "! echo " . a
 
-  " TODO why does `!firefox -new-tab http://example.com` fail but `!firefox -new-tab http://example.com &` work?
-  " <http://superuser.com/questions/386646/xdg-open-url-doesnt-open-the-website-in-my-default-browser>
+  " Ampersand required at the end of some commands
+
+    " http://superuser.com/questions/386646/xdg-open-url-doesnt-open-the-website-in-my-default-browser
+  "
+    " TODO why?
+
+    " - !firefox -new-tab http://example.com` fail but `!firefox -new-tab http://example.com &` works
+    " - `!firefox file.html` works but `xdg-open file.html` fail and `xdg-open file.html &` works
 
   " # system
 
@@ -6660,7 +6676,7 @@
 
     " http://stackoverflow.com/questions/16337811/vim-configuration-to-turn-on-syntax-for-conf-files
 
-      autocmd BufRead,BufNewFile *.conf setfiletype dosini
+      autocmd BufRead,BufNewFile *.conf,mimeapps.list setfiletype dosini
 
   " #detect filetype
 
