@@ -9,3 +9,4 @@ bin
 .vimperator/colors
 .config/dconf
 .config
+.vim
