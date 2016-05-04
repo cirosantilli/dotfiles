@@ -1,0 +1,5 @@
+[Desktop Entry]
+Exec=gnome-terminal --window --full-screen -e tmux
+Name=gnome-terminal
+Type=Application
+X-GNOME-Autostart-enabled=true

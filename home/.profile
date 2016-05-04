@@ -40,7 +40,6 @@ fi
         export ALGORITHM_DIR="$PROGRAM_DIR/algorithm-cheat"
         export ANDROID_DIR="$PROGRAM_DIR/android-cheat"
         export ART_DIR="$PROGRAM_DIR/art"
-        export ASSEMBLER_DIR="$PROGRAM_DIR/assembler"
         export BASH_DIR="$PROGRAM_DIR/bash-cheat"
         export CPP_DIR="$PROGRAM_DIR/cpp/cheat"
         export DEVBIN="$PROGRAM_DIR/devbin"
