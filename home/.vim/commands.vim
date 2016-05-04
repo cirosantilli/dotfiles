@@ -112,6 +112,7 @@ function! WipeBuffersWithoutFiles()
 endfunction
 command! WipeBuffersWithoutFiles call WipeBuffersWithoutFiles()
 
+" TODO: move to Find2 after testing it.
 " http://stackoverflow.com/questions/3554719/find-a-file-via-recursive-directory-search-in-vim
 " regex: grep -E regex to filter relative path
 " find: find shell command. Should return a newline separated list of files
@@ -142,3 +143,27 @@ endfunction
 command! -nargs=? Find call Find('<args>', 'find . -type f', 0)
 command! -nargs=? Gfind call Find('<args>', 'git ls-files', 0)
 command! -nargs=? Gtfind call Find('<args>', 'git ls-files', 1)
+
+function! Find2(cmd)
+  let l:files = system(a:cmd)
+  if (l:files =~ '^\s*$')
+    echomsg 'No matching files.'
+    return
+  endif
+  tabedit
+  set filetype=filelist
+  set buftype=nofile
+  " TODO cannot open two such file lists with this. How to get a nice label then?
+  " http://superuser.com/questions/715928/vim-change-label-for-specific-tab
+  "file [filelist]
+  put =l:files
+  normal ggdd
+  nnoremap <buffer> <Enter> <C-W>gf
+  execute 'autocmd BufEnter <buffer> lcd ' . getcwd()
+endfunction
+command! -nargs=1 Find2 call Find2("find . -iname '*'" . shellescape('<args>') . "'*'")
+command! -nargs=1 Gfind2 call Find2('git ls-files | grep -E ' . shellescape('<args>'))
+command! -nargs=1 Gtfind2 call Find2('git rev-parse --show-toplevel && git ls-files | grep -E ' . shellescape('<args>'))
+command! -nargs=1 Locate call Find2('locate ' . shellescape('<args>'))
+" TODO ctags version:
+" http://stackoverflow.com/questions/5632125/how-do-i-create-a-vim-function-list-inside-quick-fix-window

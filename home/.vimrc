@@ -3117,7 +3117,9 @@ source $HOME/.vim/map.vim
 
       " if substitute('abc', 'a\(.\)c', '\1', '') != 'b' | throw 'assertion failed' | end
 
-  " # =~ #!~
+  " # =~
+
+  " #!~
 
     " Check if string matches regex.
 
@@ -3802,3 +3804,7 @@ source $HOME/.vim/map.vim
   " # viminfo
 
     " TODO.
+
+    " Stores part of Vim state that is likely to be shared across all sessions.
+
+    " Does not include tabs and windows.

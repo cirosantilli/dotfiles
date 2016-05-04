@@ -2,4 +2,4 @@
 Exec=krusader
 Name=krusader
 Type=Application
-X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-enabled=false

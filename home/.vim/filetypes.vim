@@ -6,6 +6,14 @@
 " Note that `filetype.vim` (without `s`) is a magic name in the runtime path,
 " and should be avoided.
 
+augroup Setfiletype
+  autocmd!
+  " http://stackoverflow.com/questions/16337811/vim-configuration-to-turn-on-syntax-for-conf-files
+  autocmd BufRead,BufNewFile *.conf,mimeapps.list setfiletype dosini
+  " OpenCL. TODO not working, lisp is stronger!
+  autocmd BufRead,BufNewFile *.cl setfiletype c
+augroup END
+
 " # Data languages
 
 " # HTML
@@ -276,11 +284,4 @@
     augroup Gnuplot
       autocmd!
       autocmd FileType gnuplot noremap <buffer> <F6> :write<cr>:silent !gnuplot -p %<cr>
-    augroup END
-
-
-    " http://stackoverflow.com/questions/16337811/vim-configuration-to-turn-on-syntax-for-conf-files
-    augroup Dosini
-      autocmd!
-      autocmd BufRead,BufNewFile *.conf,mimeapps.list setfiletype dosini
     augroup END

@@ -65,3 +65,6 @@ set editor='gvim -f'
 
 " Regex search. Nope?
 " http://superuser.com/questions/891963/vimperator-searching-hinting-diacritics-issue
+
+" Copy image location
+" http://superuser.com/a/200532/128124

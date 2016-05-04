@@ -285,6 +285,9 @@
   " %t: basename of loaded buffer
   " %M: modify status (a '+' if modified)
 
+  " TODO rename a single tab: http://superuser.com/questions/715928/vim-change-label-for-specific-tab
+  " file is somewhat close, but it actually renames the buffer: next write will write to the new file name.
+
 " # switchbuf
 
   " Controls how buffers are opened. Used by several commands, including `quickfix` and `sbuffer`.
@@ -593,13 +596,8 @@
 
 " # sessions
 
-" # views
-
-    set sessionoptions=blank,buffers,help,tabpages
-
-  " # viminfo
-
-    " TODO.
+    set sessionoptions=blank,buffers,folds,globals,help,options,resize,tabpages,winpos,winsize
+    set viminfo=
 
 " # 'shell'
 

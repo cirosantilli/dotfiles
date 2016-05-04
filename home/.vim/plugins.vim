@@ -536,7 +536,7 @@
       let g:session_autosave_to = 'default'
       let g:session_verbose_messages = 0
 
-  " Vim already has `mksession` and viminfo, this just makes it
+  " Vim already has `mksession` and viminfo, this just wraps it to make it
   " a bit more convenient, and I use it to handle autoload / autoclose of a default session.
 
   " Help:

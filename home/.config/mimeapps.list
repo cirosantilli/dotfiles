@@ -32,6 +32,9 @@ image/svg+xml=firefox.desktop;
 
 text/plain=gvim.desktop;
 text/x-bibtex=gvim.desktop;
+text/x-c++hdr=gvim.desktop;
+text/x-c++src=gvim.desktop;
+text/x-chdr=gvim.desktop;
 text/x-csrc=gvim.desktop;
 text/x-java=gvim.desktop;
 text/x-makefile=gvim.desktop;

@@ -207,6 +207,8 @@ parse_svn_repository_root() {
     # Make Dir Cd
     mdc() { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
+    # Move Latest Download here.
+    mvld() { mv "${DOWNLOAD_DIR}/$(\ls -ct $DOWNLOAD_DIR | head -n1)" .;  }
     mvc() { mv "$1" "$2" && cd "$2"; }
     # Shutdown but run some scripts it.
     alias my-shutdown='sync-push && sudo shutdown'
@@ -1259,3 +1261,4 @@ parse_svn_repository_root() {
 
 # added by travis gem
 [ -f /home/ciro/.travis/travis.sh ] && source /home/ciro/.travis/travis.sh
+export AMDAPPSDKROOT="/home/ciro/AMDAPPSDK-3.0"
