@@ -53,3 +53,17 @@ function! EchoReadable()
     bdelete expand('%:p')
   end
 endfunction
+
+" Open new Guake tab in cur dir
+function! GuakeNewTabHere()
+  execute ':silent ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
+endfunction
+
+function! TmuxNewTabHere()
+  " TODO: breaks rvm.
+  execute ':silent ! tmux new-window -c ' . expand("%:p:h") ' && focus-terminal'
+endfunction
+
+function! KrusaderNewTabHere()
+  execute ':silent ! krusader ' . expand("%:p:h")
+endfunction

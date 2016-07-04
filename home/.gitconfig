@@ -52,3 +52,5 @@
 [user]
 	email = ciro.santilli@gmail.com
 	name = Ciro Santilli
+[http]
+	cookiefile = /home/ciro/.gitcookies

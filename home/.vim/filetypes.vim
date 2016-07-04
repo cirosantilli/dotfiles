@@ -38,7 +38,7 @@ augroup END
 
     augroup Html
       autocmd!
-      autocmd FileType haml,html,xml setlocal shiftwidth=2 tabstop=2
+      autocmd FileType haml,html,xml setlocal shiftwidth=4 tabstop=4
       autocmd FileType html,xml call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
       autocmd FileType haml call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("haml " . expand(''%''), "html")<cr>')
       autocmd FileType html call FtHtml()

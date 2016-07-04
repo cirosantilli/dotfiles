@@ -30,6 +30,7 @@ image/svg+xml=firefox.desktop;
 # Mimetype for directories, should open with file manager. Or vim to :grep.
 #inode/directory=;
 
+# Programming languages.
 text/plain=gvim.desktop;
 text/x-bibtex=gvim.desktop;
 text/x-c++hdr=gvim.desktop;
@@ -41,6 +42,7 @@ text/x-makefile=gvim.desktop;
 text/x-markdown=gvimg.desktop;
 text/x-perl=gvim.desktop;
 text/x-python=gvim.desktop;
+vnd.gtkwave-vcd=gtkwave.desktop;
 
 text/html=firefox.desktop;
 

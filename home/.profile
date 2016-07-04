@@ -71,6 +71,7 @@ fi
 
     # Single char shortcuts.
     export ART_DIR_SHORTCUT='a'
+    export ALGORITHM_DIR_SHORTCUT='A'
     export BASH_DIR_SHORTCUT='b'
     export CPP_DIR_SHORTCUT='c'
     export ANDROID_DIR_SHORTCUT='d'
@@ -148,7 +149,7 @@ fi
       export ANDROID_ABI='armeabi-v7a'
       export ANDROID_JAVA_HOME="$JAVA_HOME"
       export ANDROID_STUDIO="$HOME/android-studio/"
-      export PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${PATH}"
+      export PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${ANDROID_NDK}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${PATH}"
 
   ## PATH
 

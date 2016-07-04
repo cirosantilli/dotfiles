@@ -1,3 +1,6 @@
+# http://stackoverflow.com/questions/8528979/how-to-determine-if-an-object-is-an-instance-of-certain-derived-c-class-from-a
+set print object on
+
 set pagination off
 
 # http://stackoverflow.com/questions/10937289/how-can-i-disable-new-thread-thread-exited-messages-in-gdb

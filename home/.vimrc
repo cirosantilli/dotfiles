@@ -2428,9 +2428,21 @@ source $HOME/.vim/map.vim
 
     " unabbreviate a
 
-" # bufdo #tabdo #windo
+" # bufdo
+
+" # tabdo
+
+" # windo
 
   " Do a command on all buffers, tabs or windows.
+
+  " # noautocmd
+
+    " Skip running autocmd.
+
+    " Makes bufdo much faster.
+
+      " noautocmd bufdo ...
 
 " # set
 

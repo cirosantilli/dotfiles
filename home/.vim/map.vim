@@ -128,29 +128,14 @@
       \]
         execute 'nnoremap <leader>e' . pair[0] . ' :tabedit <c-r>=expand($' . pair[1] . ')<cr>/'
       endfor
+      " Tab complete edit from the Git top level.
+      nnoremap <leader>eg :tabedit <c-r>=systemlist('git rev-parse --show-toplevel')[0]<cr>/
 
   " # f keys
 
-      " Open new Guake tab in cur dir
-      function! GuakeNewTabHere()
-        execute ':silent ! guake -n ' . expand("%:p:h") . ' && guake -r ' . expand("%:p:h:t") . ' && guake -t'
-      endfunction
-
-      function! TmuxNewTabHere()
-        " TODO: breaks rvm.
-        execute ':silent ! tmux new-window -c ' . expand("%:p:h") ' && focus-terminal'
-      endfunction
-
       call MapAll('<F2>', ':call TmuxNewTabHere()<cr>')
-
       call MapAll('<S-F2>', ':ConqueTermTab bash<cr>')
-
-      function! KrusaderNewTabHere()
-        execute ':silent ! krusader ' . expand("%:p:h")
-      endfunction
-
       call MapAll('<F3>', ':call KrusaderNewTabHere()<cr>')
-
       call MapAll('<S-F3>', ':NERDTreeToggle<cr>')
 
   " # ` #~
