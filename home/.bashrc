@@ -130,7 +130,10 @@ parse_svn_repository_root() {
       mygcc_path='/home/ciro/git/gcc/install/bin'
       mygcc="$mygcc_path/gcc"
       mycc1='/home/ciro/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1'
-      export KBUILD_OUTPUT='../build'
+
+      # TODO what is correct?
+      export VERILATOR_ROOT='/usr/local'
+      #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
 
   ## alias
 
@@ -160,6 +163,7 @@ parse_svn_repository_root() {
       ln -s "$dest/$src" "${src%/}"
     }
     alias cla11='clang++ -std=c++11'
+    alias datex='timestamp | x'
     alias dconfl='dconf load / <~/.config/dconf/user.conf'
     alias dconfw='dconf watch /'
     # Disk Fill, Human readable, Sort by total size.
@@ -207,8 +211,18 @@ parse_svn_repository_root() {
     # Make Dir Cd
     mdc() { mkdir "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
-    # Move Latest Download here.
-    mvld() { mv "${DOWNLOAD_DIR}/$(\ls -ct $DOWNLOAD_DIR | head -n1)" .;  }
+    # Move Latest Download here. Ignore .part used by Firefox while downloading.
+    # Echo it's name to stdout.
+    mvld() {
+      newest_file="$(\ls -ct $DOWNLOAD_DIR | grep -Ev '\.(part|chrdownload)$' | head -n1)"
+      if [ -n "$newest_file" ]; then
+        src="${DOWNLOAD_DIR}/${newest_file}"
+        echo "$src"
+        mv "$src" .;
+      else
+        echo '--EMPTY--'
+      fi
+    }
     mvc() { mv "$1" "$2" && cd "$2"; }
     # Shutdown but run some scripts it.
     alias my-shutdown='sync-push && sudo shutdown'
@@ -218,21 +232,34 @@ parse_svn_repository_root() {
     noh() { nohup $@ >/dev/null & }
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
-    randlog () {
-      (
-        cat /dev/urandom | tr -dc 'a-z0-9' | head -c 10
-        echo
-        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 10 | tr -d '\n'
-        echo '0@'
-        ) | tee >(xclip -selection clipboard)
-    }
     alias o='xdg-open'
+    # Open First. When you are in a huge directory with tons of
+    # files that share a common prefix, and you just want to open one.
+    # Specially for images, since eog moves to the next pick with right arrow.
+    of() {
+      if [ -z "$1" ]; then
+        dir='.'
+      else
+        dir="$1"
+      fi
+      xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
+    }
     # play Alert
     alias playa="$cmd"
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
     alias r='ranger'
+    # Generate a random login and password to speed up account creation.
+    # You should save them to a file immeditaly, and then to the signup.
+    randlog () {
+      (
+        cat /dev/urandom | tr -dc 'a-z0-9' | head -c 10
+        echo
+        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 10 | tr -d '\n'
+        echo '0@'
+      ) | tee >(xclip -selection clipboard)
+    }
     alias R='R --no-save'
     alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
@@ -284,8 +311,10 @@ parse_svn_repository_root() {
     # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
     alias tornewip='sudo killall -HUP tor'
     alias torbrowser='cd ~/bin && ./start-tor-browser.desktop'
-    alias ulimsv='ulimit -Sv 500000'
-    alias v='vim'
+    ulimsv() { ulimit -Sv "${1:-500000}"; }
+    alias v='gvim-remote'
+    alias vg='gvim-remote .gitignore'
+    alias vr='gvim-remote README.md'
     viw() { vim "$(which "$1")"; }
     alias vir='vim README.md'
     # Ubuntu 1 Public url to Clipboard:
@@ -326,6 +355,7 @@ parse_svn_repository_root() {
 
   ## android
 
+    alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
     alias ands='nohup studio.sh >/dev/null 2>&1 &'
     alias adbd='adb devices -l'
     alias adbs='adb shell'
@@ -346,6 +376,7 @@ parse_svn_repository_root() {
       adb shell am start -n "${dir}/${file}"
     )
     alias antcdi='ant clean && ant debug && ant installd'
+    alias antcndi='ant clean && ndk-build clean && ndk-build && ant debug && ant installd'
     # Clean, build, install and run on device.
     alias antcdir='antcdi && adbr'
     alias antc='ant clean'
@@ -372,8 +403,7 @@ parse_svn_repository_root() {
       alias dpL='dpkg -L'
       alias dps='dpkg -s'
       alias dpS='dpkg -S'
-      # Binary
-      dpSb() { dpkg -S "$(which "$1")"; }
+      dpSw() { dpkg -S "$(which "$1")"; }
       alias dplg='dpkg -l | grep -Ei'
       alias saii='sudo aptitude install'
       alias sair='sudo aptitude remove'
@@ -487,15 +517,16 @@ parse_svn_repository_root() {
     ## ls
 
       alias ls='ls -1 --color=auto --group-directories-first'
+      lswc() { ls -1 "$1" | wc; }
       alias lsg='ls | grep -Ei'
       alias ll='ls -hl --time-style="+%Y-%m-%d_%H:%M:%S"'
       alias lla='ll -A'
       # Sort by size.
       alias lls='lla -Sr'
       alias llS='lla -S'
-      # Sort by ctime
-      alias llc='lla -crt'
-      alias llC='lla -ct'
+      # Sort by most recent ctime.
+      alias llt='lla -crt'
+      alias llT='lla -ct'
 
   ## Docker
 
@@ -551,16 +582,17 @@ parse_svn_repository_root() {
         case $1 in
           *.7z)        7z x "$1";;
           *.Z)         uncompress "$1";;
-          *.cpio)      cpio -i <"$1";;
           *.bz2)       bunzip2 "$1";;
+          *.cpio)      cpio -i <"$1";;
+          *.deb)       dpkg-deb -R "$1" .;;
           *.gz)        gunzip "$1";;
+          *.jar|*.zip) unzip "$1";;
           *.rar)       rar x "$1";;
           *.tar)       tar xf "$1";;
           *.tar.bz2)   tar xjf "$1";;
           *.tar.gz)    tar xzf "$1";;
           *.tbz2)      tar xjf "$1";;
           *.tgz)       tar xzf "$1";;
-          *.jar|*.zip) unzip "$1";;
           *)           echo "error: unknown extension: $1";;
         esac
       }
@@ -588,9 +620,9 @@ parse_svn_repository_root() {
   ## gdb
 
     alias gdbm='gdb -ex "break main" -ex "run" -q'
+    alias gdbr='gdb -ex "run" -q'
     alias gdbs='gdb -ex "break _start" -ex "run" -q'
     alias gdbx='gdb --batch -x'
-
 
   ## GNU changelogs from Git
 
@@ -762,7 +794,7 @@ parse_svn_repository_root() {
   alias grtv='git remote -v'
   alias grtr='git remote rename'
   alias grtro='git remote rename origin'
-  alias grtrou='git remote rename origin up && git remote add origin'
+	grtrou() { git remote rename origin up && git remote add origin "$1" && git branch --set-upstream 'origin';}
   alias grts='git remote set-url'
   alias grtso='git remote set-url origin'
   alias gsa='git stash'
@@ -858,8 +890,8 @@ parse_svn_repository_root() {
 ## jekyll
 
   alias bej='bundle exec jekyll'
-  alias bejb='bundle exec jekyll build'
-  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -tw'
+  alias bejb='bundle exec jekyll build -It'
+  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -Itw'
 
 ## make
 
@@ -907,6 +939,10 @@ parse_svn_repository_root() {
     alias gmkt='git !exec make test'
 
     alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
+    alias cmkd='mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build .'
+    # Shared libs. Required for some weird projects.
+    alias cmks='mkdir -p build && cd build && cmake .. -DBUILD_SHARED_LIBS=ON && cmake --build .'
+    # Test.
     alias cmkt='cmk && ctest -V .'
 
 ## Mass regex operations
@@ -988,8 +1024,8 @@ parse_svn_repository_root() {
 
 ## music
 
-  alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
   alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
+  alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
   alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
   alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
 
@@ -1041,6 +1077,7 @@ parse_svn_repository_root() {
   export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
   alias py='python'
+  alias pyv='python --version'
   alias py3='python3'
   alias ipy='ipython'
   alias tipy='touch __init__.py'
@@ -1049,30 +1086,43 @@ parse_svn_repository_root() {
 
   ## pip
 
-    alias eba='. .env/bin/activate'
-    alias spii='sudo pip install'
     alias spiu='sudo pip uninstall'
     alias pise='pip search'
     alias pifr='pip freeze'
+    alias pift='pip freeze >requirements.txt'
+    alias piin='pip install'
+    alias piir='pip install -r requirements.txt'
+    alias pii='pip pillow.txt'
+
+  ## virtualenv
+
+    alias vira='. .venv/bin/activate'
+    alias vird='deactivate'
+    alias vire='echo $VIRTUAL_ENV'
+    alias virp='virtualenv -p python3.5 .venv && . .venv/bin/activate && pip install -r requirements.txt'
 
   ## django
 
     # Django Manage Run Server.
-    alias dmmi='./manage.py migrate'
-    alias dmsp='./manage.py startproject && ./manage.py migrate'
-    alias dmrs='./manage.py runserver'
+    alias dmn='python manage.py'
+    alias dmsu='python manage.py createsuperuser --username a --email a@a.com'
+    alias dmmi='python manage.py migrate'
+    alias dmmm='python manage.py makemigrations'
+    alias dmsp='python manage.py startproject && python manage.py migrate'
+    alias dmrs='python manage.py runserver'
     # Db Shell.
-    alias dmds='./manage.py dbshell'
+    alias dmds='python manage.py dbshell'
     # Sync DB.
-    alias dmsd='./manage.py syncdb'
+    alias dmsd='python manage.py syncdb'
+    alias dmte='python manage.py test'
     # Collect Static.
-    alias dmcs='echo "yes" | ./manage.py collectstatic'
+    alias dmcs='echo "yes" | python manage.py collectstatic'
 
     ## South
 
-      alias dmscts='./manage.py convert_to_south'
-      alias dmssi='./manage.py schemamigration --initial'
-      alias dmssa='./manage.py schemamigration --auto'
+      alias dmscts='python manage.py convert_to_south'
+      alias dmssi='python manage.py schemamigration --initial'
+      alias dmssa='python manage.py schemamigration --auto'
 
 ## qemu
 
@@ -1087,6 +1137,16 @@ parse_svn_repository_root() {
     qemu-system-i386 -hda "$1" -S -s &
     gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
   }
+
+## linux kernel
+
+  # Ignore the huge arch and drivers.
+  # http://stackoverflow.com/questions/10423143/how-to-exclude-certain-directories-files-from-git-grep-search
+  lkg() { git grep -i "$1" -- './*' ':!arch/**' ':!drivers/**';  }
+  # Ignore drivers.
+  lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
+  # TODO ignore all archs except x86.
+  #export KBUILD_OUTPUT='../build'
 
 ## rake
 
@@ -1261,4 +1321,16 @@ parse_svn_repository_root() {
 
 # added by travis gem
 [ -f /home/ciro/.travis/travis.sh ] && source /home/ciro/.travis/travis.sh
+
+# AMD SDK.
 export AMDAPPSDKROOT="/home/ciro/AMDAPPSDK-3.0"
+#export OPENCL_VENDOR_PATH="/home/ciro/AMDAPPSDK-3.0/etc/OpenCL/vendors/"
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
+### Added by the Google Cloud gsutil
+# The next line updates PATH for the Google Cloud SDK.
+source '/home/ciro/google-cloud-sdk/path.bash.inc'
+# The next line enables shell command completion for gcloud.
+source '/home/ciro/google-cloud-sdk/completion.bash.inc'

@@ -2,3 +2,4 @@
 Exec=my-autostart
 Name=my-autostart
 Type=Application
+X-GNOME-Autostart-enabled=true
