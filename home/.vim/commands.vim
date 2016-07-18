@@ -21,6 +21,8 @@
   command! Pwdx :let @+ = expand('%:p')
   " Delete the curent file.
   command! Rm !rm %
+  " TODO also somehow wipe the buffer.
+  "command! Rm !rm % | bwipe
   " Toggle the status bar between mode 0 and 2.
   command! Sl let &laststatus = ((!&laststatus) * 2)
   command! Ss set spell!
@@ -170,3 +172,16 @@ command! -nargs=1 Gtfind2 call Find2('git rev-parse --show-toplevel && git ls-fi
 command! -nargs=1 Locate call Find2('locate ' . shellescape('<args>'))
 " TODO ctags version:
 " http://stackoverflow.com/questions/5632125/how-do-i-create-a-vim-function-list-inside-quick-fix-window
+
+" http://stackoverflow.com/questions/10884520/move-file-within-vim
+function! Mv(newspec)
+     let old = expand('%')
+     " could be improved:
+     if (old == a:newspec)
+         return 0
+     endif
+     exe 'sav' fnameescape(a:newspec)
+     call delete(old)
+endfunction
+
+command! -nargs=1 -complete=file -bar Mv call Mv('<args>')

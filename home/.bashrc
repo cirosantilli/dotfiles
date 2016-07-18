@@ -132,7 +132,7 @@ parse_svn_repository_root() {
       mycc1='/home/ciro/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1'
 
       # TODO what is correct?
-      export VERILATOR_ROOT='/usr/local'
+      #export VERILATOR_ROOT='/usr/local'
       #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
 
   ## alias
