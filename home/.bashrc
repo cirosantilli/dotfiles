@@ -1234,7 +1234,14 @@ parse_svn_repository_root() {
   xssh() { y < "$HOME/.ssh/id_rsa${1}.pub"; }
   alias xb='x | bash'
   alias xl='x | less'
-  alias pwdx='pwd | y'
+
+  # Clipboard path operations.
+
+    # Absolute path.
+    xab() { echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")" | y; }
+    xcp() { cp -r "$(x)" .; }
+    xmv() { mv "$(x)" .; }
+    xpw() { pwd | y; }
 
 ## xdg
 
