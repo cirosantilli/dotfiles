@@ -124,13 +124,6 @@ parse_svn_repository_root() {
         vim="gvim -v"
       fi
 
-    # Variables instead of aliases so that I can debug them with `gdb "$PROG"`:
-
-      mygdb='/home/ciro/git/binutils-gdb/install/bin/gdb'
-      mygcc_path='/home/ciro/git/gcc/install/bin'
-      mygcc="$mygcc_path/gcc"
-      mycc1='/home/ciro/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1'
-
       # TODO what is correct?
       export VERILATOR_ROOT='/usr/local'
       #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
@@ -143,11 +136,10 @@ parse_svn_repository_root() {
     alias ack='ack-grep --smart-case'
     # Beep. Notify after a long command. Usage:
     # long-command;b
-    alias b='zenity --info --text "$(echo "$?"; pwd; )"'
-    alias c='cd'
+    alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
+    alias bashx='xsel -b | bash'
     alias cdg='cd "$(git rev-parse --show-toplevel)"'
     alias cdG='cd "$MY_GIT_DIR"'
-    cdls() { cd "$1" && ls; }
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'
     alias chmx='chmod +x'
@@ -191,6 +183,7 @@ parse_svn_repository_root() {
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     h() { "$1" --help | less; }
+    i() { ls; }
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
     # Usage: cmd symlink-location
@@ -435,9 +428,21 @@ parse_svn_repository_root() {
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
+  ## CodeCollab
+
+    ccah() { ccollab addchangelist "$1" HEAD; }
+    ccanh() { ccollab addchangelist new HEAD; }
+
   ## cd
 
-    alias c='cd'
+    c() {
+      if [ -n "$1" ]; then
+        cd "$1"
+      else
+        cd
+      fi
+      ls
+    }
     # cd Up
     alias cda='cd "$ART_DIR"'
     alias cdc='cd "$CPP_DIR"'
@@ -487,9 +492,11 @@ parse_svn_repository_root() {
       # ctags default command:
       # - R: Recursive
       # - m: without member fields
+      # - --extra=f: also generate tags for filenames, that point to the first line:
       # Consider:
-      # - --extra=+f: algo generate tags for files
-      alias ctagsr='ctags -R --c-kinds=-m'
+      alias ctagsr='ctags -R --c-kinds=-m --extra=f'
+      alias cscopr='cscope -Rb'
+      alias ctasc='ctagsr && cscopr'
 
   ## dirs
 
@@ -518,7 +525,7 @@ parse_svn_repository_root() {
 
       alias ls='ls -1 --color=auto --group-directories-first'
       lswc() { ls -1 "$1" | wc; }
-      alias lsg='ls | grep -Ei'
+      alias lsg='ls | g'
       alias ll='ls -hl --time-style="+%Y-%m-%d_%H:%M:%S"'
       alias lla='ll -A'
       # Sort by size.
@@ -527,6 +534,7 @@ parse_svn_repository_root() {
       # Sort by most recent ctime.
       alias llt='lla -crt'
       alias llT='lla -ct'
+      alias lltg='lla -crt | g'
 
   ## Docker
 
@@ -582,15 +590,15 @@ parse_svn_repository_root() {
         case $1 in
           *.7z)        7z x "$1";;
           *.Z)         uncompress "$1";;
-          *.bz2)       bunzip2 "$1";;
           *.cpio)      cpio -i <"$1";;
           *.deb)       dpkg-deb -R "$1" .;;
-          *.gz)        gunzip "$1";;
           *.jar|*.zip) unzip "$1";;
           *.rar)       rar x "$1";;
           *.tar)       tar xf "$1";;
           *.tar.bz2)   tar xjf "$1";;
+          *.bz2)       bunzip2 "$1";;
           *.tar.gz)    tar xzf "$1";;
+          *.gz)        gunzip --keep "$1";;
           *.tbz2)      tar xjf "$1";;
           *.tgz)       tar xzf "$1";;
           *)           echo "error: unknown extension: $1";;
@@ -615,7 +623,14 @@ parse_svn_repository_root() {
     # Expected output: `2`
     gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
 
-    alias gcc5='/home/ciro/git/gcc/install-o0/bin/gcc'
+    alias gcc5="$HOME/git/gcc/install-o0/bin/gcc"
+
+    # Variables instead of aliases so that I can debug them with `gdb "$PROG"`:
+
+      mygdb="$HOME/git/binutils-gdb/install/bin/gdb"
+      mygcc_path="$HOME/git/gcc/install/bin"
+      mygcc="$mygcc_path/gcc"
+      mycc1="$HOME/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1"
 
   ## gdb
 
@@ -662,11 +677,13 @@ parse_svn_repository_root() {
     alias gadcmt='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
     gadcmp() { git add . && git commit -m "$1" && git push; }
+    alias gadu='git add -u'
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbi='git bisect'
     alias gbl='git blame'
     alias gbr='git branch'
+    gbrg () { git branch | grep "$1"; }
     gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
     alias gbra='git branch -a'
     # BRanch Graph
@@ -688,6 +705,9 @@ parse_svn_repository_root() {
     alias gcman='git commit --amend --no-edit'
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gce='git clean'
+    # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
+    alias gcedf='git clean -df'
+    # Clean any file not tracked.
     alias gcexdf='git clean -xdf'
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
@@ -703,120 +723,127 @@ parse_svn_repository_root() {
     # Slash Dot
     alias gcosd='git checkout -- .'
     alias gcoo='git checkout --ours'
-    alias gcot='git checkout --theirs'
+    alias gcoT='git checkout --theirs'
+    alias gcot='git checkout trunk'
     alias gcou='git checkout up'
     alias gcn='git config'
-  alias gcng='git config --global'
-  alias gcngh='git config user.email "ciro.santilli@gmail.com"'
-  # Git config anti-commie.
-  alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
-  alias gcp='git cp'
-  alias gcr='git cherry-pick'
-  alias gd='git diff'
-  alias gdf='git diff'
-  alias gdfmh='git diff master...HEAD'
-  alias gdfc='git diff --cached'
-  alias gdfhh='git diff HEAD~ HEAD'
-  alias gdfst='git diff --stat'
-  alias gfe='git fetch'
-  gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
-  alias gfeomm='git fetch origin master:master'
-  alias gfeumm='git fetch up master:master'
-  gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
-  alias gfp='git format-patch'
-  alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
-  alias gdfx='git diff | xsel -bi'
-  gdf12() { git diff ":1:./$1" ":2:./$1"; }
-  gdf13() { git diff ":1:./$1" ":3:./$1"; }
-  gdf123() {
-    git --no-pager diff ":1:./$1" ":2:./$1";
-    python -c 'print "\n" + (80 * "=") + "\n"';
-    git --no-pager diff ":1:./$1" ":3:./$1";
-  }
-  alias gg='git grep --color'
-  alias ggi='git grep --color -i'
-  alias gka='gitk --all'
-  alias gin='git init'
-  # Init Add Commit
-  alias ginac='git init && git add . && git commit -m "init"'
-  # Restore deleted file to its latest version.
-  # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
-  git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
-  alias gls='git ls-files'
-  alias glso='git ls-files --other'
-  alias glsg='git ls-files | grep'
-  alias glsgi='git ls-files | grep -i'
-  alias glsr='git ls-remote'
-  alias glo='git log --decorate'
-  alias glog='git log --all --abbrev-commit --decorate --graph'
-  # One line
-  alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
-  # One line Graph
-  alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
-  alias gloogs='git log --all --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
-  alias glop='git log -p'
-  # Find where that feature entered the code base.
-  alias glopr='git log -p --reverse'
-  #alias glopf='git log --pretty=oneline --decorate'
-  alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
-  alias gme='git merge'
-  alias gmea='git merge --abort'
-  alias gmem='git merge master'
-  alias gmt='git mergetool'
-  alias gmv='git mv'
-  alias gppp='git push prod prod'
-  alias gps='git push'
-  alias gpsf='git push -f'
-  # Wobble
-  alias gpsfw='git push -f origin HEAD~:master && git push -f'
-  alias gpsum='git push -u mine'
-  alias gpsu='git push -u'
-  alias gpsuom='git push -u origin master'
-  alias gpl='git pull'
-  alias gplr='git pull --rebase'
-  alias gplum='git pull up master'
-  alias gplrum='git pull --rebase up master'
-  alias gplo='git pull origin'
-  alias gplom='git pull origin master'
-  alias grb='git rebase'
-  alias grbc='git rebase --continue'
-  alias grbi='git rebase -i'
-  alias grbm='git rebase master'
-  alias grs='git reset'
-  alias grsh='git reset --hard'
-  alias grsH='git reset HEAD~'
-  alias grshH='git reset --hard HEAD~'
-  alias grm='git rm'
-  alias grt='git remote'
-  alias grta='git remote add'
-  alias grtao='git remote add origin'
-  alias grtau='git remote add up'
-  alias grtv='git remote -v'
-  alias grtr='git remote rename'
-  alias grtro='git remote rename origin'
-	grtrou() { git remote rename origin up && git remote add origin "$1" && git branch --set-upstream 'origin';}
-  alias grts='git remote set-url'
-  alias grtso='git remote set-url origin'
-  alias gsa='git stash'
-  alias gsaa='git stash apply'
-  alias gsh='git show'
-  gshm() { git show "master:./$1"; }
-  gshmo() { git show "master:./$1" > "old_$1"; }
-  alias gst='git status'
-  alias gsu='git submodule'
-  alias gsua='git submodule add'
-  alias gsuf='git submodule foreach'
-  alias gsufp='git submodule foreach git pull'
-  alias gsuu='git submodule update'
-  alias gta='git tag'
-  alias gtac='git tag --contains'
-  # Git TAg Date
-  alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
-  alias gtas='git tag | sort -V'
-  alias gtr='git ls-tree HEAD'
+    alias gcng='git config --global'
+    alias gcngh='git config user.email "ciro.santilli@gmail.com"'
+    # Git config anti-commie.
+    alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
+    alias gcp='git cp'
+    alias gcr='git cherry-pick'
+    alias gd='git diff'
+    alias gdf='git diff'
+    alias gdfth='git diff trunk...HEAD'
+    alias gdfmh='git diff master...HEAD'
+    alias gdfc='git diff --cached'
+    alias gdfh='git diff HEAD'
+    alias gdfhh='git diff HEAD~ HEAD'
+    alias gdfst='git diff --stat'
+    alias gfe='git fetch'
+    gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
+    alias gfeomm='git fetch origin master:master'
+    alias gfeumm='git fetch up master:master'
+    gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
+    alias gfp='git format-patch'
+    alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
+    alias gdfx='git diff | xsel -bi'
+    gdf12() { git diff ":1:./$1" ":2:./$1"; }
+    gdf13() { git diff ":1:./$1" ":3:./$1"; }
+    gdf123() {
+      git --no-pager diff ":1:./$1" ":2:./$1";
+      python -c 'print "\n" + (80 * "=") + "\n"';
+      git --no-pager diff ":1:./$1" ":3:./$1";
+    }
+    alias gg='git grep --color'
+    alias ggi='git grep --color -i'
+    alias gka='gitk --all'
+    alias gin='git init'
+    # Init Add Commit
+    alias ginac='git init && git add . && git commit -m "init"'
+    # Restore deleted file to its latest version.
+    # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
+    git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
+    alias gls='git ls-files'
+    alias glso='git ls-files --other'
+    alias glsg='git ls-files | grep'
+    alias glsgi='git ls-files | grep -i'
+    alias glsr='git ls-remote'
+    alias glo='git log --decorate'
+    alias glog='git log --all --abbrev-commit --decorate --graph'
+    # One line
+    alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
+    # One line Graph
+    alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
+    alias gloogs='git log --all --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
+    alias glop='git log -p'
+    # Find where that feature entered the code base.
+    alias glopr='git log -p --reverse'
+    #alias glopf='git log --pretty=oneline --decorate'
+    alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
+    alias gme='git merge'
+    alias gmea='git merge --abort'
+    alias gmem='git merge master'
+    alias gmt='git mergetool'
+    alias gmv='git mv'
+    alias gppp='git push prod prod'
+    alias gps='git push'
+    alias gpsf='git push -f'
+    # Wobble
+    alias gpsfw='git push -f origin HEAD~:master && git push -f'
+    alias gpsum='git push -u mine'
+    alias gpsu='git push -u'
+    alias gpsuom='git push -u origin master'
+    alias gpl='git pull'
+    alias gplr='git pull --rebase'
+    alias gplum='git pull up master'
+    alias gplrum='git pull --rebase up master'
+    alias gplo='git pull origin'
+    alias gplom='git pull origin master'
+    alias grb='git rebase'
+    alias grbc='git rebase --continue'
+    alias grbi='git rebase -i'
+    alias grbm='git rebase master'
+    alias grs='git reset'
+    # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
+    # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
+    alias grssm='git reset --soft "$(git merge-base master HEAD)"'
+    alias grsst='git reset --soft "$(git merge-base trunk HEAD)"'
+    alias grsh='git reset --hard'
+    alias grsH='git reset HEAD~'
+    alias grshH='git reset --hard HEAD~'
+    alias grm='git rm'
+    alias grt='git remote'
+    alias grta='git remote add'
+    alias grtao='git remote add origin'
+    alias grtau='git remote add up'
+    alias grtv='git remote -v'
+    alias grtr='git remote rename'
+    alias grtro='git remote rename origin'
+    grtrou() { git remote rename origin up && git remote add origin "$1" && git branch --set-upstream 'origin';}
+    alias grts='git remote set-url'
+    alias grtso='git remote set-url origin'
+    alias gsa='git stash'
+    alias gsaa='git stash apply'
+    alias gsh='git show'
+    gshm() { git show "master:./$1"; }
+    gshmo() { git show "master:./$1" > "old_$1"; }
+    alias gst='git status'
+    alias gsu='git submodule'
+    alias gsua='git submodule add'
+    alias gsuf='git submodule foreach'
+    alias gsufp='git submodule foreach git pull'
+    alias gsuu='git submodule update'
+    alias gta='git tag'
+    alias gtac='git tag --contains'
+    # Git TAg Date
+    alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
+    alias gtas='git tag | sort -V'
+    alias gtr='git ls-tree HEAD'
 
-  alias vgig='vim .gitignore'
-  alias lngp='latex-new-github-project.sh cirosantilli'
+    alias vgig='vim .gitignore'
+    alias lngp='latex-new-github-project.sh cirosantilli'
 
   # GitHub
 
@@ -831,6 +858,11 @@ parse_svn_repository_root() {
   ## Hub
 
     alias huco='hub checkout'
+
+  ## Gerrit
+
+    alias gpsd='origin HEAD:refs/drafts/master'
+    alias gpsdt='origin HEAD:refs/drafts/trunk'
 
 ## GitLab
 
@@ -1082,6 +1114,7 @@ parse_svn_repository_root() {
   alias ipy='ipython'
   alias tipy='touch __init__.py'
   alias pyserve='python -m SimpleHTTPServer'
+  alias pyjson='python -m json.tool'
   alias pydoc='python -m doctest'
 
   ## pip
@@ -1248,16 +1281,22 @@ parse_svn_repository_root() {
   # Git. Must be run on each Git repo we will push for.
   sflg() {
     git config --local user.email 'ciro.santilli@savoirfairelinux.com'
+
     # git push creates patches.
     git config --local remote.origin.push HEAD:refs/for/master
+
     # Automatically add the dreaded Change-Id.
     gitdir=$(git rev-parse --git-dir); scp -p -P 29420 cirosantilli@gerrit-ring.savoirfairelinux.com:hooks/commit-msg ${gitdir}/hooks/
+
     # `git push draft` creates drafts.
     # TODO: git remote add draft X
     git config --local push.draft.url HEAD:refs/drafts/master
     # `git fetch` fetchs *all* patches locally.
     git config --local --add 'remote.origin.fetch +refs/changes/*:refs/remotes/origin/changes/*'
     # TODO: git remote add origin X
+
+    # Push to sandbox branch.
+    #gpss() { git push origin "HEAD:sandbox/$USER/$(git rev-parse --abbrev-ref HEAD)"; }
   }
 
   RING_DIR="$HOME/git/ring"
@@ -1277,13 +1316,23 @@ parse_svn_repository_root() {
         . '/etc/bash_completion'
     fi
 
-    ## GCE
-    if [ -d "$HOME/google-cloud-sdk" ]; then
-      # The next line updates PATH for the Google Cloud SDK.
-      . "$HOME/google-cloud-sdk/path.bash.inc"
-      # The next line enables bash completion for gcloud.
-      . "$HOME/google-cloud-sdk/completion.bash.inc"
-    fi
+    ## Google
+
+      if [ -d "$HOME/google-cloud-sdk" ]; then
+        # The next line updates PATH for the Google Cloud SDK.
+        . "$HOME/google-cloud-sdk/path.bash.inc"
+        # The next line enables bash completion for gcloud.
+        . "$HOME/google-cloud-sdk/completion.bash.inc"
+      fi
+
+      ### Google Cloud gsutil
+
+      if [ -d "$HOME/google-cloud-sdk" ]; then
+        # The next line updates PATH for the Google Cloud SDK.
+        . "$HOME/google-cloud-sdk/path.bash.inc"
+        # The next line enables shell command completion for gcloud.
+        . "$HOME/google-cloud-sdk/completion.bash.inc"
+      fi
 
     ## Heroku Toolbelt
     export PATH="/usr/local/heroku/bin:$PATH"
@@ -1314,23 +1363,18 @@ parse_svn_repository_root() {
     [ -s "$HOME/.gvm/scripts/gvm" ] && . "$HOME/.gvm/scripts/gvm"
 
     # https://github.com/cirosantilli/runlinux
-    PATH="$PATH:/home/ciro/bak/git/runlinux"
+    PATH="$PATH:$PROGRAM_DIR/runlinux"
 
-# </custom>
-[[ -s "/home/ciro/.gvm/scripts/gvm" ]] && source "/home/ciro/.gvm/scripts/gvm"
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
 # added by travis gem
-[ -f /home/ciro/.travis/travis.sh ] && source /home/ciro/.travis/travis.sh
+[ -f "$HOME/.travis/travis.sh" ] && source "$HOME/.travis/travis.sh"
 
 # AMD SDK.
-export AMDAPPSDKROOT="/home/ciro/AMDAPPSDK-3.0"
-#export OPENCL_VENDOR_PATH="/home/ciro/AMDAPPSDK-3.0/etc/OpenCL/vendors/"
+export AMDAPPSDKROOT="$HOME/AMDAPPSDK-3.0"
+#export OPENCL_VENDOR_PATH="$HOME/AMDAPPSDK-3.0/etc/OpenCL/vendors/"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-### Added by the Google Cloud gsutil
-# The next line updates PATH for the Google Cloud SDK.
-source '/home/ciro/google-cloud-sdk/path.bash.inc'
-# The next line enables shell command completion for gcloud.
-source '/home/ciro/google-cloud-sdk/completion.bash.inc'
+# </custom>

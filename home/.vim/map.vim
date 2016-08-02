@@ -83,7 +83,7 @@
       augroup END
 
     " Reopen last closed tab
-    " <http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim>
+    " http://stackoverflow.com/questions/2119754/switch-to-last-active-tab-in-vim
 
     " Currently using another shortcut for this:
 
