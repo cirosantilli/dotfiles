@@ -435,6 +435,19 @@ parse_svn_repository_root() {
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
+  ## buildroot
+
+  br-qemu() {
+    qemu-system-x86_64 \
+      -enable-kvm \
+      -M pc \
+      -kernel output/images/bzImage \
+      -drive file=output/images/rootfs.ext2,if=virtio,format=raw \
+      -append root=/dev/vda \
+      -net nic,model=virtio \
+      -net user
+  }
+
   ## cd
 
     alias c='cd'
@@ -913,6 +926,7 @@ parse_svn_repository_root() {
   # List targets.
   alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
                                                   # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
+  alias mksx='make SHELL="sh -x"'
   alias mkq='make qemu'
   alias mkr='make run'
   mkrr() { make run RUN="${1%.*}"; }
@@ -1147,6 +1161,10 @@ parse_svn_repository_root() {
   lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
   # TODO ignore all archs except x86.
   #export KBUILD_OUTPUT='../build'
+
+  alias mkold='make oldconfig'
+  alias mkdef='make defconfig'
+  alias mkmen='make menuconfig'
 
 ## rake
 

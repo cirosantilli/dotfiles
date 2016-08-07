@@ -40,6 +40,7 @@
   command! Eb tabedit ~/.bashrc
   command! Eg tabedit ~/.gitconfig
   command! Ei tabedit .gitignore
+  command! Em tabedit Makefile
   command! En tabedit $NOTES_DIR/note.md
   command! Ep tabedit ~/.profile
   command! Er tabedit README.md
