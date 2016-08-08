@@ -125,7 +125,7 @@ parse_svn_repository_root() {
       fi
 
       # TODO what is correct?
-      export VERILATOR_ROOT='/usr/local'
+      #export VERILATOR_ROOT='/usr/local'
       #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
 
   ## alias
@@ -426,6 +426,19 @@ parse_svn_repository_root() {
     alias reh='readelf -h'
     alias reS='readelf -SW'
     alias res='readelf -sW'
+
+  ## buildroot
+
+    br-qemu() {
+      qemu-system-x86_64 \
+        -enable-kvm \
+        -M pc \
+        -kernel output/images/bzImage \
+        -drive file=output/images/rootfs.ext2,if=virtio,format=raw \
+        -append root=/dev/vda \
+        -net nic,model=virtio \
+        -net user
+    }
 
   ## Browsers
 
@@ -973,6 +986,7 @@ parse_svn_repository_root() {
   # List targets.
   alias mkl="make -qp | awk -F':' '/^[a-zA-Z0-9][^\$''#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}' | sort"
                                                   # ^^ to prevent a vim syntax bug: https://code.google.com/p/vim/issues/detail?id=364&
+  alias mksx='make SHELL="sh -x"'
   alias mkq='make qemu'
   alias mkr='make run'
   mkrr() { make run RUN="${1%.*}"; }
@@ -1209,6 +1223,10 @@ parse_svn_repository_root() {
   # TODO ignore all archs except x86.
   #export KBUILD_OUTPUT='../build'
 
+  alias mkold='make oldconfig'
+  alias mkdef='make defconfig'
+  alias mkmen='make menuconfig'
+
 ## rake
 
   alias rk='rake'
@@ -1295,10 +1313,21 @@ parse_svn_repository_root() {
   xssh() { y < "$HOME/.ssh/id_rsa${1}.pub"; }
   alias xb='x | bash'
   alias xl='x | less'
+<<<<<<< HEAD
   xab() { echo "$(pwd)/$1" | xsel -bi; }
   xmv() { mv "$(xsel -b)" "${1:-.}"; }
   xcp() { mv "$(xsel -b)" "${1:-.}"; }
   alias xpw='pwd | y'
+=======
+
+  # Clipboard path operations.
+
+    # Absolute path.
+    xab() { echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")" | y; }
+    xcp() { cp -r "$(x)" .; }
+    xmv() { mv "$(x)" .; }
+    xpw() { pwd | y; }
+>>>>>>> a321880a1b3fe5d33978cdbd8f3e8787078c80f1
 
 ## xdg
 

@@ -3,13 +3,13 @@
 " This takes a long time to run when changed.
 colorscheme indigo
 
-" Reload .vimperatorrc
 nnoremap 1 1gt
 nnoremap 2 2gt
 nnoremap 3 3gt
 nnoremap . <c-i>
 nnoremap , <c-o>
 nnoremap j 20j
+" Reload .vimperatorrc
 nnoremap <c-r> :source ~/.vimperatorrc<cr>:echo 'sourced vimperatorrc'<cr>
 nnoremap h gT
 nnoremap j 20j
@@ -37,6 +37,7 @@ qmark g https://github.com
 qmark i https://twitch.tv
 qmark l https://linkedin.com
 qmark m https://gmail.com
+qmark p https://photos.google.com
 qmark q https://quora.com
 qmark r https://reddit.com
 qmark s https://stackoverflow.com
