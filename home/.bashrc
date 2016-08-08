@@ -183,7 +183,6 @@ parse_svn_repository_root() {
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     h() { "$1" --help | less; }
-    i() { ls; }
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
     # Usage: cmd symlink-location
@@ -428,9 +427,24 @@ parse_svn_repository_root() {
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
+  ## Browsers
+
+    ## Firefox
+
+        # Unsafe settings, for quick testing. Don't access any important page with it.
+        fir-test() { noh firefox -no-remote "$@" -P 'test'; }
+
+    ## Chromium
+
+    chr() { noh chromium-browser "$@"; }
+      # Unsafe settings, for quick testing. Don't access any important page with it.
+    chr-test() { chr --allow-file-access-from-files; }
+
   ## CodeCollab
 
     ccah() { ccollab addchangelist "$1" HEAD; }
+    # Get ID from commit Message line of form CC: 1234
+    ccahm() { ccollab addchangelist "$(git log -n1 --pretty=format:'%B' | grep -E '^CC: ' | cut -d' ' -f2)" HEAD; }
     ccanh() { ccollab addchangelist new HEAD; }
 
   ## cd
@@ -443,7 +457,6 @@ parse_svn_repository_root() {
       fi
       ls
     }
-    # cd Up
     alias cda='cd "$ART_DIR"'
     alias cdc='cd "$CPP_DIR"'
     alias cdD='cD "$DOWNLOAD_DIR"'
@@ -461,6 +474,7 @@ parse_svn_repository_root() {
     alias cdt='cd "$TEST_DIR"'
     alias cdu='cd "$UBUNTU_DIR"'
     alias cdx='cd "$(xsel -b)"'
+    alias cdy='cd "$PYTHON_DIR"'
     alias cdw='cd "$WEBSITE_DIR"'
     # TODO make a version that also cats the command and pwd.
     #b() { "$@"; zenity --info --text "$*"; }
@@ -523,18 +537,35 @@ parse_svn_repository_root() {
 
     ## ls
 
-      alias ls='ls -1 --color=auto --group-directories-first'
-      lswc() { ls -1 "$1" | wc; }
-      alias lsg='ls | g'
-      alias ll='ls -hl --time-style="+%Y-%m-%d_%H:%M:%S"'
-      alias lla='ll -A'
+      i() { ls "$@"; }
+      ls() { command ls -1 --color=auto --group-directories-first "$@"; }
+      lswc() { ls -1 "${1:-.}" | wc -l; }
+      lsg() { ls "${2:-.}" | g "$1"; }
+      ll() { ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; }
+      lla() { ll -A "$@"; }
       # Sort by size.
-      alias lls='lla -Sr'
+      lls() { lla -Sr "$@"; }
       alias llS='lla -S'
       # Sort by most recent ctime.
       alias llt='lla -crt'
       alias llT='lla -ct'
       alias lltg='lla -crt | g'
+      # Print filename that has the Latest modification Time.
+      lslt() { ls -ct "${1:-.}" | head -n1; }
+
+      # mv dst [src-dir=.]
+      # Move latest modified file in src-dir to dst.
+      mvl() {
+        src="$(lstl "${2:-.}")"
+        echo "$src"
+        mv "$src" "$1"
+      }
+
+      cpl() {
+        src="$(lstl "${2:-.}")"
+        echo "$src"
+        cp "$src" "$1"
+      }
 
   ## Docker
 
@@ -677,7 +708,7 @@ parse_svn_repository_root() {
     alias gadcmt='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
     gadcmp() { git add . && git commit -m "$1" && git push; }
-    alias gadu='git add -u'
+    alias gadu='git add -u :/'
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbi='git bisect'
@@ -771,12 +802,8 @@ parse_svn_repository_root() {
     alias glsgi='git ls-files | grep -i'
     alias glsr='git ls-remote'
     alias glo='git log --decorate'
-    alias glog='git log --all --abbrev-commit --decorate --graph'
-    # One line
-    alias gloo='git log --all --abbrev-commit --decorate --pretty=oneline'
-    # One line Graph
-    alias gloog='git log --all --abbrev-commit --decorate --graph --pretty=oneline'
-    alias gloogs='git log --all --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
+    alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
+    alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glop='git log -p'
     # Find where that feature entered the code base.
     alias glopr='git log -p --reverse'
@@ -802,6 +829,7 @@ parse_svn_repository_root() {
     alias gplo='git pull origin'
     alias gplom='git pull origin master'
     alias grb='git rebase'
+    alias grba='git rebase --abort'
     alias grbc='git rebase --continue'
     alias grbi='git rebase -i'
     alias grbm='git rebase master'
@@ -861,8 +889,8 @@ parse_svn_repository_root() {
 
   ## Gerrit
 
-    alias gpsd='origin HEAD:refs/drafts/master'
-    alias gpsdt='origin HEAD:refs/drafts/trunk'
+    alias gpsd='git push origin HEAD:refs/drafts/master'
+    alias gpsdt='git push origin HEAD:refs/drafts/trunk'
 
 ## GitLab
 
@@ -1267,7 +1295,10 @@ parse_svn_repository_root() {
   xssh() { y < "$HOME/.ssh/id_rsa${1}.pub"; }
   alias xb='x | bash'
   alias xl='x | less'
-  alias pwdx='pwd | y'
+  xab() { echo "$(pwd)/$1" | xsel -bi; }
+  xmv() { mv "$(xsel -b)" "${1:-.}"; }
+  xcp() { mv "$(xsel -b)" "${1:-.}"; }
+  alias xpw='pwd | y'
 
 ## xdg
 

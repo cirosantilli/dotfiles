@@ -123,6 +123,7 @@
         \['p', 'PROGRAM_DIR'],
         \['t', 'TEST_DIR'],
         \['u', 'UBUNTU_DIR'],
+        \['y', 'PYTHON_DIR'],
         \['w', 'WEBSITE_DIR'],
         \['W', 'WEB_DIR'],
       \]
@@ -130,6 +131,10 @@
       endfor
       " Tab complete edit from the Git top level.
       nnoremap <leader>eg :tabedit <c-r>=systemlist('git rev-parse --show-toplevel')[0]<cr>/
+
+    " Open tag in new tab.
+
+      nnoremap <leader>ta :tab tag<space>
 
   " # f keys
 
