@@ -12,7 +12,10 @@ source $HOME/.vim/plugins.vim
 source $HOME/.vim/options.vim
 source $HOME/.vim/filetypes.vim
 source $HOME/.vim/map.vim
-source $HOME/.vimrc_local
+let s:vimrc_local = expand($HOME) . '/.vimrc_local'
+if filereadable(s:vimrc_local)
+  execute "source " . s:vimrc_local
+endif
 
 " # invocation
 
@@ -640,8 +643,7 @@ source $HOME/.vimrc_local
        " you need to define the mapping with `<SID>` as `nnoremap call <SID>Function<cr>
        " which magically expands to a unique internal name.
 
-       " `s:` is also magic in the sense that `s:` functions
-       " don't need to start with a capital letter.
+       " `s:` functions don't need to start with a capital letter.
 
   " -  `w:`: editor window
 
