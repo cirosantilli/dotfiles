@@ -12,6 +12,7 @@ source $HOME/.vim/plugins.vim
 source $HOME/.vim/options.vim
 source $HOME/.vim/filetypes.vim
 source $HOME/.vim/map.vim
+source $HOME/.vimrc_local
 
 " # invocation
 

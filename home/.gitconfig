@@ -6,6 +6,8 @@
 	b = branch
 	c = checkout
 	l = log
+	m = merge
+	o = commit
 	r = rebase
 	; But sometimes we need others for workflows that have use multiple Git repositories
 	; and use scripts to do a command on all of them.
@@ -22,12 +24,17 @@
 [color]
 	grep = auto
 	ui = auto
+[commit]
+	template = ~/.gitmessage
 [core]
 	autocrlf = input
 	whitespace = fix,-indent-with-non-tab,trailing-space
 	excludesfile = ~/.gitignore_global
 	quotepath = false
-	pager = less -r
+	# Always use pager, but leave output on screen afterwards.
+	pager = less -Xr
+	# Only use pager if the output does not fit to screen.
+	#pager = less -FXr
 [credential]
 	helper = cache --timeout=999999
 [grep]
@@ -40,9 +47,9 @@
 ; TODO make diff-highlight fall back to regular diff if not found.
 [pager]
 	;diff = "if diff-highlight &>/tmp/git-diff.out; then cat /tmp/git-diff.out; else echo fail; fi | less -R"
-	diff = diff-highlight | less -R
-	log = diff-highlight | less -R
-	show = diff-highlight | less -R
+	diff = diff-highlight | less -XRr
+	log = diff-highlight | less -XRr
+	show = diff-highlight | less -XRr
 [push]
 	default = current
 [rerere]

@@ -41,7 +41,7 @@ fi
         export ANDROID_DIR="$PROGRAM_DIR/android-cheat"
         export ART_DIR="$PROGRAM_DIR/art"
         export BASH_DIR="$PROGRAM_DIR/bash-cheat"
-        export CPP_DIR="$PROGRAM_DIR/cpp/cheat"
+        export CPP_DIR="$PROGRAM_DIR/cpp-cheat"
         export DEVBIN="$PROGRAM_DIR/devbin"
         export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
         export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
@@ -50,9 +50,9 @@ fi
         export NOTES_DIR="$PROGRAM_DIR/notes"
         export PYTHON_BASE_DIR="$PROGRAM_DIR/python"
           export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath"
-          export PYTHON_DIR="$PYTHON_BASE_DIR/cheat"
+        export PYTHON_DIR="$PROGRAM_DIR/python-cheat"
         export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
-        export WEBSITE_DIR="$PROGRAM_DIR/cirosantilli.com"
+        export WEBSITE_DIR="$PROGRAM_DIR/cirosantilli.github.io"
           export GIT_TUTORIAL_DIR="$WEBSITE_DIR/git-tutorial"
           export DB_DIR="$WEBSITE_DIR/db"
           export WEB_DIR="$WEBSITE_DIR/web"
@@ -85,6 +85,7 @@ fi
     export PROGRAM_DIR_SHORTCUT='p'
     export TEST_DIR_SHORTCUT='t'
     export UBUNTU_DIR_SHORTCUT='u'
+    export PYTHON_DIR_SHORTCUT='y'
     export WEBSITE_DIR_SHORTCUT='w'
     export WEB_DIR_SHORTCUT='W'
 

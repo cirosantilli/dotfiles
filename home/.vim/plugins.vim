@@ -74,22 +74,28 @@
 
 " Alternatives: http://stackoverflow.com/questions/1889602/multiple-vim-configurations
 
-" MarcWebber
+  " MarcWebber
 
-    " A bit buggish / hard to use correctly:
+      " A bit buggish / hard to use correctly:
 
-    "Plugin 'MarcWeber/vim-addon-local-vimrc'
-    "autocmd BufEnter * SourceLocalVimrc
+        "Plugin 'MarcWeber/vim-addon-local-vimrc'
+        "autocmd BufEnter * SourceLocalVimrc
 
-    " Start from root, ans source every file with a given basename (.vimrc by default).
+      " Start from root, ans source every file with a given basename (.vimrc by default).
 
-    " Security is hash based: you have to accept only once for each filename / content hash.
+      " Security is hash based: you have to accept only once for each filename / content hash.
+      " Great feature.
 
     " # embear
 
-    " Default file name: `.lvimrc`
+      " Default file name: `.lvimrc`
 
-        Plugin 'embear/vim-localvimrc'
+          Plugin 'embear/vim-localvimrc'
+          " Don't ask before loading. Less safe, but a pain otherwise.
+          " I wish this had the MarcWeber hash feature...
+          " TODO: seems to not load files if on.
+          let g:localvimrc_ask = 0
+          let g:localvimrc_sandbox = 0
 
 " # AutoComplPop
 

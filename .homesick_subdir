@@ -10,3 +10,5 @@ bin
 .config/dconf
 .config
 .vim
+.config/ipython/profile_default
+.config/ipython/profile_default/startup
