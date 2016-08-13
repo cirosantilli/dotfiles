@@ -1,4 +1,4 @@
-" TODO sourcing this a second time afte rstartup with source ~/.vimrc
+" TODO sourcing this a second time after startup with `source ~/.vimrc`
 " makes me need to edit new files (yet without buffers) twice to get the filetype
 " (and thus syntax highlight) correct.
 
@@ -12,7 +12,7 @@ source $HOME/.vim/plugins.vim
 source $HOME/.vim/options.vim
 source $HOME/.vim/filetypes.vim
 source $HOME/.vim/map.vim
-let s:vimrc_local = expand($HOME) . '/.vimrc_local'
+let s:vimrc_local = $HOME . '/.vimrc_local'
 if filereadable(s:vimrc_local)
   execute "source " . s:vimrc_local
 endif

@@ -1331,12 +1331,6 @@ parse_svn_repository_root() {
   xssh() { y < "$HOME/.ssh/id_rsa${1}.pub"; }
   alias xb='x | bash'
   alias xl='x | less'
-<<<<<<< HEAD
-  xab() { echo "$(pwd)/$1" | xsel -bi; }
-  xmv() { mv "$(xsel -b)" "${1:-.}"; }
-  xcp() { mv "$(xsel -b)" "${1:-.}"; }
-  alias xpw='pwd | y'
-=======
 
   # Clipboard path operations.
 
@@ -1345,7 +1339,6 @@ parse_svn_repository_root() {
     xcp() { cp -r "$(x)" .; }
     xmv() { mv "$(x)" .; }
     xpw() { pwd | y; }
->>>>>>> a321880a1b3fe5d33978cdbd8f3e8787078c80f1
 
 ## xdg
 
