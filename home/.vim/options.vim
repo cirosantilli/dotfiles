@@ -655,9 +655,10 @@
 " Autosave every N miliseconds or when losing focus.
 
   set updatetime=1000
+  let g:AutoSaveOn = 1
   augroup AutoSave
       autocmd!
-      autocmd! CursorHoldI,CursorHold,BufLeave * silent! :update
+      autocmd! CursorHoldI,CursorHold,BufLeave * if g:AutoSaveOn | silent! :update | endif
   augroup END
 
 " # highlight
@@ -796,6 +797,7 @@
 " - recursive by default, but if you pass filenames to it it won't recurse
 set grepprg=grep\ -HIRns\ $*
 
+" Semicolon makes vim search all parent directories, don't remove it.
 set tags=tags;
 
 " Change dirctory automatically to the current dir:

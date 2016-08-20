@@ -233,7 +233,7 @@ augroup END
     autocmd FileType java setlocal expandtab
 
     " Switch between header and cpp files naively.
-    autocmd FileType cpp command! -buffer Swh tabedit %:r.h
+    autocmd FileType c,cpp command! -buffer Swh tabedit %:r.h
     autocmd FileType cpp command! -buffer Swc tabedit %:r.cpp
     autocmd FileType c command! -buffer Swc tabedit %:r.c
   augroup END

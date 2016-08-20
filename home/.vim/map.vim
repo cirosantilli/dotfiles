@@ -126,10 +126,12 @@
         \['y', 'PYTHON_DIR'],
         \['w', 'WEBSITE_DIR'],
         \['W', 'WEB_DIR'],
+        \['z', 'WEB_DIR'],
       \]
         execute 'nnoremap <leader>e' . pair[0] . ' :tabedit <c-r>=expand($' . pair[1] . ')<cr>/'
       endfor
       " Tab complete edit from the Git top level.
+      " systemlist()[] to remove the newline.
       nnoremap <leader>eg :tabedit <c-r>=systemlist('git rev-parse --show-toplevel')[0]<cr>/
 
     " Open tag in new tab.

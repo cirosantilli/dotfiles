@@ -38,6 +38,7 @@
 " Edit important files:
 
   command! Eb tabedit ~/.bashrc
+  command! EB tabedit ~/.bashrc_local
   command! Eg tabedit ~/.gitconfig
   command! Ei tabedit .gitignore
   command! Em tabedit Makefile

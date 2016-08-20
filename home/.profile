@@ -88,6 +88,8 @@ fi
     export PYTHON_DIR_SHORTCUT='y'
     export WEBSITE_DIR_SHORTCUT='w'
     export WEB_DIR_SHORTCUT='W'
+    # Current main project.
+    export Z_DIR_SHORTCUT='z'
 
     # Linux from scratch home.
     export LFS=/media/lfs/
