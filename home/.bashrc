@@ -565,7 +565,7 @@ parse_svn_repository_root() {
       alias llT='lla -ct'
       alias lltg='lla -crt | g'
       # Print filename that has the Latest modification Time.
-      lslt() { ls -ct "${1:-.}" | head -n1; }
+      lslt() { command ls -ct "${1:-.}" | head -n1; }
 
       # mv dst [src-dir=.]
       # Move latest modified file in src-dir to dst.
