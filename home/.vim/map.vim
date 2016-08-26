@@ -138,6 +138,10 @@
 
       nnoremap <leader>ta :tab tag<space>
 
+    " Find the next Git Merge Conflict.
+
+      nnoremap <leader>gmc /\v^\<\<\<\<\<\<\< \|\=\=\=\=\=\=\=$\|\>\>\>\>\>\>\> /<cr>
+
   " # f keys
 
       call MapAll('<F2>', ':call TmuxNewTabHere()<cr>')

@@ -16,11 +16,14 @@ while getopts r OPT; do
   esac
 done
 
+print_header() { printf "\n\e[1;33m## ${1}\e[0m\n\n"; }
+
 success=0
+print_header 'homesick'
 # TODO: homesick does not return 1 on unstaged changes.
 homesick pull || success=1
 git-sync-dirs | while read path; do
-  printf "\n\e[1;33m## $path\e[0m\n\n"
+  print_header "$path"
   (
     set -e
     if [ ! -d "$path" ]; then

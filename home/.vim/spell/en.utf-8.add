@@ -49,6 +49,7 @@ AdWords
 AdaCore
 Admin's
 Adnan
+Adreno
 Affero
 Agnomen
 Airbnb
@@ -2017,6 +2018,7 @@ rebases
 rebasing
 recordMyDesktop
 recordeMyDesktop
+recurse
 reddit
 reenaction
 refactor
@@ -2239,5 +2241,15 @@ zealotism
 zeroconf
 zlib
 École
+<<<<<<< HEAD
 DRM
 GPIO
+=======
+RPIF
+Allwinner
+Amlogic
+ODROID
+Hardkernel
+PrimeTime
+>>>>>>> d1f491e37b18c47e25805e813980c381f0d2a182
+SAIF

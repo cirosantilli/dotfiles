@@ -6,16 +6,17 @@
   command! -complete=file -nargs=1 Cat silent r! cat <args>
   command! Chmx silent !chmod +x %
   command! -range Ex <line1>,<line2>!expand -t4
-  " Find Git conflict
   command! -range=% Hd <line1>,<line2>HeaderDecrease
   command! -range=% Hi <line1>,<line2>HeaderIncrease
   command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
   " No useless enter confirmation (silent),
   " and open a fullscreen error list instead of jumping to a match.
-  " Patsted into terminal:
+  " Command gets pasted into terminal:
   " - spaces: `Grep a\ b` or `Grep "a b"`
   " - `-i`: Grep -i a
-  command! -nargs=+ Grep execute 'silent grep! <args>' | tab copen
+  command! -nargs=+ G execute 'silent grep! <args>' | tab copen
+  " TODO forward to G instead.
+  command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
   " Current path to clipboard.
   " http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
   command! Pwdx :let @+ = expand('%:p')

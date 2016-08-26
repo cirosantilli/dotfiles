@@ -431,7 +431,8 @@ parse_svn_repository_root() {
 
   ## buildroot
 
-    br-qemu() {
+    brm() { time make BR2_JLEVEL=2; b; }
+    brq() {
       qemu-system-x86_64 \
         -enable-kvm \
         -M pc \
@@ -466,7 +467,7 @@ parse_svn_repository_root() {
 
     c() {
       if [ -n "$1" ]; then
-        cd "$1"
+        cd "$1" || return 1
       else
         cd
       fi
@@ -730,6 +731,7 @@ parse_svn_repository_root() {
     alias gbl='git blame'
     alias gbr='git branch'
     gbrg () { git branch | grep "$1"; }
+    gbrag () { git branch -a | grep "$1"; }
     gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
     alias gbra='git branch -a'
     # BRanch Graph
@@ -824,6 +826,8 @@ parse_svn_repository_root() {
     alias glopr='git log -p --reverse'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
+    # Get last SHA commit into clipboard.
+    alias glox='git log -1 --format="%H" | y'
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
@@ -848,6 +852,7 @@ parse_svn_repository_root() {
     alias grbc='git rebase --continue'
     alias grbi='git rebase -i'
     alias grbm='git rebase master'
+    alias grbt='git rebase trunk'
     alias grs='git reset'
     # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
     # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
@@ -916,6 +921,23 @@ parse_svn_repository_root() {
     guake -n 'server' -e 'cd ~/gitlab'
     guake -n 'server' -e "cd \"$RAILS_DIR\""
     guake -n 'server' -e 'cd ~/test'
+  }
+
+  # Rename Origin from githUb to gitlAb.
+  grtroua() {
+    old_origin="$(git remote -v | grep -E '^origin ' | head -n1 | awk '{ print $2; }')"
+    new_origin="$(echo "$old_origin" | sed -E 's/^git@github/git@gitlab/')"
+    git remote set-url origin "$new_origin"
+    git remote add gh "$old_origin" &>/dev/null || :
+    git remote add gl "$new_origin" &>/dev/null || :
+  }
+
+  grtroau() {
+    old_origin="$(git remote -v | grep -E '^origin ' | head -n1 | awk '{ print $2; }')"
+    new_origin="$(echo "$old_origin" | sed -E 's/^git@gitlab/git@github/')"
+    git remote set-url origin "$new_origin"
+    git remote add gl "$old_origin" &>/dev/null || :
+    git remote add gh "$new_origin" &>/dev/null || :
   }
 
 ## grunt
