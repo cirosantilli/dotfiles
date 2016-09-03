@@ -128,7 +128,7 @@ parse_svn_repository_root() {
       #export VERILATOR_ROOT='/usr/local'
       #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
 
-  ## alias
+  ## alias and functions
 
     # Misc aliases and functions.
 
@@ -222,6 +222,8 @@ parse_svn_repository_root() {
     alias netsg='nets | grep -Ei'
     alias ncl="while true; do printf '' | nc -l localhost 8000; done"
     noh() { nohup $@ >/dev/null 2>&1 & }
+    # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
+    nproc-spare() ( printf "$(($(nproc) - 2))" )
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
     alias o='xdg-open'
@@ -431,7 +433,7 @@ parse_svn_repository_root() {
 
   ## buildroot
 
-    brm() { time make BR2_JLEVEL=2; b; }
+    brm() { time make BR2_JLEVEL="$(nproc-spare)"; b; }
     brq() {
       qemu-system-x86_64 \
         -enable-kvm \
@@ -819,6 +821,7 @@ parse_svn_repository_root() {
     alias glsgi='git ls-files | gi'
     alias glsr='git ls-remote'
     alias glo='git log --decorate'
+    alias glof='git log --pretty=full'
     alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glop='git log -p'
