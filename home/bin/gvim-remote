@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-gvim --remote-tab-silent "$1" && wmctrl -xa 'gvim'
+gvim --remote-tab-silent "$@" && wmctrl -xa 'gvim'

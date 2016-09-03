@@ -124,15 +124,15 @@
 
     Plugin 'vim-scripts/taglist.vim'
 
-" Help:
+  " Help:
 
-    " help taglist.txt
+      " help taglist.txt
 
-" Open a list of tags in the current file to serve as a navigation view:
+  " Open a list of tags in the current file to serve as a navigation view:
 
-    " TlistOpen
+      " TlistOpen
 
-" Enter click on line to jump to it.
+  " Enter click on line to jump to it.
 
 " # neocomplcache
 

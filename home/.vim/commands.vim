@@ -6,7 +6,6 @@
   command! -complete=file -nargs=1 Cat silent r! cat <args>
   command! Chmx silent !chmod +x %
   command! -range Ex <line1>,<line2>!expand -t4
-  " Find Git conflict
   command! -range=% Hd <line1>,<line2>HeaderDecrease
   command! -range=% Hi <line1>,<line2>HeaderIncrease
   command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
@@ -40,6 +39,7 @@
 " Edit important files:
 
   command! Eb tabedit ~/.bashrc
+  command! EB tabedit ~/.bashrc_local
   command! Eg tabedit ~/.gitconfig
   command! Ei tabedit .gitignore
   command! Em tabedit Makefile

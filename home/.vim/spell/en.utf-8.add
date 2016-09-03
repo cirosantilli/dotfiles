@@ -54,9 +54,11 @@ Affero
 Agnomen
 Airbnb
 Alibaba
+Allwinner
 Altera
 Amazon
 Amazonas
+Amlogic
 Andreessen
 AngelList
 AngularJS
@@ -103,6 +105,7 @@ BREs
 BSS
 BST
 BTP
+BUPA
 Backporting
 Backports
 Backreferences
@@ -198,6 +201,7 @@ CNAMEs
 CORS
 CPAN
 CPE
+CPLD
 CPython
 CR0
 CR1
@@ -308,6 +312,8 @@ DPDA
 DPDAs
 DPI
 DPMS
+DRI
+DRM
 DRYer
 DRYes
 DRYness
@@ -383,6 +389,7 @@ EDX
 EE
 EFF
 EFLAGS
+EGL
 EGit
 ELF's
 EM64T
@@ -498,6 +505,7 @@ GNU's
 GPG
 GPGPU
 GPGPUs
+GPIO
 GPL
 GPLv2
 GPS
@@ -515,6 +523,7 @@ Galton
 GameCube
 Gapps
 Garloff's
+Gattaca
 Gemfile
 Gemfile's
 Gemsets
@@ -586,6 +595,7 @@ Hadoop
 Hamano
 Haml
 HandBrake
+Hardkernel
 Hashiguchi
 Hasse
 Haswell
@@ -663,6 +673,7 @@ ISR
 IaaS
 Icaza
 Icaza's
+IceStorm
 IcedTea
 ImageMagick
 Immediates
@@ -796,6 +807,7 @@ LibreOffice
 LibreSSL
 LightDM
 Lightbox
+Linaro
 LinkedIn
 Linphone
 LinuxCNC
@@ -957,6 +969,7 @@ OAuth2
 OCaml
 ODEX
 ODEs
+ODROID
 OEMs
 OER
 OERPUB
@@ -1091,6 +1104,7 @@ PowerShell
 Precompiles
 PressBooks
 Primality
+PrimeTime
 Prolog
 PullReview
 PulseAudio
@@ -1129,6 +1143,7 @@ RGB
 RHEL
 ROLAP
 RPGs
+RPIF
 RPIs
 RPs
 RSA
@@ -1150,6 +1165,7 @@ Rakefile
 Rakefiles
 Rakuten
 Rambus
+Raspbian
 ReVuln
 RealNames
 Realnames/!
@@ -1183,6 +1199,7 @@ RubySpec
 Ruffini
 République
 S3
+SAIF
 SATA
 SCO
 SCSS
@@ -1214,6 +1231,7 @@ SNES
 SO's
 SPD
 SPIR
+SPLD
 SPOJ
 SPS
 SQL
@@ -1440,6 +1458,7 @@ VLC
 VM
 VMs
 VMware
+VNC
 VP7
 VP8
 VP9
@@ -2241,19 +2260,3 @@ zealotism
 zeroconf
 zlib
 École
-RPIF
-Allwinner
-Amlogic
-ODROID
-Hardkernel
-PrimeTime
-Raspbian
-IceStorm
-CPLD
-SPLD
-BUPA
-VNC
-DRI
-EGL
-Gattaca
-Linaro

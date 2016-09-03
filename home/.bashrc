@@ -128,7 +128,7 @@ parse_svn_repository_root() {
       #export VERILATOR_ROOT='/usr/local'
       #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
 
-  ## alias
+  ## alias and functions
 
     # Misc aliases and functions.
 
@@ -137,7 +137,7 @@ parse_svn_repository_root() {
     # Beep. Notify after a long command. Usage:
     # long-command;b
     alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
-    alias bashx='xsel -b | bash'
+    alias bashx='x | bash'
     alias cdg='cd "$(git rev-parse --show-toplevel)"'
     alias cdG='cd "$MY_GIT_DIR"'
     # Start bash in a clean test environment.
@@ -165,7 +165,7 @@ parse_svn_repository_root() {
     # echo Exit status
     alias ece='echo "$?"'
     alias epa='echo "$PATH"'
-    alias eclipse='nohup ~/bin/eclipse/eclipse >/dev/null &'
+    alias eclipse='noh ~/bin/eclipse/eclipse'
     alias eip='curl ipecho.net/plain'
     alias envg='env | grep -E'
     alias ex='extract'
@@ -221,7 +221,9 @@ parse_svn_repository_root() {
     alias nets='sudo netstat -tupan'
     alias netsg='nets | grep -Ei'
     alias ncl="while true; do printf '' | nc -l localhost 8000; done"
-    noh() { nohup $@ >/dev/null & }
+    noh() { nohup $@ >/dev/null 2>&1 & }
+    # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
+    nproc-spare() ( printf "$(($(nproc) - 2))" )
     alias ods='od -Ax -tx1'
     cmd='paplay "$HOME/share/sounds/alert.ogg"'
     alias o='xdg-open'
@@ -351,6 +353,8 @@ parse_svn_repository_root() {
 
     alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
     alias ands='nohup studio.sh >/dev/null 2>&1 &'
+    alias adbc='adb connect'
+    alias adbi='adb disconnect'
     alias adbd='adb devices -l'
     alias adbs='adb shell'
     alias adbks='sudo "$(which adb)" kill-server && sudo "$(which adb)" start-server'
@@ -432,7 +436,7 @@ parse_svn_repository_root() {
 
   ## buildroot
 
-    brm() { time make BR2_JLEVEL=2; b; }
+    brm() { time make BR2_JLEVEL="$(nproc-spare)"; b; }
     brq() {
       qemu-system-x86_64 \
         -M pc \
@@ -473,14 +477,14 @@ parse_svn_repository_root() {
 
     ccah() { ccollab addchangelist "$1" HEAD; }
     # Get ID from commit Message line of form CC: 1234
-    ccahm() { ccollab addchangelist "$(git log -n1 --pretty=format:'%B' | grep -E '^CC: ' | cut -d' ' -f2)" HEAD; }
+    ccamh() { ccollab addchangelist "$(git log -n1 --pretty=format:'%B' | grep -E '^CC: ' | cut -d' ' -f2)" HEAD; }
     ccanh() { ccollab addchangelist new HEAD; }
 
   ## cd
 
     c() {
       if [ -n "$1" ]; then
-        cd "$1"
+        cd "$1" || return 1
       else
         cd
       fi
@@ -502,7 +506,7 @@ parse_svn_repository_root() {
     alias cds='cd -'
     alias cdt='cd "$TEST_DIR"'
     alias cdu='cd "$UBUNTU_DIR"'
-    alias cdx='cd "$(xsel -b)"'
+    alias cdx='cd "$(x)"'
     alias cdy='cd "$PYTHON_DIR"'
     alias cdw='cd "$WEBSITE_DIR"'
     # TODO make a version that also cats the command and pwd.
@@ -539,7 +543,7 @@ parse_svn_repository_root() {
       # Consider:
       alias ctagsr='ctags -R --c-kinds=-m --extra=f'
       alias cscopr='cscope -Rb'
-      alias ctasc='ctagsr && cscopr'
+      alias ctasc='cdg && ctagsr && cscopr && cd -'
 
   ## dirs
 
@@ -585,13 +589,13 @@ parse_svn_repository_root() {
       # mv dst [src-dir=.]
       # Move latest modified file in src-dir to dst.
       mvl() {
-        src="$(lstl "${2:-.}")"
+        src="$(lslt "${2:-.}")"
         echo "$src"
         mv "$src" "$1"
       }
 
       cpl() {
-        src="$(lstl "${2:-.}")"
+        src="$(lslt "${2:-.}")"
         echo "$src"
         cp "$src" "$1"
       }
@@ -744,6 +748,7 @@ parse_svn_repository_root() {
     alias gbl='git blame'
     alias gbr='git branch'
     gbrg () { git branch | grep "$1"; }
+    gbrag () { git branch -a | grep "$1"; }
     gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
     alias gbra='git branch -a'
     # BRanch Graph
@@ -752,7 +757,7 @@ parse_svn_repository_root() {
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
     gclc() { gcl "$1" && cd "$(basename "${1%.git}")"; }
-    alias gclx='gclc "$(xsel -b)"'
+    alias gclx='gclc "$(x)"'
     alias gclb='git clone --bare'
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
@@ -766,9 +771,9 @@ parse_svn_repository_root() {
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gce='git clean'
     # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
-    alias gcedf='git clean -df'
-    # Clean any file not tracked.
-    alias gcexdf='git clean -xdf'
+    gcedf() { git clean -df "${1:-:/}"; }
+    # Clean any file not tracked, including gitignored. Restores repo to pristine state.
+    gcedf() { git clean -xdf "${1:-:/}"; }
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
     alias gcob='git checkout -b'
@@ -808,7 +813,7 @@ parse_svn_repository_root() {
     gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
     alias gfp='git format-patch'
     alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
-    alias gdfx='git diff | xsel -bi'
+    alias gdfx='git diff | y'
     gdf12() { git diff ":1:./$1" ":2:./$1"; }
     gdf13() { git diff ":1:./$1" ":3:./$1"; }
     gdf123() {
@@ -827,10 +832,11 @@ parse_svn_repository_root() {
     git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
     alias gls='git ls-files'
     alias glso='git ls-files --other'
-    alias glsg='git ls-files | grep'
-    alias glsgi='git ls-files | grep -i'
+    alias glsg='git ls-files | g'
+    alias glsgi='git ls-files | gi'
     alias glsr='git ls-remote'
     alias glo='git log --decorate'
+    alias glof='git log --pretty=full'
     alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glop='git log -p'
@@ -838,6 +844,8 @@ parse_svn_repository_root() {
     alias glopr='git log -p --reverse'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
+    # Get last SHA commit into clipboard.
+    alias glox='git log -1 --format="%H" | y'
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
@@ -863,6 +871,7 @@ parse_svn_repository_root() {
     alias grbc='git rebase --continue'
     alias grbi='git rebase -i'
     alias grbm='git rebase master'
+    alias grbt='git rebase trunk'
     alias grs='git reset'
     # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
     # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
@@ -1360,9 +1369,9 @@ parse_svn_repository_root() {
   # Clipboard path operations.
 
     # Absolute path.
-    xab() { echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")" | y; }
-    xcp() { cp -r "$(x)" .; }
-    xmv() { mv "$(x)" .; }
+    xab() { echo "$(pwd)/$1" | y; }
+    xmv() { mv "$(x)" "${1:-.}"; }
+    xcp() { mv "$(x)" "${1:-.}"; }
     xpw() { pwd | y; }
 
 ## xdg
@@ -1372,7 +1381,7 @@ parse_svn_repository_root() {
 
 ## SFL
 
-  sflx() { echo 'ciro.santilli@savoirfairelinux.com' | xsel -bi; }
+  sflx() { echo 'ciro.santilli@savoirfairelinux.com' | y; }
 
   # Git. Must be run on each Git repo we will push for.
   sflg() {
@@ -1451,11 +1460,6 @@ parse_svn_repository_root() {
       PATH="$PATH:$HOME/.rvm/bin"
     fi
 
-    # Not tracked in dotfiles.
-    if [ -r "$HOME/.bashrc_local" ]; then
-      . "$HOME/.bashrc_local"
-    fi
-
     [ -s "$HOME/.gvm/scripts/gvm" ] && . "$HOME/.gvm/scripts/gvm"
 
     # https://github.com/cirosantilli/runlinux
@@ -1472,5 +1476,10 @@ export AMDAPPSDKROOT="$HOME/AMDAPPSDK-3.0"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+# Not tracked in dotfiles. PUT THIS LAST.
+if [ -r "$HOME/.bashrc_local" ]; then
+  . "$HOME/.bashrc_local"
+fi
 
 # </custom>
