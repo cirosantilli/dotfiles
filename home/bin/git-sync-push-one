@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+repo_path="$1"
+sync_msg='sync'
+tmpfile="$(mktemp)"
+printf "\n\e[1;33m## ${repo_path}\e[0m\n\n" >"$tmpfile"
+cd "$repo_path"
+git add -A . >/dev/null 2>&1
+git commit -m "$sync_msg" >/dev/null 2>&1
+git push >>"$tmpfile" 2>&1
+if [ "$?" = 0 ]; then
+  printf '.'
+else
+  cat "$tmpfile"
+fi
+rm "$tmpfile"
