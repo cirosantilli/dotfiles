@@ -11,4 +11,6 @@ while getopts a OPT; do
   esac
 done
 git-sync-dirs $all | xargs -P10 -I'{}' git-sync-push-one '{}'
+exit_status="$?"
 echo
+exit "$exit_status"
