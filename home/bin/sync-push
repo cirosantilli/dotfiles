@@ -12,8 +12,6 @@ while getopts a OPT; do
 done
 
 sync_msg='sync'
-homesick commit dotfiles "$sync_msg"
-homesick push
 git-sync-dirs $all | while read path; do
   tmpfile="$(mktemp)"
   printf "\n\e[1;33m## $path\e[0m\n\n" >"$tmpfile"
@@ -28,3 +26,4 @@ git-sync-dirs $all | while read path; do
   fi
   rm "$tmpfile"
 done
+echo

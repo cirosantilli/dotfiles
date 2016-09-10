@@ -58,6 +58,7 @@ fi
           export WEB_DIR="$WEBSITE_DIR/web"
         export UBUNTU_DIR="$PROGRAM_DIR/ubuntu-cheat"
       export TEST_DIR="$HOME/test"
+    export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
     export DOWNLOAD_DIR="$HOME/down"
     export HOME_DIR="$HOME"
     export MY_GIT_DIR="$HOME/git"

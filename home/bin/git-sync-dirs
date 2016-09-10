@@ -11,6 +11,7 @@ while getopts a OPT; do
   esac
 done
 
+echo "$DOTFILES_REPO"
 if $all; then
   for f in $(ls $PROGRAM_DIR | sort); do
     f="$PROGRAM_DIR/$f"
