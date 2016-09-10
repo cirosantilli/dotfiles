@@ -20,7 +20,7 @@ git-sync-dirs $all | while read path; do
   cd "$path"
   git add -A . >/dev/null 2>&1
   git commit -m "$sync_msg" >/dev/null 2>&1
-  git push >>"$tmpfile"
+  git push >>"$tmpfile" 2>&1
   if [ ! "$?" = 0 ]; then
     cat "$tmpfile"
   fi

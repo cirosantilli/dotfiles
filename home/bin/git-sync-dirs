@@ -12,7 +12,7 @@ while getopts a OPT; do
 done
 
 if $all; then
-  for f in $(ls $PROGRAM_DIR); do
+  for f in $(ls $PROGRAM_DIR | sort); do
     f="$PROGRAM_DIR/$f"
     if [ -d "$f" ] && [ -d "$f/.git" ]; then
       echo "$f"
