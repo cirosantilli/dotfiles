@@ -284,6 +284,8 @@ parse_svn_repository_root() {
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
     alias s='. ~/.bashrc'
+    # Screen TTY.
+    alias scrt='screen /dev/ttyUSB0 115200'
     alias sha2='sha256sum'
     alias stra='sudo strace -f -s999 -v'
     # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
@@ -401,6 +403,7 @@ parse_svn_repository_root() {
       alias dpS='dpkg -S'
       dpSw() { dpkg -S "$(which "$1")"; }
       alias dplg='dpkg -l | grep -Ei'
+      alias saig='sudo aptitude upgrade'
       alias saii='sudo aptitude install'
       alias sair='sudo aptitude remove'
       alias sais='sudo aptitude source'
@@ -436,13 +439,25 @@ parse_svn_repository_root() {
     brm() { time make BR2_JLEVEL="$(nproc-spare)"; b; }
     brq() {
       qemu-system-x86_64 \
-        -enable-kvm \
         -M pc \
-        -kernel output/images/bzImage \
-        -drive file=output/images/rootfs.ext2,if=virtio,format=raw \
         -append root=/dev/vda \
+        -drive file=output/images/rootfs.ext2,if=virtio,format=raw \
+        -enable-kvm \
+        -kernel output/images/bzImage \
+        -m 512 \
         -net nic,model=virtio \
-        -net user
+        -net user,hostfwd=tcp::2222-:22
+    }
+    brqa() {
+      qemu-system-arm \
+        -M versatilepb \
+        -append "root=/dev/sda console=ttyAMA0,115200" \
+        -drive file=output/images/rootfs.ext2,if=scsi,format=raw \
+        -dtb output/images/versatile-pb.dtb \
+        -kernel output/images/zImage \
+        -net nic,model=rtl8139 \
+        -net user \
+        -serial stdio
     }
 
   ## Browsers
@@ -841,6 +856,7 @@ parse_svn_repository_root() {
     alias gpsf='git push -f'
     # Wobble
     alias gpsfw='git push -f origin HEAD~:master && git push -f'
+    alias gpsr='git push --recurse-submodules='
     alias gpsum='git push -u mine'
     alias gpsu='git push -u'
     alias gpsuom='git push -u origin master'
@@ -928,7 +944,7 @@ parse_svn_repository_root() {
 
   # Rename Origin from githUb to gitlAb.
   grtroua() {
-    old_origin="$(git remote -v | grep -E '^origin ' | head -n1 | awk '{ print $2; }')"
+    old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
     new_origin="$(echo "$old_origin" | sed -E 's/^git@github/git@gitlab/')"
     git remote set-url origin "$new_origin"
     git remote add gh "$old_origin" &>/dev/null || :
@@ -936,7 +952,7 @@ parse_svn_repository_root() {
   }
 
   grtroau() {
-    old_origin="$(git remote -v | grep -E '^origin ' | head -n1 | awk '{ print $2; }')"
+    old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
     new_origin="$(echo "$old_origin" | sed -E 's/^git@gitlab/git@github/')"
     git remote set-url origin "$new_origin"
     git remote add gl "$old_origin" &>/dev/null || :
@@ -1280,6 +1296,15 @@ parse_svn_repository_root() {
   alias rac='bundle exec rails console'
   alias ras='bundle exec rails server'
   alias rasp='bundle exec rails server -p4000'
+
+## raspberry pi
+
+  # Exit with: Ctrl + A then backslash '\'.
+  pittl() ( screen /dev/ttyUSB0 115200; )
+  pissh() (
+    user="${1:-pi}"
+    ssh "${user}@$(cat /var/lib/misc/dnsmasq.leases | cut -d' ' -f 3)";
+  )
 
 ## Services
 
