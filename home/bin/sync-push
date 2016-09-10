@@ -22,7 +22,7 @@ git-sync-dirs $all | while read path; do
   git commit -m "$sync_msg" >/dev/null 2>&1
   git push >>"$tmpfile" 2>&1
   if [ "$?" = 0 ]; then
-    echo '.'
+    printf '.'
   else
     cat "$tmpfile"
   fi
