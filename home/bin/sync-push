@@ -2,12 +2,22 @@
 
 # Synchronize my computers: push changes to remote.
 
+all=''
+while getopts a OPT; do
+  case "$OPT" in
+    a)
+      all=-a
+      ;;
+  esac
+done
+
 sync_msg='sync'
 homesick commit dotfiles "$sync_msg"
 homesick push
-git-sync-dirs | while read path; do
+git-sync-dirs $all | while read path; do
   printf "\n\e[1;33m## $path\e[0m\n\n"
   cd "$path"
   git add -A .
-  git commit -m "$sync_msg" && git push
+  git commit -m "$sync_msg"
+  git push
 done

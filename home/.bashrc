@@ -821,7 +821,7 @@ parse_svn_repository_root() {
     alias glsgi='git ls-files | gi'
     alias glsr='git ls-remote'
     alias glo='git log --decorate'
-    alias glof='git log --pretty=full'
+    alias glof='git log --pretty=fuller'
     alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glop='git log -p'
