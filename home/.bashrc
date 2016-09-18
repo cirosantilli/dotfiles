@@ -225,7 +225,6 @@ parse_svn_repository_root() {
     # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
     nproc-spare() ( printf "$(($(nproc) - 2))" )
     alias ods='od -Ax -tx1'
-    cmd='paplay "$HOME/share/sounds/alert.ogg"'
     alias o='xdg-open'
     # Open First. When you are in a huge directory with tons of
     # files that share a common prefix, and you just want to open one.
@@ -238,12 +237,23 @@ parse_svn_repository_root() {
       fi
       xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
     }
+    cmd='paplay "$HOME/share/sounds/alert.ogg"'
     # play Alert
     alias playa="$cmd"
     # play alert Infinite. Stop with `kill %1`.
     alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
     alias r='ranger'
+    ramfs() {
+      dir='/mnt/ramfs'
+      mkdir -p "$dir"
+      sudo mount -t ramfs -o size=300m ramfs "$dir"
+      sudo chmod 777 "$dir"
+      cd "$dir"
+    }
+    ramfsu() (
+      sudo umount /dev/ramfs
+    )
     # Generate a random login and password to speed up account creation.
     # You should save them to a file immeditaly, and then to the signup.
     randlog () {
@@ -492,7 +502,7 @@ parse_svn_repository_root() {
     }
     alias cda='cd "$ART_DIR"'
     alias cdc='cd "$CPP_DIR"'
-    alias cdD='cD "$DOWNLOAD_DIR"'
+    alias cdD='cd "$DOWNLOAD_DIR" && llt'
     # cd Dot
     alias cdd='cd ..'
     alias cddd='cd .. && cd ..'
@@ -575,6 +585,7 @@ parse_svn_repository_root() {
       lswc() { ls -1 "${1:-.}" | wc -l; }
       lsg() { ls "${2:-.}" | g "$1"; }
       ll() { ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; }
+      lll() { ll | l; }
       lla() { ll -A "$@"; }
       # Sort by size.
       lls() { lla -Sr "$@"; }
@@ -685,7 +696,7 @@ parse_svn_repository_root() {
     #   gccs 'printf('%d', f(1))' '99' 'int f(int i) { return i + 1; }'
     #
     # Expected output: `2`
-    gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
+    gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}" -Wall -Wextra -pedantic -xc -; }
 
     alias gcc5="$HOME/git/gcc/install-o0/bin/gcc"
 
@@ -771,7 +782,7 @@ parse_svn_repository_root() {
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gce='git clean'
     # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
-    gcedf() { git clean -df "${1:-:/}"; }
+    gcedf() ( git clean -df "${1:-:/}"; )
     # Clean any file not tracked, including gitignored. Restores repo to pristine state.
     gcedf() { git clean -xdf "${1:-:/}"; }
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
@@ -1300,10 +1311,16 @@ parse_svn_repository_root() {
 ## raspberry pi
 
   # Exit with: Ctrl + A then backslash '\'.
+  piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3; )
   pittl() ( screen /dev/ttyUSB0 115200; )
   pissh() (
+    ip="$(piip)"
+    #ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip"
     user="${1:-pi}"
-    ssh "${user}@$(cat /var/lib/misc/dnsmasq.leases | cut -d' ' -f 3)";
+    ssh "${user}@${ip}";
+  )
+  pivin() (
+    vinagre "$(piip)"
   )
 
 ## Services
