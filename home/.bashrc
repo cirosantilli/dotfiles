@@ -158,9 +158,12 @@ parse_svn_repository_root() {
     alias datex='timestamp | x'
     alias dconfl='dconf load / <~/.config/dconf/user.conf'
     alias dconfw='dconf watch /'
+    dD() ( sudo dd if="$1" of="/dev/sd$2" && sync )
+    # dd Status. Capital to prevent accidents. Only in newer Ubuntu.
+    ddS() ( sudo dd if="$1" of="/dev/sd$2" status=progress && sync; )
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
-    dpx() { dropbox puburl "$1" | xclip -selection clipboard; }
+    dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
     alias e='echo'
     # echo Exit status
     alias ece='echo "$?"'
@@ -199,9 +202,9 @@ parse_svn_repository_root() {
     bakk() { cp -r "${1%/}" "${1%/}.bak"; }
     kab() { p="${1%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; }
     kabb() { p="${1%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; }
-    alias md='mkdir'
+    md() ( mkdir -p "$@"; )
     # Make Dir Cd
-    mdc() { mkdir "$1" && cd "$1"; }
+    mdc() { md "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
     # Move Latest Download here. Ignore .part used by Firefox while downloading.
     # Echo it's name to stdout.
@@ -291,6 +294,7 @@ parse_svn_repository_root() {
     alias rmd='rmdir'
     rmext() { rm *".$1"; }
     alias rmrf='rm -rf'
+    alias rmrfv='rm -rfv'
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
     alias s='. ~/.bashrc'
@@ -317,6 +321,14 @@ parse_svn_repository_root() {
     # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
     alias tornewip='sudo killall -HUP tor'
     alias torbrowser='cd ~/bin && ./start-tor-browser.desktop'
+    u() (
+      if [ "$#" -eq 1 ]; then
+        sudo umount /dev/sd"${1}"?*
+        lsblk
+      else
+        exit 1
+      fi
+    )
     ulimsv() { ulimit -Sv "${1:-500000}"; }
     alias v='gvim-remote'
     alias vg='gvim-remote .gitignore'
@@ -446,7 +458,11 @@ parse_svn_repository_root() {
 
   ## buildroot
 
-    brm() { time make BR2_JLEVEL="$(nproc-spare)"; b; }
+    brm() {
+      unset LD_LIBRARY_PATH
+      time make BR2_JLEVEL="$(nproc-spare)"
+      b
+    }
     brq() {
       qemu-system-x86_64 \
         -M pc \
@@ -784,7 +800,7 @@ parse_svn_repository_root() {
     # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
     gcedf() ( git clean -df "${1:-:/}"; )
     # Clean any file not tracked, including gitignored. Restores repo to pristine state.
-    gcedf() { git clean -xdf "${1:-:/}"; }
+    gcexdf() { git clean -xdf "${1:-:/}"; }
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
     alias gco='git checkout'
     alias gcob='git checkout -b'
@@ -847,9 +863,11 @@ parse_svn_repository_root() {
     alias glsgi='git ls-files | gi'
     alias glsr='git ls-remote'
     alias glo='git log --decorate'
-    alias glof='git log --pretty=full'
+    alias glof='git log --decorate --pretty=fuller'
     alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
+    alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
+    alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     alias glop='git log -p'
     # Find where that feature entered the code base.
     alias glopr='git log -p --reverse'
@@ -1312,7 +1330,9 @@ parse_svn_repository_root() {
 
   # Exit with: Ctrl + A then backslash '\'.
   piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3; )
-  pittl() ( screen /dev/ttyUSB0 115200; )
+  pittl() (
+    screen "/dev/ttyUSB${1:-0}" 115200;
+  )
   pissh() (
     ip="$(piip)"
     #ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip"

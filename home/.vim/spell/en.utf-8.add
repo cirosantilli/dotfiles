@@ -55,9 +55,11 @@ Agnomen
 Airbnb
 Alibaba
 Allwinner
+Allwinner
 Altera
 Amazon
 Amazonas
+Amlogic
 Amlogic
 Andreessen
 AngelList
@@ -314,6 +316,7 @@ DPI
 DPMS
 DRI
 DRM
+DRM
 DRYer
 DRYes
 DRYness
@@ -389,6 +392,7 @@ EDX
 EE
 EFF
 EFLAGS
+EGL
 EGL
 EGit
 ELF's
@@ -485,6 +489,8 @@ GF
 GFDL
 GFM
 GFW
+GFXBench
+GFXBench
 GH
 GHC
 GHDL
@@ -493,11 +499,15 @@ GIF
 GIFAR
 GIMPLE
 GL
+GLES
+GLES
+GLES2
 GLEW
 GLFW
 GLR
 GLU
 GLUT
+GLX
 GMP
 GMS
 GNOME's
@@ -505,6 +515,7 @@ GNU's
 GPG
 GPGPU
 GPGPUs
+GPIO
 GPIO
 GPL
 GPLv2
@@ -595,6 +606,7 @@ Hadoop
 Hamano
 Haml
 HandBrake
+Hardkernel
 Hardkernel
 Hashiguchi
 Hasse
@@ -914,6 +926,7 @@ NAL
 NASDAQ's
 NASM
 NBSP
+NDA
 NDAs
 NDK
 NES
@@ -969,6 +982,7 @@ OAuth2
 OCaml
 ODEX
 ODEs
+ODROID
 ODROID
 OEMs
 OER
@@ -1101,9 +1115,11 @@ PostgreSQL
 PostgreSQL's
 PowerPC
 PowerShell
+PowerVR
 Precompiles
 PressBooks
 Primality
+PrimeTime
 PrimeTime
 Prolog
 PullReview
@@ -1143,6 +1159,7 @@ RGB
 RHEL
 ROLAP
 RPGs
+RPIF
 RPIF
 RPIs
 RPs
@@ -1186,6 +1203,7 @@ Resque
 Reve's
 Reversi
 RoR
+Rockchip
 Rosenkrantz
 Rosenthol
 Roshal
@@ -1199,6 +1217,7 @@ RubySpec
 Ruffini
 République
 S3
+SAIF
 SAIF
 SATA
 SCO
@@ -1444,6 +1463,7 @@ Unstar
 Upvoting
 Useractions
 Userena
+Utgard
 V8
 VAIO
 VAM
@@ -2260,10 +2280,3 @@ zealotism
 zeroconf
 zlib
 École
-NDA
-GFXBench
-GLES2
-GLES
-Utgard
-Rockchip
-PowerVR

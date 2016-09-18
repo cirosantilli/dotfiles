@@ -15,6 +15,10 @@ define hook-quit
     set confirm off
 end
 
+define hook-stop
+  l
+end
+
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history save
 set history filename ~/.gdb_history

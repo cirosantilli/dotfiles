@@ -1,8 +1,26 @@
 #!/usr/bin/env bash
 
-# List of Git repositories to be synchronized.
+# List of Git important repositories to be synchronized.
 
-printf "\
+all=false
+while getopts a OPT; do
+  case "$OPT" in
+    a)
+      all=true
+      ;;
+  esac
+done
+
+echo "$DOTFILES_REPO"
+if $all; then
+  for f in $(ls $PROGRAM_DIR | sort); do
+    f="$PROGRAM_DIR/$f"
+    if [ -d "$f" ] && [ -d "$f/.git" ]; then
+      echo "$f"
+    fi
+  done
+else
+  printf "\
 ${ALGORITHM_DIR}
 ${ANDROID_DIR}
 ${ART_DIR}
@@ -19,3 +37,4 @@ ${UBUNTU_DIR}
 ${WEBSITE_DIR}
 ${WEB_DIR}
 "
+fi

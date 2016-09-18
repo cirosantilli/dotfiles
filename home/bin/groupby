@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+"""
+Input format:
+
+    key1 1.1
+    key1 1.2
+    key1 1.3
+    key2 2.1
+    key2 2.2
+
+This basically reimplemnts Pandas.
+"""
+
+import fileinput
+import math
+import pprint
+
+sums = {}
+nentries = {}
+means = {}
+variances = {}
+stddevs = {}
+cvs = {}
+keyset = set()
+key_vals = []
+for line in fileinput.input():
+    key, val = line.rstrip().split(' ')
+    val = float(val)
+    key_vals.append((key, val))
+for key, val in key_vals:
+    sums[key] = sums.get(key, 0.0) + val
+    nentries[key] = nentries.get(key, 0) + 1
+    keyset.add(key)
+for key in keyset:
+    means[key] = sums[key] / nentries[key]
+for key, val in key_vals:
+    variances[key] = variances.get(key, 0.0) + (val - means[key]) ** 2
+for key in keyset:
+    stddevs[key] = math.sqrt(variances[key])
+    cvs[key] = stddevs[key] / means[key]
+print '{:50} {:9} {}'.format('key', 'mean', 'cv')
+for key in keyset:
+    print '{:50} {:.3E} {:5.3f}'.format(key, means[key], cvs[key])
+# pprint.pprint(nentries)
+# pprint.pprint(sums)
+# pprint.pprint(means)
+# pprint.pprint(variances)
+# pprint.pprint(stddevs)
+# pprint.pprint(cvs)

@@ -178,6 +178,8 @@ augroup END
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2
     autocmd BufNew,BufRead *.{erb,feature,ru} setlocal shiftwidth=2 tabstop=2
     autocmd FileType perl,python,r,ruby,sh,tcl call MapAllBuff('<F6>', ':w<cr>:cal RedirStdoutNewTabSingle("./" . expand(''%''))<cr>')
+    " TODO: Space to Newline.
+    "autocmd FileType sh command! noremap <buffer> <leader>sn s/ / \\\r  /g
   augroup END
 
 " # Compile to executable languages
