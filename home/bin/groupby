@@ -38,9 +38,9 @@ for key, val in key_vals:
 for key in keyset:
     stddevs[key] = math.sqrt(variances[key])
     cvs[key] = stddevs[key] / means[key]
-print '{:50} {:6} {:5}'.format('key', 'mean', 'cv')
+print '{:50} {:9} {}'.format('key', 'mean', 'cv')
 for key in keyset:
-    print '{:50} {:6.3f} {:5.3f}'.format(key, means[key], cvs[key])
+    print '{:50} {:.3E} {:5.3f}'.format(key, means[key], cvs[key])
 # pprint.pprint(nentries)
 # pprint.pprint(sums)
 # pprint.pprint(means)
