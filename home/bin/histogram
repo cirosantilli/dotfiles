@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Input file contains one column of newline separated values.
+# - for stdin.
+# http://stackoverflow.com/questions/2471884/histogram-using-gnuplot
+# TODO: auto calculate optimal bin width:
+# http://stats.stackexchange.com/questions/798/calculating-optimal-number-of-bins-in-a-histogram
+set -eu
+if [ ! "$#" -eq 2 ]; then
+  echo 'usage: progname <input-file> <bin-size>'
+  exit 1
+fi
+input_path="$1"
+if [ "$input_path" = '-' ]; then
+  output_path_basename='stdin'
+else
+  output_path_basename="$(basename "$input_path")"
+fi
+output_path="$(dirname "$input_path")/${output_path_basename%.*}.png"
+gnuplot -p -e '
+set terminal png;
+set output "'"$output_path"'";
+binwidth = '"$2"';
+bin(x, width) = width * floor( x / width );
+plot "'"$input_path"'" using (bin($1,binwidth)):(1.0) smooth freq with boxes notitle
+'

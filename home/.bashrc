@@ -158,7 +158,17 @@ parse_svn_repository_root() {
     alias datex='timestamp | x'
     alias dconfl='dconf load / <~/.config/dconf/user.conf'
     alias dconfw='dconf watch /'
-    dD() ( sudo dd if="$1" of="/dev/sd$2" && sync )
+    dD() (
+      if [ ! "$#" -eq 2 ]; then
+        echo 'error'
+        exit 1
+      fi
+      dev="$2"
+      u "$dev"
+      sudo dd if="$1" of="/dev/sd$dev"
+      sync
+      b
+    )
     # dd Status. Capital to prevent accidents. Only in newer Ubuntu.
     ddS() ( sudo dd if="$1" of="/dev/sd$2" status=progress && sync; )
     # Disk Fill, Human readable, Sort by total size.
@@ -322,12 +332,12 @@ parse_svn_repository_root() {
     alias tornewip='sudo killall -HUP tor'
     alias torbrowser='cd ~/bin && ./start-tor-browser.desktop'
     u() (
-      if [ "$#" -eq 1 ]; then
-        sudo umount /dev/sd"${1}"?*
-        lsblk
-      else
+      if [ ! "$#" -eq 1 ]; then
+        echo 'error'
         exit 1
       fi
+      sudo umount /dev/sd"${1}"?*
+      lsblk
     )
     ulimsv() { ulimit -Sv "${1:-500000}"; }
     alias v='gvim-remote'
@@ -464,12 +474,13 @@ parse_svn_repository_root() {
       b
     }
     brq() {
+      img="${1:-output}"
       qemu-system-x86_64 \
         -M pc \
         -append root=/dev/vda \
-        -drive file=output/images/rootfs.ext2,if=virtio,format=raw \
+        -drive file="${img}/images/rootfs.ext2,if=virtio,format=raw" \
         -enable-kvm \
-        -kernel output/images/bzImage \
+        -kernel "${img}/images/bzImage" \
         -m 512 \
         -net nic,model=virtio \
         -net user,hostfwd=tcp::2222-:22
@@ -596,15 +607,15 @@ parse_svn_repository_root() {
 
     ## ls
 
-      i() { ls "$@"; }
-      ls() { command ls -1 --color=auto --group-directories-first "$@"; }
-      lswc() { ls -1 "${1:-.}" | wc -l; }
-      lsg() { ls "${2:-.}" | g "$1"; }
-      ll() { ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; }
-      lll() { ll | l; }
-      lla() { ll -A "$@"; }
+      i() ( ls "$@"; )
+      ls() ( command ls -1 --color=auto --group-directories-first "$@"; )
+      lswc() ( ls -1 "${1:-.}" | wc -l; )
+      lsg() ( ls "${2:-.}" | g "$1"; )
+      ll() ( ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; )
+      lll() ( ll | l; )
+      lla() ( ll -A "$@"; )
       # Sort by size.
-      lls() { lla -Sr "$@"; }
+      lls() ( lla -Sr "$@"; )
       alias llS='lla -S'
       # Sort by most recent ctime.
       alias llt='lla -crt'
@@ -685,13 +696,15 @@ parse_svn_repository_root() {
           *.deb)       dpkg-deb -R "$1" .;;
           *.jar|*.zip) unzip "$1";;
           *.rar)       rar x "$1";;
-          *.tar)       tar xf "$1";;
+          *.tar)       tar xvf "$1";;
           *.tar.bz2)   tar xjf "$1";;
           *.bz2)       bunzip2 "$1";;
           *.tar.gz)    tar xzf "$1";;
           *.gz)        gunzip --keep "$1";;
           *.tbz2)      tar xjf "$1";;
           *.tgz)       tar xzf "$1";;
+          *.tar.xz)    unxz "$1"; extract "${1%.*}";;
+          *.xz)        unxz "$1";;
           *)           echo "error: unknown extension: $1";;
         esac
       }
@@ -754,8 +767,8 @@ parse_svn_repository_root() {
 
     export GIT_EDITOR="$vim"
 
-		# Fails for aliases that autocomplete like `g co branch<tab>`,
-		# still does not expand.
+    # Fails for aliases that autocomplete like `g co branch<tab>`,
+    # still does not expand.
     #alias i='git'
     alias gad='git add -A'
     alias gada='git add -A .'
