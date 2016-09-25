@@ -186,6 +186,25 @@ parse_svn_repository_root() {
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     h() { "$1" --help | less; }
+    los() (
+      img="$1"
+      dev="$(sudo losetup --show -f -P "$img")"
+      echo "$dev"
+      for part in "$dev"?*; do
+        dst="/mnt/$(basename "$part")"
+        echo "$dst"
+        sudo mkdir -p "$dst"
+        sudo mount "$part" "$dst"
+      done
+    )
+    losd() (
+      dev="/dev/loop$1"
+      for part in "$dev"?*; do
+        dst="/mnt/$(basename "$part")"
+        sudo umount "$dst"
+      done
+      sudo losetup -d "$dev"
+    )
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
     # Usage: cmd symlink-location
@@ -1284,6 +1303,17 @@ parse_svn_repository_root() {
     qemu-system-i386 -hda "$1" -S -s &
     gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
   }
+  qemupi() (
+    qemu-system-arm \
+      -kernel "$2" \
+      -cpu arm1176 \
+      -m 256 \
+      -M versatilepb \
+      -no-reboot \
+      -serial stdio \
+      -append "root=/dev/sda2 panic=1 rootfstype=ext4 rw init=/bin/bash" \
+      -hda "$1"
+  )
 
 ## linux kernel
 
