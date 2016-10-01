@@ -7,6 +7,7 @@ ACKs
 ACL
 ACPI
 ADT
+AEL
 AES
 AGI
 AGPL
@@ -505,6 +506,7 @@ GLES2
 GLEW
 GLFW
 GLR
+GLSL
 GLU
 GLUT
 GLX
@@ -584,6 +586,7 @@ Guake
 Guassian/!
 Gump
 HD
+HDMI
 HDs
 HEVC
 HFS
@@ -1087,6 +1090,7 @@ Pentaho
 PermGen
 Phablet
 PhantomJS
+Photogrammetry
 Photoshop
 Phusion
 PhysX
@@ -1815,6 +1819,7 @@ gameplay
 gamification
 gateless
 gconf
+gem5
 gems
 gemset
 gemsets
@@ -2280,9 +2285,3 @@ zealotism
 zeroconf
 zlib
 École
-<<<<<<< HEAD
-Photogrammetry
-=======
-gem5
->>>>>>> 6138c18e65f5b42267fda9c12cc95febf3c4a143
-GLSL
