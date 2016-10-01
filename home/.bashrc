@@ -183,6 +183,7 @@ parse_svn_repository_root() {
     alias envg='env | grep -E'
     alias ex='extract'
     f() { find . -iname "*$1*"; }
+    f2() { find . -maxdepth 2 -iname "*$1*"; }
     alias l='less'
     alias fbr='find_basename_res.py'
     filw() { file "$(which "$1")"; }
@@ -322,7 +323,9 @@ parse_svn_repository_root() {
       # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
       alias duh='du -h'
       alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
-      alias dushf='dush | tee ".dush$(timestamp)"' # to File
+      alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
+      # Cat latest dushf.
+      alias dushfl='cat "$(ls -acrt | grep -E "^.dush-" | tail -n1)"'
     # tr Colon to newline. To see paths better.
     alias trc="tr ':' '\n'"
     # Normally, sudo cannot see your personal path variable. now it can:
@@ -507,14 +510,16 @@ parse_svn_repository_root() {
     ## Chromium
 
     chr() { noh chromium-browser "$@"; }
-      # Unsafe settings, for quick testing. Don't access any important page with it.
+    # Unsafe settings, for quick testing. Don't access any important page with it.
     chr-test() { chr --allow-file-access-from-files; }
 
   ## CodeCollab
 
     ccah() { ccollab addchangelist "$1" HEAD; }
-    # Get ID from commit Message line of form CC: 1234
+    # Update change to reflect last commit.
+    # Get ID from commit Message line of form "CC: 1234".
     ccamh() { ccollab addchangelist "$(git log -n1 --pretty=format:'%B' | grep -E '^CC: ' | cut -d' ' -f2)" HEAD; }
+    # Create new.
     ccanh() { ccollab addchangelist new HEAD; }
 
   ## cd
@@ -697,12 +702,12 @@ parse_svn_repository_root() {
           *.jar|*.zip) unzip "$1";;
           *.rar)       rar x "$1";;
           *.tar)       tar xvf "$1";;
-          *.tar.bz2)   tar xjf "$1";;
+          *.tar.bz2)   tar xvjf "$1";;
           *.bz2)       bunzip2 "$1";;
-          *.tar.gz)    tar xzf "$1";;
+          *.tar.gz)    tar xvzf "$1";;
           *.gz)        gunzip --keep "$1";;
-          *.tbz2)      tar xjf "$1";;
-          *.tgz)       tar xzf "$1";;
+          *.tbz2)      tar xvjf "$1";;
+          *.tgz)       tar xvzf "$1";;
           *.tar.xz)    unxz "$1"; extract "${1%.*}";;
           *.xz)        unxz "$1";;
           *)           echo "error: unknown extension: $1";;
@@ -888,6 +893,16 @@ parse_svn_repository_root() {
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
     # Get last SHA commit into clipboard.
     alias glox='git log -1 --format="%H" | y'
+    git-is-ancestor() (
+      if git merge-base --is-ancestor "$1" "$2"; then
+          echo 'ancestor'
+      elif git merge-base --is-ancestor "$2" "$1"; then
+          echo 'descendant'
+      else
+          echo 'unrelated'
+      fi
+    )
+    alias giia='git-is-ancestor'
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
@@ -1088,6 +1103,7 @@ parse_svn_repository_root() {
   alias tmkcb='time make check; b'
   alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
   alias tf='tail -f'
+  alias tn='tail -n+1'
 
   # From Git root:
 
@@ -1401,6 +1417,7 @@ parse_svn_repository_root() {
 
   alias x='xsel -b'
   alias y='xsel -bi'
+  alias ya='xsel -ba'
 
   alias exx='expand | y'
   # Use xclip instead of xsel while I have this bug:
