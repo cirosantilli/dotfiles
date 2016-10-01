@@ -2,4 +2,4 @@
 Exec=skype
 Name=skype
 Type=Application
-X-GNOME-Autostart-enabled=false
+X-GNOME-Autostart-enabled=true

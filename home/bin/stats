@@ -1,0 +1,37 @@
+#!/usr/bin/awk -f
+# http://unix.stackexchange.com/questions/13731/is-there-a-way-to-get-the-min-max-median-and-average-of-a-list-of-numbers-in
+BEGIN {
+    sum = 0
+}
+{
+    x = $0
+    sum += x
+    if (x < min || NR == 1) { min = x }
+    if (x > max || NR == 1) { max = x }
+    xs[NR] = x
+}
+END {
+    var = 0.0
+    mean = sum / NR
+    for (i in xs) {
+        var += ( xs[i] - mean ) ** 2
+    }
+    cv = sqrt( var ) / mean
+    nr2 = int(NR/2)
+    if( (c % 2) == 1 ) {
+        median = xs[nr2]
+    } else {
+        median = ( xs[nr2] + xs[nr2-1] ) / 2
+    }
+    printf( \
+        "mean   = %.3e\n" \
+        "cv     = %.3e\n" \
+        "median = %.3e\n" \
+        "min    = %.3e\n" \
+        "max    = %.3e\n" \
+        "sum    = %.3e\n" \
+        "n      = %.3e\n" \
+        , \
+        mean, cv, median, min, max, sum, NR \
+    )
+}
