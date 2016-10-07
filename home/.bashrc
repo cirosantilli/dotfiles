@@ -188,6 +188,7 @@ parse_svn_repository_root() {
     alias fbr='find_basename_res.py'
     filw() { file "$(which "$1")"; }
     alias g='grep -E'
+    alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
     alias gi='grep -Ei'
     alias gnup='gnuplot -p'
     alias gr='grep -ER'
@@ -1340,7 +1341,7 @@ parse_svn_repository_root() {
       -M versatilepb \
       -no-reboot \
       -serial stdio \
-      -append "root=/dev/sda2 panic=1 rootfstype=ext4 rw init=/bin/bash" \
+      -append "root=/dev/sda2 panic=1 rootfstype=ext4 rw" \
       -hda "$1"
   )
 
