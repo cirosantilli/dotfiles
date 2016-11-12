@@ -240,7 +240,7 @@ parse_svn_repository_root() {
     # Move Latest Download here. Ignore .part used by Firefox while downloading.
     # Echo it's name to stdout.
     mvld() {
-      newest_file="$(\ls -ct $DOWNLOAD_DIR | grep -Ev '\.(part|chrdownload)$' | head -n1)"
+      newest_file="$(command ls -ct $DOWNLOAD_DIR | grep -Ev '\.(part|chrdownload)$' | head -n1)"
       if [ -n "$newest_file" ]; then
         src="${DOWNLOAD_DIR}/${newest_file}"
         echo "$src"
@@ -633,7 +633,7 @@ parse_svn_repository_root() {
     ## ls
 
       i() ( ls "$@"; )
-      ls() ( command ls -1 --color=auto --group-directories-first "$@"; )
+      ls() ( command ls -A -1 --color=auto --group-directories-first "$@"; )
       lswc() ( ls -1 "${1:-.}" | wc -l; )
       lsg() ( ls "${2:-.}" | g "$1"; )
       ll() ( ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; )
