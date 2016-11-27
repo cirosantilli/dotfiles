@@ -174,6 +174,12 @@ parse_svn_repository_root() {
     # Disk Fill, Human readable, Sort by total size.
     alias dfhs='df -h | sort -hrk2'
     dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
+    # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
+    alias duh='du -h'
+    alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
+    alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
+    # Cat latest dushf.
+    alias dushfl='cat "$(ls -acrt | grep -E "^.dush-" | tail -n1)"'
     alias e='echo'
     # echo Exit status
     alias ece='echo "$?"'
@@ -189,6 +195,7 @@ parse_svn_repository_root() {
     alias fbr='find_basename_res.py'
     filw() { file "$(which "$1")"; }
     alias g='grep -E'
+    alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
     alias gi='grep -Ei'
     alias gnup='gnuplot -p'
     alias gr='grep -ER'
@@ -198,6 +205,25 @@ parse_svn_repository_root() {
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
     alias golly='env UBUNTU_MENUPROXY=0 golly'
     h() { "$1" --help | less; }
+    los() (
+      img="$1"
+      dev="$(sudo losetup --show -f -P "$img")"
+      echo "$dev"
+      for part in "$dev"?*; do
+        dst="/mnt/$(basename "$part")"
+        echo "$dst"
+        sudo mkdir -p "$dst"
+        sudo mount "$part" "$dst"
+      done
+    )
+    losd() (
+      dev="/dev/loop$1"
+      for part in "$dev"?*; do
+        dst="/mnt/$(basename "$part")"
+        sudo umount "$dst"
+      done
+      sudo losetup -d "$dev"
+    )
     alias lns='ln -s'
     # Remove a symlink, and move the file linked to to the symlink location.
     # Usage: cmd symlink-location
@@ -210,26 +236,14 @@ parse_svn_repository_root() {
     alias m='man'
     alias m2='man 2'
     alias m3='man 3'
-    bak() { mv "${1%/}" "${1%/}.bak"; }
-    bakk() { cp -r "${1%/}" "${1%/}.bak"; }
-    kab() { p="${1%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; }
-    kabb() { p="${1%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; }
+    bak() { for f in "$@"; do mv "${f%/}" "${f%/}.bak"; done; }
+    bakk() { for f in "$@"; do cp -r "${f%/}" "${f%/}.bak"; done; }
+    kab() { for f in "$@"; do p="${f%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; done }
+    kabb() { for f in "$@"; do p="${f%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; done }
     md() ( mkdir -p "$@"; )
     # Make Dir Cd
     mdc() { md "$1" && cd "$1"; }
     alias mupen='mupen64plus --fullscreen'
-    # Move Latest Download here. Ignore .part used by Firefox while downloading.
-    # Echo it's name to stdout.
-    mvld() {
-      newest_file="$(command ls -ct "$DOWNLOAD_DIR" | grep -Ev '\.(part|chrdownload)$' | head -n1)"
-      if [ -n "$newest_file" ]; then
-        src="${DOWNLOAD_DIR}/${newest_file}"
-        echo "$src"
-        mv "$src" .;
-      else
-        echo '--EMPTY--'
-      fi
-    }
     mvc() { mv "$1" "$2" && cd "$2"; }
     # Shutdown but run some scripts it.
     alias my-shutdown='sync-push && sudo shutdown'
@@ -317,16 +331,25 @@ parse_svn_repository_root() {
     # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
     alias sudo='sudo '
     alias t='type'
-    alias tm='tmux'
     # Filter tex Errors only:
     alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
     alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
-      # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
-      alias duh='du -h'
-      alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
-      alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
-      # Cat latest dushf.
-      alias dushfl='cat "$(ls -acrt | grep -E "^.dush-" | tail -n1)"'
+    alias tm='tmux'
+    # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
+    topp() (
+      $* &>/dev/null &
+      pid="$!"
+      #top -p "$pid"
+      #watch -n 1 ps --no-headers -p "$pid" -o '%cpu,%mem'
+
+      # Without trap, the background process does not get killed.
+      # TODO why `trap '' INT` does not work?
+      trap ':' INT
+      echo 'CPU  MEM'
+      while sleep 1; do ps --no-headers -o '%cpu,%mem' -p "$pid"; done
+
+      kill "$pid"
+    )
     # tr Colon to newline. To see paths better.
     alias trc="tr ':' '\n'"
     # Normally, sudo cannot see your personal path variable. now it can:
@@ -614,7 +637,7 @@ parse_svn_repository_root() {
     ## ls
 
       i() ( ls "$@"; )
-      ls() ( command ls -1 --color=auto --group-directories-first "$@"; )
+      ls() ( command ls -A -1 --color=auto --group-directories-first "$@"; )
       lswc() ( ls -1 "${1:-.}" | wc -l; )
       lsg() ( ls "${2:-.}" | g "$1"; )
       lsgi() ( ls "${2:-.}" | gi "$1"; )
@@ -636,23 +659,42 @@ parse_svn_repository_root() {
           dir="${1:-.}"
           echo "$(cd "$dir" && pwd)/$(command ls -ct "${dir:-.}" | head -n1)";
         )
-        # mv dst [src-dir=.]
+        # mvl dst [src-dir=.]
         # Move latest modified file in src-dir to dst.
         mvl() {
-          src="$(lsl "${2:-.}")"
+          src="$(lsl "${1:-.}")"
+          dst="${2:-.}"
           echo "$src"
-          mv "$src" "$1"
+          mv "$src" "$dst"
         }
         cpl() {
-          src="$(lsl "${2:-.}")"
+          src="$(lsl "${1:-.}")"
+          dst="${2:-.}"
           echo "$src"
-          cp "$src" "$1"
+          cp "$src" "$dst"
         }
         opl() {
           src="$(lsl "${1:-.}")"
           echo "$src"
           o "$src"
         }
+        # Move Latest Download to current directory.
+        mvld() (
+          file="$(lsl "$DOWNLOAD_DIR")"
+          if echo "$file" | grep -Eq '\.(part|chrdownload)$'; then
+            echo 'Download not finished'
+            exit 1
+          fi
+          mvl "$DOWNLOAD_DIR" .
+        )
+        # Move Latest Download to a newly created temporary directory.
+        mvldd() {
+          dst="${TMP_DIR}/down/$(basename "$(lsl "$DOWNLOAD_DIR")")-$(timestamp)"
+          mkdir -p "$dst"
+          cd "$dst"
+          mvld
+        }
+        opld() ( opl "$DOWNLOAD_DIR"; )
 
   ## Docker
 
@@ -1331,6 +1373,17 @@ parse_svn_repository_root() {
     qemu-system-i386 -hda "$1" -S -s &
     gdb -ex 'target remote localhost:1234' -ex 'break *0x7c00' -ex 'continue'
   }
+  qemupi() (
+    qemu-system-arm \
+      -kernel "$2" \
+      -cpu arm1176 \
+      -m 256 \
+      -M versatilepb \
+      -no-reboot \
+      -serial stdio \
+      -append "root=/dev/sda2 panic=1 rootfstype=ext4 rw" \
+      -hda "$1"
+  )
 
 ## linux kernel
 

@@ -62,6 +62,7 @@ fi
       export TEST_DIR="$HOME/test"
     export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
     export DOWNLOAD_DIR="$HOME/down"
+    export TMP_DIR="$HOME/tmp"
     export HOME_DIR="$HOME"
     export MY_GIT_DIR="$HOME/git"
     export MEDIA_DIR="$HOME/media"

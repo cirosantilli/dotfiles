@@ -3027,8 +3027,8 @@ endif
 
       " - `foo(bar)@=`: lookahead
       " - `foo(bar)@!`: negative lookahead
-      " - `foo(bar)@<=`: lookbehind
-      " - `foo(bar)@<!`: negative lookbehind
+      " - `(bar)@<=foo`: lookbehind
+      " - `(bar)@<!foo`: negative lookbehind
       " - `foo(bar)@>`: TODO
 
       " # \zs

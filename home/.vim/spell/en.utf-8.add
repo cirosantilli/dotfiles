@@ -1,12 +1,16 @@
 7z
 A5
 AAC
+AAPCS
+AArch32
+AArch64
 ABI
 ACK
 ACKs
 ACL
 ACPI
 ADT
+AEL
 AES
 AGI
 AGPL
@@ -55,11 +59,9 @@ Agnomen
 Airbnb
 Alibaba
 Allwinner
-Allwinner
 Altera
 Amazon
 Amazonas
-Amlogic
 Amlogic
 Andreessen
 AngelList
@@ -146,6 +148,7 @@ Borland
 Bory
 Bountysource
 Bovet
+Box2D
 Broadcom
 Brodal
 Brouwer
@@ -248,7 +251,9 @@ Chaitin
 Changelog
 Cheatsheet
 Chengyu
+Chipworks
 ChkTeX
+Christianism
 Chromebook
 Chuang
 Cilk
@@ -315,7 +320,6 @@ DPDAs
 DPI
 DPMS
 DRI
-DRM
 DRM
 DRYer
 DRYes
@@ -388,11 +392,11 @@ ECJ
 ECM
 ECMAScript
 ECX
+EDA
 EDX
 EE
 EFF
 EFLAGS
-EGL
 EGL
 EGit
 ELF's
@@ -446,7 +450,10 @@ FG
 FHS
 FIFOs
 FLAC
+FLG
+FLOPs
 FOREX
+FOSDEM
 FPGA
 FPGAs
 FPTAS
@@ -457,6 +464,7 @@ FSF
 FTP
 Fabrice
 Facebook
+FalanX
 Fallafel
 Falun
 Farach
@@ -490,7 +498,6 @@ GFDL
 GFM
 GFW
 GFXBench
-GFXBench
 GH
 GHC
 GHDL
@@ -500,11 +507,11 @@ GIFAR
 GIMPLE
 GL
 GLES
-GLES
 GLES2
 GLEW
 GLFW
 GLR
+GLSL
 GLU
 GLUT
 GLX
@@ -515,7 +522,6 @@ GNU's
 GPG
 GPGPU
 GPGPUs
-GPIO
 GPIO
 GPL
 GPLv2
@@ -582,8 +588,10 @@ Graphviz
 Grugq
 Guake
 Guassian/!
+Guimet
 Gump
 HD
+HDMI
 HDs
 HEVC
 HFS
@@ -606,7 +614,6 @@ Hadoop
 Hamano
 Haml
 HandBrake
-Hardkernel
 Hardkernel
 Hashiguchi
 Hasse
@@ -701,6 +708,7 @@ IronPython
 IronRuby
 Irrlicht
 Itanium
+Ittiam
 J2SE
 JARs
 JAXB
@@ -772,12 +780,14 @@ Khronos
 KiB
 Kindle
 Kingo
+Kishonti
 Kitano
 Kleene
 Knotski
 Koans
 Konsole
 Korselt's
+Koshonti
 Krait
 Kramdown
 Krap
@@ -894,6 +904,7 @@ Metapackages
 Metasploit
 MiB
 MiKTeX
+Microbit
 Micropolis
 MinGW
 Minecraft
@@ -983,7 +994,6 @@ OCaml
 ODEX
 ODEs
 ODROID
-ODROID
 OEMs
 OER
 OERPUB
@@ -1039,6 +1049,7 @@ PDEs
 PDF
 PDFKit
 PDFs
+PDK
 PDPT
 PDPTs
 PEBKAC
@@ -1087,6 +1098,7 @@ Pentaho
 PermGen
 Phablet
 PhantomJS
+Photogrammetry
 Photoshop
 Phusion
 PhysX
@@ -1119,7 +1131,6 @@ PowerVR
 Precompiles
 PressBooks
 Primality
-PrimeTime
 PrimeTime
 Prolog
 PullReview
@@ -1159,7 +1170,6 @@ RGB
 RHEL
 ROLAP
 RPGs
-RPIF
 RPIF
 RPIs
 RPs
@@ -1218,10 +1228,10 @@ Ruffini
 République
 S3
 SAIF
-SAIF
 SATA
 SCO
 SCSS
+SCons
 SDE
 SDK
 SDL
@@ -1241,9 +1251,11 @@ SIGTERM
 SIMT
 SIPI
 SISD
+SJW
 SLL
 SMB
 SMBIOS
+SMIC
 SMP
 SMPT
 SNES
@@ -1329,6 +1341,7 @@ SoftBank
 Softcover
 Solaar
 Solaris
+SolvNet
 Sonatype
 Soulseek
 SourceForge
@@ -1345,6 +1358,7 @@ Submodules
 Subreddits
 SunOS
 Supermassive
+Superscalar
 Sutter
 SyncTeX
 Synctex
@@ -1372,6 +1386,7 @@ TR1
 TR2
 TRALICS
 TRO
+TSMC
 TShark
 TTF
 TTY7/!
@@ -1426,6 +1441,7 @@ UAs
 UCDetector
 UDP
 UEFI
+UHV
 UI
 UID
 UIs
@@ -1475,6 +1491,7 @@ VDSO
 VESA
 VHDL
 VLC
+VLIW
 VM
 VMs
 VMware
@@ -1621,12 +1638,15 @@ admin
 admins
 aggregator
 aggregators
+amd64
 anacron
 animes
 anormal
 app
 apps
 archs
+armv7
+armv8
 asm
 async
 atime
@@ -1815,6 +1835,7 @@ gameplay
 gamification
 gateless
 gconf
+gem5
 gems
 gemset
 gemsets
@@ -1894,6 +1915,7 @@ inlining
 inode
 inodes
 inotify
+interop
 invocated
 is
 ish
@@ -2103,6 +2125,7 @@ selfie
 selfies
 semver
 sftp
+shader
 shaders
 shapeshift
 shortener
@@ -2185,6 +2208,7 @@ tooltip
 tracee
 tradeoff
 traiteurs
+transcendentals
 transpile
 transpiled
 transpiles
@@ -2280,11 +2304,3 @@ zealotism
 zeroconf
 zlib
 École
-gem5
-AEL
-HDMI
-UHV
-SMIC
-TSMC
-SolvNet
-SCons

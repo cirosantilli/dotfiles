@@ -45,6 +45,9 @@ define dp16
     display/16i $pc
 end
 
+# Disassemble a few instructions around the current one.
+# Not trivial to put current instruction exactly in the middle
+# because of variable instruction sizes.
 define xi
     x/32i $pc - 16
 end
