@@ -7,6 +7,8 @@ fi
 
 #<ciro>
 
+  umask 0002
+
   # Misc preferences:
 
     export LANGUAGE='en_US:en'

@@ -430,6 +430,8 @@
   let g:EasyMotion_mapping_F = '<leader>?'
   let g:EasyMotion_mapping_w = '<leader>w'
   let g:EasyMotion_mapping_W = '<leader>W'
+  let g:EasyMotion_mapping_b = '<leader>b'
+  let g:EasyMotion_mapping_B = '<leader>B'
 
 " # nerdtree
 

@@ -25,7 +25,7 @@ video/x-ogm+ogg=vlc.desktop;
 image/gif=eog.desktop
 image/jpeg=eog.desktop
 image/png=eog.desktop
-image/svg+xml=firefox.desktop;
+image/svg+xml=chromium-browser.desktop;
 
 # Mimetype for directories, should open with file manager. Or vim to :grep.
 #inode/directory=;
@@ -44,10 +44,12 @@ text/x-perl=gvim.desktop;
 text/x-python=gvim.desktop;
 vnd.gtkwave-vcd=gtkwave.desktop;
 
-text/html=firefox.desktop;
+#text/html=chromium-browser.desktop;
+text/html=chromium-browser.desktop;
 
 ;x-scheme-handler/ftp=;
-x-scheme-handler/http=firefox.desktop;
-x-scheme-handler/https=firefox.desktop;
+x-scheme-handler/http=chromium-browser.desktop;
+x-scheme-handler/https=chromium-browser.desktop;
+x-scheme-handler/about=chromium-browser.desktop
 x-scheme-handler/mailto=thunderbird.desktop;
 x-scheme-handler/torrent=transmission-gtk.desktop;

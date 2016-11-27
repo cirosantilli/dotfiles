@@ -184,6 +184,7 @@ parse_svn_repository_root() {
     alias ex='extract'
     f() { find . -iname "*$1*"; }
     f2() { find . -maxdepth 2 -iname "*$1*"; }
+    f3() { find . -maxdepth 3 -iname "*$1*"; }
     alias l='less'
     alias fbr='find_basename_res.py'
     filw() { file "$(which "$1")"; }
@@ -220,7 +221,7 @@ parse_svn_repository_root() {
     # Move Latest Download here. Ignore .part used by Firefox while downloading.
     # Echo it's name to stdout.
     mvld() {
-      newest_file="$(\ls -ct $DOWNLOAD_DIR | grep -Ev '\.(part|chrdownload)$' | head -n1)"
+      newest_file="$(command ls -ct "$DOWNLOAD_DIR" | grep -Ev '\.(part|chrdownload)$' | head -n1)"
       if [ -n "$newest_file" ]; then
         src="${DOWNLOAD_DIR}/${newest_file}"
         echo "$src"
@@ -616,32 +617,42 @@ parse_svn_repository_root() {
       ls() ( command ls -1 --color=auto --group-directories-first "$@"; )
       lswc() ( ls -1 "${1:-.}" | wc -l; )
       lsg() ( ls "${2:-.}" | g "$1"; )
+      lsgi() ( ls "${2:-.}" | gi "$1"; )
       ll() ( ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; )
       lll() ( ll | l; )
       lla() ( ll -A "$@"; )
       # Sort by size.
       lls() ( lla -Sr "$@"; )
       alias llS='lla -S'
-      # Sort by most recent ctime.
-      alias llt='lla -crt'
-      alias llT='lla -ct'
-      alias lltg='lla -crt | g'
-      # Print filename that has the Latest modification Time.
-      lslt() { command ls -ct "${1:-.}" | head -n1; }
 
-      # mv dst [src-dir=.]
-      # Move latest modified file in src-dir to dst.
-      mvl() {
-        src="$(lslt "${2:-.}")"
-        echo "$src"
-        mv "$src" "$1"
-      }
+      ## Latest modified operations
 
-      cpl() {
-        src="$(lslt "${2:-.}")"
-        echo "$src"
-        cp "$src" "$1"
-      }
+        # Sort by most recent ctime.
+        alias llt='command ls --color=auto -Aclrt'
+        alias llT='command ls --color=auto -Aclt'
+        alias lltg='lla -crt | g'
+        # Print filename that has the Latest modification Time.
+        lsl() (
+          dir="${1:-.}"
+          echo "$(cd "$dir" && pwd)/$(command ls -ct "${dir:-.}" | head -n1)";
+        )
+        # mv dst [src-dir=.]
+        # Move latest modified file in src-dir to dst.
+        mvl() {
+          src="$(lsl "${2:-.}")"
+          echo "$src"
+          mv "$src" "$1"
+        }
+        cpl() {
+          src="$(lsl "${2:-.}")"
+          echo "$src"
+          cp "$src" "$1"
+        }
+        opl() {
+          src="$(lsl "${1:-.}")"
+          echo "$src"
+          o "$src"
+        }
 
   ## Docker
 
@@ -792,6 +803,8 @@ parse_svn_repository_root() {
     alias gbi='git bisect'
     alias gbl='git blame'
     alias gbr='git branch'
+    # Sort Comitter. http://stackoverflow.com/a/5188364/895245
+    alias gbsc='git for-each-ref --sort=-committerdate --format="%(refname) %(committerdate) %(authorname)"'
     gbrg () { git branch | grep "$1"; }
     gbrag () { git branch -a | grep "$1"; }
     gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -820,7 +833,7 @@ parse_svn_repository_root() {
     # Clean any file not tracked, including gitignored. Restores repo to pristine state.
     gcexdf() { git clean -xdf "${1:-:/}"; }
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
-    alias gco='git checkout'
+    alias gco='git checkout && git submodule update --recursive'
     alias gcob='git checkout -b'
     gcobm() { git checkout -b "$1" master; }
     alias gcod='git checkout --conflict=diff3'
@@ -850,6 +863,7 @@ parse_svn_repository_root() {
     alias gdfc='git diff --cached'
     alias gdfh='git diff HEAD'
     alias gdfhh='git diff HEAD~ HEAD'
+    alias gdfhhs='git diff --stat HEAD~ HEAD'
     alias gdfst='git diff --stat'
     alias gfe='git fetch'
     gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
@@ -892,7 +906,9 @@ parse_svn_repository_root() {
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
     # Get last SHA commit into clipboard.
-    alias glox='git log -1 --format="%H" | y'
+    alias glox='git log -1 --format="%H" | tee >(cat 1>&2) | y'
+    # Also get committer date.
+    alias gloxd='git log -1 --format="%H %cd" | y'
     git-is-ancestor() (
       if git merge-base --is-ancestor "$1" "$2"; then
           echo 'ancestor'
@@ -929,6 +945,8 @@ parse_svn_repository_root() {
     alias grbi='git rebase -i'
     alias grbm='git rebase master'
     alias grbt='git rebase trunk'
+    # Rebase trunk Updated.
+    alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk'
     alias grs='git reset'
     # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
     # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
@@ -1381,6 +1399,7 @@ parse_svn_repository_root() {
   ssta() { sudo service --status-all ; }
   alias ssra='sudo service apache2 restart'
   # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
+  alias ssrf='sudo service nfs-kernel-server restart'
   alias ssrn='sudo service network-manager restart'
   alias ssrl='sudo service lightdm restart'
 
@@ -1438,7 +1457,7 @@ parse_svn_repository_root() {
     # Absolute path.
     xab() { echo "$(pwd)/$1" | y; }
     xmv() { mv "$(x)" "${1:-.}"; }
-    xcp() { mv "$(x)" "${1:-.}"; }
+    xcp() { cp "$(x)" "${1:-.}"; }
     xpw() { pwd | y; }
 
 ## xdg

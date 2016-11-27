@@ -140,7 +140,7 @@
 
     " Find the next Git Merge Conflict.
 
-      nnoremap <leader>gmc /\v^\<\<\<\<\<\<\< \|\=\=\=\=\=\=\=$\|\>\>\>\>\>\>\> /<cr>
+      nnoremap <leader>gm /\v^\<\<\<\<\<\<\< \|\=\=\=\=\=\=\=$\|\>\>\>\>\>\>\> /<cr>
 
   " # f keys
 
