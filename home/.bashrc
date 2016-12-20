@@ -175,11 +175,6 @@ parse_svn_repository_root() {
     alias dfhs='df -h | sort -hrk2'
     dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
     # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
-    alias duh='du -h'
-    alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
-    alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
-    # Cat latest dushf.
-    alias dushfl='cat "$(ls -acrt | grep -E "^.dush-" | tail -n1)"'
     alias e='echo'
     # echo Exit status
     alias ece='echo "$?"'
@@ -325,7 +320,6 @@ parse_svn_repository_root() {
     # Source Bashrc.
     alias s='. ~/.bashrc'
     # Screen TTY.
-    alias scrt='screen /dev/ttyUSB0 115200'
     alias sha2='sha256sum'
     alias stra='sudo strace -f -s999 -v'
     # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
@@ -512,7 +506,7 @@ parse_svn_repository_root() {
         -net nic,model=virtio \
         -net user,hostfwd=tcp::2222-:22
     }
-    brqa() {
+    brqa() (
       qemu-system-arm \
         -M versatilepb \
         -append "root=/dev/sda console=ttyAMA0,115200" \
@@ -522,29 +516,30 @@ parse_svn_repository_root() {
         -net nic,model=rtl8139 \
         -net user \
         -serial stdio
-    }
+    )
 
   ## Browsers
 
     ## Firefox
 
         # Unsafe settings, for quick testing. Don't access any important page with it.
-        fir-test() { noh firefox -no-remote "$@" -P 'test'; }
+        fir-test() ( noh firefox -no-remote "$@" -P 'test'; )
 
     ## Chromium
 
-    chr() { noh chromium-browser "$@"; }
+    chr() ( noh chromium-browser "$@"; )
     # Unsafe settings, for quick testing. Don't access any important page with it.
-    chr-test() { chr --allow-file-access-from-files; }
+    chr-test() ( chr --allow-file-access-from-files; )
 
   ## CodeCollab
 
-    ccah() { ccollab addchangelist "$1" HEAD; }
+    ccah() ( ccollab addchangelist "$1" HEAD; )
     # Update change to reflect last commit.
     # Get ID from commit Message line of form "CC: 1234".
-    ccamh() { ccollab addchangelist "$(git log -n1 --pretty=format:'%B' | grep -E '^CC: ' | cut -d' ' -f2)" HEAD; }
+    ccamh() ( ccollab addchangelist "$(git log -n1 --pretty=format:'%B' | grep -E '^CC: ' | cut -d' ' -f2)" HEAD; )
     # Create new.
-    ccanh() { ccollab addchangelist new HEAD; }
+    ccanh() ( ccollab addchangelist new HEAD; )
+    ccasn() ( ccollab addsvndiffs new; )
 
   ## cd
 
@@ -711,6 +706,14 @@ parse_svn_repository_root() {
     alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
     alias sdos='sudo docker stop'
 
+  ## du
+
+    alias duh='du -h'
+    alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
+    alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
+    # Cat latest dushf.
+    dushfl() ( cat "$(ls -a | grep -E '^.dush-' | sort | tail -n1)"; )
+
   ## export
 
     # MISC exports.
@@ -875,7 +878,10 @@ parse_svn_repository_root() {
     # Clean any file not tracked, including gitignored. Restores repo to pristine state.
     gcexdf() { git clean -xdf "${1:-:/}"; }
     gcmp() { git commit -am "$1"; git push --tags -u origin master; }
-    alias gco='git checkout && git submodule update --recursive'
+    gco()(
+      git checkout "$@"
+      git submodule update --recursive
+    )
     alias gcob='git checkout -b'
     gcobm() { git checkout -b "$1" master; }
     alias gcod='git checkout --conflict=diff3'
@@ -948,7 +954,9 @@ parse_svn_repository_root() {
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
     # Get last SHA commit into clipboard.
-    alias glox='git log -1 --format="%H" | tee >(cat 1>&2) | y'
+    glox() (
+      git log -1 --format="%H" $1 | tee >(cat 1>&2) | y
+    )
     # Also get committer date.
     alias gloxd='git log -1 --format="%H %cd" | y'
     git-is-ancestor() (
@@ -1047,6 +1055,13 @@ parse_svn_repository_root() {
 
     alias gpsd='git push origin HEAD:refs/drafts/master'
     alias gpsdt='git push origin HEAD:refs/drafts/trunk'
+
+  ## svn
+
+    # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
+    svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r; )
+    # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
+    svn-reset() ( svn revert --recursive .; )
 
 ## GitLab
 
@@ -1319,6 +1334,10 @@ parse_svn_repository_root() {
   alias pyserve='python -m SimpleHTTPServer'
   alias pyjson='python -m json.tool'
   alias pydoc='python -m doctest'
+  # http://stackoverflow.com/questions/24906126/how-to-unpack-pkl-file
+  pkl() (
+    python -c 'import pickle,sys;d=pickle.load(open(sys.argv[1],"rb"));print(d)' "$1"
+  )
 
   ## pip
 
@@ -1398,6 +1417,8 @@ parse_svn_repository_root() {
   alias mkold='make oldconfig'
   alias mkdef='make defconfig'
   alias mkmen='make menuconfig'
+  dtbs() ( dtc -I dtb -O dts -o - "$1"; )
+  dtsb() ( dtc -I dts -O dtb -o - "$1"; )
 
 ## rake
 
@@ -1426,22 +1447,23 @@ parse_svn_repository_root() {
   alias ras='bundle exec rails server'
   alias rasp='bundle exec rails server -p4000'
 
-## raspberry pi
+## Development boards
 
-  # Exit with: Ctrl + A then backslash '\'.
-  piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3; )
-  pittl() (
-    screen "/dev/ttyUSB${1:-0}" 115200;
-  )
-  pissh() (
-    ip="$(piip)"
-    #ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip"
-    user="${1:-pi}"
-    ssh "${user}@${ip}";
-  )
-  pivin() (
-    vinagre "$(piip)"
-  )
+  scrusb() ( screen "/dev/ttyUSB${1:-0}" 115200; )
+
+  ## raspberry pi
+
+    # Exit with: Ctrl + A then backslash '\'.
+    piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3; )
+    pissh() (
+      ip="$(piip)"
+      #ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip"
+      user="${1:-pi}"
+      ssh "${user}@${ip}";
+    )
+    pivin() (
+      vinagre "$(piip)"
+    )
 
 ## Services
 
@@ -1488,7 +1510,7 @@ parse_svn_repository_root() {
 ## x clipboard
 
   alias x='xsel -b'
-  alias y='xsel -bi'
+  y() ( xsel -bi )
   alias ya='xsel -ba'
 
   alias exx='expand | y'
