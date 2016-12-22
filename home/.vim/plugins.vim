@@ -312,7 +312,7 @@
   " C++11:
 
       let g:syntastic_cpp_compiler = 'g++'
-      let g:syntastic_cpp_compiler_options = ' -std=c++11'
+      let g:syntastic_cpp_compiler_options = ' -std=c++14'
 
   " C++11 syntax. TODO not working?
 

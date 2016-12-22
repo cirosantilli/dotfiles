@@ -1,2 +1,5 @@
+[extensions]
+purge =
+
 [ui]
 username = Ciro Santilli <ciro.santilli@gmail.com>
