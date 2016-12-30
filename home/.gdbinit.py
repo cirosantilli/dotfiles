@@ -45,7 +45,8 @@ Put a temporary breakpoint at the address of the next instruction, and continue.
 
 Useful to step over int interrupts.
 
-See also: http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-when-debugging-a-bootloader-bios-with-gdb-and-q
+See also:
+http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-when-debugging-a-bootloader-bios-with-gdb-and-q
 """
     def __init__(self):
         super().__init__(
@@ -54,7 +55,7 @@ See also: http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt
             gdb.COMPLETE_NONE,
             False
         )
-    def invoke(self, arg, from_tty):
+    def invoke(self, argument, from_tty):
         frame = gdb.selected_frame()
         arch = frame.architecture()
         pc = gdb.selected_frame().pc()
@@ -64,3 +65,32 @@ See also: http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt
         gdb.Breakpoint('*' + str(pc + length), temporary = True)
         gdb.execute('continue')
 NextInstructionAddress()
+
+class BreakStackBreakpoint(gdb.Breakpoint):
+    def __init__(self, parent, child):
+        super().__init__(child)
+        self.child = parent
+    def stop(self):
+        # TODO go up older chain.
+        if gdb.selected_frame().older().name() == self.child:
+            gdb.Breakpoint(temporary=True)
+            return True
+        else:
+            return False
+
+class BreakStack(gdb.Command):
+    """
+Break on child only if it was called from parent.
+break-stack PARENT CHILD
+http://stackoverflow.com/a/20209911/895245
+"""
+    def __init__(self):
+        super().__init__(
+            'break-stack',
+            gdb.COMMAND_BREAKPOINTS,
+            gdb.COMPLETE_NONE,
+            False
+        )
+    def invoke(self, argument, from_tty):
+        BreakStackBreakpoint(*gdb.string_to_argv(argument))
+BreakStack()
