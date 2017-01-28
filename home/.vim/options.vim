@@ -613,7 +613,7 @@
 
   " `-i` makes the shell interactive, so it will read your aliases under ~/.bashrc.
 
-    set shellcmdflag=-ic
+    set shellcmdflag=-c
 
 " # gvim specific
 
