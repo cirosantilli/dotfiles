@@ -197,7 +197,7 @@ parse_svn_repository_root() {
     alias gi='grep -Ei'
     alias gnup='gnuplot -p'
     alias gr='grep -ER'
-    alias gri='grep -ERi'
+    gri() ( grep -ERi "$@"; )
     alias fgb='fg;b'
     alias fmmmr='find-music-make-m3u .'
     gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
@@ -316,6 +316,7 @@ parse_svn_repository_root() {
     alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
     # Source Bashrc.
     alias s='. ~/.bashrc'
+    alias se='sed -r'
     # Screen TTY.
     alias sha2='sha256sum'
     alias stra='sudo strace -f -s999 -v'
@@ -861,6 +862,7 @@ parse_svn_repository_root() {
     alias gadcp='git add -A . && git commit && git push'
     gadcmp() { git add . && git commit -m "$1" && git push; }
     alias gadu='git add -u :/'
+    alias gaducman='git add -u && gcman'
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbi='git bisect'
@@ -1014,7 +1016,7 @@ parse_svn_repository_root() {
     alias grbm='git rebase master'
     alias grbt='git rebase trunk'
     # Rebase trunk Updated.
-    alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk'
+    alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk && git submodule update'
     alias grs='git reset'
     # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
     # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
@@ -1078,8 +1080,14 @@ parse_svn_repository_root() {
 
     # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
     svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r; )
+    svndf() ( svn diff; )
+    # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
+    svng() ( gri --exclude-dir '.svn' "$@"; )
     # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
     svn-reset() ( svn revert --recursive .; )
+    svnst() ( svn status "$@"; )
+    # Git pull.
+    svnup() ( svn update "$@"; )
 
 ## GitLab
 
@@ -1481,6 +1489,7 @@ parse_svn_repository_root() {
 ## Development boards
 
   scrusb() ( screen "/dev/ttyUSB${1:-0}" 115200; )
+  scrs() ( screen "/dev/ttyS${1:-0}" 115200; )
 
   ## raspberry pi
 
@@ -1584,6 +1593,7 @@ parse_svn_repository_root() {
 
   alias o='xdg-open'
   alias mime='xdg-mime query filetype'
+  alias vmime='~/.local/share/applications/mimeapps.list'
 
 ## SFL
 
