@@ -1,3 +1,5 @@
+import re
+
 class ContinueI(gdb.Command):
     """
 Continue until instruction with given opcode.
@@ -69,14 +71,14 @@ NextInstructionAddress()
 class BreakStackBreakpoint(gdb.Breakpoint):
     def __init__(self, parent, child):
         super().__init__(child)
-        self.child = parent
+        self.parent_re = re.compile(parent)
     def stop(self):
-        # TODO go up older chain.
-        if gdb.selected_frame().older().name() == self.child:
-            gdb.Breakpoint(temporary=True)
-            return True
-        else:
-            return False
+        older = gdb.selected_frame().older()
+        while older:
+            if self.parent_re.match(older.name()):
+                return True
+            older = older.older()
+        return False
 
 class BreakStack(gdb.Command):
     """

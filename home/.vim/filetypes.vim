@@ -44,6 +44,10 @@ augroup END
       autocmd FileType html call FtHtml()
     augroup END
 
+    augroup Svg
+      autocmd FileType svg call MapAllBuff('<F6>', ':write<cr>:silent !xdg-open % &<cr>')
+    augroup END
+
   " # CSS family
 
     augroup Css

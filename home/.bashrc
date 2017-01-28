@@ -140,7 +140,7 @@ parse_svn_repository_root() {
     # long-command;b
     alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
     alias bashx='x | bash'
-    alias cdg='cd "$(git rev-parse --show-tlfoevel)"'
+    alias cdg='cd "$(git rev-parse --show-toplevel)"'
     alias cdG='cd "$MY_GIT_DIR"'
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'
@@ -264,11 +264,6 @@ parse_svn_repository_root() {
       fi
       xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
     }
-    cmd='paplay "$HOME/share/sounds/alert.ogg"'
-    # play Alert
-    alias playa="$cmd"
-    # play alert Infinite. Stop with `kill %1`.
-    alias playi="bash -c 'while true; do $cmd; done'"
     alias pdc='pandoc'
     alias r='ranger'
     ramfs() {
@@ -453,7 +448,7 @@ parse_svn_repository_root() {
       alias afse='apt-file search'
       # Binary
       afseb() { apt-file search "$(which "$1")"; }
-      alias sagbd='apt-get build-dep'
+      alias sabd='apt-get build-dep'
       alias agso='apt-get source'
       alias dpL='dpkg -L'
       alias dps='dpkg -s'
@@ -652,7 +647,7 @@ parse_svn_repository_root() {
       ## Latest File modified operations
 
         # Last File Ls -l. Sort by olest ctime first. So newest shows first on terminal.
-        lfl() ( command ls --color=auto -Aclrt; )
+        lfl() ( command ls --color=auto -Achlrt "${1-.}"; )
         # Get absolute path to last modified path in given directory.
         lfg() (
           dir="${1:-.}"
@@ -778,6 +773,13 @@ parse_svn_repository_root() {
           *)           echo "error: unknown extension: $1";;
         esac
       }
+
+  ## ffmpeg
+
+    # fftrim in.ogv out.ogv 00:10 01:20
+    fftrim() ( ffmpeg -i "$1" -ss "$3" -to "$4" -c copy "$2"; )
+    # ffcat in1.ogv in2.ogv out.ogv
+    ffcat() ( ffmpeg -i concat:"$1|$2" -c copy "$3"; )
 
   ## gcc
 
@@ -1426,6 +1428,13 @@ parse_svn_repository_root() {
       -hda "$1"
   )
 
+## imagemagick
+
+  # Get value of pixel at given location.
+  impx() (
+    convert "$1" -crop 1x1+${2:-1}+${3:-1} rgba:- | od -An -tx1
+  )
+
 ## linux kernel
 
   # Ignore the huge arch and drivers.
@@ -1489,13 +1498,15 @@ parse_svn_repository_root() {
 
 ## screencast
 
-  rmd() (
+  # SILENCE YOUR MESSAGING APPS NOW!!!
+  rec() (
     sleep 2
-    playa
+    #spd-say rec
     recordmydesktop --stop-shortcut "Control+Mod1+z"
+    b
   )
   screencast() {
-    export PS1='----------------------------------------------------------------------\n'
+    export PS1="$(printf "\033[1;31m%$(tput cols)s\033[0m" | tr ' ' '-')"'\n'
     clear
   }
 
