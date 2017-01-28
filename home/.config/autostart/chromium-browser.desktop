@@ -2,4 +2,4 @@
 Exec=chromium-browser
 Name=chromium-browser
 Type=Application
-X-GNOME-Autostart-enabled=false
+X-GNOME-Autostart-enabled=true

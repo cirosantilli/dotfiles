@@ -128,7 +128,9 @@ parse_svn_repository_root() {
       #export VERILATOR_ROOT='/usr/local'
       #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
 
-  ## alias and functions
+  ## alias
+
+  ## functions
 
     # Misc aliases and functions.
 
@@ -138,7 +140,7 @@ parse_svn_repository_root() {
     # long-command;b
     alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
     alias bashx='x | bash'
-    alias cdg='cd "$(git rev-parse --show-toplevel)"'
+    alias cdg='cd "$(git rev-parse --show-tlfoevel)"'
     alias cdG='cd "$MY_GIT_DIR"'
     # Start bash in a clean test environment.
     alias clean='env -i bash --norc'
@@ -155,6 +157,7 @@ parse_svn_repository_root() {
       ln -s "$dest/$src" "${src%/}"
     }
     alias cla11='clang++ -std=c++11'
+    check-ip() ( curl 'http://checkip.amazonaws.com'; )
     alias datex='timestamp | x'
     alias dconfl='dconf load / <~/.config/dconf/user.conf'
     alias dconfw='dconf watch /'
@@ -289,7 +292,6 @@ parse_svn_repository_root() {
       ) | tee >(xclip -selection clipboard)
     }
     alias R='R --no-save'
-    alias rec='sleep 2 && playa && recordmydesktop --stop-shortcut "Control+Mod1+z"'
     alias rl='readlink'
     alias rlf='readlink -f'
     rlw() { readlink -f "$(which "$1")"; }
@@ -361,6 +363,8 @@ parse_svn_repository_root() {
       sudo umount /dev/sd"${1}"?*
       lsblk
     )
+    # Core dumps.
+    ulimc() { ulimit -c "${1:-unlimited}"; }
     ulimsv() { ulimit -Sv "${1:-500000}"; }
     alias v='gvim-remote'
     alias vg='gvim-remote .gitignore'
@@ -457,6 +461,8 @@ parse_svn_repository_root() {
       alias dpS='dpkg -S'
       dpSw() { dpkg -S "$(which "$1")"; }
       alias dplg='dpkg -l | grep -Ei'
+      # Build package downloaded with apt-get source after cd into it.
+      dpkgb() ( dpkg-buildpackage -rfakeroot -uc -b )
       alias saig='sudo aptitude upgrade'
       alias saii='sudo aptitude install'
       alias sair='sudo aptitude remove'
@@ -554,7 +560,7 @@ parse_svn_repository_root() {
     }
     alias cda='cd "$ART_DIR"'
     alias cdc='cd "$CPP_DIR"'
-    alias cdD='cd "$DOWNLOAD_DIR" && llt'
+    alias cdD='cd "$DOWNLOAD_DIR" && lfl'
     # cd Dot
     alias cdd='cd ..'
     alias cddd='cd .. && cd ..'
@@ -644,53 +650,56 @@ parse_svn_repository_root() {
       lls() ( lla -Sr "$@"; )
       alias llS='lla -S'
 
-      ## Latest modified operations
+      ## Latest File modified operations
 
-        # Sort by most recent ctime.
-        alias llt='command ls --color=auto -Aclrt'
-        alias llT='command ls --color=auto -Aclt'
-        alias lltg='lla -crt | g'
-        # Print filename that has the Latest modification Time.
-        lsl() (
+        # Last File Ls -l. Sort by olest ctime first. So newest shows first on terminal.
+        lfl() ( command ls --color=auto -Aclrt; )
+        # Get absolute path to last modified path in given directory.
+        lfg() (
           dir="${1:-.}"
-          echo "$(cd "$dir" && pwd)/$(command ls -ct "${dir:-.}" | head -n1)";
+          grep="${2:-}"
+          echo "$(cd "$dir" && pwd)/$(command ls -ct "${dir:-.}" | grep "$grep" | head -n1)";
         )
-        # mvl dst [src-dir=.]
+        # lfm dst [src-dir=.]
         # Move latest modified file in src-dir to dst.
-        mvl() {
-          src="$(lsl "${1:-.}")"
+        lfm() (
+          src="$(lfg "${1:-.}")"
           dst="${2:-.}"
           echo "$src"
           mv "$src" "$dst"
-        }
-        cpl() {
-          src="$(lsl "${1:-.}")"
+        )
+        # Cp
+        lfc() (
+          src="$(lfg "${1:-.}")"
           dst="${2:-.}"
           echo "$src"
           cp "$src" "$dst"
-        }
-        opl() {
-          src="$(lsl "${1:-.}")"
+        )
+        # Open.
+        lfo() (
+          src="$(lfg "$@")"
           echo "$src"
           o "$src"
-        }
+        )
+        # Open latest download.
+        lfod() ( lfo "$DOWNLOAD_DIR" "$@"; )
         # Move Latest Download to current directory.
-        mvld() (
-          file="$(lsl "$DOWNLOAD_DIR")"
+        lfmd() (
+          file="$(lfg "$DOWNLOAD_DIR")"
           if echo "$file" | grep -Eq '\.(part|chrdownload)$'; then
             echo 'Download not finished'
             exit 1
           fi
-          mvl "$DOWNLOAD_DIR" .
+          lfm "$DOWNLOAD_DIR" .
         )
-        # Move Latest Download to a newly created temporary directory.
-        mvldd() {
-          dst="${TMP_DIR}/down/$(basename "$(lsl "$DOWNLOAD_DIR")")-$(timestamp)"
+        # Move Latest Download to a newly created temporary directory and cd into it.
+        # Great when you are going to extract stuff and work on it.
+        lfmdd() {
+          dst="${TMP_DIR}/down/$(basename "$(lfg "$DOWNLOAD_DIR")")-$(timestamp)"
           mkdir -p "$dst"
           cd "$dst"
-          mvld
+          lfmd
         }
-        opld() ( opl "$DOWNLOAD_DIR"; )
 
   ## Docker
 
@@ -804,6 +813,13 @@ parse_svn_repository_root() {
     alias gdbr='gdb -ex "run" -q'
     alias gdbs='gdb -ex "break _start" -ex "run" -q'
     alias gdbx='gdb --batch -x'
+    # Run program, show failure backtrace.
+    gdbcbt() (
+      ulimc
+      rm -f core
+      "$@"
+      gdb --batch -ex 'bt' "$1" 'core'
+    )
 
   ## GNU changelogs from Git
 
@@ -951,10 +967,10 @@ parse_svn_repository_root() {
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
     alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     alias glop='git log -p'
-    # Find where that feature entered the code base.
-    alias glopr='git log -p --reverse'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
+    # Find where that feature entered the code base.
+    gloS() ( git log -p --reverse -S "$1"; )
     # Get last SHA commit into clipboard.
     glox() (
       git log -1 --format="%H" $1 | tee >(cat 1>&2) | y
@@ -1196,12 +1212,18 @@ parse_svn_repository_root() {
     alias gmkr='git !exec make run'
     alias gmkt='git !exec make test'
 
-    alias cmk='mkdir -p build && cd build && cmake .. && cmake --build .'
-    alias cmkd='mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build .'
-    # Shared libs. Required for some weird projects.
-    alias cmks='mkdir -p build && cd build && cmake .. -DBUILD_SHARED_LIBS=ON && cmake --build .'
+  # cmake
+
+    cmk() (
+      mkdir -p build
+      cd build
+      cmake .. "$@"
+      cmake --build .
+    )
+    cmkd() ( cmk -DCMAKE_BUILD_TYPE=Debug )
+    cmks() ( cmk -DBUILD_SHARED_LIBS=ON )
     # Test.
-    alias cmkt='cmk && ctest -V .'
+    cmkt() ( cmk && ctest -V . )
 
 ## Mass regex operations
 
@@ -1474,13 +1496,25 @@ parse_svn_repository_root() {
       vinagre "$(piip)"
     )
 
+## screencast
+
+  rmd() (
+    sleep 2
+    playa
+    recordmydesktop --stop-shortcut "Control+Mod1+z"
+  )
+  screencast() {
+    export PS1='----------------------------------------------------------------------\n'
+    clear
+  }
+
 ## Services
 
-  sso() { sudo service "$1" stop ; }
-  ssr() { sudo service "$1" restart ; }
-  sss() { sudo service "$1" start ; }
-  sst() { sudo service "$1" status ; }
-  ssta() { sudo service --status-all ; }
+  sso() ( sudo service "$1" stop; )
+  ssr() ( sudo service "$1" restart; )
+  sss() ( sudo service "$1" start; )
+  sst() ( sudo service "$1" status; )
+  ssta() ( sudo service --status-all; )
   alias ssra='sudo service apache2 restart'
   # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
   alias ssrf='sudo service nfs-kernel-server restart'
@@ -1493,7 +1527,7 @@ parse_svn_repository_root() {
 
 ## update-rc.d
 
-  surd() { sudo update-rc.d "$1" disable; }
+  surd() ( sudo update-rc.d "$1" disable; )
 
 ## vagrant
 

@@ -31,6 +31,7 @@ APK
 APM
 APNG
 ARP
+ARPG
 ARPU
 ASI
 ASIC
@@ -236,6 +237,7 @@ CWE
 CYK
 Calc
 Calibre
+Calypto
 CapsLock
 Capybara
 Cardistry
@@ -452,6 +454,7 @@ FIFOs
 FLAC
 FLG
 FLOPs
+FMA
 FOREX
 FOSDEM
 FPGA
@@ -475,6 +478,7 @@ FileZilla
 FindBugs
 Firefox
 Firefox's
+Flexera
 Fn
 Formtastic
 Frama
@@ -645,6 +649,7 @@ IAM
 IAMs
 IANA
 IBus
+ICC2
 ICD
 ICFP
 ICMP
@@ -665,6 +670,7 @@ IGP
 IHL
 IIFE
 IMEI
+INVX2
 IOCCC
 IP
 IPC
@@ -700,6 +706,7 @@ InDesign
 Inet
 Inkscape
 InnoDB
+Innovus
 Inria
 Instagram
 IntelliJ
@@ -851,6 +858,7 @@ MD5
 MDX
 MF/!
 MFS
+MIAOW
 MINIX
 MISRA
 MMORPG
@@ -965,6 +973,7 @@ Napolitan
 Napster
 Nashvile/!
 NeXT
+NecroDancer
 Nehalem
 NetBSD
 NetPBM
@@ -1110,6 +1119,7 @@ Pinboard
 Pingus
 Pixar
 PlayStation
+PnR
 Poettering
 Poincare
 PolyTeX
@@ -1346,6 +1356,7 @@ Sonatype
 Soulseek
 SourceForge
 Spacebars
+Speedruns
 Spolsky
 StackEdit
 Stallman
@@ -1404,6 +1415,7 @@ TeXstudio
 Teatro
 TechCrunch
 Teleport
+Tempus
 Tesseract
 Tetris
 Texinfo
@@ -1614,6 +1626,7 @@ Xiph
 Xorg
 Xpath
 Xperia
+Y86
 YAML
 YMM
 YUV
@@ -2071,6 +2084,7 @@ quickfix
 quicksort
 rDNS
 ramfs
+rastering
 rbenv
 rc
 rebase
@@ -2267,6 +2281,7 @@ virtualizations
 virtualized
 virtualizer
 visionmedia
+vlog
 vobsub2srt
 von
 w3m
@@ -2303,11 +2318,4 @@ yay
 zealotism
 zeroconf
 zlib
-Ã‰cole
-ICC2
-Innovus
-Calypto
-PnR
-Tempus
-Flexera
-INVX2
+École
