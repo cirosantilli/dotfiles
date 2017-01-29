@@ -102,6 +102,7 @@
   md() ( mkdir -p "$@"; )
   # Make Dir Cd
   mdc() { md "$1" && cd "$1"; }
+  alias mnt='mount'
   alias mupen='mupen64plus --fullscreen'
   mvc() { mv "$1" "$2" && cd "$2"; }
   # Shutdown but run some scripts it.
