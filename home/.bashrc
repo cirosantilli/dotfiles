@@ -1,17 +1,3 @@
-## Variables
-
-  # Variables that are required by multiple following commands.
-  # Must come before everything else.
-
-    vim=`type -P vim`
-    if [ "$vim" == "" ]; then
-      vim="gvim -v"
-    fi
-
-    # TODO what is correct?
-    #export VERILATOR_ROOT='/usr/local'
-    #export VERILATOR_ROOT='/usr/local/share/verilator/bin'
-
 ## alias
 
 ## functions
@@ -24,6 +10,7 @@
   # long-command;b
   alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
   alias bashx='x | bash'
+  alias bsu='bsub -P PJ02067 -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen'
   alias cdg='cd "$(git rev-parse --show-toplevel)"'
   alias cdG='cd "$MY_GIT_DIR"'
   # Start bash in a clean test environment.
@@ -45,6 +32,8 @@
   alias datex='timestamp | x'
   alias dconfl='dconf load / <~/.config/dconf/user.conf'
   alias dconfw='dconf watch /'
+  # dD a.img X
+  # sudo dd if=a.img of=/dev/sdX
   dD() (
     if [ ! "$#" -eq 2 ]; then
       echo 'error'
@@ -61,30 +50,18 @@
   # Disk Fill, Human readable, Sort by total size.
   alias dfhs='df -h | sort -hrk2'
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
-  # Fail when no non-hidden files. globnull would solve, but hard to restore shell state afterwards.
-  alias e='echo'
-  # echo Exit status
-  alias ece='echo "$?"'
-  alias epa='echo "$PATH"'
   alias eclipse='noh ~/bin/eclipse/eclipse'
   alias eip='curl ipecho.net/plain'
   alias envg='env | grep -E'
-  alias ex='extract'
   f() { find . -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
   f3() { find . -maxdepth 3 -iname "*$1*"; }
-  alias l='less'
   alias fbr='find_basename_res.py'
   filw() { file "$(which "$1")"; }
-  alias g='grep -E'
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
-  alias gi='grep -Ei'
   alias gnup='gnuplot -p'
-  alias gr='grep -ER'
-  gri() ( grep -ERi "$@"; )
   alias fgb='fg;b'
   alias fmmmr='find-music-make-m3u .'
-  gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   h() { "$1" --help | less; }
   los() (
@@ -198,8 +175,11 @@
   alias rmrf='rm -rf'
   alias rmrfv='rm -rfv'
   alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
-  # Source Bashrc.
-  alias s='. ~/.bashrc'
+  # Source Bashrc. Unalias first so that conversions of functions
+  # to aliases won't give errors.
+  alias S='unalias -a && . ~/.bashrc'
+  s() ( less "$@"; )
+  ss() ( s -S "$@"; )
   alias se='sed -r'
   # Screen TTY.
   alias sha2='sha256sum'
@@ -247,11 +227,6 @@
   # Core dumps.
   ulimc() { ulimit -c "${1:-unlimited}"; }
   ulimsv() { ulimit -Sv "${1:-500000}"; }
-  alias v='gvim-remote'
-  alias vg='gvim-remote .gitignore'
-  alias vr='gvim-remote README.md'
-  viw() { vim "$(which "$1")"; }
-  alias vir='vim README.md'
   # Ubuntu 1 Public url to Clipboard:
   u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
   alias xar="xargs -I'{}'"
@@ -519,7 +494,7 @@
 
   ## ls
 
-    i() ( ls "$@"; )
+    l() ( ls "$@"; )
     ls() ( command ls -A -1 --color=auto --group-directories-first "$@"; )
     lswc() ( ls -1 "${1:-.}" | wc -l; )
     lsg() ( ls "${2:-.}" | g "$1"; )
@@ -605,13 +580,18 @@
   # Cat latest dushf.
   dushfl() ( cat "$(ls -a | grep -E '^.dush-' | sort | tail -n1)"; )
 
+## echo
+
+  alias e='echo'
+  alias ea='echo "$PATH"'
+  # echo Exit status
+  alias ee='echo "$?"'
+
 ## export
 
-  # MISC exports.
-
-  export LESS='-Ri'
-  export EDITOR="$vim"
+  export EDITOR="vim"
   export LC_COLLATE='C'
+  export LESS='-Ri'
 
   # OSX
   export CLICOLOR=1
@@ -636,17 +616,6 @@
       debian_chroot=$(cat /etc/debian_chroot)
     fi
     PS1='\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ '
-
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-      xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        ;;
-      *)
-        ;;
-    esac
-
-    # Add git and svn branch names
     export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch)"
 
 ## extract
@@ -673,6 +642,7 @@
         *)           echo "error: unknown extension: $1";;
       esac
     }
+    alias ex='extract'
 
 ## ffmpeg
 
@@ -697,7 +667,8 @@
   #   gccs 'printf('%d', f(1))' '99' 'int f(int i) { return i + 1; }'
   #
   # Expected output: `2`
-  gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}" -Wall -Wextra -pedantic -xc -; }
+  gccs() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | gcc -std="c${2:-1x}"   -Wall -Wextra -pedantic -xc   -; }
+  gpps() { echo "$3 int main(int argc, char** argv){$1; return 0;}" | g++ -std="c++${2:-0x}" -Wall -Wextra -pedantic -xc++ -; }
 
   alias gcc5="$HOME/git/gcc/install-o0/bin/gcc"
 
@@ -744,7 +715,7 @@
 
 ## Git
 
-  export GIT_EDITOR="$vim"
+  export GIT_EDITOR="vim"
 
   # Fails for aliases that autocomplete like `g co branch<tab>`,
   # still does not expand.
@@ -956,65 +927,73 @@
   alias vgig='vim .gitignore'
   alias lngp='latex-new-github-project.sh cirosantilli'
 
-# GitHub
+  # GitHub
 
-  alias ghb='git browse-remote'
-  alias ghpb='git push && git browse-remote'
-  ghmail() { curl "https://api.github.com/users/$1/events/public" | grep email; }
-  alias gpsbr='gps && git browse-remote'
-  alias gcmanpsfbr='gcmanpsf && git browse-remote'
-  # Pull Request.
-  ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
+    alias ghb='git browse-remote'
+    alias ghpb='git push && git browse-remote'
+    ghmail() { curl "https://api.github.com/users/$1/events/public" | grep email; }
+    alias gpsbr='gps && git browse-remote'
+    alias gcmanpsfbr='gcmanpsf && git browse-remote'
+    # Pull Request.
+    ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
 
-## Hub
+  ## Hub
 
-  alias huco='hub checkout'
+    alias huco='hub checkout'
 
-## Gerrit
+  ## Gerrit
 
-  alias gpsd='git push origin HEAD:refs/drafts/master'
-  alias gpsdt='git push origin HEAD:refs/drafts/trunk'
+    alias gpsd='git push origin HEAD:refs/drafts/master'
+    alias gpsdt='git push origin HEAD:refs/drafts/trunk'
 
-## svn
+  ## svn
 
-  # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
-  svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r; )
-  svndf() ( svn diff; )
-  # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
-  svng() ( gri --exclude-dir '.svn' "$@"; )
-  # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
-  svn-reset() ( svn revert --recursive .; )
-  svnst() ( svn status "$@"; )
-  # Git pull.
-  svnup() ( svn update "$@"; )
+    # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
+    svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r; )
+    svndf() ( svn diff; )
+    # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
+    svng() ( gri --exclude-dir '.svn' "$@"; )
+    # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
+    svn-reset() ( svn revert --recursive .; )
+    svnst() ( svn status "$@"; )
+    # Git pull.
+    svnup() ( svn update "$@"; )
 
-## GitLab
+  ## GitLab
 
-# Start developping GitLab.
-dev-gitlab-startup() {
-  guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
-  guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
-  guake -n 'server' -e 'cd ~/gitlab'
-  guake -n 'server' -e "cd \"$RAILS_DIR\""
-  guake -n 'server' -e 'cd ~/test'
-}
+    # Start developping GitLab.
+    dev-gitlab-startup() {
+      guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
+      guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
+      guake -n 'server' -e 'cd ~/gitlab'
+      guake -n 'server' -e "cd \"$RAILS_DIR\""
+      guake -n 'server' -e 'cd ~/test'
+    }
 
-# Rename Origin from githUb to gitlAb.
-grtroua() {
-  old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
-  new_origin="$(echo "$old_origin" | sed -E 's/^git@github/git@gitlab/')"
-  git remote set-url origin "$new_origin"
-  git remote add gh "$old_origin" &>/dev/null || :
-  git remote add gl "$new_origin" &>/dev/null || :
-}
+    # Rename Origin from githUb to gitlAb.
+    grtroua() {
+      old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
+      new_origin="$(echo "$old_origin" | sed -E 's/^git@github/git@gitlab/')"
+      git remote set-url origin "$new_origin"
+      git remote add gh "$old_origin" &>/dev/null || :
+      git remote add gl "$new_origin" &>/dev/null || :
+    }
 
-grtroau() {
-  old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
-  new_origin="$(echo "$old_origin" | sed -E 's/^git@gitlab/git@github/')"
-  git remote set-url origin "$new_origin"
-  git remote add gl "$old_origin" &>/dev/null || :
-  git remote add gh "$new_origin" &>/dev/null || :
-}
+    grtroau() {
+      old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
+      new_origin="$(echo "$old_origin" | sed -E 's/^git@gitlab/git@github/')"
+      git remote set-url origin "$new_origin"
+      git remote add gl "$old_origin" &>/dev/null || :
+      git remote add gh "$new_origin" &>/dev/null || :
+    }
+
+## grep
+
+  g() ( grep -E --color=auto "$@"; )
+  gi() ( g -i "$@"; )
+  gr() ( g -R "$@"; )
+  gri() ( gi -R "$@"; )
+  gv() ( g -v "$@"; )
 
 ## grunt
 
@@ -1049,6 +1028,14 @@ grtroau() {
   alias hss='homesick status'
   alias hsu='homesick push'
   alias hst='homesick track'
+
+  ## homeshick
+
+    #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+    f="$HOME/.homesick/repos/homeshick/homeshick.sh"
+    if [ -e "$f" ]; then
+      . "$f"
+    fi
 
 ## Java
 
@@ -1443,7 +1430,10 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## vim
 
-  alias vim="$vim"
+  v() ( gvim-remote "$@"; )
+  vg() ( v '.gitignore'; )
+  vr() ( v 'README.md'; )
+  vw() ( v "$(which "$1")"; )
   # osx vim
   if [ -x '/Applications/MacVim.app/Contents/MacOS/Vim' ]; then
     PATH="/Applications/MacVim.app/Contents/MacOS/:${PATH}"
@@ -1464,17 +1454,17 @@ alias myt='mysql -u a -h localhost -pa a'
   # Last Command to clipboard.
   alias xlc='fc -ln -1 | sed "s/\t //" | y'
   alias xsh='x | bash -xv'
-  xssh() { y < "$HOME/.ssh/id_rsa${1}.pub"; }
+  xssh() ( y < "$HOME/.ssh/id_rsa${1}.pub"; )
   alias xb='x | bash'
   alias xl='x | less'
 
   # Clipboard path operations.
 
     # Absolute path.
-    xab() { echo "$(pwd)/$1" | y; }
-    xmv() { mv "$(x)" "${1:-.}"; }
-    xcp() { cp "$(x)" "${1:-.}"; }
-    xpw() { pwd | y; }
+    xab() ( echo "$(pwd)/$1" | y; )
+    xmv() ( mv "$(x)" "${1:-.}"; )
+    xcp() ( cp "$(x)" "${1:-.}"; )
+    xpw() ( pwd | y; )
 
 ## xdg
 
