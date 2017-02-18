@@ -52,6 +52,8 @@
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
   alias eclipse='noh ~/bin/eclipse/eclipse'
   alias eip='curl ipecho.net/plain'
+  alias enmp='ecryptfs-mount-private'
+  alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
   f() { find . -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
@@ -1052,7 +1054,7 @@
 
   alias bej='bundle exec jekyll'
   alias bejb='bundle exec jekyll build -It'
-  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -Itw'
+  alias bejs='o http://localhost:4000 && bundle exec jekyll serve -Itw'
 
 ## make
 
@@ -1243,6 +1245,7 @@ alias myt='mysql -u a -h localhost -pa a'
   export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
   alias py='python'
+  alias pyt='python -m trace -t'
   alias pyv='python --version'
   alias py3='python3'
   alias ipy='ipython'
