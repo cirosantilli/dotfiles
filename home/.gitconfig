@@ -37,6 +37,8 @@
 	#pager = less -FXr
 [credential]
 	helper = cache --timeout=999999
+[diff]
+	renames = true
 [grep]
 	extendedRegexp = true
 	lineNumber = true

@@ -33,6 +33,7 @@ fi
 
     #export BROWSER=firefox
     export EDITOR=vim
+    export LESS='-Ri'
     #export PAGER=less
 
   ## Directory structure
@@ -54,6 +55,7 @@ fi
           export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath"
         export PYTHON_DIR="$PROGRAM_DIR/python-cheat"
         export RAILS_DIR="$PROGRAM_DIR/rails/cheat"
+        export RTL_CHEAT="$PROGRAM_DIR/rtl-cheat"
         export WEBSITE_DIR="$PROGRAM_DIR/cirosantilli.github.io"
           export GIT_TUTORIAL_DIR="$WEBSITE_DIR/git-tutorial"
           export DB_DIR="$WEBSITE_DIR/db"
