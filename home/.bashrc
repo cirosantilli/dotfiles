@@ -1,3 +1,6 @@
+# Nah, don't crash my poor system, die instead..
+ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
+
 ## Settings
 
   # OSX
@@ -81,6 +84,8 @@
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
   alias eclipse='noh ~/bin/eclipse/eclipse'
   alias eip='curl ipecho.net/plain'
+  alias enmp='ecryptfs-mount-private'
+  alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
   f() { find "${2-.}" -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
@@ -93,6 +98,7 @@
   alias fmmmr='find-music-make-m3u .'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   h() { "$1" --help | less; }
+  alias j='jobs'
   los() (
     img="$1"
     dev="$(sudo losetup --show -f -P "$img")"
@@ -1062,7 +1068,7 @@
 
   alias bej='bundle exec jekyll'
   alias bejb='bundle exec jekyll build -It'
-  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -Itw'
+  alias bejs='o http://localhost:4000 && bundle exec jekyll serve -Itw'
 
 ## make
 
@@ -1259,6 +1265,7 @@ alias myt='mysql -u a -h localhost -pa a'
   export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
   alias py='python'
+  alias pyt='python -m trace -t'
   alias pyv='python --version'
   alias py3='python3'
   alias pyi='ipython'
@@ -1351,6 +1358,8 @@ alias myt='mysql -u a -h localhost -pa a'
   # Ignore drivers.
   lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
   # TODO ignore all archs except x86.
+
+  # Commented out because was breaking unrelated things that also use kbuild, e.g. busybox.
   #export KBUILD_OUTPUT='../build'
 
   alias mkold='make oldconfig'
@@ -1358,6 +1367,51 @@ alias myt='mysql -u a -h localhost -pa a'
   alias mkmen='make menuconfig'
   dtbs() ( dtc -I dtb -O dts -o - "$1"; )
   dtsb() ( dtc -I dts -O dtb -o - "$1"; )
+
+  kernel-qemu() (
+    qemu-system-x86_64 \
+      -initrd rootfs.cpio.gz \
+      -kernel "${KBUILD_OUTPUT:-.}/arch/x86/boot/bzImage" \
+      -m 512 \
+    ;
+  )
+
+  kernel-rootfs() (
+    cd "${1:-./rootfs}"
+    find . | cpio -o -H newc | gzip > ../rootfs.cpio.gz
+  )
+
+  # Compile a C file, make that the init, then run qemu on it.
+  kernel-run-init() (
+    d='rootfs'
+    mkdir -p "$d"
+    gcc -static "${1:-init.c}" -o "$d/init"
+    kernel-rootfs "$d"
+    kernel-kernel
+  )
+
+  # http://stackoverflow.com/questions/11408041/how-to-debug-the-linux-kernel-with-gdb-and-qemu/33203642#33203642
+  kernel-qemu-gdb() (
+    qemu-system-x86_64 \
+      -initrd rootfs.cpio.gz \
+      -kernel "${KBUILD_OUTPUT:-.}/arch/x86/boot/bzImage" \
+      -S \
+      -s \
+      &>/dev/null \
+    &
+    gdb \
+        -ex "add-auto-load-safe-path $(pwd)" \
+        -ex "file ${KBUILD_OUTPUT:-./}/vmlinux" \
+        -ex 'set arch i386:x86-64:intel' \
+        -ex 'target remote localhost:1234' \
+        -ex "break ${1:-start_kernel}" \
+        -ex 'continue' \
+        -ex 'disconnect' \
+        -ex 'set arch i386:x86-64' \
+        -ex 'target remote localhost:1234'
+
+    kill %1
+  )
 
 ## rake
 
