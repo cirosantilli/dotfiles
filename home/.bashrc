@@ -1,6 +1,35 @@
 # Nah, don't crash my poor system, die instead..
 ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
+## Settings
+
+  # OSX
+  export CLICOLOR=1
+
+  ## PS1
+  parse_git_branch () {
+    git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#(git::\1)#'
+  }
+  parse_svn_branch() {
+    parse_svn_url | sed -e 's#^'"$(parse_svn_repository_root)"'##g' | awk -F / '{print "(svn::"$1 "/" $2 ")"}'
+  }
+  parse_svn_url() {
+    svn info 2>/dev/null | sed -ne 's#^URL: ##p'
+  }
+  parse_svn_repository_root() {
+    svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
+  }
+  if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+  fi
+  PS1='\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ '
+  export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch)"
+
+  # Free up Cq and Cs, and stop Cs from freezing terminal.
+  # http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
+  # http://unix.stackexchange.com/questions/137842/what-is-the-point-of-ctrl-s
+  stty -ixon
+
 ## alias
 
 ## functions
@@ -13,7 +42,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   # long-command;b
   alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
   alias bashx='x | bash'
-  alias bsu='bsub -P PJ02067 -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen'
+  bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
   alias cdg='cd "$(git rev-parse --show-toplevel)"'
   alias cdG='cd "$MY_GIT_DIR"'
   # Start bash in a clean test environment.
@@ -58,7 +87,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias enmp='ecryptfs-mount-private'
   alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
-  f() { find . -iname "*$1*"; }
+  f() { find "${2-.}" -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
   f3() { find . -maxdepth 3 -iname "*$1*"; }
   alias fbr='find_basename_res.py'
@@ -108,7 +137,6 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   md() ( mkdir -p "$@"; )
   # Make Dir Cd
   mdc() { md "$1" && cd "$1"; }
-  alias mnt='mount'
   alias mupen='mupen64plus --fullscreen'
   mvc() { mv "$1" "$2" && cd "$2"; }
   # Shutdown but run some scripts it.
@@ -243,7 +271,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   # Usage: unizipd d.zip
   # Outcome: unzips the content of `a.zip` into a newly created `d` directory
   unzipd() { unzip -d "${1%.*}" "$1"; }
-  zipd() { zip -r "${1%/}.zip" "$1"; }
+  z() { zip -r "${1%/}.zip" "$1"; }
 
   bdiff() (
     f() (
@@ -417,29 +445,31 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
     if [ -n "$1" ]; then
       cd "$1" || return 1
     else
-      cd
+      cd ..
     fi
-    ls
+    ll
   }
-  alias cda='cd "$ART_DIR"'
-  alias cdc='cd "$CPP_DIR"'
-  alias cdD='cd "$DOWNLOAD_DIR" && lfl'
+  C() { cd; }
+  alias cda='c "$ART_DIR"'
+  alias cdc='c "$CPP_DIR"'
+  alias cdD='c "$DOWNLOAD_DIR" && lfl'
   # cd Dot
-  alias cdd='cd ..'
-  alias cddd='cd .. && cd ..'
-  alias cdddd='cd .. && cd .. && cd ..'
-  alias cdj='cd "$JAVA_DIR"'
-  alias cdl='cd "$LINUX_DIR"'
-  alias cdn='cd "$NOTES_DIR"'
-  alias cdp='cd "$PROGRAM_DIR"'
-  alias cdq='cd "$QUARTET_DIR"'
+  alias cdd='c ..'
+  alias cddd='c ../..'
+  alias cdddd='c ../../..'
+  alias cdj='c "$JAVA_DIR"'
+  alias cdl='c "$LINUX_DIR"'
+  alias cdn='c "$NOTES_DIR"'
+  alias cdp='c "$PROGRAM_DIR"'
+  alias cdq='c "$QUARTET_DIR"'
   # cd Slash
-  alias cds='cd -'
-  alias cdt='cd "$TEST_DIR"'
-  alias cdu='cd "$UBUNTU_DIR"'
-  alias cdx='cd "$(x)"'
-  alias cdy='cd "$PYTHON_DIR"'
-  alias cdw='cd "$WEBSITE_DIR"'
+  alias cds='c -'
+  alias cdt='c "$TEST_DIR"'
+  alias cdu='c "$UBUNTU_DIR"'
+  alias cdr='c "$RTL_DIR"'
+  alias cdx='c "$(x)"'
+  alias cdy='c "$PYTHON_DIR"'
+  alias cdw='c "$WEBSITE_DIR"'
   # TODO make a version that also cats the command and pwd.
   #b() { "$@"; zenity --info --text "$*"; }
 
@@ -591,39 +621,9 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
   alias e='echo'
   alias ea='echo "$PATH"'
+  alias eat='echo "$PATH" | tr : "\n"'
   # echo Exit status
   alias ee='echo "$?"'
-
-## export
-
-  export EDITOR="vim"
-  export LC_COLLATE='C'
-  export LESS='-Ri'
-
-  # OSX
-  export CLICOLOR=1
-
-  ## PS1
-
-    parse_git_branch () {
-      git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#(git::\1)#'
-    }
-    parse_svn_branch() {
-      parse_svn_url | sed -e 's#^'"$(parse_svn_repository_root)"'##g' | awk -F / '{print "(svn::"$1 "/" $2 ")"}'
-    }
-    parse_svn_url() {
-      svn info 2>/dev/null | sed -ne 's#^URL: ##p'
-    }
-    parse_svn_repository_root() {
-      svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
-    }
-
-    # Set variable identifying the chroot you work in (used in the prompt below).
-    if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-      debian_chroot=$(cat /etc/debian_chroot)
-    fi
-    PS1='\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ '
-    export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch)"
 
 ## extract
 
@@ -746,7 +746,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gbl='git blame'
   alias gbr='git branch'
   # Sort Comitter. http://stackoverflow.com/a/5188364/895245
-  alias gbsc='git for-each-ref --sort=-committerdate --format="%(refname) %(committerdate) %(authorname)"'
+  alias gbrsc='git for-each-ref --sort=-committerdate --format="%(refname) %(committerdate) %(authorname)"'
   gbrg () { git branch | grep "$1"; }
   gbrag () { git branch -a | grep "$1"; }
   gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -799,8 +799,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gcngh='git config user.email "ciro.santilli@gmail.com"'
   # Git config anti-commie.
   alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
-  alias gcp='git cp'
-  alias gcr='git cherry-pick'
+  alias gcp='git cherry-pick'
   alias gd='git diff'
   alias gdf='git diff'
   alias gdfth='git diff trunk...HEAD'
@@ -845,6 +844,8 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
   alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
   alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
+  # My comimits.
+  alias glom='git log --author="$(git config user.name)"'
   alias glop='git log -p'
   #alias glopf='git log --pretty=oneline --decorate'
   alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
@@ -880,7 +881,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gpsum='git push -u mine'
   alias gpsu='git push -u'
   alias gpsuom='git push -u origin master'
-  alias gpl='git pull'
+  alias gpl='git pull && gsuur'
   alias gplr='git pull --rebase'
   alias gplum='git pull up master'
   alias gplrum='git pull --rebase up master'
@@ -902,6 +903,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias grsh='git reset --hard'
   alias grsH='git reset HEAD~'
   alias grshH='git reset --hard HEAD~'
+  alias grl='git reflog'
   alias grm='git rm'
   alias grt='git remote'
   alias grta='git remote add'
@@ -923,7 +925,9 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gsua='git submodule add'
   alias gsuf='git submodule foreach'
   alias gsufp='git submodule foreach git pull'
+  alias gsui='git submodule init'
   alias gsuu='git submodule update'
+  alias gsuur='git submodule update --recursive'
   alias gta='git tag'
   alias gtac='git tag --contains'
   # Git TAg Date
@@ -1099,26 +1103,26 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias tf='tail -f'
   alias tn='tail -n+1'
 
-# From Git root:
+  # From Git root:
 
-  alias gmk='git !exec make'
-  alias gmkc='git !exec make clean'
-  alias gmkd='git !exec make dist'
-  alias gmkr='git !exec make run'
-  alias gmkt='git !exec make test'
+    alias gmk='git !exec make'
+    alias gmkc='git !exec make clean'
+    alias gmkd='git !exec make dist'
+    alias gmkr='git !exec make run'
+    alias gmkt='git !exec make test'
 
-# cmake
+  # cmake
 
-  cmk() (
-    mkdir -p build
-    cd build
-    cmake .. "$@"
-    cmake --build .
-  )
-  cmkd() ( cmk -DCMAKE_BUILD_TYPE=Debug )
-  cmks() ( cmk -DBUILD_SHARED_LIBS=ON )
-  # Test.
-  cmkt() ( cmk && ctest -V . )
+    cmk() {
+      mkdir -p build
+      cd build
+      cmake .. "$@"
+      cmake --build .
+    }
+    cmkd() { cmk -DCMAKE_BUILD_TYPE=Debug; }
+    cmks() { cmk -DBUILD_SHARED_LIBS=ON; }
+    # Test.
+    cmkt() { cmk && ctest -V .; }
 
 ## Mass regex operations
 
@@ -1181,6 +1185,12 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
   # Mass rename refactoring.
   alias mvr='move_regex.py'
+
+## mount
+
+  alias mnt='mount'
+  alias mntg='mount | gi'
+  alias umnt='sudo umount'
 
 ## mysql
 
@@ -1252,13 +1262,13 @@ alias myt='mysql -u a -h localhost -pa a'
   alias pyt='python -m trace -t'
   alias pyv='python --version'
   alias py3='python3'
-  alias ipy='ipython'
-  alias tipy='touch __init__.py'
+  alias pyi='ipython'
+  alias pyti='touch __init__.py'
   alias pyserve='python -m SimpleHTTPServer'
   alias pyjson='python -m json.tool'
   alias pydoc='python -m doctest'
   # http://stackoverflow.com/questions/24906126/how-to-unpack-pkl-file
-  pkl() (
+  pyp() (
     python -c 'import pickle,sys;d=pickle.load(open(sys.argv[1],"rb"));print(d)' "$1"
   )
 
@@ -1553,8 +1563,6 @@ alias myt='mysql -u a -h localhost -pa a'
   }
 
   RING_DIR="$HOME/git/ring"
-  alias cdr='cd "$RING_DIR"'
-  alias cdra='cd "$RING_DIR/client-android"'
   alias rr='"$RING_DIR/ubuntu-15.10-run.sh"'
   alias psgr='ps aux | grep ring'
 

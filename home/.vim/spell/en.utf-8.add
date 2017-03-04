@@ -229,6 +229,7 @@ CSS4
 CTAN
 CTF
 CTO
+CTS
 CUDA
 CVE
 CVS
@@ -342,6 +343,7 @@ Das
 DataTables
 Debian
 Debian's
+DeepMind
 DejaGnu
 Desaulniers
 Deshouillers
@@ -524,6 +526,7 @@ GMP
 GMS
 GNOME's
 GNU's
+GPDK
 GPG
 GPGPU
 GPGPUs
@@ -631,6 +634,7 @@ Heroku
 Hexdumps
 HiPEAC
 Hirschtick
+Hitchin
 Hodor
 Holborn
 Holomorphic
@@ -802,12 +806,14 @@ Kramdown
 Krap
 Krusader
 Kwaidan
+L0
 L3
 LALR
 LAPACK
 LAPACKE
 LCC/!
 LDAP
+LEF
 LF
 LFS
 LFTP
@@ -863,12 +869,14 @@ MFS
 MIAOW
 MINIX
 MISRA
+MMMC
 MMORPG
 MMU
 MMX
 MOBI
 MOLAP
 MOOCs
+MOSIS
 MP2
 MP3
 MPEG
@@ -1084,6 +1092,7 @@ POP3
 POSIX
 PPA
 PPAs
+PRNGs
 PRs
 PS1
 PS3
@@ -1110,6 +1119,7 @@ PermGen
 Phablet
 PhantomJS
 Photogrammetry
+Photolithography
 Photoshop
 Phusion
 PhysX
@@ -1279,6 +1289,8 @@ SPOJ
 SPS
 SQL
 SQLite
+SRAM
+SRAM
 SSD
 SSE2
 SSE3
@@ -1294,6 +1306,7 @@ SSVs
 ST0
 STL
 SUID
+SVA
 SVD
 SVG
 SVGs
@@ -1337,6 +1350,7 @@ Shoulda
 Shuttleworth
 Sichuan
 SimCity
+SimVision
 SimpleForm
 Sinosphere
 Siverlight
@@ -1395,6 +1409,7 @@ TLS
 TOC
 TOCTTOU
 TODO
+TPU
 TR1
 TR2
 TRALICS
@@ -2014,6 +2029,7 @@ multithreading
 mutexes
 mysldump
 mysqladmin
+nW
 namespace
 namespaced
 namespaces
@@ -2321,10 +2337,3 @@ zealotism
 zeroconf
 zlib
 École
-Photolithography
-TPU
-L0
-SRAM
-DeepMind
-PRNGs
-Hitchin
