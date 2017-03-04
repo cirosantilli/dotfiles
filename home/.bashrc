@@ -294,17 +294,17 @@
 
 ## android
 
-  alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
-  alias ands='nohup studio.sh >/dev/null 2>&1 &'
   alias adbc='adb connect'
-  alias adbi='adb disconnect'
   alias adbd='adb devices -l'
-  alias adbs='adb shell'
+  alias adbi='adb disconnect'
   alias adbks='sudo "$(which adb)" kill-server && sudo "$(which adb)" start-server'
   alias adbl="adb logcat"
+  alias adble="adb logcat -v time '*:E'"
   alias adbls="adb logcat -v time -s"
   alias adblsc="adb logcat -v time -s com.cirosantilli"
-  alias adble="adb logcat -v time '*:E'"
+  alias adbs='adb shell'
+  alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
+  alias ands='nohup studio.sh >/dev/null 2>&1 &'
   # Run app in current directory. Must be run from top level
   # of a project created with `android create project`.
   # Only works if there is only a single file in the `src/` directory.
@@ -606,18 +606,24 @@
 ## du
 
   alias duh='du -h'
-  alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
-  alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
+  dush() (
+    cd "${1:-.}"
+    du -sh .[^.]* * 2>/dev/null | sort -h
+  )
+  # dush to File
+  dushf() (
+    dush | tee ".dush-$(timestamp)~"
+  )
   # Cat latest dushf.
   dushfl() ( cat "$(ls -a | grep -E '^.dush-' | sort | tail -n1)"; )
 
 ## echo
 
   alias e='echo'
-  alias ea='echo "$PATH"'
-  alias eat='echo "$PATH" | tr : "\n"'
   # echo Exit status
-  alias ee='echo "$?"'
+  alias ece='echo "$?"'
+  alias ecp='echo "$PATH"'
+  alias ecpt='echo "$PATH" | tr : "\n"'
 
 ## extract
 
@@ -832,15 +838,14 @@
   alias glsg='git ls-files | g'
   alias glsgi='git ls-files | gi'
   alias glsr='git ls-remote'
-  alias glo='git log --decorate'
-  alias glof='git log --decorate --pretty=fuller'
+  alias glo='git log --decorate --pretty=fuller'
   alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
   alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
   alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
   alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
   # My comimits.
   alias glom='git log --author="$(git config user.name)"'
-  alias glop='git log -p'
+  alias glop='glo -p'
   #alias glopf='git log --pretty=oneline --decorate'
   alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
   # Find where that feature entered the code base.
@@ -955,9 +960,10 @@
 
     # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
     svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r; )
-    svndf() ( svn diff; )
+    svnd() ( svn diff; )
     # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
     svng() ( gri --exclude-dir '.svn' "$@"; )
+    svnlo() ( svn long -n 1; )
     # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
     svn-reset() ( svn revert --recursive .; )
     svnst() ( svn status "$@"; )
