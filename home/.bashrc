@@ -261,7 +261,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   )
   # Core dumps.
   ulimc() { ulimit -c "${1:-unlimited}"; }
-  ulimsv() { ulimit -Sv "${1:-500000}"; }
+  ulimsv() { ulimit -Sv "${1:-500}000"; }
   # Ubuntu 1 Public url to Clipboard:
   u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
   alias xar="xargs -I'{}'"
@@ -451,6 +451,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   }
   C() { cd; }
   alias cda='c "$ART_DIR"'
+  alias cdA='c "$ANDROID_DIR"'
   alias cdc='c "$CPP_DIR"'
   alias cdD='c "$DOWNLOAD_DIR" && lfl'
   # cd Dot
