@@ -80,7 +80,7 @@
   alias dfhs='df -h | sort -hrk2'
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
   dmes() ( dmesg -T )
-  alias eclipse='noh ~/bin/eclipse/eclipse'
+  eclipse() ( noh "$HOME/bin/eclipse/eclipse" )
   alias eip='curl ipecho.net/plain'
   alias envg='env | grep -E'
   f() { find "${2-.}" -iname "*$1*"; }
@@ -258,6 +258,7 @@
   # Core dumps.
   ulimc() { ulimit -c "${1:-unlimited}"; }
   ulimsv() { ulimit -Sv "${1:-500}000"; }
+  ulimsvu() { ulimit -Sv unlimited; }
   # Ubuntu 1 Public url to Clipboard:
   u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
   alias xar="xargs -I'{}'"
