@@ -1,20 +1,3 @@
-# ctags
-tags
-tagsgen
-
-# cscope
-cscope.files
-cscope.out
-cscope.out.in
-cscope.out.po
-
-# Eclipse
-.cproject
-.project
-
-# Code Blocks
-*.cbp
-
-# KDevelop
-kdev4/
+.idea
+.kdev4
 *.kdev4
