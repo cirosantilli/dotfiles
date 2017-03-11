@@ -1,6 +1,3 @@
-# Nah, don't crash my poor system, die instead..
-ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
-
 ## Settings
 
   # OSX
@@ -82,15 +79,13 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   # Disk Fill, Human readable, Sort by total size.
   alias dfhs='df -h | sort -hrk2'
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
+  dmes() ( dmesg -T )
   alias eclipse='noh ~/bin/eclipse/eclipse'
   alias eip='curl ipecho.net/plain'
-  alias enmp='ecryptfs-mount-private'
-  alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
   f() { find "${2-.}" -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
   f3() { find . -maxdepth 3 -iname "*$1*"; }
-  alias fbr='find_basename_res.py'
   filw() { file "$(which "$1")"; }
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
   alias gnup='gnuplot -p'
@@ -98,7 +93,8 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias fmmmr='find-music-make-m3u .'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   h() { "$1" --help | less; }
-  alias j='jobs'
+  L() ( locate -r "$1"; )
+  lob() ( locate -br "$1"; )
   los() (
     img="$1"
     dev="$(sudo losetup --show -f -P "$img")"
@@ -146,7 +142,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias ncl="while true; do printf '' | nc -l localhost 8000; done"
   noh() { nohup $@ >/dev/null 2>&1 & }
   # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
-  nproc-spare() ( printf "$(($(nproc) - 2))" )
+  npro() ( printf "$(($(nproc) - 2))" )
   alias ods='od -Ax -tx1'
   alias o='xdg-open'
   # Open First. When you are in a huge directory with tons of
@@ -300,17 +296,18 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
 ## android
 
-  alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
-  alias ands='nohup studio.sh >/dev/null 2>&1 &'
   alias adbc='adb connect'
-  alias adbi='adb disconnect'
   alias adbd='adb devices -l'
-  alias adbs='adb shell'
+  alias adbD='adb disconnect'
+  alias adbi='adb install'
   alias adbks='sudo "$(which adb)" kill-server && sudo "$(which adb)" start-server'
   alias adbl="adb logcat"
+  alias adble="adb logcat -v time '*:E'"
   alias adbls="adb logcat -v time -s"
   alias adblsc="adb logcat -v time -s com.cirosantilli"
-  alias adble="adb logcat -v time '*:E'"
+  alias adbs='adb shell'
+  alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
+  alias ands='nohup studio.sh >/dev/null 2>&1 &'
   # Run app in current directory. Must be run from top level
   # of a project created with `android create project`.
   # Only works if there is only a single file in the `src/` directory.
@@ -389,7 +386,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
   brm() {
     unset LD_LIBRARY_PATH
-    time make BR2_JLEVEL="$(nproc-spare)"
+    time make BR2_JLEVEL="$(npro)"
     b
   }
   brq() {
@@ -613,18 +610,24 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 ## du
 
   alias duh='du -h'
-  alias dush='du -sh .[^.]* * 2>/dev/null | sort -hr'
-  alias dushf='dush | tee ".dush-$(timestamp)~"' # to File
+  dush() (
+    cd "${1:-.}"
+    du -sh .[^.]* * 2>/dev/null | sort -h
+  )
+  # dush to File
+  dushf() (
+    dush | tee ".dush-$(timestamp)~"
+  )
   # Cat latest dushf.
   dushfl() ( cat "$(ls -a | grep -E '^.dush-' | sort | tail -n1)"; )
 
 ## echo
 
   alias e='echo'
-  alias ea='echo "$PATH"'
-  alias eat='echo "$PATH" | tr : "\n"'
   # echo Exit status
-  alias ee='echo "$?"'
+  alias ece='echo "$?"'
+  alias ecp='echo "$PATH"'
+  alias ecpt='echo "$PATH" | tr : "\n"'
 
 ## extract
 
@@ -689,9 +692,9 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
 ## gdb
 
-  alias gdbm='gdb -ex "break main" -ex "run" -q'
-  alias gdbr='gdb -ex "run" -q'
-  alias gdbs='gdb -ex "break _start" -ex "run" -q'
+  alias gdbm='gdb -ex "break main" -ex "run" -q --args'
+  alias gdbr='gdb -ex "run" -q --args'
+  alias gdbs='gdb -ex "break _start" -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
   gdbcbt() (
@@ -746,8 +749,8 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gbi='git bisect'
   alias gbl='git blame'
   alias gbr='git branch'
-  # Sort Comitter. http://stackoverflow.com/a/5188364/895245
-  alias gbrsc='git for-each-ref --sort=-committerdate --format="%(refname) %(committerdate) %(authorname)"'
+  # Sort Comitter. Latest changed branch first. http://stackoverflow.com/a/5188364/895245
+  alias gbrsc='git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname)"'
   gbrg () { git branch | grep "$1"; }
   gbrag () { git branch -a | grep "$1"; }
   gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -839,15 +842,14 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias glsg='git ls-files | g'
   alias glsgi='git ls-files | gi'
   alias glsr='git ls-remote'
-  alias glo='git log --decorate'
-  alias glof='git log --decorate --pretty=fuller'
+  alias glo='git log --decorate --pretty=fuller'
   alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
   alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
   alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
   alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
   # My comimits.
   alias glom='git log --author="$(git config user.name)"'
-  alias glop='git log -p'
+  alias glop='glo -p'
   #alias glopf='git log --pretty=oneline --decorate'
   alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
   # Find where that feature entered the code base.
@@ -882,7 +884,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gpsum='git push -u mine'
   alias gpsu='git push -u'
   alias gpsuom='git push -u origin master'
-  alias gpl='git pull && gsuur'
+  alias gpl='git pull && gsuu'
   alias gplr='git pull --rebase'
   alias gplum='git pull up master'
   alias gplrum='git pull --rebase up master'
@@ -926,9 +928,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias gsua='git submodule add'
   alias gsuf='git submodule foreach'
   alias gsufp='git submodule foreach git pull'
-  alias gsui='git submodule init'
-  alias gsuu='git submodule update'
-  alias gsuur='git submodule update --recursive'
+  alias gsuu='git submodule update --init --recursive'
   alias gta='git tag'
   alias gtac='git tag --contains'
   # Git TAg Date
@@ -961,15 +961,16 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   ## svn
 
     # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
-    svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r; )
-    svndf() ( svn diff; )
+    svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r )
+    svnd() ( svn diff )
     # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
-    svng() ( gri --exclude-dir '.svn' "$@"; )
+    svng() ( gri --exclude-dir '.svn' "$@" )
+    svnl() ( svn log | s )
     # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
-    svn-reset() ( svn revert --recursive .; )
-    svnst() ( svn status "$@"; )
+    svn-reset() ( svn revert --recursive . )
+    svnst() ( svn status "$@" )
     # Git pull.
-    svnup() ( svn update "$@"; )
+    svnup() ( svn update "$@" )
 
   ## GitLab
 
@@ -1063,7 +1064,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
 
   alias bej='bundle exec jekyll'
   alias bejb='bundle exec jekyll build -It'
-  alias bejs='o http://localhost:4000 && bundle exec jekyll serve -Itw'
+  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -Itw'
 
 ## make
 
@@ -1079,7 +1080,7 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   alias mki='make install'
   alias smki='sudo make install'
   alias mkir='make && sudo make install && make install-run'
-  alias mkj='make -j"$(($(nproc) + 1))"'
+  alias mkj='make -j"$(npro)"'
   # Stop background watch.
   alias mkk='make kill'
   # List targets.
@@ -1096,11 +1097,11 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   tb() { time "$@"; b; }
   alias tmkb='time make; b'
   # Time the build, use many processors, alert me when done.
-  alias tmkjb='time make -j"$(($(nproc) + 1))"; b'
+  alias tmkjb='time make -j"$(npro)"; b'
   # Like above, but also do a local `make install`.
-  alias tmkjbi='time make -j"$(($(nproc) + 1))"; make install; b'
+  alias tmkjbi='time make -j"$(npro)"; make install; b'
   alias tmkcb='time make check; b'
-  alias tmkcjb='time make -j"$(($(nproc) + 1))" check;b'
+  alias tmkcjb='time make -j"$(npro)" check;b'
   alias tf='tail -f'
   alias tn='tail -n+1'
 
@@ -1115,11 +1116,11 @@ ulimit -Sv "$(grep MemTotal /proc/meminfo | awk '{print $2 / 2}')"
   # cmake
 
     cmk() {
-      mkdir -p build
-      cd build
+      mdc 'build'
       cmake .. "$@"
-      cmake --build .
+      cmake --build . -- -j"$(npro)"
     }
+    cmkb() { time cmk; b; }
     cmkd() { cmk -DCMAKE_BUILD_TYPE=Debug; }
     cmks() { cmk -DBUILD_SHARED_LIBS=ON; }
     # Test.
@@ -1260,7 +1261,6 @@ alias myt='mysql -u a -h localhost -pa a'
   export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
   alias py='python'
-  alias pyt='python -m trace -t'
   alias pyv='python --version'
   alias py3='python3'
   alias pyi='ipython'
@@ -1353,8 +1353,6 @@ alias myt='mysql -u a -h localhost -pa a'
   # Ignore drivers.
   lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
   # TODO ignore all archs except x86.
-
-  # Commented out because was breaking unrelated things that also use kbuild, e.g. busybox.
   #export KBUILD_OUTPUT='../build'
 
   alias mkold='make oldconfig'
@@ -1362,51 +1360,6 @@ alias myt='mysql -u a -h localhost -pa a'
   alias mkmen='make menuconfig'
   dtbs() ( dtc -I dtb -O dts -o - "$1"; )
   dtsb() ( dtc -I dts -O dtb -o - "$1"; )
-
-  kernel-qemu() (
-    qemu-system-x86_64 \
-      -initrd rootfs.cpio.gz \
-      -kernel "${KBUILD_OUTPUT:-.}/arch/x86/boot/bzImage" \
-      -m 512 \
-    ;
-  )
-
-  kernel-rootfs() (
-    cd "${1:-./rootfs}"
-    find . | cpio -o -H newc | gzip > ../rootfs.cpio.gz
-  )
-
-  # Compile a C file, make that the init, then run qemu on it.
-  kernel-run-init() (
-    d='rootfs'
-    mkdir -p "$d"
-    gcc -static "${1:-init.c}" -o "$d/init"
-    kernel-rootfs "$d"
-    kernel-kernel
-  )
-
-  # http://stackoverflow.com/questions/11408041/how-to-debug-the-linux-kernel-with-gdb-and-qemu/33203642#33203642
-  kernel-qemu-gdb() (
-    qemu-system-x86_64 \
-      -initrd rootfs.cpio.gz \
-      -kernel "${KBUILD_OUTPUT:-.}/arch/x86/boot/bzImage" \
-      -S \
-      -s \
-      &>/dev/null \
-    &
-    gdb \
-        -ex "add-auto-load-safe-path $(pwd)" \
-        -ex "file ${KBUILD_OUTPUT:-./}/vmlinux" \
-        -ex 'set arch i386:x86-64:intel' \
-        -ex 'target remote localhost:1234' \
-        -ex "break ${1:-start_kernel}" \
-        -ex 'continue' \
-        -ex 'disconnect' \
-        -ex 'set arch i386:x86-64' \
-        -ex 'target remote localhost:1234'
-
-    kill %1
-  )
 
 ## rake
 
@@ -1529,7 +1482,7 @@ alias myt='mysql -u a -h localhost -pa a'
     # Absolute path.
     xab() ( echo "$(pwd)/$1" | y; )
     xmv() ( mv "$(x)" "${1:-.}"; )
-    xcp() ( cp "$(x)" "${1:-.}"; )
+    xcp() ( cp -r "$(x)" "${1:-.}"; )
     xpw() ( pwd | y; )
 
 ## xdg

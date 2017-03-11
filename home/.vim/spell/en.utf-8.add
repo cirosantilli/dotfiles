@@ -269,6 +269,7 @@ Clonfluence
 CloudFare
 CodeMirror
 Codehaus
+Codeplay
 CoffeScript
 CoffeeScript
 Collatz
@@ -549,6 +550,7 @@ GameCube
 Gapps
 Garloff's
 Gattaca
+GeForce
 Gemfile
 Gemfile's
 Gemsets
@@ -979,6 +981,7 @@ NVIDIA
 NVIDIA's
 NVM
 NVS
+NXP
 Napolitan
 Napster
 Nashvile/!
@@ -1154,6 +1157,7 @@ Precompiles
 PressBooks
 Primality
 PrimeTime
+ProGuard
 Prolog
 PullReview
 PulseAudio
@@ -1168,6 +1172,7 @@ QFS
 QFT
 QTM
 Qt
+Quadro
 Qualcomm
 Quantcast
 QuartetFS
@@ -1289,7 +1294,6 @@ SPOJ
 SPS
 SQL
 SQLite
-SRAM
 SRAM
 SSD
 SSE2
@@ -2337,6 +2341,3 @@ zealotism
 zeroconf
 zlib
 École
-Codeplay
-GeForce
-Quadro

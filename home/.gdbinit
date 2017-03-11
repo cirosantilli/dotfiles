@@ -1,8 +1,5 @@
 ## Settings.
 
-    # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
-    set print pretty on
-
     # http://stackoverflow.com/questions/8528979/how-to-determine-if-an-object-is-an-instance-of-certain-derived-c-class-from-a
     set print object on
 
