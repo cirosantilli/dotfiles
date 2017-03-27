@@ -1,0 +1,4 @@
+dashboard -layout source stack
+dashboard source -style context 16
+dashboard stack -style limit 0
+dashboard stack -style arguments False

@@ -157,6 +157,7 @@
     xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
   }
   alias pdc='pandoc'
+  pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
   alias r='ranger'
   ramfs() {
     dir='/mnt/ramfs'
@@ -552,6 +553,7 @@
         grep="${2:-}"
         echo "$(cd "$dir" && pwd)/$(command ls -ct "${dir:-.}" | grep "$grep" | head -n1)";
       )
+      lfcd() { cd "$(lfg "$1")"; }
       # lfm dst [src-dir=.]
       # Move latest modified file in src-dir to dst.
       lfm() (
@@ -693,9 +695,9 @@
 
 ## gdb
 
-  alias gdbm='gdb -ex "break main" -ex "run" -q --args'
+  alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
+  alias gdbs='gdb -ex "start" -q --args'
   alias gdbr='gdb -ex "run" -q --args'
-  alias gdbs='gdb -ex "break _start" -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
   gdbcbt() (
@@ -784,21 +786,21 @@
     git checkout "$@"
     git submodule update --recursive
   )
-  alias gcob='git checkout -b'
+  alias gcob='gco -b'
   gcobm() { git checkout -b "$1" master; }
-  alias gcod='git checkout --conflict=diff3'
-  alias gcoH='git checkout HEAD~'
+  alias gcod='gco --conflict=diff3'
+  alias gcoH='gco HEAD~'
   # Last tag.
-  alias gcol='git checkout "$(git describe --tags --abbrev=0)"'
-  alias gcom='git checkout master'
+  alias gcol='gco "$(git describe --tags --abbrev=0)"'
+  alias gcom='gco master'
   # Slash
-  alias gcos='git checkout -'
+  alias gcos='gco -'
   # Slash Dot
-  alias gcosd='git checkout -- .'
+  alias gcosd='gco -- .'
   alias gcoo='git checkout --ours'
   alias gcoT='git checkout --theirs'
-  alias gcot='git checkout trunk'
-  alias gcou='git checkout up'
+  alias gcot='gco trunk'
+  alias gcou='gco up'
   alias gcn='git config'
   alias gcng='git config --global'
   alias gcngh='git config user.email "ciro.santilli@gmail.com"'
@@ -1119,7 +1121,7 @@
     cmk() {
       mdc 'build'
       cmake .. "$@"
-      cmake --build . -- -j"$(npro)"
+      cmake --build . -- -j"$(npro)" VERBOSE=1
     }
     cmkb() { time cmk; b; }
     cmkd() { cmk -DCMAKE_BUILD_TYPE=Debug; }
@@ -1477,6 +1479,8 @@ alias myt='mysql -u a -h localhost -pa a'
   xssh() ( y < "$HOME/.ssh/id_rsa${1}.pub"; )
   alias xb='x | bash'
   alias xl='x | less'
+  # Join lines on clipboard, no separator.
+  xpx() ( x | paste -sd '' - | x; )
 
   # Clipboard path operations.
 

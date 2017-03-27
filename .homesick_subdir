@@ -12,3 +12,4 @@ bin
 .vim
 .config/ipython/profile_default
 .config/ipython/profile_default/startup
+.gdbinit.d
