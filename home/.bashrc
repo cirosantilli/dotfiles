@@ -82,6 +82,8 @@
   dmes() ( dmesg -T )
   eclipse() ( noh "$HOME/bin/eclipse/eclipse" )
   alias eip='curl ipecho.net/plain'
+  alias enmp='ecryptfs-mount-private'
+  alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
   f() { find "${2-.}" -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
@@ -220,6 +222,15 @@
   alias sudo='sudo '
   surd() ( sudo update-rc.d "$1" disable; )
   alias t='type'
+  # TODO: also cat stdout and stderr.
+  testprogs() (
+    for f in "$@"; do
+      "./$f" &>/dev/null
+      if [ "$?" != 0 ]; then
+        echo "$f"
+      fi
+    done
+  )
   # Filter tex Errors only:
   alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
@@ -693,9 +704,9 @@
 
 ## gdb
 
-  alias gdbm='gdb -ex "break main" -ex "run" -q --args'
+  alias gdbs='gdb -ex "start" -q --args'
   alias gdbr='gdb -ex "run" -q --args'
-  alias gdbs='gdb -ex "break _start" -ex "run" -q --args'
+  alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
   gdbcbt() (
@@ -1118,8 +1129,8 @@
 
     cmk() {
       mdc 'build'
-      cmake .. "$@"
-      cmake --build . -- -j"$(npro)"
+      cmake "$@" ..
+      cmake --build . -- -j"$(npro)" VERBOSE=1
     }
     cmkb() { time cmk; b; }
     cmkd() { cmk -DCMAKE_BUILD_TYPE=Debug; }
