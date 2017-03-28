@@ -2341,6 +2341,7 @@ zealotism
 zeroconf
 zlib
 École
+<<<<<<< HEAD
 ARM's
 Tumblr
 VISAs
@@ -2348,3 +2349,14 @@ SuperH
 OpenBLAS
 PBLAS
 MKL
+=======
+FDM
+E5
+ThinkStation
+P700
+InfiniBand
+Mellanox
+Oclgrind
+AMBA
+TDP
+>>>>>>> 3091d8902ffc7420035b9fa879df208036cbea35
