@@ -1,7 +1,7 @@
 dashboard -layout source stack
 dashboard source -style context 16
 dashboard stack -style limit 0
-dashboard stack -style arguments False
+dashboard stack -style compact True
 
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history save
@@ -16,3 +16,5 @@ set print object on
 set print pretty on
 
 alias il = info locals
+
+source ~/.gdbinit.py

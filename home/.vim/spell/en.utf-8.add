@@ -17,6 +17,7 @@ AGPL
 AIFF
 AKS
 ALSA
+AMBA
 AMD
 AMD's
 AMD64
@@ -30,6 +31,7 @@ APIs
 APK
 APM
 APNG
+ARM's
 ARP
 ARPG
 ARPU
@@ -261,6 +263,7 @@ Chromebook
 Chuang
 Cilk
 Cinelerra
+Ciro
 Cisco
 Citrix
 Clar
@@ -332,6 +335,7 @@ DS
 DTD
 DVD
 DVDs
+DVE
 DVI
 Da
 Daala
@@ -386,6 +390,7 @@ Dropbox
 Drupal
 Ducktyping
 Dup
+E5
 EAX
 EBP
 EBX
@@ -421,6 +426,7 @@ ES5
 ES6
 ESC
 ESI
+EVCD
 EWF
 EXIF
 EclEmma
@@ -449,6 +455,7 @@ F2
 F4
 F6S
 FCEUX
+FDM
 FFT
 FFmpeg
 FG
@@ -544,6 +551,7 @@ GRUB2
 GSL
 GSoC
 GTK
+GTX
 GUIs
 Galton
 GameCube
@@ -710,7 +718,9 @@ IcedTea
 ImageMagick
 Immediates
 InDesign
+Indago
 Inet
+InfiniBand
 Inkscape
 InnoDB
 Innovus
@@ -871,6 +881,7 @@ MFS
 MIAOW
 MINIX
 MISRA
+MKL
 MMMC
 MMORPG
 MMU
@@ -914,6 +925,7 @@ McAffee
 McCrea
 Megamorphic
 Meh
+Mellanox
 Merb
 Merced
 Merkle
@@ -957,6 +969,7 @@ NAL
 NASDAQ's
 NASM
 NBSP
+NCSim
 NDA
 NDAs
 NDK
@@ -1029,6 +1042,7 @@ OSes
 OSs
 OTA
 OVMF
+Oclgrind
 Octokat
 Octokit
 Octopress
@@ -1036,6 +1050,7 @@ Oculus
 Okular
 OmniAuth
 Oncle
+OpenBLAS
 OpenBSD
 OpenCL
 OpenCL's
@@ -1058,10 +1073,13 @@ OpsWorks
 Optimus
 Overflow's
 Overwatch
+P700
+P710
 PAE
 PASCO
 PATA
 PATHs
+PBLAS
 PBM
 PCI
 PCIe
@@ -1272,6 +1290,7 @@ SGR
 SGV
 SHA
 SHAs
+SHM
 SIGKILL
 SIGSEGV
 SIGTERM
@@ -1388,6 +1407,7 @@ Strassen
 Submodules
 Subreddits
 SunOS
+SuperH
 Supermassive
 Superscalar
 Sutter
@@ -1404,6 +1424,7 @@ TAL
 TAS
 TASM
 TCF
+TDP
 TIF
 TLB
 TLBs
@@ -1444,6 +1465,7 @@ Texmaker
 Theora
 Theorema
 ThinkPad
+ThinkStation
 Thoughbot
 ThoughtWorks
 ThumbEE
@@ -1466,6 +1488,7 @@ TripAdvisor
 Trovalds
 TrueType
 Tukey
+Tumblr
 TypeScript
 Typosquatting
 Tyrrhenian
@@ -1523,6 +1546,7 @@ VCS
 VDSO
 VESA
 VHDL
+VISAs
 VLC
 VLIW
 VM
@@ -1747,6 +1771,7 @@ checkbox
 checkbox's
 checkboxes
 cisgendered
+clBLAS
 classpath
 clickable
 cmd
@@ -2341,23 +2366,3 @@ zealotism
 zeroconf
 zlib
 École
-ARM's
-Tumblr
-VISAs
-SuperH
-OpenBLAS
-PBLAS
-MKL
-FDM
-E5
-ThinkStation
-P700
-InfiniBand
-Mellanox
-Oclgrind
-AMBA
-TDP
-GTX
-P710
-clBLAS
-Ciro

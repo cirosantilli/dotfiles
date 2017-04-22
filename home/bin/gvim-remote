@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
+# ARGHHHHH http://stackoverflow.com/questions/10311254/how-to-send-commands-to-gvim-when-using-remote
+# A must to pass line numbers as +50.
 gvim --remote-tab-silent "$@" && wmctrl -xa 'gvim'
