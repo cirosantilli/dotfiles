@@ -17,6 +17,7 @@ AGPL
 AIFF
 AKS
 ALSA
+AMBA
 AMD
 AMD's
 AMD64
@@ -332,6 +333,7 @@ DS
 DTD
 DVD
 DVDs
+DVE
 DVI
 Da
 Daala
@@ -386,6 +388,7 @@ Dropbox
 Drupal
 Ducktyping
 Dup
+E5
 EAX
 EBP
 EBX
@@ -421,6 +424,7 @@ ES5
 ES6
 ESC
 ESI
+EVCD
 EWF
 EXIF
 EclEmma
@@ -449,6 +453,7 @@ F2
 F4
 F6S
 FCEUX
+FDM
 FFT
 FFmpeg
 FG
@@ -710,7 +715,9 @@ IcedTea
 ImageMagick
 Immediates
 InDesign
+Indago
 Inet
+InfiniBand
 Inkscape
 InnoDB
 Innovus
@@ -914,6 +921,7 @@ McAffee
 McCrea
 Megamorphic
 Meh
+Mellanox
 Merb
 Merced
 Merkle
@@ -957,6 +965,7 @@ NAL
 NASDAQ's
 NASM
 NBSP
+NCSim
 NDA
 NDAs
 NDK
@@ -1029,6 +1038,7 @@ OSes
 OSs
 OTA
 OVMF
+Oclgrind
 Octokat
 Octokit
 Octopress
@@ -1058,6 +1068,7 @@ OpsWorks
 Optimus
 Overflow's
 Overwatch
+P700
 PAE
 PASCO
 PATA
@@ -1272,6 +1283,7 @@ SGR
 SGV
 SHA
 SHAs
+SHM
 SIGKILL
 SIGSEGV
 SIGTERM
@@ -1404,6 +1416,7 @@ TAL
 TAS
 TASM
 TCF
+TDP
 TIF
 TLB
 TLBs
@@ -1444,6 +1457,7 @@ Texmaker
 Theora
 Theorema
 ThinkPad
+ThinkStation
 Thoughbot
 ThoughtWorks
 ThumbEE
@@ -2341,27 +2355,3 @@ zealotism
 zeroconf
 zlib
 École
-<<<<<<< HEAD
-ARM's
-Tumblr
-VISAs
-SuperH
-OpenBLAS
-PBLAS
-MKL
-=======
-FDM
-E5
-ThinkStation
-P700
-InfiniBand
-Mellanox
-Oclgrind
-AMBA
-TDP
-NCSim
-Indago
-DVE
-EVCD
-SHM
->>>>>>> 3091d8902ffc7420035b9fa879df208036cbea35
