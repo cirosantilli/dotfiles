@@ -3,6 +3,12 @@
     # http://stackoverflow.com/questions/8528979/how-to-determine-if-an-object-is-an-instance-of-certain-derived-c-class-from-a
     set print object on
 
+    # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
+    set history save
+    set history filename ~/.gdb_history
+
+    set listsize 40
+
     set pagination off
 
     # http://stackoverflow.com/questions/10937289/how-can-i-disable-new-thread-thread-exited-messages-in-gdb
@@ -24,12 +30,6 @@
         printf "\n"
         backtrace
     end
-
-    # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
-    set history save
-    set history filename ~/.gdb_history
-
-    set listsize 40
 
 ## Aliases and commands
 
