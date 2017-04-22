@@ -17,6 +17,8 @@
   command! -nargs=+ G execute 'silent grep! <args>' | tab copen
   " TODO forward to G instead.
   command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
+  " fugitive Ggrep (starts from Git toplevel dir), and then open on new tab.
+  command! -nargs=+ Gg execute 'Ggrep <args>' | tab copen
   " Current path to clipboard.
   " http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
   command! Pwdx :let @+ = expand('%:p')

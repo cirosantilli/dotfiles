@@ -92,7 +92,10 @@
   alias fgb='fg;b'
   alias fmmmr='find-music-make-m3u .'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
-  h() { "$1" --help | less; }
+  h() ( "$1" --help | less; )
+  # Decimal to hex.
+  hex() ( printf "%X\n" "$@"; )
+  j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
   los() (
@@ -967,7 +970,7 @@
     svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r )
     svnd() ( svn diff )
     # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
-    svng() ( gri --exclude-dir '.svn' "$@" )
+    svng() ( gri -I --exclude-dir '.svn' "$@" )
     svnl() ( svn log | s )
     # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
     svn-reset() ( svn revert --recursive . )
