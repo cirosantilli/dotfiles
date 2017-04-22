@@ -2,3 +2,17 @@ dashboard -layout source stack
 dashboard source -style context 16
 dashboard stack -style limit 0
 dashboard stack -style arguments False
+
+# http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
+set history save
+set history filename ~/.gdb_history
+
+set listsize 40
+
+# http://stackoverflow.com/questions/8528979/how-to-determine-if-an-object-is-an-instance-of-certain-derived-c-class-from-a
+set print object on
+
+# http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
+set print pretty on
+
+alias il = info locals

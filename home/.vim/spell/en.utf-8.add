@@ -2341,7 +2341,6 @@ zealotism
 zeroconf
 zlib
 École
-<<<<<<< HEAD
 ARM's
 Tumblr
 VISAs
@@ -2349,7 +2348,6 @@ SuperH
 OpenBLAS
 PBLAS
 MKL
-=======
 FDM
 E5
 ThinkStation
@@ -2359,4 +2357,7 @@ Mellanox
 Oclgrind
 AMBA
 TDP
->>>>>>> 3091d8902ffc7420035b9fa879df208036cbea35
+GTX
+P710
+clBLAS
+Ciro

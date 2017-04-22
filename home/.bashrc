@@ -1573,7 +1573,7 @@ alias myt='mysql -u a -h localhost -pa a'
     ## NVM
     if [ -r "$HOME/.nvm/nvm.sh" ]; then
       . "$HOME/.nvm/nvm.sh" &>'/dev/null'
-      nvm use '0.10.26' &>'/dev/null'
+      nvm use '6.10.1' &>'/dev/null'
     fi
 
     # Use local executables at correct version.
