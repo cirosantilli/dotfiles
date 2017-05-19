@@ -15,6 +15,15 @@ set print object on
 # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
 set print pretty on
 
+alias bl = source ~/.gdb.breakpoints
+alias bs = save breakpoints ~/.gdb.breakpoints
 alias il = info locals
 
 source ~/.gdbinit.py
+
+define hook-quit
+set logging file asdfqwer
+set logging on
+print "GDB end detected"
+set logging off
+end
