@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+doc='
+Split a file at the offsets given from a newline
+separated list of offsets in a file.
+
+Example:
+
+    printf "123456789" > split
+    printf "2\n5\n8\n" > offsets
+    split-offsets split offsets
+    tail -c+1 split_*
+
+Output:
+
+  ==> split_0 <==
+  12
+  ==> split_1 <==
+  345
+  ==> split_2 <==
+  678
+  ==> split_3 <==
+  9
+'
+
+split_file="$1"
+offset_file="$2"
+prev=0
+i=0
+while IFS='' read -r offset; do
+  count=$(($offset - $prev))
+  tail -c+"$(($prev + 1))" "$split_file" | head -c"$count" >"${split_file}_$i"
+  prev="$offset"
+  i=$(($i+1))
+done < <(cat "$offset_file"; echo $(($(wc -c < "$split_file") + 1)))

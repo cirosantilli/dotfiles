@@ -56,13 +56,13 @@
   " Find where the function under the cursor is called from.
   function! Csc()
     cscope find c <cword>
-    copen
+    tab copen
   endfunction
   command! Csc call Csc()
 
   function! Css()
     cscope find s <cword>
-    copen
+    tab copen
   endfunction
   command! Css call Css()
 

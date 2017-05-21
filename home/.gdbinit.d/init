@@ -3,6 +3,9 @@ dashboard source -style context 16
 dashboard stack -style limit 0
 dashboard stack -style compact True
 
+# alias bl = source ~/.gdb.breakpoints
+# alias bs = save breakpoints ~/.gdb.breakpoints
+
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history save
 set history filename ~/.gdb_history
