@@ -1,6 +1,6 @@
 dashboard -layout source stack
 dashboard source -style context 16
-dashboard stack -style limit 0
+dashboard stack -style limit 5
 dashboard stack -style compact True
 
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
@@ -14,6 +14,8 @@ set print object on
 
 # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
 set print pretty on
+
+set pagination off
 
 alias bl = source ~/.gdb.breakpoints
 alias bs = save breakpoints ~/.gdb.breakpoints

@@ -650,6 +650,8 @@
 
   # Decompress anything. https://xkcd.com/1168/
 
+    # stdout
+    # unzip -p >f
     extract () {
       case $1 in
         *.7z)        7z x "$1";;
@@ -1407,8 +1409,8 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## Development boards
 
-  scrusb() ( screen "/dev/ttyUSB${1:-0}" 115200; )
-  scrs() ( screen "/dev/ttyS${1:-0}" 115200; )
+  scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+  scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
 
 ## raspberry pi
 
@@ -1418,11 +1420,12 @@ alias myt='mysql -u a -h localhost -pa a'
     ip="$(piip)"
     #ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip"
     user="${1:-pi}"
-    ssh "${user}@${ip}";
   )
+  piss() ( sshpass -p raspberry ssh "pi@${1}"; )
   pivin() (
     vinagre "$(piip)"
   )
+  PATH="$PATH:$HOME/git/raspberrypi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin"
 
 ## screencast
 
