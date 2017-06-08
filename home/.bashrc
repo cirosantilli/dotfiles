@@ -19,7 +19,7 @@
   if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
   fi
-  PS1='\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ '
+  PS1="\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ "
   export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch)"
 
   # Free up Cq and Cs, and stop Cs from freezing terminal.
@@ -78,6 +78,15 @@
   ddS() ( sudo dd if="$1" of="/dev/sd$2" status=progress && sync; )
   # Disk Fill, Human readable, Sort by total size.
   alias dfhs='df -h | sort -hrk2'
+  # For long lines, while word level diff doesn't arrive...
+  diff-long() (
+    sep="${3:- }"
+    echo "$1"
+    echo "$2"
+    diff -u \
+      <(tr "$sep" '\n' <"$1") \
+      <(tr "$sep" '\n' <"$2")
+  )
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
   dmes() ( dmesg -T )
   eclipse() ( noh "$HOME/bin/eclipse/eclipse" )
@@ -95,8 +104,6 @@
   alias fmmmr='find-music-make-m3u .'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   h() ( "$1" --help | less; )
-  # Decimal to hex.
-  hex() ( printf "%X\n" "$@"; )
   j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
@@ -148,7 +155,13 @@
   noh() { nohup $@ >/dev/null 2>&1 & }
   # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
   npro() ( printf "$(($(nproc) - 2))" )
+  # od hex address + values, good for grepping.
+  odd() (
+    od -t x1 -An "$1" | tr -d "\n"
+  )
+  # od hex address + values
   alias ods='od -Ax -tx1'
+
   alias o='xdg-open'
   # Open First. When you are in a huge directory with tons of
   # files that share a common prefix, and you just want to open one.
@@ -261,7 +274,7 @@
   alias tree='tree --charset=ascii'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
-  alias torbrowser='cd ~/bin && ./start-tor-browser.desktop'
+  torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop; )
   u() (
     if [ ! "$#" -eq 1 ]; then
       echo 'error'
@@ -982,12 +995,16 @@
     # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
     svn-clean() ( svn status | grep ^\? | cut -c9- | xargs -d \\n rm -r )
     svnd() ( svn diff )
+    # Diff current and last revision.
+    svndhh() ( svn diff -r BASE:PREV )
     # http://stackoverflow.com/questions/1491514/exclude-svn-directories-from-grep
     svng() ( gri -I --exclude-dir '.svn' "$@" )
     svnl() ( svn log | s )
     # http://stackoverflow.com/questions/6204572/is-there-a-subversion-command-to-reset-the-working-copy/6204618#6204618
     svn-reset() ( svn revert --recursive . )
     svnst() ( svn status "$@" )
+    # http://stackoverflow.com/questions/17658065/how-to-list-svn-tags-and-its-revisions-from-command-line
+    svnta() ( svn ls -v ^/tags; )
     # Git pull.
     svnup() ( svn update "$@" )
 
@@ -1294,6 +1311,13 @@ alias myt='mysql -u a -h localhost -pa a'
 
   ## pip
 
+    # http://stackoverflow.com/questions/402359/how-do-you-uninstall-a-python-package-that-was-installed-using-distutils/43650802#43650802
+    python-setup-uninstall() (
+      sudo rm -f files.txt
+      sudo python setup.py install --record files.txt && \
+      xargs rm -rf < files.txt
+      sudo rm -f files.txt
+    )
     alias spiu='sudo pip uninstall'
     alias pise='pip search'
     alias pifr='pip freeze'
@@ -1449,10 +1473,12 @@ alias myt='mysql -u a -h localhost -pa a'
   sst() ( sudo service "$1" status; )
   ssta() ( sudo service --status-all; )
   alias ssra='sudo service apache2 restart'
-  # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
-  alias ssrf='sudo service nfs-kernel-server restart'
   alias ssrn='sudo service network-manager restart'
   alias ssrl='sudo service lightdm restart'
+
+  # Edit /etc/exports and then run this.
+  # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
+  alias ssrf='sudo service nfs-kernel-server restart'
 
 ## vagrant
 

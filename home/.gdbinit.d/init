@@ -22,10 +22,3 @@ alias bs = save breakpoints ~/.gdb.breakpoints
 alias il = info locals
 
 source ~/.gdbinit.py
-
-define hook-quit
-set logging file asdfqwer
-set logging on
-print "GDB end detected"
-set logging off
-end
