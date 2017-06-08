@@ -3,9 +3,6 @@ dashboard source -style context 16
 dashboard stack -style limit 5
 dashboard stack -style compact True
 
-# alias bl = source ~/.gdb.breakpoints
-# alias bs = save breakpoints ~/.gdb.breakpoints
-
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history save
 set history filename ~/.gdb_history
@@ -21,15 +18,10 @@ set print object on
 # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
 set print pretty on
 
-# alias bl = source ~/.gdb.breakpoints
-# alias bs = save breakpoints ~/.gdb.breakpoints
-# alias il = info locals
+set pagination off
+
+alias bl = source ~/.gdb.breakpoints
+alias bs = save breakpoints ~/.gdb.breakpoints
+alias il = info locals
 
 source ~/.gdbinit.py
-
-define hook-quit
-set logging file asdfqwer
-set logging on
-print "GDB end detected"
-set logging off
-end
