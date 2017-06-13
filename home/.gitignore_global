@@ -1,5 +1,6 @@
+*.kdev4
 .idea
 .kdev4
-*.kdev4
+.lvimrc
 cscope.out
 tags
