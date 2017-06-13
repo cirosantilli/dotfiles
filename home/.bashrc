@@ -161,7 +161,6 @@
   )
   # od hex address + values
   alias ods='od -Ax -tx1'
-
   alias o='xdg-open'
   # Open First. When you are in a huge directory with tons of
   # files that share a common prefix, and you just want to open one.
@@ -229,7 +228,8 @@
   # to aliases won't give errors.
   alias S='unalias -a && . ~/.bashrc'
   s() ( less "$@"; )
-  ss() ( s -S "$@"; )
+  les() ( s -S "$@"; )
+  lesr() ( s -SR "$@"; )
   alias se='sed -r'
   # Screen TTY.
   alias sha2='sha256sum'
@@ -564,7 +564,7 @@
     lsg() ( ls "${2:-.}" | g "$1"; )
     lsgi() ( ls "${2:-.}" | gi "$1"; )
     ll() ( ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; )
-    lll() ( ll | l; )
+    lll() ( ll --color | s -R; )
     lla() ( ll -A "$@"; )
     # Sort by size.
     lls() ( lla -Sr "$@"; )
@@ -574,6 +574,8 @@
 
       # Last File Ls -l. Sort by olest ctime first. So newest shows first on terminal.
       lfl() ( command ls --color=auto -Achlrt "${1-.}"; )
+			lfll() ( ll "$(lfg "$1")"; )
+			lflcd() { cd "$(lfg "$1")"; }
       # Get absolute path to last modified path in given directory.
       lfg() (
         dir="${1:-.}"
@@ -782,7 +784,7 @@
   alias gbl='git blame'
   alias gbr='git branch'
   # Sort Comitter. Latest changed branch first. http://stackoverflow.com/a/5188364/895245
-  alias gbrsc='git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname)"'
+	alias gbrsc='git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail)"'
   gbrg () { git branch | grep "$1"; }
   gbrag () { git branch -a | grep "$1"; }
   gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -882,6 +884,7 @@
   # My comimits.
   alias glom='git log --author="$(git config user.name)"'
   alias glop='glo -p'
+  alias glos='glo --stat'
   #alias glopf='git log --pretty=oneline --decorate'
   alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
   # Find where that feature entered the code base.
@@ -902,6 +905,7 @@
     fi
   )
   alias giia='git-is-ancestor'
+  alias gmb='git merge-base'
   alias gme='git merge'
   alias gmea='git merge --abort'
   alias gmem='git merge master'
@@ -1434,8 +1438,9 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## Development boards
 
-  scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+	sshr() ( sshpass -p 'root' ssh "root@${1}" )
   scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
+  scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
 
 ## raspberry pi
 
