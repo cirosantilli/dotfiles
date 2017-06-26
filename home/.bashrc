@@ -20,7 +20,7 @@
     debian_chroot=$(cat /etc/debian_chroot)
   fi
   PS1="\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ "
-  export PS1="$PS1\$(parse_git_branch)\$(parse_svn_branch)"
+  export PS1="$PS1"
 
   # Free up Cq and Cs, and stop Cs from freezing terminal.
   # http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
@@ -157,7 +157,7 @@
   npro() ( printf "$(($(nproc) - 2))" )
   # od hex address + values, good for grepping.
   odd() (
-    od -t x1 -An "$1" | tr -d "\n"
+    od -An -t x1 "$1" | tr -d "\n"
   )
   # od hex address + values
   alias ods='od -Ax -tx1'
@@ -911,6 +911,7 @@
   alias gmem='git merge master'
   alias gmt='git mergetool'
   alias gmv='git mv'
+  alias gnr='git name-rev HEAD'
   alias gppp='git push prod prod'
   alias gps='git push'
   alias gpsf='git push -f'
