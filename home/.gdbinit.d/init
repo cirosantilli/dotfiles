@@ -20,8 +20,12 @@ set print pretty on
 
 set pagination off
 
-alias bl = source ~/.gdb.breakpoints
-alias bs = save breakpoints ~/.gdb.breakpoints
+define bl
+    source ~/.gdb.breakpoints
+end
+define bs
+    save breakpoints ~/.gdb.breakpoints
+end
 alias il = info locals
 
 source ~/.gdbinit.py

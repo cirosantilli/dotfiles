@@ -970,6 +970,7 @@
   alias gtac='git tag --contains'
   # Git TAg Date
   alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
+  alias gtag='gta | g'
   alias gtas='git tag | sort -V'
   alias gtr='git ls-tree HEAD'
 
@@ -1105,7 +1106,7 @@
 
   alias bej='bundle exec jekyll'
   alias bejb='bundle exec jekyll build -It'
-  alias bejs='firefox localhost:4000 && bundle exec jekyll serve -Itw'
+  alias bejs='open http://localhost:4000 && bundle exec jekyll serve -Itw'
 
 ## make
 
