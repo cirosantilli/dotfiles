@@ -984,7 +984,12 @@
     alias gpsbr='gps && git browse-remote'
     alias gcmanpsfbr='gcmanpsf && git browse-remote'
     # Pull Request.
-    ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
+    ghpr() (
+      id="$1"
+      remote="${2:-origin}"
+      git fetch "$remote" "refs/pull/${id}/head"
+      git checkout -b "pull/$1" FETCH_HEAD;
+    )
 
   ## Hub
 
