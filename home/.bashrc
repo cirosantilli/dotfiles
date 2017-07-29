@@ -1072,25 +1072,20 @@
   alias hgg='hg grep'
   alias hggi='hg grep -i'
 
-## homesick
+## homeshick
 
-  alias hs='homesick'
-  alias hscd='homesick cd'
-  alias hsc='homesick commit'
-  alias hsd='homesick diff'
-  alias hsh='homesick help'
-  alias hsp='homesick pull'
-  alias hss='homesick status'
-  alias hsu='homesick push'
-  alias hst='homesick track'
+  #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+  f="$HOME/.homesick/repos/homeshick/homeshick.sh"
+  if [ -e "$f" ]; then
+    . "$f"
+  fi
 
-  ## homeshick
-
-    #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
-    f="$HOME/.homesick/repos/homeshick/homeshick.sh"
-    if [ -e "$f" ]; then
-      . "$f"
-    fi
+  alias hs='homeshick'
+  alias hscd='homeshick cd dotfiles'
+  alias hsh='homeshick help'
+  alias hsp='homeshick pull'
+  alias hsu='homeshick push'
+  alias hst='homeshick dotfiles track'
 
 ## Java
 
@@ -1441,6 +1436,7 @@ alias myt='mysql -u a -h localhost -pa a'
 
 	sshr() ( sshpass -p 'root' ssh "root@${1}" )
   scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
+  scrsr() ( screen-tty-root "$@"; )
   scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
 
 ## raspberry pi

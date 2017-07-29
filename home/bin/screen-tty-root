@@ -1,0 +1,21 @@
+#!/usr/bin/env expect
+# https://unix.stackexchange.com/questions/378602/how-to-send-keystrokes-before-interactive-shell-to-automate-linux-serial-port-lo
+set tty 0
+set baud 115200
+if { $argc >= 1 } {
+    set tty [lindex $argv 0]
+}
+if { $argc >= 2 } {
+    set baud [lindex $argv 1]
+}
+spawn screen /dev/ttyS$tty $baud
+send \r
+expect {
+    "login: " {
+        send root\r
+        expect "Password: "
+        send root\r
+    }
+    "#"
+}
+interact
