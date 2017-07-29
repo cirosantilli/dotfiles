@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+set -x
+
+doc='
+    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/setup-ubuntu | bash
+
+Minimal CLI setup:
+
+    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/setup-ubuntu | bash -g
+'
+
+gui=true
+setup_home_partition=true
+while getopts gh OPT; do
+  case "$OPT" in
+    g)
+      gui=false
+      ;;
+    h)
+      setup_home_partition=false
+      ;;
+    \?)
+      exit 2
+      ;;
+  esac
+done
+
+sudo apt-get update
+sudo apt-get install -y aptitude
+sudo aptitude update
+
+sudo aptitude install -y \
+  cscope \
+  curl \
+  expect \
+  exuberant-ctags \
+  git \
+  vim \
+;
+
+# sudo without password.
+# sudo sh -c "echo '$(id -un) ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+
+# TTY without sudo
+# https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0-on-12-04
+sudo usermod -a -G dialout "$USER"
+
+# Quick OS system choice and show kernel messages:
+printf 'GRUB_TIMEOUT=1\nGRUB_CMDLINE_LINUX_DEFAULT=""\n' | sudo tee -a /etc/default/grub
+sudo update-grub
+
+if $setup_home_partition; then
+  # Git
+  mkdir ~/bin
+  cd ~/bin
+  curl -O https://raw.github.com/git/git/master/contrib/diff-highlight/diff-highlight
+  chmod +x diff-highlight
+  ssh-keygen -b 4096 -C "ciro.santilli@gmail.com" -f "$HOME/.ssh/id_rsa" -t rsa -P ''
+
+  # Dotfiles
+  git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+  homeshick clone cirosantilli/dotfiles
+
+  # Vim
+  git clone https://github.com/gmarik/Vundle.vim "$HOME/.vim/bundle/Vundle.vim"
+  # Manual.
+  # TODO fails from bash pipe becuase not TTY.
+  # http://stackoverflow.com/questions/23322744/vim-run-commands-from-bash-script-and-exit-without-leaving-shell-in-a-bad-state
+  #vim +PluginInstall +qall
+fi
+
+if $gui; then
+  # Enable all sources: main, universe, restricted, multiverse and partner.
+  sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
+  sudo add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
+
+  pkgs='
+apt-rdepends
+apt-file
+ppa-purge
+'
+
+  # Usefull stuff that does not come by default or Canonical would have to pay royalties.
+  # MANUAL accept ncurses confirmation
+  pkgs="$pkgs ubuntu-restricted-extras"
+
+  # Browser
+  pkgs="$pkgs chromium-browser"
+  # 12.04
+  pkgs="$pkgs adobe-flashplugin"
+  # 14.04
+  pkgs="$pkgs flashplugin-installer"
+
+  # X utils
+  pkgs="$pkgs wmctrl xsel"
+
+  # 17.04
+  # https://askubuntu.com/questions/829592/how-can-i-stop-gvim-from-crashing-when-opening-a-file/904727#904727
+  # http://askubuntu.com/questions/33260/difference-between-vim-gtk-and-vim-gnome
+  #pkgs="$pkgs vim-gtk"
+  # < 17.04
+  pkgs="$pkgs vim-gnome"
+
+  pkgs="$pkgs skype"
+
+  # Google talk.
+  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  sudo sh -c 'echo "deb http://dl.google.com/linux/talkplugin/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  pkgs="$pkgs google-talkplugin"
+
+  # Python
+  pkgs="$pkgs python-pip"
+
+  sudo aptitude update
+  sudo aptitude install -y $pkgs
+
+  # Python
+  sudo pip install --upgrade pip
+  sudo pip install --upgrade virtualenv
+
+  # Automatically run upgrades without confirmation.
+  # MANUAL accept ncurses confirmation.
+  sudo dpkg-reconfigure unattended-upgrades
+
+  apt-file update
+fi

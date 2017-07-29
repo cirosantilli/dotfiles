@@ -1085,7 +1085,7 @@
   alias hsh='homeshick help'
   alias hsp='homeshick pull'
   alias hsu='homeshick push'
-  alias hst='homeshick dotfiles track'
+  alias hst='homeshick track dotfiles'
 
 ## Java
 
@@ -1434,7 +1434,7 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## Development boards
 
-	sshr() ( sshpass -p 'root' ssh "root@${1}" )
+	sshr() ( ssh-root -p 'root' ssh "root@${1}" )
   scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
   scrsr() ( screen-tty-root "$@"; )
   scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )

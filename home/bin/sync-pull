@@ -3,12 +3,16 @@
 # Synchronize my computers: pull remote changes.
 
 reset=false
-while getopts r OPT; do
+src='gitlab'
+while getopts rs: OPT; do
   case "$OPT" in
     r)
       # Data loss!! Also reset and clean before pulling.
       # http://stackoverflow.com/questions/1125968/force-git-to-overwrite-local-files-on-pull
       reset=true
+      ;;
+    s)
+      src="$OPTARG"
       ;;
     \?)
       exit 2
@@ -16,19 +20,19 @@ while getopts r OPT; do
   esac
 done
 
-print_header() { printf "\n\e[1;33m## ${1}\e[0m\n\n"; }
+print_header() ( printf "\n\e[1;33m## ${1}\e[0m\n\n"; )
 
 success=0
-print_header 'homesick'
+print_header 'homeshick'
 # TODO: homesick does not return 1 on unstaged changes.
-homesick pull || success=1
+homeshick pull dotfiles || success=1
 git-sync-dirs | while read path; do
   print_header "$path"
   (
     set -e
     if [ ! -d "$path" ]; then
       # TODO Fails for local things like cpp/cheat.
-      git clone "git@github.com:cirosantilli/$(basename "$path").git" "$path"
+      git clone "git@gitlab.com:cirosantilli/$(basename "$path").git" "$path"
     fi
     cd "$path"
     if $reset; then
@@ -39,4 +43,3 @@ git-sync-dirs | while read path; do
   ) || success=1
 done
 exit "$success"
-
