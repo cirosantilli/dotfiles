@@ -45,6 +45,13 @@
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
   alias chmx='chmod +x'
+  # Allow all users to access under a given directory.
+  chmR() (
+    d="${1:-.}"
+    sudo find "$d" -type d | sudo xargs chmod +755
+    find "$d" -type f | sudo xargs chmod +644
+    find . -type f -perm /u=x,g=x,o=x | sudo xargs chmod +111
+  )
   # External IP.
   # DropBox Symlink. Move the given file into Dropbox,
   # and symlink to it from the old location.
@@ -1434,10 +1441,10 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## Development boards
 
-	sshr() ( ssh-root -p 'root' ssh "root@${1}" )
-  scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
-  scrsr() ( screen-tty-root "$@"; )
-  scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+	sshr() ( ssh-root "${1}" 'root' )
+  scrs() ( sudo screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
+  scrsr() ( sudo "$(which screen-tty-root)" "$@"; )
+  scrusb() ( sudo screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
 
 ## raspberry pi
 

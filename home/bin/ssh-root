@@ -1,11 +1,11 @@
 #!/usr/bin/env expect
-# https://unix.stackexchange.com/questions/378602/how-to-send-keystrokes-before-interactive-shell-to-automate-linux-serial-port-lo
+# https://stackoverflow.com/questions/12202587/automatically-enter-ssh-password-with-script
 set ip [lindex $argv 0]
 set user root
 if { $argc >= 2 } {
     set user [lindex $argv 1]
 }
-spawn ssh $user@$ip
+spawn ssh "$user@$ip"
 send "\r"
 expect {
     "Are you sure you want to continue connecting" {
