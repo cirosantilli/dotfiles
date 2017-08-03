@@ -31,3 +31,11 @@ define moe
     quit
     quit
 end
+
+# re-run
+define rr
+    start
+    set solib-search-path .
+    enable
+    c
+end

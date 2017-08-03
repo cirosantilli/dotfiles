@@ -504,8 +504,6 @@
   alias cdx='c "$(x)"'
   alias cdy='c "$PYTHON_DIR"'
   alias cdw='c "$WEBSITE_DIR"'
-  # TODO make a version that also cats the command and pwd.
-  #b() { "$@"; zenity --info --text "$*"; }
 
   ## build src navigation
 
