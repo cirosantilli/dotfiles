@@ -5,6 +5,7 @@ set history filename ~/.gdb_history
 set listsize 40
 
 # https://unix.stackexchange.com/questions/151359/how-to-make-gdb-not-ask-me-y-or-n
+# http://stackoverflow.com/questions/4355978/get-rid-of-quit-anyway-question-just-kill-the-process-and-quit
 set confirm off
 
 # http://stackoverflow.com/questions/28815621/how-to-disable-type-return-to-continue-or-q-return-to-quit-in-gdb
@@ -15,8 +16,6 @@ set print object on
 
 # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
 set print pretty on
-
-set pagination off
 
 define bl
     source ~/.gdb.breakpoints
