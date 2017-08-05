@@ -76,8 +76,8 @@ if $gui; then
   sudo add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
 
   pkgs='
-apt-rdepends
 apt-file
+apt-rdepends
 ppa-purge
 '
 
@@ -112,12 +112,19 @@ ppa-purge
   # Python
   pkgs="$pkgs python-pip"
 
+  # chinese-input
+  pkgs="$pkgs ibus-pinyin"
+
   sudo aptitude update
   sudo aptitude install -y $pkgs
 
   # Python
   sudo pip install --upgrade pip
   sudo pip install --upgrade virtualenv
+
+  # chinese-input
+  # MANUAL settings > text entry > chinese (pinyin ibus)
+  ibus restart
 
   # Automatically run upgrades without confirmation.
   # MANUAL accept ncurses confirmation.

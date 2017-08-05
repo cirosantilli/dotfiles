@@ -1488,6 +1488,10 @@ alias myt='mysql -u a -h localhost -pa a'
   # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
   alias ssrf='sudo service nfs-kernel-server restart'
 
+## Ubuntu
+
+  ubcon() ( cat "/boot/config-$(uname -r)" )
+
 ## vagrant
 
   alias vde='vagrant destroy'
