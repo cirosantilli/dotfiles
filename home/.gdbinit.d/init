@@ -31,10 +31,9 @@ define moe
     quit
 end
 
-# re-run
+# re-run. For gdbserver, where we may need to reload the dynamic library explicitly.
 define rr
     start
     set solib-search-path .
     enable
-    c
 end

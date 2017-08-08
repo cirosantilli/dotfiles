@@ -111,6 +111,7 @@
   alias fmmmr='find-music-make-m3u .'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   h() ( "$1" --help | less; )
+  hex() ( printf "%x\n" "$@" )
   j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
