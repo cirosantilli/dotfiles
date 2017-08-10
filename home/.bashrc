@@ -291,6 +291,14 @@
     sudo umount /dev/sd"${1}"?*
     lsblk
   )
+  mnt() (
+    m="$1"
+    d="$2"
+    mkdir -p "$d"
+    if ! mountpoint -q "$d"; then
+      mount -t nfs "$m" "$d"
+    fi
+  )
   # Core dumps.
   ulimc() { ulimit -c "${1:-unlimited}"; }
   ulimsv() { ulimit -Sv "${1:-500}000"; }
@@ -938,6 +946,13 @@
   alias grbc='git rebase --continue'
   alias grbi='git rebase -i'
   alias grbm='git rebase master'
+  grbo() (
+    # Rebase current branch onto another ref.
+    # Useful to rebase a feature branch of a feature branch
+    # after master gets updated and the feature branch rebased.
+    ref="$(git rev-parse --abbrev-ref HEAD)"
+    git rebase --onto "${1:-master}" "$ref~${2:-1}" "$ref"
+  )
   alias grbt='git rebase trunk'
   # Rebase trunk Updated.
   alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk && git submodule update'
