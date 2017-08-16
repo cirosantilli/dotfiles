@@ -951,7 +951,7 @@
     # Useful to rebase a feature branch of a feature branch
     # after master gets updated and the feature branch rebased.
     ref="$(git rev-parse --abbrev-ref HEAD)"
-    git rebase --onto "${1:-master}" "$ref~${2:-1}" "$ref"
+    git rebase --onto "${1:-master}" "${2:-HEAD~}" "$ref"
   )
   alias grbt='git rebase trunk'
   # Rebase trunk Updated.
