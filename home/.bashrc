@@ -1340,6 +1340,7 @@ alias myt='mysql -u a -h localhost -pa a'
       xargs rm -rf < files.txt
       sudo rm -f files.txt
     )
+    alias spii='sudo pip install'
     alias spiu='sudo pip uninstall'
     alias pise='pip search'
     alias pifr='pip freeze'
