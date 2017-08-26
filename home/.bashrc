@@ -115,25 +115,6 @@
   j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
-  los() (
-    img="$1"
-    dev="$(sudo losetup --show -f -P "$img")"
-    echo "$dev"
-    for part in "$dev"?*; do
-      dst="/mnt/$(basename "$part")"
-      echo "$dst"
-      sudo mkdir -p "$dst"
-      sudo mount "$part" "$dst"
-    done
-  )
-  losd() (
-    dev="/dev/loop$1"
-    for part in "$dev"?*; do
-      dst="/mnt/$(basename "$part")"
-      sudo umount "$dst"
-    done
-    sudo losetup -d "$dev"
-  )
   alias lns='ln -s'
   # Remove a symlink, and move the file linked to to the symlink location.
   # Usage: cmd symlink-location
@@ -183,7 +164,10 @@
   }
   alias pdc='pandoc'
   pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
-  alias r='ranger'
+  r() {
+    ranger --choosedir="$HOME/.rangerdir" "$@"
+    c "$(cat "$HOME/.rangerdir")"
+  }
   ramfs() {
     dir='/mnt/ramfs'
     mkdir -p "$dir"
@@ -1460,6 +1444,27 @@ alias myt='mysql -u a -h localhost -pa a'
   scrs() ( sudo screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
   scrsr() ( sudo "$(which screen-tty-root)" "$@"; )
   scrusb() ( sudo screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+
+  losl() ( sudo losetup -l )
+  los() (
+    img="$1"
+    dev="$(sudo losetup --show -f -P "$img")"
+    echo "$dev"
+    for part in "$dev"?*; do
+      dst="/mnt/$(basename "$part")"
+      echo "$dst"
+      sudo mkdir -p "$dst"
+      sudo mount "$part" "$dst"
+    done
+  )
+  losd() (
+    dev="/dev/loop$1"
+    for part in "$dev"?*; do
+      dst="/mnt/$(basename "$part")"
+      sudo umount "$dst"
+    done
+    sudo losetup -d "$dev"
+  )
 
 ## raspberry pi
 
