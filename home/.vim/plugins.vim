@@ -97,6 +97,11 @@
           let g:localvimrc_ask = 0
           let g:localvimrc_sandbox = 0
 
+      " augroup Cpp
+      "   autocmd!
+      "   autocmd FileType c,cpp setlocal noexpandtab
+      " augroup END
+
 " # AutoComplPop
 
   " Automatically opens Vim's built-in completion as you type.
