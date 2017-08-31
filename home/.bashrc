@@ -37,10 +37,13 @@
   alias ack='ack-grep --smart-case'
   # Beep. Notify after a long command. Usage:
   # long-command;b
-  alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
+  b() (
+    spd-say done
+    zenity --info --text "$(echo "$?"; pwd; )"
+  )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
-  alias cdg='cd "$(git rev-parse --show-toplevel)"'
+  cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
   alias cdG='cd "$MY_GIT_DIR"'
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
@@ -782,7 +785,9 @@
   alias gbl='git blame'
   alias gbr='git branch'
   # Sort Comitter. Latest changed branch first. http://stackoverflow.com/a/5188364/895245
-	alias gbrsc='git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail)"'
+  gbrsc() ( git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail)" )
+	# Me.
+  gbrscm() ( gbrsc | grep "$(git config user.email)" )
   gbrg () { git branch | grep "$1"; }
   gbrag () { git branch -a | grep "$1"; }
   gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
