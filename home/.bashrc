@@ -35,9 +35,9 @@
 
   alias a='cat'
   alias ack='ack-grep --smart-case'
-  # Beep. Notify after a long command. Usage:
-  # long-command;b
   b() (
+    # Beep. Notify after a long command. Usage:
+    # long-command;b
     spd-say done
     zenity --info --text "$(echo "$?"; pwd; )"
   )
@@ -728,7 +728,7 @@
 ## gdb
 
   alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
-  alias gdbs='gdb -ex "start" -q --args'
+  gdbs() ( gdb -ex "start" -q --args "$@" )
   alias gdbr='gdb -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
@@ -816,7 +816,7 @@
   # Clean any file not tracked, including gitignored. Restores repo to pristine state.
   gcexdf() { git clean -xdf "${1:-:/}"; }
   gcmp() { git commit -am "$1"; git push --tags -u origin master; }
-  gco()(
+  gco() (
     git checkout "$@"
     git submodule update --recursive
   )
