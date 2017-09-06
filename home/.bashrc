@@ -728,7 +728,8 @@
 ## gdb
 
   alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
-  gdbs() ( gdb -ex "start" -q --args "$@" )
+  gdbs() ( gdb -ex 'start' -q --args "$@" )
+  gdbr() ( gdb -ex 'run' -q --args "$@" )
   alias gdbr='gdb -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
