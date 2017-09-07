@@ -25,6 +25,10 @@ define bs
 end
 alias il = info locals
 
+define e
+    edit
+end
+
 define moe
     monitor exit
     quit

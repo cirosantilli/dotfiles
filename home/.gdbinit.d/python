@@ -6,3 +6,18 @@ dashboard stack -style limit 5
 dashboard stack -style compact True
 
 source ~/.gdbinit.py
+
+define f
+    frame $arg0
+    dashboard
+end
+
+define o
+    down
+    dashboard
+end
+
+define u
+    up
+    dashboard
+end

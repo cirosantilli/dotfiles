@@ -1,32 +1,3 @@
-## Settings
-
-  # OSX
-  export CLICOLOR=1
-
-  ## PS1
-  parse_git_branch () {
-    git name-rev HEAD 2> /dev/null | sed 's#HEAD\ \(.*\)#(git::\1)#'
-  }
-  parse_svn_branch() {
-    parse_svn_url | sed -e 's#^'"$(parse_svn_repository_root)"'##g' | awk -F / '{print "(svn::"$1 "/" $2 ")"}'
-  }
-  parse_svn_url() {
-    svn info 2>/dev/null | sed -ne 's#^URL: ##p'
-  }
-  parse_svn_repository_root() {
-    svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
-  }
-  if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-  fi
-  PS1="\[\033[01;31m\]\w\[\033[00m\]\n${debian_chroot:+($debian_chroot)}\[\033[01;34m\]\u\[\033[01;32m\]@\[\033[01;34m\]\h\[\033[00m\]\$ "
-  export PS1="$PS1"
-
-  # Free up Cq and Cs, and stop Cs from freezing terminal.
-  # http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
-  # http://unix.stackexchange.com/questions/137842/what-is-the-point-of-ctrl-s
-  stty -ixon
-
 ## alias
 
 ## functions
@@ -63,7 +34,6 @@
   }
   alias cla11='clang++ -std=c++11'
   check-ip() ( curl 'http://checkip.amazonaws.com'; )
-  alias datex='timestamp | x'
   alias dconfl='dconf load / <~/.config/dconf/user.conf'
   alias dconfw='dconf watch /'
   # dD a.img X
@@ -1603,6 +1573,27 @@ alias myt='mysql -u a -h localhost -pa a'
   RING_DIR="$HOME/git/ring"
   alias rr='"$RING_DIR/ubuntu-15.10-run.sh"'
   alias psgr='ps aux | grep ring'
+
+## Settings
+
+  # OSX
+  export CLICOLOR=1
+
+  ## PS1
+  export PS1="\
+\[\033[01;31m\]\w\n\
+\[\033[01;34m\]\$(timestamp)\
+\[\033[01;32m\]@\
+\[\033[01;34m\]\u\
+\[\033[01;32m\]@\
+\[\033[01;34m\]\h\
+\[\033[00m\]\$ "
+
+  # Free up Cq and Cs, and stop Cs from freezing terminal.
+  # http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
+  # http://unix.stackexchange.com/questions/137842/what-is-the-point-of-ctrl-s
+  stty -ixon
+
 
 ## Source lines and path modifications
 
