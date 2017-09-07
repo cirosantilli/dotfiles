@@ -35,12 +35,7 @@
 
   alias a='cat'
   alias ack='ack-grep --smart-case'
-  b() (
-    # Beep. Notify after a long command. Usage:
-    # long-command;b
-    spd-say done
-    zenity --info --text "$(echo "$?"; pwd; )"
-  )
+  b() ( cirosantilli-beep "$@" )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
   cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
@@ -730,6 +725,7 @@
   alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
   gdbs() ( gdb -ex 'start' -q --args "$@" )
   gdbr() ( gdb -ex 'run' -q --args "$@" )
+  gdbrb() ( gdb -ex 'run' -ex 'shell cirosantilli-beep' -q --args "$@" )
   alias gdbr='gdb -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
