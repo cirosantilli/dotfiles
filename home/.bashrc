@@ -743,7 +743,7 @@
   alias gadcmtps='git add -A . && git commit -m publish && git push'
   alias gadcmt='git add -A . && git commit -m tmp'
   alias gadcp='git add -A . && git commit && git push'
-  gadcmp() { git add . && git commit -m "$1" && git push; }
+  gadcmp() { git add . && git commit -m "${1:-bak}" && git push; }
   alias gadu='git add -u :/'
   alias gaducman='git add -u && gcman'
   alias gadrbc='git add -A . && git rebase --continue'
@@ -782,7 +782,11 @@
   gcedf() ( git clean -df "${1:-:/}"; )
   # Clean any file not tracked, including gitignored. Restores repo to pristine state.
   gcexdf() { git clean -xdf "${1:-:/}"; }
-  gcmp() { git commit -am "$1"; git push --tags -u origin master; }
+  gcmp() (
+    # Commit and Push.
+    git commit -am "${1:-bak}"
+    git push
+  )
   gco() (
     git checkout "$@"
     git submodule update --recursive
@@ -1571,8 +1575,8 @@ alias myt='mysql -u a -h localhost -pa a'
   }
 
   RING_DIR="$HOME/git/ring"
-  alias rr='"$RING_DIR/ubuntu-15.10-run.sh"'
-  alias psgr='ps aux | grep ring'
+  alias ring-rr='"$RING_DIR/ubuntu-15.10-run.sh"'
+  alias ring-psgr='ps aux | grep ring'
 
 ## Settings
 
