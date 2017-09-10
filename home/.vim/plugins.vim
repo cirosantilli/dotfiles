@@ -375,18 +375,12 @@
   " Git diff for entire repository.
   command! Gdfr call Gdf('')
 
-  " Add and commit current file with given commit message.
-
-  " Sample usage:
-
-      " Gadcm The commit message.
-
   command! -nargs=* Gcm execute '!git add ' . expand('%:p') ' && git commit -m "<args>"'
   command! -nargs=* Gcob execute '!git checkout -b "<args>"'
 
   " Git add commit and push.
-  command! Gacm execute '!git add ' . expand('%:p') . ' && git commit -m bak && git push'
   command! Gad execute '!git add ' . expand('%:p')
+  command! Gacm execute '!git add ' . expand('%:p') . ' && git commit -m bak && git push'
   command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
   " Ggrep and open quickfix in a new tab.
   command! -nargs=1 Ggr Ggrep! <args> | tab copen

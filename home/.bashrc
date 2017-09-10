@@ -812,7 +812,7 @@
   gcedf() ( git clean -df "${1:-:/}"; )
   # Clean any file not tracked, including gitignored. Restores repo to pristine state.
   gcexdf() { git clean -xdf "${1:-:/}"; }
-  gcmp() { git commit -am "$1"; git push --tags -u origin master; }
+  gcmp() { git commit -am "${1:-bak}"; git push --tags -u origin master; }
   gco() (
     git checkout "$@"
     git submodule update --recursive
