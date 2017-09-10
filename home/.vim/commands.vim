@@ -36,8 +36,10 @@
   command! -nargs=1 Vim vimgrep/\v<args>/ **
   " Write current file with sudo.
   command! Wsudo write !sudo tee %
-  command! Pwd :let @+ = expand('%:p')
-  command! Pwdl :let @+ = expand('%:p') . ':' . line('.')
+  " GDB location to clipboard.
+  command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
+  " Full path to clipboard.
+  command! Xp :let @+ = expand('%:p')
 
 " Edit important files:
 

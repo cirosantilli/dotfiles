@@ -35,16 +35,21 @@
 
   alias a='cat'
   alias ack='ack-grep --smart-case'
-  # Beep. Notify after a long command. Usage:
-  # long-command;b
-  alias b='spd-say done; zenity --info --text "$(echo "$?"; pwd; )"'
+  b() ( cirosantilli-beep "$@" )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
-  alias cdg='cd "$(git rev-parse --show-toplevel)"'
+  cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
   alias cdG='cd "$MY_GIT_DIR"'
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
   alias chmx='chmod +x'
+  # Allow all users to access under a given directory.
+  chmR() (
+    d="${1:-.}"
+    sudo find "$d" -type d | sudo xargs chmod +755
+    find "$d" -type f | sudo xargs chmod +644
+    find . -type f -perm /u=x,g=x,o=x | sudo xargs chmod +111
+  )
   # External IP.
   # DropBox Symlink. Move the given file into Dropbox,
   # and symlink to it from the old location.
@@ -104,28 +109,10 @@
   alias fmmmr='find-music-make-m3u .'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   h() ( "$1" --help | less; )
+  hex() ( printf "%x\n" "$@" )
   j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
-  los() (
-    img="$1"
-    dev="$(sudo losetup --show -f -P "$img")"
-    echo "$dev"
-    for part in "$dev"?*; do
-      dst="/mnt/$(basename "$part")"
-      echo "$dst"
-      sudo mkdir -p "$dst"
-      sudo mount "$part" "$dst"
-    done
-  )
-  losd() (
-    dev="/dev/loop$1"
-    for part in "$dev"?*; do
-      dst="/mnt/$(basename "$part")"
-      sudo umount "$dst"
-    done
-    sudo losetup -d "$dev"
-  )
   alias lns='ln -s'
   # Remove a symlink, and move the file linked to to the symlink location.
   # Usage: cmd symlink-location
@@ -175,7 +162,10 @@
   }
   alias pdc='pandoc'
   pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
-  alias r='ranger'
+  r() {
+    ranger --choosedir="$HOME/.rangerdir" "$@"
+    c "$(cat "$HOME/.rangerdir")"
+  }
   ramfs() {
     dir='/mnt/ramfs'
     mkdir -p "$dir"
@@ -282,6 +272,14 @@
     fi
     sudo umount /dev/sd"${1}"?*
     lsblk
+  )
+  mnt() (
+    m="$1"
+    d="$2"
+    mkdir -p "$d"
+    if ! mountpoint -q "$d"; then
+      mount -t nfs "$m" "$d"
+    fi
   )
   # Core dumps.
   ulimc() { ulimit -c "${1:-unlimited}"; }
@@ -497,8 +495,6 @@
   alias cdx='c "$(x)"'
   alias cdy='c "$PYTHON_DIR"'
   alias cdw='c "$WEBSITE_DIR"'
-  # TODO make a version that also cats the command and pwd.
-  #b() { "$@"; zenity --info --text "$*"; }
 
   ## build src navigation
 
@@ -727,7 +723,9 @@
 ## gdb
 
   alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
-  alias gdbs='gdb -ex "start" -q --args'
+  gdbs() ( gdb -ex 'start' -q --args "$@" )
+  gdbr() ( gdb -ex 'run' -q --args "$@" )
+  gdbrb() ( gdb -ex 'run' -ex 'shell cirosantilli-beep' -q --args "$@" )
   alias gdbr='gdb -ex "run" -q --args'
   alias gdbx='gdb --batch -x'
   # Run program, show failure backtrace.
@@ -784,7 +782,9 @@
   alias gbl='git blame'
   alias gbr='git branch'
   # Sort Comitter. Latest changed branch first. http://stackoverflow.com/a/5188364/895245
-	alias gbrsc='git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail)"'
+  gbrsc() ( git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail)" )
+	# Me.
+  gbrscm() ( gbrsc | grep "$(git config user.email)" )
   gbrg () { git branch | grep "$1"; }
   gbrag () { git branch -a | grep "$1"; }
   gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -813,7 +813,7 @@
   # Clean any file not tracked, including gitignored. Restores repo to pristine state.
   gcexdf() { git clean -xdf "${1:-:/}"; }
   gcmp() { git commit -am "$1"; git push --tags -u origin master; }
-  gco()(
+  gco() (
     git checkout "$@"
     git submodule update --recursive
   )
@@ -932,6 +932,13 @@
   alias grbc='git rebase --continue'
   alias grbi='git rebase -i'
   alias grbm='git rebase master'
+  grbo() (
+    # Rebase current branch onto another ref.
+    # Useful to rebase a feature branch of a feature branch
+    # after master gets updated and the feature branch rebased.
+    ref="$(git rev-parse --abbrev-ref HEAD)"
+    git rebase --onto "${1:-master}" "${2:-HEAD~}" "$ref"
+  )
   alias grbt='git rebase trunk'
   # Rebase trunk Updated.
   alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk && git submodule update'
@@ -1077,25 +1084,20 @@
   alias hgg='hg grep'
   alias hggi='hg grep -i'
 
-## homesick
+## homeshick
 
-  alias hs='homesick'
-  alias hscd='homesick cd'
-  alias hsc='homesick commit'
-  alias hsd='homesick diff'
-  alias hsh='homesick help'
-  alias hsp='homesick pull'
-  alias hss='homesick status'
-  alias hsu='homesick push'
-  alias hst='homesick track'
+  #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+  f="$HOME/.homesick/repos/homeshick/homeshick.sh"
+  if [ -e "$f" ]; then
+    . "$f"
+  fi
 
-  ## homeshick
-
-    #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
-    f="$HOME/.homesick/repos/homeshick/homeshick.sh"
-    if [ -e "$f" ]; then
-      . "$f"
-    fi
+  alias hs='homeshick'
+  alias hscd='homeshick cd dotfiles'
+  alias hsh='homeshick help'
+  alias hsp='homeshick pull'
+  alias hsu='homeshick push'
+  alias hst='homeshick track dotfiles'
 
 ## Java
 
@@ -1330,6 +1332,7 @@ alias myt='mysql -u a -h localhost -pa a'
       xargs rm -rf < files.txt
       sudo rm -f files.txt
     )
+    alias spii='sudo pip install'
     alias spiu='sudo pip uninstall'
     alias pise='pip search'
     alias pifr='pip freeze'
@@ -1445,9 +1448,31 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## Development boards
 
-	sshr() ( sshpass -p 'root' ssh "root@${1}" )
-  scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
-  scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+	sshr() ( ssh-root "${1}" 'root' )
+  scrs() ( sudo screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
+  scrsr() ( sudo "$(which screen-tty-root)" "$@"; )
+  scrusb() ( sudo screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+
+  losl() ( sudo losetup -l )
+  los() (
+    img="$1"
+    dev="$(sudo losetup --show -f -P "$img")"
+    echo "$dev"
+    for part in "$dev"?*; do
+      dst="/mnt/$(basename "$part")"
+      echo "$dst"
+      sudo mkdir -p "$dst"
+      sudo mount "$part" "$dst"
+    done
+  )
+  losd() (
+    dev="/dev/loop$1"
+    for part in "$dev"?*; do
+      dst="/mnt/$(basename "$part")"
+      sudo umount "$dst"
+    done
+    sudo losetup -d "$dev"
+  )
 
 ## raspberry pi
 
@@ -1492,6 +1517,10 @@ alias myt='mysql -u a -h localhost -pa a'
   # Edit /etc/exports and then run this.
   # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
   alias ssrf='sudo service nfs-kernel-server restart'
+
+## Ubuntu
+
+  ubcon() ( cat "/boot/config-$(uname -r)" )
 
 ## vagrant
 

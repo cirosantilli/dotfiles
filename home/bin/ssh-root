@@ -1,0 +1,19 @@
+#!/usr/bin/env expect
+# https://stackoverflow.com/questions/12202587/automatically-enter-ssh-password-with-script
+set ip [lindex $argv 0]
+set user root
+if { $argc >= 2 } {
+    set user [lindex $argv 1]
+}
+spawn ssh "$user@$ip"
+send "\r"
+expect {
+    "Are you sure you want to continue connecting" {
+        send "yes\r"
+    }
+    "password" {
+        send "root\r"
+    }
+    "#"
+}
+interact

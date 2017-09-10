@@ -1,13 +1,12 @@
-dashboard -layout source stack
-dashboard source -style context 16
-dashboard stack -style limit 5
-dashboard stack -style compact True
-
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history save
 set history filename ~/.gdb_history
 
 set listsize 40
+
+# https://unix.stackexchange.com/questions/151359/how-to-make-gdb-not-ask-me-y-or-n
+# http://stackoverflow.com/questions/4355978/get-rid-of-quit-anyway-question-just-kill-the-process-and-quit
+set confirm off
 
 # http://stackoverflow.com/questions/28815621/how-to-disable-type-return-to-continue-or-q-return-to-quit-in-gdb
 set pagination off
@@ -18,8 +17,6 @@ set print object on
 # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
 set print pretty on
 
-set pagination off
-
 define bl
     source ~/.gdb.breakpoints
 end
@@ -28,4 +25,15 @@ define bs
 end
 alias il = info locals
 
-source ~/.gdbinit.py
+define moe
+    monitor exit
+    quit
+    quit
+end
+
+# re-run. For gdbserver, where we may need to reload the dynamic library explicitly.
+define rr
+    start
+    set solib-search-path .
+    enable
+end

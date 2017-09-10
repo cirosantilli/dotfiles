@@ -1,0 +1,8 @@
+# Python dependencies, not available on gdbserver.
+
+dashboard -layout source stack
+dashboard source -style context 16
+dashboard stack -style limit 5
+dashboard stack -style compact True
+
+source ~/.gdbinit.py
