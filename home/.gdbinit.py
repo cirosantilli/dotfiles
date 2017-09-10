@@ -102,6 +102,8 @@ class Vim(gdb.Command):
     """
 Open current file in vim at a the current line.
 http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-current-line-in-a-text-editor-from-gbd/43557406#43557406
+
+Useless due to "edit".
 """
     def __init__(self):
         super().__init__('vim', gdb.COMMAND_FILES)
@@ -109,15 +111,3 @@ http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-
         sal = gdb.selected_frame().find_sal()
         call(['vim', sal.symtab.filename, '+{}'.format(sal.line), '+normal! zz'])
 Vim()
-
-class V(gdb.Command):
-    """
-Open current file in vim at a the current line.
-http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-current-line-in-a-text-editor-from-gbd/43557406#43557406
-"""
-    def __init__(self):
-        super().__init__('vim', gdb.COMMAND_FILES)
-    def invoke(self, argument, from_tty):
-        sal = gdb.selected_frame().find_sal()
-        call(['vim', sal.symtab.filename, '+{}'.format(sal.line), '+normal! zz'])
-V()

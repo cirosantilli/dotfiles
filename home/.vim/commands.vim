@@ -21,7 +21,6 @@
   command! -nargs=+ Gg execute 'Ggrep <args>' | tab copen
   " Current path to clipboard.
   " http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
-  command! Pwdx :let @+ = expand('%:p')
   " Delete the curent file.
   command! Rm !rm %
   " TODO also somehow wipe the buffer.
@@ -37,6 +36,8 @@
   command! -nargs=1 Vim vimgrep/\v<args>/ **
   " Write current file with sudo.
   command! Wsudo write !sudo tee %
+  command! Pwd :let @+ = expand('%:p')
+  command! Pwdl :let @+ = expand('%:p') . ':' . line('.')
 
 " Edit important files:
 

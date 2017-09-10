@@ -960,7 +960,7 @@
   alias gsh='git show'
   gshm() { git show "master:./$1"; }
   gshmo() { git show "master:./$1" > "old_$1"; }
-  alias gst='git status'
+  alias gst='git status --ignore-submodules=dirty'
   alias gsu='git submodule'
   alias gsua='git submodule add'
   alias gsuf='git submodule foreach'
@@ -1256,6 +1256,7 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## music
 
+  alias mbra="nohup vlc \"$MUSIC_DIR/brazillian\" >/dev/null &"
   alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
   alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
   alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
@@ -1577,8 +1578,8 @@ alias myt='mysql -u a -h localhost -pa a'
   }
 
   RING_DIR="$HOME/git/ring"
-  alias rr='"$RING_DIR/ubuntu-15.10-run.sh"'
-  alias psgr='ps aux | grep ring'
+  alias ring-rr='"$RING_DIR/ubuntu-15.10-run.sh"'
+  alias ring-psgr='ps aux | grep ring'
 
 ## Source lines and path modifications
 
