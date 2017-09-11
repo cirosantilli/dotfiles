@@ -38,6 +38,7 @@ See also: http://stackoverflow.com/questions/14031930/break-on-instruction-with-
                     break
 ContinueI()
 
+
 class NextInstructionAddress(gdb.Command):
     """
 Run until Next Instruction address.
@@ -121,3 +122,22 @@ http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-
         sal = gdb.selected_frame().find_sal()
         call(['vim', sal.symtab.filename, '+{}'.format(sal.line), '+normal! zz'])
 V()
+
+# Initial rr attempt. Fails because rr itself has source and we step into that.
+# https://stackoverflow.com/questions/10978496/how-to-use-gdb-to-catch-exit-of-a-program
+# https://stackoverflow.com/questions/6376869/gdb-how-to-find-out-from-where-program-exited
+class ContinueLastSource(gdb.Command):
+    def __init__(self):
+        super().__init__(
+            'cls',
+            gdb.COMMAND_BREAKPOINTS,
+            gdb.COMPLETE_NONE,
+            False
+        )
+    def invoke(self, opcode, from_tty):
+        while True:
+            symtab = gdb.selected_frame().find_sal().symtab
+            if symtab and os.path.exists(symtab.filename):
+                break
+            gdb.execute('rsi', to_string=True)
+ContinueLastSource()
