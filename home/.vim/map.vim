@@ -383,8 +383,8 @@
 
     " Copy to system clipboard:
 
-       nnoremap Y "+y
-       vnoremap Y "+y
+       nnoremap Y "*y
+       vnoremap Y "*y
 
     " Very useful to copy paste to browser or terminals.
 
@@ -394,7 +394,7 @@
 
     " Copy line to system clipboard:
 
-       nnoremap yY ^"+y$
+       nnoremap yY ^"*y$
 
   " # u
 

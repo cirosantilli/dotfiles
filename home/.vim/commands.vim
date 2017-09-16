@@ -36,6 +36,7 @@
   command! -nargs=1 Vim vimgrep/\v<args>/ **
   " Write current file with sudo.
   command! Wsudo write !sudo tee %
+  " Copy GDB breakpoint specifier to the clipboard.
   command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
   command! Xp :let @+ = expand('%:p')
 

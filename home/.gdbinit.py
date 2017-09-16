@@ -108,25 +108,15 @@ http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-
         super().__init__('vim', gdb.COMMAND_FILES)
     def invoke(self, argument, from_tty):
         sal = gdb.selected_frame().find_sal()
-        call(['vim', sal.symtab.filename, '+{}'.format(sal.line), '+normal! zz'])
+        call(['vim', sal.symtab.fullname(), '+{}'.format(sal.line), '+normal! zz'])
 Vim()
 
-class V(gdb.Command):
-    """
-Open current file in vim at a the current line.
-http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-current-line-in-a-text-editor-from-gbd/43557406#43557406
-"""
-    def __init__(self):
-        super().__init__('vim', gdb.COMMAND_FILES)
-    def invoke(self, argument, from_tty):
-        sal = gdb.selected_frame().find_sal()
-        call(['vim', sal.symtab.filename, '+{}'.format(sal.line), '+normal! zz'])
-V()
-
-# Initial rr attempt. Fails because rr itself has source and we step into that.
-# https://stackoverflow.com/questions/10978496/how-to-use-gdb-to-catch-exit-of-a-program
-# https://stackoverflow.com/questions/6376869/gdb-how-to-find-out-from-where-program-exited
 class ContinueLastSource(gdb.Command):
+    """
+Initial rr attempt. Fails because rr itself has source and we step into that.
+https://stackoverflow.com/questions/10978496/how-to-use-gdb-to-catch-exit-of-a-program
+https://stackoverflow.com/questions/6376869/gdb-how-to-find-out-from-where-program-exited
+"""
     def __init__(self):
         super().__init__(
             'cls',
@@ -137,7 +127,18 @@ class ContinueLastSource(gdb.Command):
     def invoke(self, opcode, from_tty):
         while True:
             symtab = gdb.selected_frame().find_sal().symtab
-            if symtab and os.path.exists(symtab.filename):
+            if symtab and os.path.exists(symtab.fullname()):
                 break
             gdb.execute('rsi', to_string=True)
 ContinueLastSource()
+
+class Curpath(gdb.Command):
+	"""
+Open current file in vim at a the current line.
+https://stackoverflow.com/questions/4858023/how-can-i-view-full-path-of-a-file-in-gdb/46253475#46253475
+"""
+	def __init__(self):
+		super().__init__('curpath', gdb.COMMAND_FILES)
+	def invoke(self, argument, from_tty):
+		gdb.write(gdb.selected_frame().find_sal().symtab.fullname() + os.linesep)
+Curpath()

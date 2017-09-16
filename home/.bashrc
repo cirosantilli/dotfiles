@@ -183,6 +183,9 @@
   rmext() { rm *".$1"; }
   alias rmrf='rm -rf'
   alias rmrfv='rm -rfv'
+  rrc() ( rr record "$@" )
+  rrp() ( rr replay -o -q -o -ex -o 'b main' "$@" )
+  rrr() ( rrc "$@" && rrp )
   alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
   # Source Bashrc. Unalias first so that conversions of functions
   # to aliases won't give errors.
@@ -212,8 +215,10 @@
   alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
   alias tm='tmux'
-  # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
+  # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
+  alias tma='tmux attach-session'
   topp() (
+    # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
     $* &>/dev/null &
     pid="$!"
     #top -p "$pid"
