@@ -38,6 +38,7 @@
   command! Wsudo write !sudo tee %
   " Copy GDB breakpoint specifier to the clipboard.
   command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
+  " Full path to clipboard.
   command! Xp :let @+ = expand('%:p')
 
 " Edit important files:
