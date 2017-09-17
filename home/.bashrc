@@ -790,7 +790,7 @@
   gcmp() (
     # Commit and Push.
     git commit -am "${1:-bak}"
-    gps
+    git push
   )
   gco() (
     git checkout "$@"
@@ -892,7 +892,7 @@
   alias gmv='git mv'
   alias gnr='git name-rev HEAD'
   alias gppp='git push prod prod'
-  gps() ( git push --tags "$@" )
+  alias gps='git push'
   alias gpsf='git push -f'
   # Wobble
   alias gpsfw='git push -f origin HEAD~:master && git push -f'
@@ -946,7 +946,7 @@
   alias gsh='git show'
   gshm() { git show "master:./$1"; }
   gshmo() { git show "master:./$1" > "old_$1"; }
-  alias gst='git status --ignore-submodules=dirty'
+  alias gst='git status'
   alias gsu='git submodule'
   alias gsua='git submodule add'
   alias gsuf='git submodule foreach'
@@ -971,12 +971,7 @@
     alias gpsbr='gps && git browse-remote'
     alias gcmanpsfbr='gcmanpsf && git browse-remote'
     # Pull Request.
-    ghpr() (
-      id="$1"
-      remote="${2:-origin}"
-      git fetch "$remote" "refs/pull/${id}/head"
-      git checkout -b "pull/$1" FETCH_HEAD;
-    )
+    ghpr() { git fetch up refs/pull/$1/head; git checkout -b new-branch FETCH_HEAD; }
 
   ## Hub
 
@@ -1237,7 +1232,6 @@ alias myt='mysql -u a -h localhost -pa a'
 
 ## music
 
-  alias mbra="nohup vlc \"$MUSIC_DIR/brazillian\" >/dev/null &"
   alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
   alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
   alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
@@ -1608,6 +1602,7 @@ alias myt='mysql -u a -h localhost -pa a'
   # http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
   # http://unix.stackexchange.com/questions/137842/what-is-the-point-of-ctrl-s
   stty -ixon
+
 
 ## Source lines and path modifications
 
