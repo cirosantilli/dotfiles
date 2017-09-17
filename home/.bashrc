@@ -580,7 +580,7 @@
       # Move Latest Download to current directory.
       lfmd() (
         file="$(lfg "$DOWNLOAD_DIR")"
-        if echo "$file" | grep -Eq '\.(part|chrdownload)$'; then
+        if echo "$file" | grep -Eq '\.(part|chrdownload|crdownload)$'; then
           echo 'Download not finished'
           exit 1
         fi
@@ -738,6 +738,7 @@
   # Fails for aliases that autocomplete like `g co branch<tab>`,
   # still does not expand.
   #alias i='git'
+  gac() ( git add -A && git commit -m "${1:-bak}" )
   alias gad='git add -A'
   alias gada='git add -A .'
   alias gadcm='git add -A . && git commit'
