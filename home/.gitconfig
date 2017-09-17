@@ -1,7 +1,7 @@
 [alias]
-	; The only ones that we really need are those who use tab autocomplete:
-	; use bash aliases like `gco` for all others as it saves the space and compress `git`
-	; without requiring `alias g=git`. Using aliases for git like `alias g='git'` does not work either.
+	# The only ones that we really need are those who use tab autocomplete:
+	# use bash aliases like `gco` for all others as it saves the space and compress `git`
+	# without requiring `alias g=git`. Using aliases for git like `alias g='git'` does not work either.
 	a = add
 	b = branch
 	c = checkout
@@ -9,18 +9,19 @@
 	m = merge
 	o = commit
 	r = rebase
-	; But sometimes we need others for workflows that have use multiple Git repositories
-	; and use scripts to do a command on all of them.
+	# But sometimes we need others for workflows that have use multiple Git repositories
+	# and use scripts to do a command on all of them.
 	cl = clone
 	cm = commit
 	pl = pull
 	st = status
-	; Usage: `git sh pwd`.
-	; Command is always run from the toplevel.
+	# Usage: `git sh pwd`.
+	# Command is always run from the toplevel.
 	sh = "!exec "
 	pushall = "!for i in `git remote`; do git push --all $i; done;"
 [branch]
-	autosetuprebase = always
+	# autosetuprebase = always
+	rebase = true
 [color]
 	grep = auto
 	ui = auto
@@ -45,10 +46,10 @@
 [mergetool]
 	keepBackup = false
 	prompt = false
-; less -r to wrap long lines.
-; TODO make diff-highlight fall back to regular diff if not found.
+# less -r to wrap long lines.
+# TODO make diff-highlight fall back to regular diff if not found.
 [pager]
-	;diff = "if diff-highlight &>/tmp/git-diff.out; then cat /tmp/git-diff.out; else echo fail; fi | less -R"
+	# diff = "if diff-highlight &>/tmp/git-diff.out; then cat /tmp/git-diff.out; else echo fail; fi | less -R"
 	diff = diff-highlight | less -XRr
 	log = diff-highlight | less -XRr
 	show = diff-highlight | less -XRr
