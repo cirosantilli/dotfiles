@@ -738,6 +738,7 @@
   # Fails for aliases that autocomplete like `g co branch<tab>`,
   # still does not expand.
   #alias i='git'
+  gacm() ( git commit -am "${1:-bak}" )
   alias gad='git add -A'
   alias gada='git add -A .'
   alias gadcm='git add -A . && git commit'
@@ -788,8 +789,7 @@
   # Clean any file not tracked, including gitignored. Restores repo to pristine state.
   gcexdf() { git clean -xdf "${1:-:/}"; }
   gcmp() (
-    # Commit and Push.
-    git commit -am "${1:-bak}"
+    gacm "$1"
     git push
   )
   gco() (
