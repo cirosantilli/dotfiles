@@ -380,7 +380,7 @@
 
   " Git add commit and push.
   command! Gad execute '!git add ' . expand('%:p')
-  command! Gacm execute '!git add ' . expand('%:p') . ' && git commit -m bak && git push'
+  command! Gacp execute '!git add ' . expand('%:p') . ' && git commit -m bak && git push'
   command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
   " Ggrep and open quickfix in a new tab.
   command! -nargs=1 Ggr Ggrep! <args> | tab copen

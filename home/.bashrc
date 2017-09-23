@@ -580,7 +580,7 @@
       # Move Latest Download to current directory.
       lfmd() (
         file="$(lfg "$DOWNLOAD_DIR")"
-        if echo "$file" | grep -Eq '\.(part|chrdownload)$'; then
+        if echo "$file" | grep -Eq '\.(part|chrdownload|crdownload)$'; then
           echo 'Download not finished'
           exit 1
         fi
