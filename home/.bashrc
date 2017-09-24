@@ -497,10 +497,9 @@
 
     # ctags default command:
     # - R: Recursive
-    # - m: without member fields
     # - --extra=f: also generate tags for filenames, that point to the first line:
     # Consider:
-    alias ctagsr='ctags -R --c-kinds=-m --extra=f'
+    alias ctagsr='ctags -R --extra=f'
     alias cscopr='cscope -Rb'
     alias ctasc='cdg && ctagsr && cscopr && cd -'
 

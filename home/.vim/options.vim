@@ -98,9 +98,12 @@
 
   set autochdir
 
-" Allow to use the mouse:
+" Disable vim mouse capture.
+" All mouse clicks to the terminal instead.
+" Because the mouse is for newbs, and it breaks copy paste over putty,
+" where +* registers are just broken.
 
-  set mouse=a
+  set mouse=
 
 " # backup
 

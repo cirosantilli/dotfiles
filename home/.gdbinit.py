@@ -2,8 +2,7 @@ import re
 from subprocess import call
 
 class ContinueI(gdb.Command):
-    """
-Continue until instruction with given opcode.
+    """Continue until instruction with given opcode.
 
 Usage: ci OPCODE
 
@@ -38,10 +37,8 @@ See also: http://stackoverflow.com/questions/14031930/break-on-instruction-with-
                     break
 ContinueI()
 
-
 class NextInstructionAddress(gdb.Command):
-    """
-Run until Next Instruction address.
+    """Run until Next Instruction address.
 
 Usage: nia
 
@@ -83,8 +80,7 @@ class BreakStackBreakpoint(gdb.Breakpoint):
         return False
 
 class BreakStack(gdb.Command):
-    """
-Break on child only if it was called from parent.
+    """Break on child only if it was called from parent.
 break-stack PARENT CHILD
 http://stackoverflow.com/a/20209911/895245
 """
@@ -100,8 +96,7 @@ http://stackoverflow.com/a/20209911/895245
 BreakStack()
 
 class Vim(gdb.Command):
-    """
-Open current file in vim at a the current line.
+    """Open current file in vim at a the current line.
 http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-current-line-in-a-text-editor-from-gbd/43557406#43557406
 """
     def __init__(self):
@@ -112,8 +107,7 @@ http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-
 Vim()
 
 class ContinueLastSource(gdb.Command):
-    """
-Initial rr attempt. Fails because rr itself has source and we step into that.
+    """Initial rr attempt. Fails because rr itself has source and we step into that.
 https://stackoverflow.com/questions/10978496/how-to-use-gdb-to-catch-exit-of-a-program
 https://stackoverflow.com/questions/6376869/gdb-how-to-find-out-from-where-program-exited
 """
@@ -133,8 +127,7 @@ https://stackoverflow.com/questions/6376869/gdb-how-to-find-out-from-where-progr
 ContinueLastSource()
 
 class Curpath(gdb.Command):
-	"""
-Open current file in vim at a the current line.
+	"""Open current file in vim at a the current line.
 https://stackoverflow.com/questions/4858023/how-can-i-view-full-path-of-a-file-in-gdb/46253475#46253475
 """
 	def __init__(self):
@@ -142,3 +135,30 @@ https://stackoverflow.com/questions/4858023/how-can-i-view-full-path-of-a-file-i
 	def invoke(self, argument, from_tty):
 		gdb.write(gdb.selected_frame().find_sal().symtab.fullname() + os.linesep)
 Curpath()
+
+class ContinueUntil(gdb.Command):
+    """Continue until a specific breakpoint is hit
+https://stackoverflow.com/questions/12081660/gdb-run-until-specific-breakpoint/12082728#12082728
+"""
+    def __init__ (self):
+        super().__init__ ('cu', gdb.COMMAND_BREAKPOINTS)
+    def invoke(self, argument, from_tty):
+        argv = gdb.string_to_argv(argument)
+        bp_num = int(argv[0])
+        all_breakpoints = gdb.breakpoints() or []
+        next(bp for bp in all_breakpoints if bp.number == bp_num)
+        breakpoints = [
+            b for b in all_breakpoints
+            if (
+                b.is_valid()
+                and b.enabled
+                and b.number != bp_num
+                and b.visible == gdb.BP_BREAKPOINT
+            )
+        ]
+        for b in breakpoints:
+            b.enabled = False
+        gdb.execute('continue')
+        for b in breakpoints:
+            b.enabled = True
+ContinueUntil()

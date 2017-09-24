@@ -29,6 +29,10 @@ define e
     edit
 end
 
+define F
+    finish
+end
+
 define moe
     monitor exit
     quit
