@@ -142,3 +142,19 @@ https://stackoverflow.com/questions/4858023/how-can-i-view-full-path-of-a-file-i
 	def invoke(self, argument, from_tty):
 		gdb.write(gdb.selected_frame().find_sal().symtab.fullname() + os.linesep)
 Curpath()
+
+class Ipdb(gdb.Command):
+ def __init__(self):
+         super().__init__('ipdb', gdb.COMMAND_OBSCURE)
+ def invoke(self, argument, from_tty):
+     import ipdb
+     ipdb.set_trace()
+Ipdb()
+
+class Pdb(gdb.Command):
+ def __init__(self):
+         super().__init__('pdb', gdb.COMMAND_OBSCURE)
+ def invoke(self, argument, from_tty):
+     import pdb
+     pdb.set_trace()
+Pdb()
