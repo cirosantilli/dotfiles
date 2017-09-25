@@ -184,7 +184,7 @@
   alias rmrf='rm -rf'
   alias rmrfv='rm -rfv'
   rrc() ( rr record "$@" )
-  rrp() ( rr replay -o -q -o -ex -o 'b main' "$@" )
+  rrp() ( rr replay -o -q -o -ex -o 'b main' -o -ex -o 'c' "$@" )
   rrr() ( rrc "$@" && rrp )
   alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
   # Source Bashrc. Unalias first so that conversions of functions
