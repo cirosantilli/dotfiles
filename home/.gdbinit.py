@@ -162,3 +162,19 @@ https://stackoverflow.com/questions/12081660/gdb-run-until-specific-breakpoint/1
         for b in breakpoints:
             b.enabled = True
 ContinueUntil()
+
+class Ipdb(gdb.Command):
+ def __init__(self):
+         super().__init__('ipdb', gdb.COMMAND_OBSCURE)
+ def invoke(self, argument, from_tty):
+     import ipdb
+     ipdb.set_trace()
+Ipdb()
+
+class Pdb(gdb.Command):
+ def __init__(self):
+         super().__init__('pdb', gdb.COMMAND_OBSCURE)
+ def invoke(self, argument, from_tty):
+     import pdb
+     pdb.set_trace()
+Pdb()
