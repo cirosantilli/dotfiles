@@ -425,6 +425,7 @@
   ## Chromium
 
   chr() ( noh chromium-browser "$@"; )
+  chrt() ( chr --temp-profile "$@"; )
   # Unsafe settings, for quick testing. Don't access any important page with it.
   chr-test() ( chr --allow-file-access-from-files; )
 
