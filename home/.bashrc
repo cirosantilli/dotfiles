@@ -695,6 +695,14 @@
     mygcc="$mygcc_path/gcc"
     mycc1="$HOME/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1"
 
+  gccver() (
+    v="$1"
+    sudo update-alternatives --remove-all gcc
+    sudo update-alternatives --remove-all g++
+    sudo update-alternatives --install /usr/bin/gcc gcc "/usr/bin/gcc-$v" 10
+    sudo update-alternatives --install /usr/bin/g++ g++ "/usr/bin/g++-$v" 10
+  )
+
 ## gdb
 
   alias gdbS='gdb -ex "break _start" -ex "run" -q --args'
