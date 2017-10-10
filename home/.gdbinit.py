@@ -1,9 +1,11 @@
+from __future__ import print_function
+
 import re
 from subprocess import call
 
 class BreakStackBreakpoint(gdb.Breakpoint):
     def __init__(self, parent, child):
-        super().__init__(child)
+        super(self.__class__, self).__init__(child)
         self.parent_re = re.compile(parent)
     def stop(self):
         older = gdb.selected_frame().older()
@@ -19,7 +21,7 @@ break-stack PARENT CHILD
 http://stackoverflow.com/a/20209911/895245
 """
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'break-stack',
             gdb.COMMAND_BREAKPOINTS,
             gdb.COMPLETE_NONE,
@@ -42,7 +44,7 @@ Examples:
 See also: http://stackoverflow.com/questions/14031930/break-on-instruction-with-specific-opcode-in-gdb
 """
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'ci',
             gdb.COMMAND_BREAKPOINTS,
             gdb.COMPLETE_NONE,
@@ -71,7 +73,7 @@ https://stackoverflow.com/questions/10978496/how-to-use-gdb-to-catch-exit-of-a-p
 https://stackoverflow.com/questions/6376869/gdb-how-to-find-out-from-where-program-exited
 """
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'cls',
             gdb.COMMAND_BREAKPOINTS,
             gdb.COMPLETE_NONE,
@@ -90,7 +92,7 @@ class ContinueUntil(gdb.Command):
 https://stackoverflow.com/questions/12081660/gdb-run-until-specific-breakpoint/12082728#12082728
 """
     def __init__ (self):
-        super().__init__ ('cu', gdb.COMMAND_BREAKPOINTS)
+        super(self.__class__, self).__init__ ('cu', gdb.COMMAND_BREAKPOINTS)
     def invoke(self, argument, from_tty):
         argv = gdb.string_to_argv(argument)
         bp_num = int(argv[0])
@@ -114,7 +116,7 @@ ContinueUntil()
 
 class ContinueUntilSource(gdb.Command):
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'cus',
             gdb.COMMAND_BREAKPOINTS,
             gdb.COMPLETE_NONE,
@@ -145,14 +147,14 @@ class Curpath(gdb.Command):
 https://stackoverflow.com/questions/4858023/how-can-i-view-full-path-of-a-file-in-gdb/46253475#46253475
 """
 	def __init__(self):
-		super().__init__('curpath', gdb.COMMAND_FILES)
+		super(self.__class__, self).__init__('curpath', gdb.COMMAND_FILES)
 	def invoke(self, argument, from_tty):
 		gdb.write(gdb.selected_frame().find_sal().symtab.fullname() + os.linesep)
 Curpath()
 
 class Ipdb(gdb.Command):
  def __init__(self):
-         super().__init__('ipdb', gdb.COMMAND_OBSCURE)
+         super(self.__class__, self).__init__('ipdb', gdb.COMMAND_OBSCURE)
  def invoke(self, argument, from_tty):
      import ipdb
      ipdb.set_trace()
@@ -171,7 +173,7 @@ See also:
 http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-when-debugging-a-bootloader-bios-with-gdb-and-q
 """
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'nia',
             gdb.COMMAND_BREAKPOINTS,
             gdb.COMPLETE_NONE,
@@ -190,7 +192,7 @@ NextInstructionAddress()
 
 class Pdb(gdb.Command):
  def __init__(self):
-         super().__init__('pdb', gdb.COMMAND_OBSCURE)
+         super(self.__class__, self).__init__('pdb', gdb.COMMAND_OBSCURE)
  def invoke(self, argument, from_tty):
      import pdb
      pdb.set_trace()
@@ -200,7 +202,7 @@ class TraceAsm(gdb.Command):
     """https://stackoverflow.com/questions/8841373/displaying-each-assembly-instruction-executed-in-gdb/46661931#46661931
 """
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'trace-asm',
             gdb.COMMAND_BREAKPOINTS,
             gdb.COMPLETE_NONE,
@@ -242,7 +244,7 @@ class Vim(gdb.Command):
 http://stackoverflow.com/questions/43557405/how-to-open-the-current-file-at-the-current-line-in-a-text-editor-from-gbd/43557406#43557406
 """
     def __init__(self):
-        super().__init__('vim', gdb.COMMAND_FILES)
+        super(self.__class__, self).__init__('vim', gdb.COMMAND_FILES)
     def invoke(self, argument, from_tty):
         sal = gdb.selected_frame().find_sal()
         call(['vim', sal.symtab.fullname(), '+{}'.format(sal.line), '+normal! zz'])
