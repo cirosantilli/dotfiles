@@ -1,9 +1,24 @@
 # Python dependencies, not available on gdbserver.
 
-dashboard -layout source stack
-dashboard source -style context 16
-dashboard stack -style limit 5
 dashboard stack -style compact True
+dashboard stack -style limit 5
+
+define da
+    dashboard
+end
+
+define dadef
+    dashboard -layout source stack
+    dashboard source -style context 16
+end
+dadef
+
+define daasm
+    dashboard -layout source assembly registers stack
+    dashboard source -style context 8
+    dashboard assembly -style context 8
+end
+dadef
 
 source ~/.gdbinit.py
 

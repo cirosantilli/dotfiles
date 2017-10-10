@@ -539,6 +539,7 @@
     lla() ( ll -A "$@"; )
     # Sort by size.
     lls() ( lla -Sr "$@"; )
+    lsv() ( ls | sort -V )
     alias llS='lla -S'
 
     ## Latest File modified operations
@@ -1543,7 +1544,7 @@ alias myt='mysql -u a -h localhost -pa a'
   # Clipboard path operations.
 
     # Absolute path.
-    xab() ( echo "$(pwd)/$1" | y; )
+    xab() ( printf "$(pwd)/$1" | y; )
     xmv() ( mv "$(x)" "${1:-.}"; )
     xcp() ( cp -r "$(x)" "${1:-.}"; )
     xpw() ( pwd | y; )
