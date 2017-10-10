@@ -184,7 +184,7 @@
   alias rmrf='rm -rf'
   alias rmrfv='rm -rfv'
   rrc() ( rr record "$@" )
-  rrp() ( rr replay -o -q -o -ex -o 'b main' "$@" )
+  rrp() ( rr replay -o -q -o -ex -o 'b main' -o -ex -o 'c' "$@" )
   rrr() ( rrc "$@" && rrp )
   alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
   # Source Bashrc. Unalias first so that conversions of functions
@@ -695,6 +695,14 @@
     mygcc_path="$HOME/git/gcc/install/bin"
     mygcc="$mygcc_path/gcc"
     mycc1="$HOME/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1"
+
+  gccver() (
+    v="$1"
+    sudo update-alternatives --remove-all gcc
+    sudo update-alternatives --remove-all g++
+    sudo update-alternatives --install /usr/bin/gcc gcc "/usr/bin/gcc-$v" 10
+    sudo update-alternatives --install /usr/bin/g++ g++ "/usr/bin/g++-$v" 10
+  )
 
 ## gdb
 
