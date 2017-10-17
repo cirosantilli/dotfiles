@@ -616,7 +616,7 @@
   alias duh='du -h'
   dush() (
     cd "${1:-.}"
-    du -sh .[^.]* * 2>/dev/null | sort -h
+    du -hsx .[^.]* * 2>/dev/null | sort -h
   )
   # dush to File
   dushf() (
