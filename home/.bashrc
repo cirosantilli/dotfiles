@@ -214,6 +214,8 @@
   # Filter tex Errors only:
   alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
+  # Unix timtestamp.
+  alias timestampu='date "+%s"'
   alias tm='tmux'
   # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
   alias tma='tmux attach-session'
@@ -380,6 +382,7 @@
   alias obS='objdump -CSr'
   alias rea='readelf -aW'
   alias red='readelf -dW'
+  alias reD='readelf --debug-dump=decodedline'
   alias reh='readelf -h'
   alias reS='readelf -SW'
   alias res='readelf -sW'
@@ -496,11 +499,10 @@
 
 ## ctags
 
-    # ctags default command:
     # - R: Recursive
-    # - --extra=f: also generate tags for filenames, that point to the first line:
-    # Consider:
-    alias ctagsr='ctags -R --extra=f'
+    # - --c-kinds=+p: function prototypes. Because that is where the docs usually are.
+    # - --extra=f: also generate tags for filenames, that point to the first line.
+    alias ctagsr='ctags -R "$(pwd)" --c-kinds=+p --c++-kinds=+p --extra=f'
     alias cscopr='cscope -Rb'
     alias ctasc='cdg && ctagsr && cscopr && cd -'
 
@@ -697,6 +699,8 @@
     mycc1="$HOME/git/gcc/install/libexec/gcc/x86_64-unknown-linux-gnu/5.1.0/cc1"
 
   gccver() (
+    # https://askubuntu.com/questions/26498/choose-gcc-and-g-version
+    # E.g.: gccver 6
     v="$1"
     sudo update-alternatives --remove-all gcc
     sudo update-alternatives --remove-all g++
@@ -1152,6 +1156,11 @@
       cmake "$@" ..
       cmake --build . -- -j"$(npro)" VERBOSE=1
     }
+    cmkn() {
+      mdc 'build-ninja'
+      cmake "$@" .. -G Ninja
+      cmake --build . -- -j"$(npro)" -v
+    }
     cmkb() { time cmk; b; }
     cmkd() { cmk -DCMAKE_BUILD_TYPE=Debug; }
     cmks() { cmk -DBUILD_SHARED_LIBS=ON; }
@@ -1216,6 +1225,7 @@
   finh() { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
   # full Path.
   finp() { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
+  fine() ( find . -executable -type f )
 
   # Mass rename refactoring.
   alias mvr='move_regex.py'
