@@ -1728,49 +1728,49 @@
 
 ## Sources
 
-  # Here be dragons.
-
-  # Enable programmable completion features (you don't need to enable
-  # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-  # sources /etc/bash.bashrc).
-  if [ -f '/etc/bash_completion' ] && ! shopt -oq 'posix'; then
-      . '/etc/bash_completion'
-  fi
-
-  ## homeshick
-  #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
-  f="$HOME/.homesick/repos/homeshick/homeshick.sh"
-  if [ -e "$f" ]; then
-    . "$f"
-  fi
-
-  ## Google Cloud gsutil
-  d="$HOME/google-cloud-sdk"
-  if [ -d "$d" ]; then
-    # The next line updates PATH for the Google Cloud SDK.
-    . "$d/path.bash.inc"
-    # The next line enables shell command completion for gcloud.
-    . "$d/completion.bash.inc"
-  fi
-
-  ## GVM
-  f="$HOME/.gvm/scripts/gvm"
-  [ -f "$f" ] && . "$f"
-
-  ## NVM
-  f="$HOME/.nvm/nvm.sh"
-  if [ -r "$f" ]; then
-    . "$f" &>'/dev/null'
-    nvm use '6.10.1' &>'/dev/null'
-  fi
-
-  ## RVM
-  f="$HOME/.rvm/scripts/rvm"
-  [ -f "$f" ] && . "$f"
-
-  # Travis gem
-  f="$HOME/.travis/travis.sh"
-  [ -f "$f" ] && . "$f"
+#  # Here be dragons.
+#
+#  # Enable programmable completion features (you don't need to enable
+#  # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+#  # sources /etc/bash.bashrc).
+#  if [ -f '/etc/bash_completion' ] && ! shopt -oq 'posix'; then
+#    . '/etc/bash_completion'
+#  fi
+#
+#  ## homeshick
+#  #git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+#  f="$HOME/.homesick/repos/homeshick/homeshick.sh"
+#  if [ -e "$f" ]; then
+#    . "$f"
+#  fi
+#
+#  ## Google Cloud gsutil
+#  d="$HOME/google-cloud-sdk"
+#  if [ -d "$d" ]; then
+#    # The next line updates PATH for the Google Cloud SDK.
+#    . "$d/path.bash.inc"
+#    # The next line enables shell command completion for gcloud.
+#    . "$d/completion.bash.inc"
+#  fi
+#
+#  ## GVM
+#  f="$HOME/.gvm/scripts/gvm"
+#  [ -f "$f" ] && . "$f"
+#
+#  ## NVM
+#  f="$HOME/.nvm/nvm.sh"
+#  if [ -r "$f" ]; then
+#    . "$f" &>'/dev/null'
+#    nvm use '6.10.1' &>'/dev/null'
+#  fi
+#
+#  ## RVM
+#  f="$HOME/.rvm/scripts/rvm"
+#  [ -f "$f" ] && . "$f"
+#
+#  # Travis gem
+#  f="$HOME/.travis/travis.sh"
+#  [ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.
 if [ -r "$HOME/.bashrc_local" ]; then
