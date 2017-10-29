@@ -197,8 +197,10 @@
     umask 0002
 
   # Free up Cq and Cs, and stop Cs from freezing terminal.
-  # http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
-  # http://unix.stackexchange.com/questions/137842/what-is-the-point-of-ctrl-s
+  # - http://unix.stackexchange.com/questions/12107/how-to-unfreeze-after-accidentally-pressing-ctrl-s-in-a-terminal
+  # - http://unix.stackexchange.com/questions/137842/what-is-the-point-of-ctrl-s
+  # Don't do this, as it generates an error window at startup:
+  # https://askubuntu.com/questions/918169/error-found-while-loading-home-username-profile/970634#970634
   #stty -ixon
 
   # For VM SSH development as git user so I can run X programs:
