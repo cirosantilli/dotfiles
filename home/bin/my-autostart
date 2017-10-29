@@ -4,3 +4,4 @@
 
 #sync-pull
 #dconf load / <"$HOME/.config/dconf/user.conf"
+#xmodmap ~/.Xmodmap
