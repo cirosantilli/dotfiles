@@ -84,6 +84,12 @@
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
   alias lns='ln -s'
+  lnmv() (
+    f="$1"
+    d="$2"
+    mv "$f" "$d"
+    ln -s "${d}/$(basename "${f}")" "$f"
+  )
   # Remove a symlink, and move the file linked to to the symlink location.
   # Usage: cmd symlink-location
   lns-undo() {
@@ -308,19 +314,32 @@
   alias adbls="adb logcat -v time -s"
   alias adblsc="adb logcat -v time -s com.cirosantilli"
   alias adbs='adb shell'
+  alias adbp='adb push'
+  alias adbP='adb pull'
+  alias adbsrm='adb shell rm'
+  adbs-list-packages() ( adb shell pm list packages "$@" )
+  adbss() (
+    # https://stackoverflow.com/questions/4567904/how-to-start-an-application-using-android-adb-tools
+    #adb shell am start -n "${1}/${2:-MainActivity}"
+    adb shell monkey --pct-syskeys 0 -p "$1" 1
+  )
+  adbsS() (
+    # https://stackoverflow.com/questions/3117095/stopping-an-android-app-from-console
+    adb shell am force-stop "$1"
+  )
+  adbsss() (
+    # Start. Sleep. Stop.
+    app="$1"
+    sleep="${2:-3}"
+    adbss "$app"
+    sleep "$sleep"
+    adbsS "$app"
+  )
+  adbsf() (
+    adb shell find / -iname "*$1*" 2>/dev/null
+  )
   alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
   alias ands='nohup studio.sh >/dev/null 2>&1 &'
-  # Run app in current directory. Must be run from top level
-  # of a project created with `android create project`.
-  # Only works if there is only a single file in the `src/` directory.
-  adbr() (
-    cd 'src/'
-    file="$(find * -type f | head -n1)"
-    dir="$(dirname "$file")"
-    file="$(echo "$file" | sed -r 's/.java$//' | tr '/' '.')"
-    dir="$(echo "$dir" | tr '/' '.')"
-    adb shell am start -n "${dir}/${file}"
-  )
   alias antcdi='ant clean && ant debug && ant installd'
   alias antcndi='ant clean && ndk-build clean && ndk-build && ant debug && ant installd'
   # Clean, build, install and run on device.
