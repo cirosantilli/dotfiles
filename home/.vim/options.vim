@@ -153,7 +153,9 @@
 
   set guifont=9
 
-" # number #LineNr
+" # number
+
+" # LineNr
 
   " Show line numbers on left of page:
 
