@@ -4,3 +4,7 @@
 
 #sync-pull
 #dconf load / <"$HOME/.config/dconf/user.conf"
+#xmodmap ~/.Xmodmap
+#https://askubuntu.com/questions/363346/how-to-permanently-switch-caps-lock-and-esc/830343#830343
+#setxkbmap -option caps:swapescape
+date > ~/.my-autostart

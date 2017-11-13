@@ -283,11 +283,27 @@
   f() { find "${2-.}" -iname "*$1*"; }
   f2() { find . -maxdepth 2 -iname "*$1*"; }
   f3() { find . -maxdepth 3 -iname "*$1*"; }
-  alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
-  alias gnup='gnuplot -p'
   alias fgb='fg;b'
   alias fmmmr='find-music-make-m3u .'
+  alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
+  alias gnup='gnuplot -p'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
+  kdev() (
+    # http://kfunk.org/2016/02/16/building-kdevelop-5-from-source-on-ubuntu-15-10/
+    export KF5=~/kde-5
+    export QTDIR=/usr
+    export CMAKE_PREFIX_PATH=$KF5:$CMAKE_PREFIX_PATH
+    export XDG_DATA_DIRS=$KF5/share:$XDG_DATA_DIRS:/usr/share
+    export XDG_CONFIG_DIRS=$KF5/etc/xdg:$XDG_CONFIG_DIRS:/etc/xdg
+    export PATH=$KF5/bin:$QTDIR/bin:$PATH
+    export QT_PLUGIN_PATH=$KF5/lib/plugins:$KF5/lib64/plugins:$KF5/lib/x86_64-linux-gnu/plugins:$QTDIR/plugins:$QT_PLUGIN_PATH  
+    #   (lib64 instead of lib, on OpenSUSE and similar)
+    export QML2_IMPORT_PATH=$KF5/lib/qml:$KF5/lib64/qml:$KF5/lib/x86_64-linux-gnu/qml:$QTDIR/qml  
+    export QML_IMPORT_PATH=$QML2_IMPORT_PATH
+    export KDE_SESSION_VERSION=5
+    export KDE_FULL_SESSION=true
+    kdevelop
+  )
   h() ( "$1" --help | less; )
   hex() ( printf "%x\n" "$@" )
   j() ( jobs "$@"; )
@@ -588,7 +604,7 @@
     alias afse='apt-file search'
     # Binary
     afseb() { apt-file search "$(which "$1")"; }
-    alias sabd='apt-get build-dep'
+    alias sabd='sudo apt-get build-dep'
     alias agso='apt-get source'
     alias dpL='dpkg -L'
     alias dps='dpkg -s'
@@ -1094,7 +1110,7 @@
     alias gpsum='git push -u mine'
     alias gpsu='git push -u'
     alias gpsuom='git push -u origin master'
-    alias gpl='git pull && gsuu'
+    gpl() ( git pull "$@" && gsuu )
     alias gplr='git pull --rebase'
     alias gplum='git pull up master'
     alias gplrum='git pull --rebase up master'
@@ -1132,7 +1148,7 @@
     alias grtv='git remote -v'
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
-    grtrou() { git remote rename origin up && git remote add origin "$1" && git branch --set-upstream 'origin';}
+    grtrou() ( git remote rename origin up && git remote add origin "$1" && git branch --set-upstream-to 'origin/master'; )
     alias grts='git remote set-url'
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
