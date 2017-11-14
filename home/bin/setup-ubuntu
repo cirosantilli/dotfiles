@@ -56,8 +56,6 @@ ppa-purge \
 
   # Browser
   pkgs="$pkgs chromium-browser"
-  # 12.04
-  pkgs="$pkgs adobe-flashplugin"
   # 14.04
   pkgs="$pkgs flashplugin-installer"
 
