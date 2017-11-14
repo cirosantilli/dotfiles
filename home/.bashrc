@@ -61,6 +61,17 @@
     # Current main project.
     export Z_DIR_SHORTCUT='z'
 
+    # Android
+
+    export ANDROID_SDK="$HOME/android-sdk"
+    export ANDROID_HOME="$ANDROID_SDK"
+    export ANDROID_NDK="$ANDROID_SDK/ndk-bundle"
+    export ANDROID_NDK_HOME="$ANDROID_NDK"
+    export ANDROID_NDK_ROOT="$ANDROID_NDK"
+    export ANDROID_ABI='armeabi-v7a'
+    export ANDROID_JAVA_HOME="$JAVA_HOME"
+    export ANDROID_STUDIO="$HOME/android-studio/"
+
   ## PATH
 
     # Before
@@ -86,6 +97,10 @@
 
       PATH="$PATH:$HOME/.cabal/bin"
       PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
+
+      # pip install --user
+      # https://stackoverflow.com/questions/7143077/how-can-i-install-packages-in-my-home-folder-with-pip
+      PATH="$PATH:$HOME/.local/bin/"
 
       # https://github.com/cirosantilli/runlinux
       PATH="$PATH:$PROGRAM_DIR/runlinux"
@@ -166,16 +181,6 @@
   export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
   #export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
   #export CATALINA_HOME=''
-
-  ## Android
-  export ANDROID_SDK="$HOME/android-sdk"
-  export ANDROID_HOME="$ANDROID_SDK"
-  export ANDROID_NDK="$HOME/ndk-bundle"
-  export ANDROID_NDK_HOME="$ANDROID_NDK"
-  export ANDROID_NDK_ROOT="$ANDROID_NDK"
-  export ANDROID_ABI='armeabi-v7a'
-  export ANDROID_JAVA_HOME="$JAVA_HOME"
-  export ANDROID_STUDIO="$HOME/android-studio/"
 
   # AMD SDK
   export AMDAPPSDKROOT="$HOME/AMDAPPSDK-3.0"
@@ -513,14 +518,21 @@
     alias adbi='adb install'
     alias adbks='sudo "$(which adb)" kill-server && sudo "$(which adb)" start-server'
     alias adbl="adb logcat"
+    alias adblc="adb logcat -c"
+    alias adbld="adb logcat -d"
     alias adble="adb logcat -v time '*:E'"
     alias adbls="adb logcat -v time -s"
     alias adblsc="adb logcat -v time -s com.cirosantilli"
     alias adbp='adb push'
     alias adbP='adb pull'
+    adbpp() (
+      # https://stackoverflow.com/questions/11074671/adb-pull-multiple-files
+      adbs "ls $1" | xargs -I'{}' -n 1 adb pull '{}' "${2:-.}"
+    )
     alias adbsrm='adb shell rm'
-    alias adbs='adb shell'
-    adbs-list-packages() ( adb shell pm list packages "$@" )
+    adbs() ( adb shell "$@" )
+    alias adbu='adb uninstall'
+    adbs-list-packages() ( adb shell pm list packages | cut -d ':' -f 2 | sort | grep "${1:-.}" )
     adbss() (
       # https://stackoverflow.com/questions/4567904/how-to-start-an-application-using-android-adb-tools
       #adb shell am start -n "${1}/${2:-MainActivity}"
@@ -531,7 +543,7 @@
       adb shell am force-stop "$1"
     )
     adbsss() (
-      # Start. Sleep. Stop.
+      # Shell. Start. Sleep. Stop.
       app="$1"
       sleep="${2:-3}"
       adbss "$app"
@@ -563,8 +575,7 @@
     alias antid='ant installd'
     alias grai='./gradlew installDebug'
     alias grad='./gradlew assembleDebug'
-    alias gradi='./gradlew assembleDebug'
-    alias gradi='./gradlew assembleDebug && ./gradlew installDebug'
+    alias gradi='./gradlew uninstallAll && ./gradlew assembleDebug && ./gradlew installDebug'
     alias gracdi='./gradlew clean && ./gradlew assembleDebug && ./gradlew installDebug'
 
   ## aptitude
@@ -1509,6 +1520,7 @@
     pyp() (
       python -c 'import pickle,sys;d=pickle.load(open(sys.argv[1],"rb"));print(d)' "$1"
     )
+    alias jupn='jupyter notebook'
 
     ## pip
 
@@ -1519,8 +1531,8 @@
         xargs rm -rf < files.txt
         sudo rm -f files.txt
       )
-      alias spii='sudo pip install'
-      alias spiu='sudo pip uninstall'
+      alias pii='pip install --user'
+      alias piu='pip uninstall --user'
       alias pise='pip search'
       alias pifr='pip freeze'
       alias pift='pip freeze >requirements.txt'
@@ -1789,10 +1801,11 @@
   [ -f "$f" ] && . "$f"
 
   ## NVM
+  #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   f="$HOME/.nvm/nvm.sh"
   if [ -r "$f" ]; then
     . "$f" &>'/dev/null'
-    nvm use '6.10.1' &>'/dev/null'
+    nvm use --lts &>'/dev/null'
   fi
 
   ## RVM
