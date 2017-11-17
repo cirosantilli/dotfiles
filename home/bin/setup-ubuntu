@@ -10,10 +10,14 @@ Minimal CLI setup:
     wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash /dev/stdin -g
 '
 
+full=false
 gui=true
 setup_home_partition=true
-while getopts gh OPT; do
+while getopts fgh OPT; do
   case "$OPT" in
+    f)
+      full=true
+      ;;
     g)
       gui=false
       ;;
@@ -134,4 +138,15 @@ if $gui; then
   sudo dpkg-reconfigure unattended-upgrades
 
   sudo apt-file update
+fi
+
+if $full; then
+  if $setup_home_partition; then
+    # nodejs
+    # https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm/971612#971612
+    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | sh
+    source ~/.nvm/nvm.sh
+    nvm install --lts
+    nvm use --lts
+  fi
 fi
