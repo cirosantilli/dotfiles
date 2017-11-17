@@ -1,6 +1,6 @@
 # Dotfiles
 
-This repository is managed with <https://github.com/technicalpickles/homesick>
+This repository is managed with <https://github.com/andsens/homeshick>
 
 Installation of all system dependencies under: `home/bin/setup-ubuntu`.
 
