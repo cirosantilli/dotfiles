@@ -772,7 +772,10 @@
 
       " Configured with:
 
-          let g:netrw_browsex_viewer = 'xdg-open'
+          let g:netrw_browsex_viewer = 'setsid xdg-open'
+
+      " setsid Ubuntu 17.10 GVIM GNOME:
+      " https://vi.stackexchange.com/questions/5032/gx-not-opening-url-in-gvim-but-works-in-terminal/5034#5034
 
     " # gt
 
