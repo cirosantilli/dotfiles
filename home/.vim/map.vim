@@ -42,10 +42,6 @@
       " let mapleader = '\'
       " noremap <leader>d e
 
-    " Here, `,a` and `\d` have gotten mappings!
-
-      nnoremap <leader>l :tab split<CR>:exec("ltag ".expand("<cword>"))<CR>
-
     " Tab navigation in normal mode.
     " In terminal, alt tab is not possible, but should be used in GVim.
 
@@ -139,7 +135,8 @@
     " Open tag in new tab.
 
       nnoremap <leader>ta :tab tag<space>
-      nnoremap <leader>tl :tab Ltag<space>
+      nnoremap <leader>tc :execute("Ltag ".expand("<cword>"))<CR>
+      nnoremap <leader>tl :Ltag<space>
 
     " Find the next Git Merge Conflict.
 

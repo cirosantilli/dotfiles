@@ -614,6 +614,7 @@
     afseb() { apt-file search "$(which "$1")"; }
     alias sabd='sudo apt-get build-dep'
     alias agso='apt-get source'
+    alias sdpi='sudo dpkg -i'
     alias dpL='dpkg -L'
     alias dps='dpkg -s'
     alias dpS='dpkg -S'
@@ -1569,13 +1570,16 @@
         sudo rm -f files.txt
       )
       alias pii='pip install --user'
+      alias pi3i='pip3 install --user'
       alias piu='pip uninstall --user'
       alias pise='pip search'
-      alias pifr='pip freeze'
-      alias pift='pip freeze >requirements.txt'
+      pif() ( pip freeze | grep -E "${1:-^}")
+      pifr() (
+        pif "$@" >> requirements.txt
+        sort -fu -o requirements.txt requirements.txt
+      )
       alias piin='pip install'
       alias piir='pip install -r requirements.txt'
-      alias pii='pip pillow.txt'
 
     ## virtualenv
 
