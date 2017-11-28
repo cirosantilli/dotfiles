@@ -194,9 +194,6 @@ augroup END
 
   " # cpp
 
-    " TODO switch between source and header files easily:
-    " http://stackoverflow.com/questions/17170902/in-vim-how-to-switch-quickly-between-h-and-cpp-files-with-the-same-name
-
     " TODO: C++ class hierarchy.
     " http://stackoverflow.com/questions/25655673/c-cscope-ctags-and-vim-finding-classes-that-inherit-from-this-one
 
@@ -239,6 +236,8 @@ augroup END
     autocmd FileType java setlocal expandtab
 
     " Switch between header and cpp files naively.
+    " TODO switch between source and header files easily:
+    " http://stackoverflow.com/questions/17170902/in-vim-how-to-switch-quickly-between-h-and-cpp-files-with-the-same-name
     autocmd FileType c,cpp command! -buffer Swh tabedit %:r.h
     autocmd FileType cpp command! -buffer Swc tabedit %:r.cpp
     autocmd FileType c command! -buffer Swc tabedit %:r.c
