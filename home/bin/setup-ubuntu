@@ -11,9 +11,12 @@ Minimal CLI setup:
 '
 
 gui=true
+full=false
 setup_home_partition=true
 while getopts gh OPT; do
   case "$OPT" in
+    f)
+      full=true
     g)
       gui=false
       ;;
@@ -62,7 +65,7 @@ ppa-purge \
   pkgs="$pkgs flashplugin-installer"
 
   # X utils
-  pkgs="$pkgs wmctrl xsel"
+  pkgs="$pkgs wmctrl xbacklight xsel"
 
   # 17.04
   # https://askubuntu.com/questions/829592/how-can-i-stop-gvim-from-crashing-when-opening-a-file/904727#904727
@@ -80,11 +83,18 @@ ppa-purge \
   sudo sh -c 'echo "deb http://dl.google.com/linux/talkplugin/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
   pkgs="$pkgs google-talkplugin"
 
-  # Python
-  pkgs="$pkgs python-pip"
-
   # chinese-input
   pkgs="$pkgs ibus-pinyin"
+
+  if $full; then
+    pkgs="$pkgs vlc"
+
+    # python
+    pkgs="$pkgs python-pip"
+
+    # java
+    pkgs="$pkgs openjdk-8-dbg openjdk-8-jdk"
+  fi
 fi
 
 sudo aptitude install -y $pkgs
@@ -119,6 +129,9 @@ if $setup_home_partition; then
   # TODO fails from bash pipe becuase not TTY.
   # http://stackoverflow.com/questions/23322744/vim-run-commands-from-bash-script-and-exit-without-leaving-shell-in-a-bad-state
   #vim +PluginInstall +qall
+
+  # https://github.com/tmux-plugins/tpm
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
 if $gui; then
@@ -136,4 +149,10 @@ if $gui; then
   sudo dpkg-reconfigure unattended-upgrades
 
   sudo apt-file update
+fi
+
+if $full; then
+  curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | sh
+  source ~/.nvm/nvm.sh
+  nvm install --lts
 fi
