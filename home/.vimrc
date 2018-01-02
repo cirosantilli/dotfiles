@@ -933,9 +933,10 @@ endif
 
     " Control chars:
 
-      " echo "\<s-v>"
-
-    " Appear like ^V
+      " echo "\<s-o>"
+      " => O
+      " echo "\<c-o>"
+      " => ^O
 
     " Must use double quotes:
 

@@ -224,6 +224,15 @@
   alias cdG='cd "$MY_GIT_DIR"'
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
+  camel2under() (
+    # https://stackoverflow.com/questions/28795479/awk-sed-script-to-convert-a-file-from-camelcase-to-underscores/43549677#43549677
+    # https://unix.stackexchange.com/questions/196239/convert-underscore-to-pascalcase-ie-uppercamelcase
+    if [ "$#" -eq 0 ]; then
+      sed -r 's/([A-Z])/_\L\1/g' | sed 's/^_//'
+    else
+      sed -r 's/(^|_)([a-z])/\U\2/g'
+    fi
+  )
   alias chmx='chmod +x'
   # Allow all users to access under a given directory.
   chmR() (
@@ -263,7 +272,7 @@
   # dd Status. Capital to prevent accidents. Only in newer Ubuntu.
   ddS() ( sudo dd if="$1" of="/dev/sd$2" status=progress && sync; )
   # Disk Fill, Human readable, Sort by total size.
-  alias dfhs='df -h | sort -hrk2'
+  alias dfhs='df -hT | sort -hrk3'
   # For long lines, while word level diff doesn't arrive...
   diff-long() (
     sep="${3:- }"
@@ -590,9 +599,10 @@
     alias antd='ant debug'
     alias antid='ant installd'
     alias grai='./gradlew installDebug'
-    grac() ( ./gradlew clean )
+
+    grac() ( ./gradlew clean "$@" )
     gracd() ( grac && grad )
-    grad() ( ./gradlew assembleDebug )
+    grad() ( ./gradlew assembleDebug "$@" )
     gradi() ( ./gradlew uninstallAll && ./gradlew assembleDebug && ./gradlew installDebug )
     gracdi() ( ./gradlew clean && gradi )
 
@@ -657,6 +667,7 @@
         -net user,hostfwd=tcp::2222-:22
     }
     brqa() (
+      # Run QEMU for arm.
       qemu-system-arm \
         -M versatilepb \
         -append "root=/dev/sda console=ttyAMA0,115200" \
@@ -764,7 +775,7 @@
     # - R: Recursive
     # - --c-kinds=+p: function prototypes. Because that is where the docs usually are.
     # - --extra=f: also generate tags for filenames, that point to the first line.
-    alias ctagsr='ctags -R "$(pwd)" --c-kinds=+p --c++-kinds=+p --extra=f'
+    ctagsr() ( ctags -R --c-kinds=+p --c++-kinds=+p --extra=+f "$@" "$(pwd)" )
     alias cscopr='cscope -Rb'
     alias ctasc='cdg && ctagsr && cscopr && cd -'
 
@@ -982,7 +993,9 @@
     gbruo() { git branch -u "origin/$1"; }
     alias gbrv='git branch -vv'
     alias gcl='git clone --recursive'
+    gcla() ( git clone "git@gitlab.com:cirosantilli/$1" )
     gclc() { gcl "$1" && cd "$(basename "${1%.git}")"; }
+    gclu() ( git clone "git@github.com:cirosantilli/$1" )
     gclx() { gclc "$(x)"; }
     gclxg() { cd "${HOME}/git" && gclx "$(x)"; }
     alias gclb='git clone --bare'
@@ -1106,13 +1119,12 @@
     alias gnr='git name-rev HEAD'
     alias gppp='git push prod prod'
     alias gps='git push'
+    gpsa() ( git push "git@gitlab.com:cirosantilli/$1" )
+    gpsu() ( git push "git@github.com:cirosantilli/$1" )
     alias gpsf='git push -f'
     # Wobble
     alias gpsfw='git push -f origin HEAD~:master && git push -f'
     alias gpsr='git push --recurse-submodules='
-    alias gpsum='git push -u mine'
-    alias gpsu='git push -u'
-    alias gpsuom='git push -u origin master'
     gpl() ( git pull "$@" && gsuu )
     alias gplr='git pull --rebase'
     alias gplum='git pull up master'
@@ -1152,6 +1164,12 @@
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
     grtrou() ( git remote rename origin up && git remote add origin "$1" && git branch --set-upstream-to 'origin/master'; )
+    grtrhs() (
+      # HTTP to SSH
+      old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
+      new_origin="git@$(echo "$old_origin" | sed -E 's|^https://([^/]+)/|\1:|' | sed -E 's|/$||' ).git"
+      git remote set-url origin "$new_origin"
+    )
     alias grts='git remote set-url'
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
@@ -1222,6 +1240,11 @@
         git remote add gl "$old_origin" &>/dev/null || :
         git remote add gh "$new_origin" &>/dev/null || :
       }
+
+  ## Graphics
+
+    # https://stackoverflow.com/questions/17196117/disable-vertical-sync-for-glxgears
+    alias glxgears-novsyc='__GL_SYNC_TO_VBLANK=0 vblank_mode=0 glxgears'
 
   ## grep
 
@@ -1790,6 +1813,25 @@
   alias o='xdg-open'
   alias mime='xdg-mime query filetype'
   alias vmime='~/.local/share/applications/mimeapps.list'
+
+  ## xbacklight
+
+    xback() (
+      # https://askubuntu.com/questions/149054/how-to-change-lcd-brightness-from-command-line-or-via-script/976829#976829
+      done=false;
+      echo "less: h, more: l, quit: q"
+      while ! $done; do
+        read -rsn1 key
+        if [ "$key" = h ]; then
+          xbacklight -dec 10
+        elif [ "$key" = l ]; then
+          xbacklight -inc 10
+        elif [ "$key" = q ]; then
+          done=true
+        fi
+        printf "\r$(xbacklight -get) "
+      done
+    )
 
 ## Sources
 

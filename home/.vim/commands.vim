@@ -9,16 +9,19 @@
   command! -range=% Hd <line1>,<line2>HeaderDecrease
   command! -range=% Hi <line1>,<line2>HeaderIncrease
   command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
-  " No useless enter confirmation (silent),
-  " and open a fullscreen error list instead of jumping to a match.
-  " Command gets pasted into terminal:
+  " Search recursively under current directory.
+  " No useless enter confirmation (silent), and open a fullscreen
+  " error list instead of jumping to a match. Command gets pasted into terminal:
   " - spaces: `Grep a\ b` or `Grep "a b"`
   " - `-i`: Grep -i a
   command! -nargs=+ G execute 'silent grep! <args>' | tab copen
   " TODO forward to G instead.
   command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
   " fugitive Ggrep (starts from Git toplevel dir), and then open on new tab.
-  command! -nargs=+ Gg execute 'Ggrep <args>' | tab copen
+  command! -nargs=+ Gg execute 'silent Ggrep <args>' | tab copen
+  " Open ltag on a new tab.
+  " https://stackoverflow.com/questions/14465383/how-to-navigate-multiple-ctags-matches-in-vim/43866918#43866918
+  command! -nargs=1 Ltag silent ltag <args> | execute "normal \<C-o>" | tab lopen
   " Current path to clipboard.
   " http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
   " Delete the curent file.
@@ -32,7 +35,6 @@
   command! Sw set wrap!
   command! -nargs=1 Tt tab tag <args>
   " Search in all files under current directory recursively.
-  command! -bar -nargs=1 Gre silent grep -Ir '<args>' . | copen
   command! -nargs=1 Vim vimgrep/\v<args>/ **
   " Write current file with sudo.
   command! Wsudo write !sudo tee %

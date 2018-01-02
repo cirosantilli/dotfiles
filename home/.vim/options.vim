@@ -300,7 +300,7 @@
   " - `newtab`: open buffers on a new tab. But it does not work very we
   " - `usetab`: if an existing window exists with buffer, use it
 
-      set switchbuf=usetab,newtab
+      set switchbuf=newtab
 
   " For a plugin that defines some mappings, see: https://github.com/yssl/QFEnter
 

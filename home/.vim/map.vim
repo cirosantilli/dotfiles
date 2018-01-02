@@ -42,8 +42,6 @@
       " let mapleader = '\'
       " noremap <leader>d e
 
-    " Here, `,a` and `\d` have gotten mappings!
-
     " Tab navigation in normal mode.
     " In terminal, alt tab is not possible, but should be used in GVim.
 
@@ -137,6 +135,8 @@
     " Open tag in new tab.
 
       nnoremap <leader>ta :tab tag<space>
+      nnoremap <leader>tc :execute("Ltag ".expand("<cword>"))<CR>
+      nnoremap <leader>tl :Ltag<space>
 
     " Find the next Git Merge Conflict.
 
@@ -769,7 +769,10 @@
 
       " Configured with:
 
-          let g:netrw_browsex_viewer = 'xdg-open'
+          let g:netrw_browsex_viewer = 'setsid xdg-open'
+
+      " setsid Ubuntu 17.10 GVIM GNOME:
+      " https://vi.stackexchange.com/questions/5032/gx-not-opening-url-in-gvim-but-works-in-terminal/5034#5034
 
     " # gt
 
