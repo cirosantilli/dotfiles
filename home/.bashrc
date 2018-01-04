@@ -1086,6 +1086,7 @@
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
     alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
+    gloG() ( glo --grep "$@" )
     # My comimits.
     alias glom='git log --author="$(git config user.name)"'
     alias glop='glo -p'
