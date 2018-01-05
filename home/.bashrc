@@ -981,7 +981,7 @@
     alias gbl='git blame'
     alias gbr='git branch'
     # Sort Comitter. Latest changed branch first. http://stackoverflow.com/a/5188364/895245
-    gbrsc() ( git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail)" )
+    gbrsc() ( git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail) %(subject)" )
     # Me.
     gbrscm() ( gbrsc | grep "$(git config user.email)" )
     gbrg () { git branch | grep "$1"; }
