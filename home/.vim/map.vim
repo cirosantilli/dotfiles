@@ -106,6 +106,7 @@
       "nnoremap <leader>cc :cclose<cr>
       nnoremap <leader>gcd :Gcd<cr>
       nnoremap <leader>gr :Grep 
+      nnoremap <leader>gf :execute("Gtfind ".expand("<cword>"))<cr>
       nnoremap <leader>gg :Ggrep 
 
     " <leader>eX opens :e SOME_DIRECTORY,
