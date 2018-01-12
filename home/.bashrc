@@ -935,6 +935,30 @@
     gdbs() ( gdb -ex 'start' -q --args "$@" )
     gdbS() ( gdb -ex "break _start" -ex "run" -q --args "$@" )
     gdbx() ( gdb --batch -x "$@" )
+    gdbser() (
+      # https://stackoverflow.com/questions/75255/how-do-you-start-running-the-program-over-again-in-gdb-with-target-remote/44161527#44161527
+      # https://electronics.stackexchange.com/questions/28480/restart-execution-from-the-start-without-having-to-reload
+      # Expects the following remote command:
+      #     gdbserver --multi :1234
+      arch="arm-linux-gnueabihf"
+      while getopts a:r: OPT; do
+        case "$OPT" in
+          a)
+            arch="$OPTARG"
+            ;;
+        esac
+      done
+      shift $(($OPTIND - 1))
+      remote="$1"
+      shift
+      myexec="$1"
+      shift
+      "${arch}-gdb" \
+        -ex "target extended-remote ${remote}:1234" \
+        --args "$myexec" "$@" \
+      ;
+        #-ex "set remote exec-file $myexec" \
+    )
 
   ## GNU changelogs from Git
 
