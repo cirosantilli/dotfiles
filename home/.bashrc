@@ -1004,10 +1004,11 @@
     alias gbi='git bisect'
     alias gbl='git blame'
     alias gbr='git branch'
-    # Sort Comitter. Latest changed branch first. http://stackoverflow.com/a/5188364/895245
-    gbrsc() ( git for-each-ref --sort=committerdate --format="%(committerdate:iso) %(refname) %(committeremail) %(subject)" )
-    # Me.
-    gbrscm() ( gbrsc | grep "$(git config user.email)" )
+    gbrsc() ( gforsc refs/heads )
+    gbrscm() (
+      # Me.
+      gbrsc | grep "$(git config user.email)"
+    )
     gbrg () { git branch | grep "$1"; }
     gbrag () { git branch -a | grep "$1"; }
     gbrdd() { git branch -d "$1"; git push --delete origin "$1"; }
@@ -1076,13 +1077,6 @@
     alias gdfhh='git diff HEAD~ HEAD'
     alias gdfhhs='git diff --stat HEAD~ HEAD'
     alias gdfst='git diff --stat'
-    alias gfe='git fetch'
-    gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
-    alias gfeomm='git fetch origin master:master'
-    alias gfeumm='git fetch up master:master'
-    gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
-    alias gfp='git format-patch'
-    alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
     alias gdfx='git diff | y'
     gdf12() { git diff ":1:./$1" ":2:./$1"; }
     gdf13() { git diff ":1:./$1" ":3:./$1"; }
@@ -1091,6 +1085,20 @@
       python -c 'print "\n" + (80 * "=") + "\n"';
       git --no-pager diff ":1:./$1" ":3:./$1";
     }
+    alias gfe='git fetch'
+    gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
+    alias gfeomm='git fetch origin master:master'
+    alias gfeumm='git fetch up master:master'
+    gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
+    alias gfp='git format-patch'
+    alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
+    gforsc() (
+      # For Each Ref Sort Creator.
+      # http://stackoverflow.com/a/5188364/895245
+      # creatordate works better with unanotated tags:
+      # https://stackoverflow.com/questions/6269927/how-can-i-list-all-tags-in-my-git-repository-by-the-date-they-were-created/34919313#34919313
+      git for-each-ref --sort=creatordate --format="%(creatordate:iso) %(refname) %(committeremail) %(subject)" "$@"
+    )
     alias gg='git grep --color'
     alias ggi='git grep --color -i'
     alias gka='gitk --all'
@@ -1212,6 +1220,7 @@
     alias gtac='git tag --contains'
     # Git TAg Date
     alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
+    gtasc() ( gforsc refs/tags )
     alias gtag='gta | g'
     alias gtas='git tag | sort -V'
     alias gtr='git ls-tree HEAD'
