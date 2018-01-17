@@ -1004,7 +1004,7 @@
     alias gbi='git bisect'
     alias gbl='git blame'
     alias gbr='git branch'
-    gbrsc() ( gforsc refs/heads )
+    gbrsc() ( gforsc refs/heads refs/remotes )
     gbrscm() (
       # Me.
       gbrsc | grep "$(git config user.email)"
