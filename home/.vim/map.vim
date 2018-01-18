@@ -107,7 +107,7 @@
       nnoremap <leader>gcd :Gcd<cr>
       nnoremap <leader>gr :Grep 
       nnoremap <leader>gf :execute("Gtfind ".expand("<cword>"))<cr>
-      nnoremap <leader>gg :Ggrep 
+      nnoremap <leader>gg :execute("Gg ".expand("<cword>"))<cr>
 
     " <leader>eX opens :e SOME_DIRECTORY,
     " where SOME_DIRECTORY is given as an environment variable.
