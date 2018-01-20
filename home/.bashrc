@@ -575,7 +575,7 @@
       adbsS "$app"
     )
     adbsf() (
-      adb shell find / -iname "*$1*" 2>/dev/null
+      adb shell 'find / -iname "*'"$1"'*" 2>/dev/null'
     )
     alias ande='nohup emulator -avd Nexus_One_API_24 >/dev/null 2>&1 &'
     alias ands='nohup studio.sh >/dev/null 2>&1 &'
@@ -598,8 +598,12 @@
     alias antd='ant debug'
     alias antid='ant installd'
     alias grai='./gradlew installDebug'
-    alias grad='./gradlew assembleDebug'
-    alias gradi='./gradlew uninstallAll && ./gradlew clean && ./gradlew assembleDebug && ./gradlew installDebug'
+
+    grac() ( ./gradlew clean "$@" )
+    gracd() ( grac && grad )
+    grad() ( ./gradlew assembleDebug "$@" )
+    gradi() ( ./gradlew uninstallAll && ./gradlew assembleDebug && ./gradlew installDebug )
+    gracdi() ( ./gradlew clean && gradi )
 
     repover() (
       # Print the revision of all repos.
