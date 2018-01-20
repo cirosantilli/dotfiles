@@ -62,7 +62,7 @@
 
         let g:lasttab = 1
         autocmd TabLeave * let g:lasttab = tabpagenr()
-        nnoremap <leader>tl :execute 'tabn ' . g:lasttab<CR>
+        nnoremap <leader>lt :execute 'tabn ' . g:lasttab<CR>
 
         let g:reopenbuf = expand('%:p')
         function! ReopenLastTabLeave()
@@ -104,10 +104,11 @@
       " http://superuser.com/questions/355325/close-all-locations-list-or-quick-fix-windows-in-vim
       nnoremap <leader>cc :tabdo if &buftype == "quickfix" \| quit \| endif<cr>
       "nnoremap <leader>cc :cclose<cr>
-      nnoremap <leader>gcd :Gcd<cr>
-      nnoremap <leader>gr :Grep 
       nnoremap <leader>gf :execute("Gtfind ".expand("<cword>"))<cr>
-      nnoremap <leader>gg :execute("Gg ".expand("<cword>"))<cr>
+      " Grep Current word
+      nnoremap <leader>gc :execute("Gg ".expand("<cword>"))<cr>
+      nnoremap <leader>gg :Gg 
+      nnoremap <leader>gr :G 
 
     " <leader>eX opens :e SOME_DIRECTORY,
     " where SOME_DIRECTORY is given as an environment variable.

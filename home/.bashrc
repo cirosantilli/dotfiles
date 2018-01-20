@@ -83,10 +83,9 @@
       PATH="$DEVBIN:$PATH"
       PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${ANDROID_NDK}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${PATH}"
       PATH="/usr/local/heroku/bin:$PATH"
-      ## NVM
       PATH="./node_modules/.bin:$PATH"
-      ## RVM
       PATH="$PATH:$HOME/.rvm/bin"
+      PATH="$PATH:$HOME/anaconda2/bin"
 
       # osx vim
       if [ -x '/Applications/MacVim.app/Contents/MacOS/Vim' ]; then
@@ -606,6 +605,13 @@
     gradi() ( ./gradlew uninstallAll && ./gradlew assembleDebug && ./gradlew installDebug )
     gracdi() ( ./gradlew clean && gradi )
 
+    repover() (
+      # Print the revision of all repos.
+      # https://stackoverflow.com/questions/14402425/how-do-i-know-the-current-version-in-an-android-repo/48240508#48240508
+      top="$(pwd)/"
+      repo forall -c "pwd=\"\$(pwd)\"; echo \"\$(git log -1 --format=\"%H\") \${pwd#$top}\""
+    )
+
   ## aptitude
 
     alias acse='apt-cache search'
@@ -786,12 +792,24 @@
     scrsr() ( sudo "$(which screen-tty-root)" "$@"; )
     scrusb() ( sudo screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
 
-    losl() ( sudo losetup -l )
+    losl() (
+      # List what each loop device is bound to.
+      sudo losetup -l
+    )
     los() (
+      # https://askubuntu.com/questions/69363/mount-single-partition-from-image-of-entire-disk-device/673257#673257
+      # https://stackoverflow.com/questions/1419489/loopback-mounting-individual-partitions-from-within-a-file-that-contains-a-parti/39675265#39675265
+      # https://superuser.com/questions/117136/how-can-i-mount-a-partition-from-dd-created-image-of-a-block-device-e-g-hdd-u/972020#972020
+      # https://superuser.com/questions/211338/mounting-a-multi-partition-disk-image-in-linux/1263401#1263401
+      # https://unix.stackexchange.com/questions/87183/creating-formatted-partition-from-nothing/229219#229219
+      # https://unix.stackexchange.com/questions/9099/reading-a-filesystem-from-a-whole-disk-image/229218#229218
       img="$1"
       dev="$(sudo losetup --show -f -P "$img")"
       echo "$dev"
-      for part in "$dev"?*; do
+      for part in "${dev}p"*; do
+        if [ "$part" = "${dev}p*" ]; then
+          part="${dev}"
+        fi
         dst="/mnt/$(basename "$part")"
         echo "$dst"
         sudo mkdir -p "$dst"
@@ -800,7 +818,10 @@
     )
     losd() (
       dev="/dev/loop$1"
-      for part in "$dev"?*; do
+      for part in "${dev}p"*; do
+        if [ "$part" = "${dev}p*" ]; then
+          part="${dev}"
+        fi
         dst="/mnt/$(basename "$part")"
         sudo umount "$dst"
       done
@@ -1115,6 +1136,7 @@
     alias glsr='git ls-remote'
     alias glo='git log --decorate --pretty=fuller'
     alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
+    gloG() ( git log --grep="$@" )
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
     alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
@@ -1122,6 +1144,10 @@
     # My comimits.
     alias glom='git log --author="$(git config user.name)"'
     alias glop='glo -p'
+    glops() (
+      # Search for commit that modifies a line matching pattern.
+      glo -p -S"$@"
+    )
     alias glos='glo --stat'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
@@ -1241,6 +1267,18 @@
       ## Hub
 
         alias huco='hub checkout'
+
+      ## lovechina
+
+        gh-lovechina() (
+          git config user.email 'cirosantilli-lovechina@yandex.com'
+
+          # https://stackoverflow.com/questions/15227130/using-a-socks-proxy-with-git-for-the-http-transport
+          git config http.proxy 'socks5://127.0.0.1:9050'
+
+          # https://superuser.com/questions/232373/how-to-tell-git-which-private-key-to-use/912281#912281
+          git config core.sshCommand 'ssh -i ~/.ssh/id_rsa_lovechina -F /dev/null'
+        )
 
     ## Gerrit
 
