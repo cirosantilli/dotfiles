@@ -148,7 +148,6 @@ function! Find(regex, find, git_toplevel)
   endif
   tabedit
   set filetype=filelist
-  silent file [filelist]
   set buftype=nofile
   put =l:files
   normal ggdd
