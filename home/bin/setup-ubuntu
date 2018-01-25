@@ -87,7 +87,7 @@ ppa-purge \
   pkgs="$pkgs ibus-pinyin"
 
   if $full; then
-    pkgs="$pkgs vlc"
+    pkgs="$pkgs net-tools vlc"
 
     # python
     pkgs="$pkgs python-pip"

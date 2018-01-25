@@ -14,11 +14,12 @@
   " error list instead of jumping to a match. Command gets pasted into terminal:
   " - spaces: `Grep a\ b` or `Grep "a b"`
   " - `-i`: Grep -i a
+  " - restrict file extension: G match *.c
   command! -nargs=+ G execute 'silent grep! <args>' | tab copen
   " TODO forward to G instead.
   command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
   " fugitive Ggrep (starts from Git toplevel dir), and then open on new tab.
-  command! -nargs=+ Gg execute 'silent Ggrep <args>' | tab copen
+  command! -nargs=+ Gg execute 'silent Ggrep! <args>' | tab copen
   " Open ltag on a new tab.
   " https://stackoverflow.com/questions/14465383/how-to-navigate-multiple-ctags-matches-in-vim/43866918#43866918
   command! -nargs=1 Ltag silent ltag <args> | execute "normal \<C-o>" | tab lopen
