@@ -71,6 +71,7 @@
     export ANDROID_ABI='armeabi-v7a'
     export ANDROID_JAVA_HOME="$JAVA_HOME"
     export ANDROID_STUDIO="$HOME/android-studio/"
+    export USE_CCACHE=1
 
   ## PATH
 
@@ -797,6 +798,7 @@
       sudo losetup -l
     )
     los() (
+      # Works both on multi and single partition images.
       # https://askubuntu.com/questions/69363/mount-single-partition-from-image-of-entire-disk-device/673257#673257
       # https://stackoverflow.com/questions/1419489/loopback-mounting-individual-partitions-from-within-a-file-that-contains-a-parti/39675265#39675265
       # https://superuser.com/questions/117136/how-can-i-mount-a-partition-from-dd-created-image-of-a-block-device-e-g-hdd-u/972020#972020
@@ -808,6 +810,7 @@
       echo "$dev"
       for part in "${dev}p"*; do
         if [ "$part" = "${dev}p*" ]; then
+          # Single partition image.
           part="${dev}"
         fi
         dst="/mnt/$(basename "$part")"
