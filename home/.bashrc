@@ -61,6 +61,12 @@
     # Current main project.
     export Z_DIR_SHORTCUT='z'
 
+    ## Java
+    #export JAVA_HOME='/usr/lib/jvm/java-7-openjdk-amd64'
+    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
+    #export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
+    #export CATALINA_HOME=''
+
     # Android
 
     export ANDROID_SDK="$HOME/android-sdk"
@@ -96,7 +102,7 @@
     # After
 
       PATH="$PATH:$HOME/.cabal/bin"
-      PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
+      PATH="$PATH:$GOPATH/bin"
 
       # pip install --user
       # https://stackoverflow.com/questions/7143077/how-can-i-install-packages-in-my-home-folder-with-pip
@@ -175,12 +181,6 @@
   ## Texlive
   export MANPATH="/usr/local/texlive/2013/texmf-dist/doc/man:$MANPATH"
   export INFOPATH="/usr/local/texlive/2013/texmf-dist/doc/info:$INFOPATH"
-
-  ## Java
-  #export JAVA_HOME='/usr/lib/jvm/java-7-openjdk-amd64'
-  export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
-  #export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
-  #export CATALINA_HOME=''
 
   # AMD SDK
   export AMDAPPSDKROOT="$HOME/AMDAPPSDK-3.0"
