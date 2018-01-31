@@ -1154,8 +1154,11 @@
     alias glos='glo --stat'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
-    # Find where that feature entered the code base.
-    gloS() ( git log -p --reverse -S "$1"; )
+    gloS() (
+      # Find where that feature entered the code base.
+      # https://stackoverflow.com/questions/5816134/finding-a-git-commit-that-introduced-a-string-in-any-branch/31621921#31621921
+      git log -p --reverse -S "$1";
+    )
     # Get last SHA commit into clipboard.
     glox() (
       git log -1 --format="%H" $1 | tee >(cat 1>&2) | y
@@ -1226,7 +1229,7 @@
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
     grtrou() ( git remote rename origin up && git remote add origin "$1" && git branch --set-upstream-to 'origin/master'; )
-    grtrhs() (
+    grtr-http2ssh() (
       # HTTP to SSH
       old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
       new_origin="git@$(echo "$old_origin" | sed -E 's|^https://([^/]+)/|\1:|' | sed -E 's|/$||' ).git"
