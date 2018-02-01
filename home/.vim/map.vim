@@ -105,6 +105,7 @@
       nnoremap <leader>cc :tabdo if &buftype == "quickfix" \| quit \| endif<cr>
       "nnoremap <leader>cc :cclose<cr>
       nnoremap <leader>gf :execute("Gtfind ".expand("<cword>"))<cr>
+      nnoremap <leader>gt :Gtfind<space>
       " Grep Current word
       nnoremap <leader>gc :execute("Gg ".expand("<cword>"))<cr>
       nnoremap <leader>gg :Gg 

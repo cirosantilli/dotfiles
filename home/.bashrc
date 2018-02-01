@@ -125,6 +125,7 @@
     #export BROWSER=firefox
     export EDITOR=vim
     export GIT_EDITOR="vim"
+    export LANG='en_US:en'
     export LANGUAGE='en_US:en'
     export LC_ADDRESS='en_US.UTF-8'
     export LC_COLLATE=C
@@ -401,7 +402,8 @@
   alias R='R --no-save'
   alias rl='readlink'
   alias rlf='readlink -f'
-  rlw() { readlink -f "$(which "$1")"; }
+  rlw() ( readlink -f "$(which "$1")" )
+  viw() ( v "$(which "$1")" )
   # Run N times. Parallel programming tests.
   runn() {
     n="$1"
