@@ -134,8 +134,10 @@
     " Open tag in new tab.
 
       nnoremap <leader>ta :tab tag<space>
+      " Tag Current word
       nnoremap <leader>tc :execute("Ltag ".expand("<cword>"))<CR>
-      nnoremap <leader>tl :Ltag<space>
+      " Tag Ltag search
+      nnoremap <leader>tl :Ltag /
 
     " Find the next Git Merge Conflict.
 
@@ -780,8 +782,11 @@
         " 1gt
 
     " Select Go to last Pasted text (to indent, or delete for example)
+    " https://stackoverflow.com/questions/4312664/is-there-a-vim-command-to-select-pasted-text
+    " http://vim.wikia.com/wiki/Selecting_your_pasted_text
 
-      nn <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+      nnoremap gp `[v`]
+      nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
     " Show current file name and position:
 

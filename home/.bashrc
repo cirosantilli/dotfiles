@@ -140,8 +140,7 @@
 
   ## Bash
 
-    export PS1="\
-\[\033[01;31m\]\w\n\
+    export PS1="\[\033[01;31m\]\w\n\
 \[\033[01;34m\]\$(timestamp)\
 \[\033[01;32m\]@\
 \[\033[01;34m\]\u\
@@ -215,6 +214,7 @@
 ## functions
 
   alias a='cat'
+  adoc() ( asciidoctor -s - "$@" )
   alias ack='ack-grep --smart-case'
   b() ( cirosantilli-beep "$@" )
   alias bashx='x | bash'
@@ -372,6 +372,11 @@
     xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
   }
   alias pdc='pandoc'
+  pdcm2a() (
+    f="$1"
+    shift
+    pandoc --atx-headers -o "${f%.*}.adoc" --wrap=none "$f" "$@"
+  )
   pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
   r() {
     ranger --choosedir="$HOME/.rangerdir" "$@"
@@ -482,7 +487,13 @@
   alias tree='tree --charset=ascii'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
-  torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop; )
+  torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop )
+  torbrowser-hist() (
+    # A profile that remembers browsing history and logins.
+    # https://tor.stackexchange.com/questions/16326/how-to-use-multiple-profiles-with-tor
+    cd ~/bin/tor-browser_en-US-hist
+    ./start-tor-browser.desktop
+  )
   u() (
     if [ ! "$#" -eq 1 ]; then
       echo 'error'
@@ -1113,7 +1124,7 @@
     alias glop='glo -p'
     glops() (
       # Search for commit that modifies a line matching pattern.
-      glo -p -S"$@"
+      glo -p -S "$@"
     )
     alias glos='glo --stat'
     #alias glopf='git log --pretty=oneline --decorate'
