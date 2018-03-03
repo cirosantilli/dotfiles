@@ -100,8 +100,11 @@
       " http://superuser.com/questions/355325/close-all-locations-list-or-quick-fix-windows-in-vim
       nnoremap <leader>cc :tabdo if &buftype == "quickfix" \| quit \| endif<cr>
       "nnoremap <leader>cc :cclose<cr>
-      nnoremap <leader>gr :G 
+      nnoremap <leader>gf :execute("Gtfind ".expand("<cword>"))<cr>
+      " Grep Current word
+      nnoremap <leader>gc :execute("Gg ".expand("<cword>"))<cr>
       nnoremap <leader>gg :Gg 
+      nnoremap <leader>gr :G 
 
     " <leader>eX opens :e SOME_DIRECTORY,
     " where SOME_DIRECTORY is given as an environment variable.
