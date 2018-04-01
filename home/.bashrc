@@ -221,6 +221,7 @@
   bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
   cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
   alias cdG='cd "$MY_GIT_DIR"'
+  ccache-watch() ( watch -n1 'ccache -s' )
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
   camel2under() (
@@ -373,6 +374,7 @@
   }
   alias pdc='pandoc'
   pdcm2a() (
+    # Markdown to asciidoc the way I like it.
     f="$1"
     shift
     pandoc --atx-headers -o "${f%.*}.adoc" --wrap=none "$f" "$@"
@@ -462,9 +464,6 @@
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
   # Unix timtestamp.
   alias timestampu='date "+%s"'
-  alias tm='tmux'
-  # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
-  alias tma='tmux attach-session'
   topp() (
     # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
     $* &>/dev/null &
@@ -664,25 +663,47 @@
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
-  ## buildroot
+  ## Buildroot
 
-    brm() {
+    brmk() (
       unset LD_LIBRARY_PATH
-      time make BR2_JLEVEL="$(npro)"
+      make qemu_x86_64_defconfig
+      #printf 'BR2_CCACHE=y\n' >>.config
+      make olddefconfig
+      time make BR2_JLEVEL="$(nproc)"
       b
-    }
+    )
     brq() {
       img="${1:-output}"
       qemu-system-x86_64 \
         -M pc \
-        -append root=/dev/vda \
+        -append 'root=/dev/vda console=ttyS0' \
         -drive file="${img}/images/rootfs.ext2,if=virtio,format=raw" \
         -enable-kvm \
         -kernel "${img}/images/bzImage" \
         -m 512 \
         -net nic,model=virtio \
-        -net user,hostfwd=tcp::2222-:22
+        -net user,hostfwd=tcp::2222-:22 \
+        -nographic \
+      ;
     }
+    brmka() (
+      # aarch64
+      # https://github.com/buildroot/buildroot/blob/master/board/qemu/aarch64-virt/readme.txt
+      unset LD_LIBRARY_PATH
+      make qemu_aarch64_virt_defconfig
+      printf '
+BR2_CCACHE=y
+BR2_PACKAGE_HOST_QEMU=y
+BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
+BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
+BR2_PACKAGE_HOST_QEMU_VDE2=y
+' >>.config
+      make olddefconfig
+      time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
+      ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "root=/dev/vda console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
+      b
+    )
     brqa() (
       # Run QEMU for arm.
       qemu-system-arm \
@@ -694,6 +715,21 @@
         -net nic,model=rtl8139 \
         -net user \
         -serial stdio
+    )
+    brmkppc() (
+    unset LD_LIBRARY_PATH
+    make qemu_ppc64_pseries_defconfig
+    printf '
+    BR2_CCACHE=y
+    BR2_PACKAGE_HOST_QEMU=y
+    BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
+    BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
+    BR2_PACKAGE_HOST_QEMU_VDE2=y
+    ' >>.config
+    make olddefconfig
+    time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
+    ./output/host/usr/bin/qemu-system-ppc64 -M pseries -cpu POWER7 -m 256 -kernel output/images/vmlinux -append 'console=hvc0 root=/dev/sda' -drive file=output/images/rootfs.ext2,if=scsi,index=0,format=raw -serial stdio -display curses
+      b
     )
 
   ## cd
@@ -885,6 +921,7 @@
       case $1 in
         *.7z)        7z x "$1";;
         *.Z)         uncompress "$1";;
+        *.a)         ar vx "$1";;
         *.cpio)      cpio -i <"$1";;
         *.deb)       dpkg-deb -R "$1" .;;
         *.jar|*.zip) unzip "$1";;
@@ -1034,6 +1071,11 @@
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbi='git bisect'
+    alias gbib='git bisect start && git bisect bad'
+    alias gbig='git bisect good'
+    alias gbil='git bisect log'
+    alias gbir='git bisect run'
+    alias gbire='git bisect reset'
     alias gbl='git blame'
     alias gbr='git branch'
     gbrsc() ( gforsc refs/heads refs/remotes )
@@ -1384,6 +1426,23 @@
     alias bej='bundle exec jekyll'
     alias bejb='bundle exec jekyll build -It'
     alias bejs='open http://localhost:4000 && bundle exec jekyll serve -Itw'
+
+  ## Last Command
+
+    # Last Command to clipboard.
+    alias fcx='fc -ln -1 | sed "s/\t //" | y'
+
+    # https://unix.stackexchange.com/questions/24739/how-to-execute-consecutive-commands-from-history/429552#429552
+    fcn() (
+      from="${1:-2}"
+      to="${2:-1}"
+      if [ "$from" -ne "$to" ]; then
+        for i in `seq "$from" -1 "$(($to + 1))"`; do
+          printf "$(fc -ln -${i} -${i}) && "
+        done
+      fi
+      printf "$(fc -ln -${to} -${to})"
+    )
 
   ## ls
 
@@ -1798,7 +1857,7 @@
       b
     )
     screencast() {
-      export PS1="$(printf "\033[1;31m%$(tput cols)s\033[0m" | tr ' ' '-')"'\n'
+      export PS1="$(printf "\033[1;31m%$(tput cols)s\033[0m" | tr ' ' '-')"'\n$ '
       clear
     }
 
@@ -1834,6 +1893,24 @@
     svnta() ( svn ls -v ^/tags; )
     # Git pull.
     svnup() ( svn update "$@" )
+
+  ## tmux
+
+    alias tm='tmux'
+    # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
+    alias tma='tmux attach-session'
+    tms() (
+      tmux split-window -h "bash --rcfile <(echo '. ~/.bashrc;$*')"
+    )
+    tmsu() (
+      # tms unique
+      # Run command on a split pane.
+      # If the split already exists, kill it and start a new pane.
+      if [ "$(tmux list-panes | wc -l | cut -d' ' -f1)" -ne 1 ]; then
+        tmux kill-pane -t 1
+      fi
+      tms "$@"
+    )
 
   ## Ubuntu
 
@@ -1876,8 +1953,6 @@
     # Add 4 spaces to every line and save to clipboard.
     # For markdown, so also expand.
     alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | y'
-    # Last Command to clipboard.
-    alias xlc='fc -ln -1 | sed "s/\t //" | y'
     alias xsh='x | bash -xv'
     xssh() ( y < "$HOME/.ssh/id_rsa${1}.pub"; )
     alias xb='x | bash'
