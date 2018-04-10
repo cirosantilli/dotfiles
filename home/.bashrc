@@ -663,7 +663,7 @@
       time make BR2_JLEVEL="$(npro)"
       b
     }
-    brq() {
+    brq() (
       img="${1:-output}"
       qemu-system-x86_64 \
         -M pc \
@@ -673,8 +673,28 @@
         -kernel "${img}/images/bzImage" \
         -m 512 \
         -net nic,model=virtio \
-        -net user,hostfwd=tcp::2222-:22
-    }
+        -net user,hostfwd=tcp::2222-:22 \
+      ;
+    )
+    brqi() (
+      # initrd
+      make qemu_x86_64_defconfig
+      printf 'BR2_CCACHE=y\n' >>.config
+      printf 'BR2_TARGET_ROOTFS_CPIO=y\n' >>.config
+      printf 'BR2_TARGET_ROOTFS_EXT2=n\n' >>.config
+      make olddefconfig
+      time env -u LD_LIBRARY_PATH make BR2_JLEVEL="$(nproc)" linux-reconfigure
+      img="${1:-output}"
+        qemu-system-x86_64 \
+        -M pc \
+        -append root=/dev/vda \
+        -enable-kvm \
+        -kernel "${img}/images/bzImage" \
+        -initrd "${img}/images/rootfs.cpio" \
+        -net nic,model=virtio \
+        -net user,hostfwd=tcp::2222-:22 \
+      ;
+    )
     brqa() (
       # Run QEMU for arm.
       qemu-system-arm \
@@ -685,7 +705,8 @@
         -kernel output/images/zImage \
         -net nic,model=rtl8139 \
         -net user \
-        -serial stdio
+        -serial stdio \
+      ;
     )
 
   ## cd
