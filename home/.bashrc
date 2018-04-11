@@ -1719,6 +1719,10 @@
 
   ## qemu
 
+    qemucon() (
+      ./configure --enable-debug --enable-trace-backends=simple --target-list=x86_64-softmmu,arm-softmmu,aarch64-softmmu
+      tmkjb
+    )
     alias qemu='qemu-system-x86_64'
     alias qemu32='qemu-system-i386'
     # Debug.
