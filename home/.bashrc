@@ -887,8 +887,10 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
     sdorit() { sudo docker run -it "$1" /bin/bash; }
     sdorp() { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
     sdornp() { sudo docker run -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
+    sdoru16() ( sudo docker run --name ub16 -it ubuntu:16.04 bash )
     alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
-    alias sdos='sudo docker stop'
+    sdos() ( sudo docker start -ai "$@" )
+    sdosu16() ( sdos ub16 )
 
   ## du
 
@@ -1111,8 +1113,11 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
     alias gce='git clean'
     # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
     gcedf() ( git clean -df "${1:-:/}"; )
-    # Clean any file not tracked, including gitignored. Restores repo to pristine state.
-    gcexdf() { git clean -xdf "${1:-:/}"; }
+    gcexdf() (
+      # Clean any file not tracked, including gitignored. Restores repo to pristine state.
+      git clean -xdf :/
+      git submodule foreach --recursive git clean -xdf :/
+    )
     gcmp() (
       gacm "$1"
       git push
@@ -1201,6 +1206,9 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
       # Search for commit that modifies a line matching pattern.
       glo -p -S "$@"
     )
+    glopsr() (
+      glops "$@" --reverse
+    )
     alias glos='glo --stat'
     #alias glopf='git log --pretty=oneline --decorate'
     alias glopf='git log --all --pretty=format:"%C(yellow)%h|%Cred%ad|%Cblue%an|%Cgreen%d %Creset%s" --date=iso | column -ts"|" | less -r'
@@ -1266,7 +1274,7 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
     alias grsh='git reset --hard'
     alias grsH='git reset HEAD~'
     alias grshH='git reset --hard HEAD~'
-    alias grl='git reflog'
+    alias grl='git reflog --date iso'
     alias grm='git rm'
     alias grt='git remote'
     alias grta='git remote add'
