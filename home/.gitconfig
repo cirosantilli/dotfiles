@@ -57,6 +57,14 @@
 	default = current
 [rerere]
 	enabled = true
+[sendemail]
+	confirm = always
+	from = Ciro Santilli <ciro.santilli@gmail.com>
+	smtpserver = smtp.gmail.com
+	smtpuser = ciro.santilli@gmail.com
+	smtpencryption = tls
+	smtpserverport = 587
+	suppresscc = self
 [status]
 	short = true
 [user]

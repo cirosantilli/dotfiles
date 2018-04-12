@@ -148,8 +148,7 @@
 
   ## Bash
 
-    export PS1="\
-\[\033[01;31m\]\w\n\
+    export PS1="\[\033[01;31m\]\w\n\
 \[\033[01;34m\]\$(timestamp)\
 \[\033[01;32m\]@\
 \[\033[01;34m\]\u\
@@ -217,12 +216,14 @@
 ## functions
 
   alias a='cat'
+  adoc() ( asciidoctor -s - "$@" )
   alias ack='ack-grep --smart-case'
   b() ( cirosantilli-beep "$@" )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
   cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
   alias cdG='cd "$MY_GIT_DIR"'
+  ccache-watch() ( watch -n1 'ccache -s' )
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
   camel2under() (
@@ -374,6 +375,12 @@
     xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
   }
   alias pdc='pandoc'
+  pdcm2a() (
+    # Markdown to asciidoc the way I like it.
+    f="$1"
+    shift
+    pandoc --atx-headers -o "${f%.*}.adoc" --wrap=none "$f" "$@"
+  )
   pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
   r() {
     ranger --choosedir="$HOME/.rangerdir" "$@"
@@ -460,9 +467,6 @@
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
   # Unix timtestamp.
   alias timestampu='date "+%s"'
-  alias tm='tmux'
-  # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
-  alias tma='tmux attach-session'
   topp() (
     # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
     $* &>/dev/null &
@@ -485,7 +489,13 @@
   alias tree='tree --charset=ascii'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
-  torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop; )
+  torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop )
+  torbrowser-hist() (
+    # A profile that remembers browsing history and logins.
+    # https://tor.stackexchange.com/questions/16326/how-to-use-multiple-profiles-with-tor
+    cd ~/bin/tor-browser_en-US-hist
+    ./start-tor-browser.desktop
+  )
   u() (
     if [ ! "$#" -eq 1 ]; then
       echo 'error'
@@ -656,25 +666,27 @@
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
-  ## buildroot
+  ## Buildroot
 
-    brm() {
+    brmk() (
       unset LD_LIBRARY_PATH
-      time make BR2_JLEVEL="$(npro)"
+      make qemu_x86_64_defconfig
+      #printf 'BR2_CCACHE=y\n' >>.config
+      make olddefconfig
+      time make BR2_JLEVEL="$(nproc)"
       b
-    }
+    )
     brq() (
       img="${1:-output}"
       qemu-system-x86_64 \
         -M pc \
-        -append root=/dev/vda \
+        -append 'root=/dev/vda console=ttyS0' \
         -drive file="${img}/images/rootfs.ext2,if=virtio,format=raw" \
         -enable-kvm \
         -kernel "${img}/images/bzImage" \
         -m 512 \
         -net nic,model=virtio \
         -net user,hostfwd=tcp::2222-:22 \
-      ;
     )
     brqi() (
       # initrd
@@ -695,6 +707,23 @@
         -net user,hostfwd=tcp::2222-:22 \
       ;
     )
+    brmka() (
+      # aarch64
+      # https://github.com/buildroot/buildroot/blob/master/board/qemu/aarch64-virt/readme.txt
+      unset LD_LIBRARY_PATH
+      make qemu_aarch64_virt_defconfig
+      printf '
+BR2_CCACHE=y
+BR2_PACKAGE_HOST_QEMU=y
+BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
+BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
+BR2_PACKAGE_HOST_QEMU_VDE2=y
+' >>.config
+      make olddefconfig
+      time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
+      ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "root=/dev/vda console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
+      b
+    )
     brqa() (
       # Run QEMU for arm.
       qemu-system-arm \
@@ -707,6 +736,21 @@
         -net user \
         -serial stdio \
       ;
+    )
+    brmkppc() (
+    unset LD_LIBRARY_PATH
+    make qemu_ppc64_pseries_defconfig
+    printf '
+    BR2_CCACHE=y
+    BR2_PACKAGE_HOST_QEMU=y
+    BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
+    BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
+    BR2_PACKAGE_HOST_QEMU_VDE2=y
+    ' >>.config
+    make olddefconfig
+    time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
+    ./output/host/usr/bin/qemu-system-ppc64 -M pseries -cpu POWER7 -m 256 -kernel output/images/vmlinux -append 'console=hvc0 root=/dev/sda' -drive file=output/images/rootfs.ext2,if=scsi,index=0,format=raw -serial stdio -display curses
+      b
     )
 
   ## cd
@@ -866,8 +910,10 @@
     sdorit() { sudo docker run -it "$1" /bin/bash; }
     sdorp() { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
     sdornp() { sudo docker run -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
+    sdoru16() ( sudo docker run --name ub16 -it ubuntu:16.04 bash )
     alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
-    alias sdos='sudo docker stop'
+    sdos() ( sudo docker start -ai "$@" )
+    sdosu16() ( sdos ub16 )
 
   ## du
 
@@ -900,6 +946,7 @@
       case $1 in
         *.7z)        7z x "$1";;
         *.Z)         uncompress "$1";;
+        *.a)         ar vx "$1";;
         *.cpio)      cpio -i <"$1";;
         *.deb)       dpkg-deb -R "$1" .;;
         *.jar|*.zip) unzip "$1";;
@@ -1049,6 +1096,11 @@
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbi='git bisect'
+    alias gbib='git bisect start && git bisect bad'
+    alias gbig='git bisect good'
+    alias gbil='git bisect log'
+    alias gbir='git bisect run'
+    alias gbire='git bisect reset'
     alias gbl='git blame'
     alias gbr='git branch'
     gbrsc() ( gforsc refs/heads refs/remotes )
@@ -1084,8 +1136,11 @@
     alias gce='git clean'
     # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
     gcedf() ( git clean -df "${1:-:/}"; )
-    # Clean any file not tracked, including gitignored. Restores repo to pristine state.
-    gcexdf() { git clean -xdf "${1:-:/}"; }
+    gcexdf() (
+      # Clean any file not tracked, including gitignored. Restores repo to pristine state.
+      git clean -xdf :/
+      git submodule foreach --recursive git clean -xdf :/
+    )
     gcmp() (
       gacm "$1"
       git push
@@ -1172,7 +1227,10 @@
     alias glop='glo -p'
     glops() (
       # Search for commit that modifies a line matching pattern.
-      glo -p -S"$@"
+      glo -p -S "$@"
+    )
+    glopsr() (
+      glops "$@" --reverse
     )
     alias glos='glo --stat'
     #alias glopf='git log --pretty=oneline --decorate'
@@ -1242,7 +1300,7 @@
     alias grsh='git reset --hard'
     alias grsH='git reset HEAD~'
     alias grshH='git reset --hard HEAD~'
-    alias grl='git reflog'
+    alias grl='git reflog --date iso'
     alias grm='git rm'
     alias grt='git remote'
     alias grta='git remote add'
@@ -1252,7 +1310,7 @@
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
     grtrou() ( git remote rename origin up && git remote add origin "$1" && git branch --set-upstream-to 'origin/master'; )
-    grtr-http2ssh() (
+    grtrhs() (
       # HTTP to SSH
       old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
       new_origin="git@$(echo "$old_origin" | sed -E 's|^https://([^/]+)/|\1:|' | sed -E 's|/$||' ).git"
@@ -1402,6 +1460,23 @@
     alias bej='bundle exec jekyll'
     alias bejb='bundle exec jekyll build -It'
     alias bejs='open http://localhost:4000 && bundle exec jekyll serve -Itw'
+
+  ## Last Command
+
+    # Last Command to clipboard.
+    alias fcx='fc -ln -1 | sed "s/\t //" | y'
+
+    # https://unix.stackexchange.com/questions/24739/how-to-execute-consecutive-commands-from-history/429552#429552
+    fcn() (
+      from="${1:-2}"
+      to="${2:-1}"
+      if [ "$from" -ne "$to" ]; then
+        for i in `seq "$from" -1 "$(($to + 1))"`; do
+          printf "$(fc -ln -${i} -${i}) && "
+        done
+      fi
+      printf "$(fc -ln -${to} -${to})"
+    )
 
   ## ls
 
@@ -1820,7 +1895,7 @@
       b
     )
     screencast() {
-      export PS1="$(printf "\033[1;31m%$(tput cols)s\033[0m" | tr ' ' '-')"'\n'
+      export PS1="$(printf "\033[1;31m%$(tput cols)s\033[0m" | tr ' ' '-')"'\n$ '
       clear
     }
 
@@ -1856,6 +1931,24 @@
     svnta() ( svn ls -v ^/tags; )
     # Git pull.
     svnup() ( svn update "$@" )
+
+  ## tmux
+
+    alias tm='tmux'
+    # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
+    alias tma='tmux attach-session'
+    tms() (
+      tmux split-window -h "bash --rcfile <(echo '. ~/.bashrc;$*')"
+    )
+    tmsu() (
+      # tms unique
+      # Run command on a split pane.
+      # If the split already exists, kill it and start a new pane.
+      if [ "$(tmux list-panes | wc -l | cut -d' ' -f1)" -ne 1 ]; then
+        tmux kill-pane -t 1
+      fi
+      tms "$@"
+    )
 
   ## Ubuntu
 
@@ -1898,8 +1991,6 @@
     # Add 4 spaces to every line and save to clipboard.
     # For markdown, so also expand.
     alias x4='sed -e "s/^/    /" | sed -e "s/[[:space:]]*$//" | expand | tee /dev/tty | y'
-    # Last Command to clipboard.
-    alias xlc='fc -ln -1 | sed "s/\t //" | y'
     alias xsh='x | bash -xv'
     xssh() ( y < "$HOME/.ssh/id_rsa${1}.pub"; )
     alias xb='x | bash'
