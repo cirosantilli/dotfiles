@@ -449,6 +449,18 @@
   alias sha2='sha256sum'
   alias sql='sqlite3'
   alias stra='sudo strace -f -s999 -v'
+  stdouttime() (
+    # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
+    tp="$(date +%s%N)"
+    while read line; do
+      tc="$(date +%s%N)"
+      echo $(((tc - tp) / 1000000))
+      echo "$line"
+      tp=$tc
+    done
+    tc="$(date +%s%N)";
+    echo $(((tc - tp) / 1000000))
+  )
   # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
   alias sudo='sudo '
   surd() ( sudo update-rc.d "$1" disable; )
