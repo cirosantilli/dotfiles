@@ -214,7 +214,7 @@
 ## functions
 
   alias a='cat'
-  adoc() ( asciidoctor -s - "$@" )
+  adoc() ( asciidoctor -s - -v "$@" )
   alias ack='ack-grep --smart-case'
   b() ( cirosantilli-beep "$@" )
   alias bashx='x | bash'
@@ -462,7 +462,7 @@
   # Filter tex Errors only:
   alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
-  # Unix timtestamp.
+  # Unix timtestamp. Seconds since epoch.
   alias timestampu='date "+%s"'
   topp() (
     # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
@@ -484,6 +484,8 @@
   # Normally, sudo cannot see your personal path variable. now it can:
   #alias sudo='sudo env PATH=$PATH'
   alias tree='tree --charset=ascii'
+  # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
+  alias tsi='ts -i "%.s"'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
   torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop )
@@ -1451,6 +1453,7 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
       fi
       printf "$(fc -ln -${to} -${to})"
     )
+    fcnx() ( fcn | x )
 
   ## ls
 
