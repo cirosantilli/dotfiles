@@ -216,7 +216,7 @@
 ## functions
 
   alias a='cat'
-  adoc() ( asciidoctor -s - "$@" )
+  adoc() ( asciidoctor -s - -v "$@" )
   alias ack='ack-grep --smart-case'
   b() ( cirosantilli-beep "$@" )
   alias bashx='x | bash'
@@ -477,7 +477,7 @@
   # Filter tex Errors only:
   alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
   alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
-  # Unix timtestamp.
+  # Unix timtestamp. Seconds since epoch.
   alias timestampu='date "+%s"'
   topp() (
     # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
@@ -499,6 +499,8 @@
   # Normally, sudo cannot see your personal path variable. now it can:
   #alias sudo='sudo env PATH=$PATH'
   alias tree='tree --charset=ascii'
+  # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
+  alias tsi='ts -i "%.s"'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
   torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop )
@@ -683,7 +685,7 @@
     brmk() (
       unset LD_LIBRARY_PATH
       make qemu_x86_64_defconfig
-      #printf 'BR2_CCACHE=y\n' >>.config
+      printf "${1}\n" >> .config
       make olddefconfig
       time make BR2_JLEVEL="$(nproc)"
       b
@@ -1489,6 +1491,7 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
       fi
       printf "$(fc -ln -${to} -${to})"
     )
+    fcnx() ( fcn | x )
 
   ## ls
 
@@ -1812,6 +1815,9 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
     )
     alias qemu='qemu-system-x86_64'
     alias qemu32='qemu-system-i386'
+    qemumk() (
+      ./configure --enable-debug --enable-trace-backends=simple --target-list=x86_64-softmmu,arm-softmmu,aarch64-softmmu && tmkjb
+    )
     # Debug.
     qemud() {
       qemu-system-x86_64 -hda "$1" -S -s &
@@ -1993,8 +1999,8 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
 
   ## x clipboard
 
-    alias x='xsel -b'
-    y() ( xsel -bi )
+    x() ( xsel -b "$@" )
+    y() ( xsel -bi "$@" )
     alias ya='xsel -ba'
     alias exx='expand | y'
     # Use xclip instead of xsel while I have this bug:
@@ -2087,6 +2093,10 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
 
   # Travis gem
   f="$HOME/.travis/travis.sh"
+  [ -f "$f" ] && . "$f"
+
+  # Torch
+  f=/mnt/hd/git/torch/install/bin/torch-activate
   [ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.
