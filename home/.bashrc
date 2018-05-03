@@ -684,17 +684,33 @@
 
     brmk() (
       unset LD_LIBRARY_PATH
-      make qemu_x86_64_defconfig
-      printf "${1}\n" >> .config
+      make "${1}"
+      printf "
+BR2_CCACHE=y
+BR2_PACKAGE_HOST_QEMU=y
+BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
+BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
+BR2_PACKAGE_HOST_QEMU_VDE2=y
+${2:-}
+" >> .config
       make olddefconfig
-      time make BR2_JLEVEL="$(nproc)"
+      time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
       b
+    )
+    brmkx() (
+      brmk qemu_x86_64_defconfig "${1}"
+    )
+    brmkA() (
+      brmk qemu_aarch64_virt_defconfig "${1}"
+    )
+    brmkp() (
+      brmk qemu_ppc64_pseries_defconfig "${1}"
     )
     brq() (
       img="${1:-output}"
       qemu-system-x86_64 \
         -M pc \
-        -append 'root=/dev/vda console=ttyS0' \
+        -append 'root=/dev/vda' \
         -drive file="${img}/images/rootfs.ext2,if=virtio,format=raw" \
         -enable-kvm \
         -kernel "${img}/images/bzImage" \
@@ -702,8 +718,30 @@
         -net nic,model=virtio \
         -net user,hostfwd=tcp::2222-:22 \
     )
-    brqi() (
-      # initrd
+    brqa() (
+      # Qemu ARM
+      qemu-system-arm \
+        -M versatilepb \
+        -append "root=/dev/sda console=ttyAMA0,115200" \
+        -drive file=output/images/rootfs.ext2,if=scsi,format=raw \
+        -dtb output/images/versatile-pb.dtb \
+        -kernel output/images/zImage \
+        -net nic,model=rtl8139 \
+        -net user \
+        -serial stdio \
+      ;
+    )
+    brqA() (
+      # QEMU aarch64
+      # https://github.com/buildroot/buildroot/blob/master/board/qemu/aarch64-virt/readme.txt
+      ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "root=/dev/vda console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
+    )
+    brqp() (
+      qemu-system-ppc64 -M pseries -cpu POWER7 -m 256 -kernel output/images/vmlinux -append 'console=hvc0 root=/dev/sda' -drive file=output/images/rootfs.ext2,if=scsi,index=0,format=raw -serial stdio -display curses
+    )
+
+    brmkiq() (
+      # initrd and qemu afterwards
       make qemu_x86_64_defconfig
       printf 'BR2_CCACHE=y\n' >>.config
       printf 'BR2_TARGET_ROOTFS_CPIO=y\n' >>.config
@@ -720,51 +758,6 @@
         -net nic,model=virtio \
         -net user,hostfwd=tcp::2222-:22 \
       ;
-    )
-    brmka() (
-      # aarch64
-      # https://github.com/buildroot/buildroot/blob/master/board/qemu/aarch64-virt/readme.txt
-      unset LD_LIBRARY_PATH
-      make qemu_aarch64_virt_defconfig
-      printf '
-BR2_CCACHE=y
-BR2_PACKAGE_HOST_QEMU=y
-BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
-BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
-BR2_PACKAGE_HOST_QEMU_VDE2=y
-' >>.config
-      make olddefconfig
-      time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
-      ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "root=/dev/vda console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
-      b
-    )
-    brqa() (
-      # Run QEMU for arm.
-      qemu-system-arm \
-        -M versatilepb \
-        -append "root=/dev/sda console=ttyAMA0,115200" \
-        -drive file=output/images/rootfs.ext2,if=scsi,format=raw \
-        -dtb output/images/versatile-pb.dtb \
-        -kernel output/images/zImage \
-        -net nic,model=rtl8139 \
-        -net user \
-        -serial stdio \
-      ;
-    )
-    brmkppc() (
-    unset LD_LIBRARY_PATH
-    make qemu_ppc64_pseries_defconfig
-    printf '
-    BR2_CCACHE=y
-    BR2_PACKAGE_HOST_QEMU=y
-    BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
-    BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
-    BR2_PACKAGE_HOST_QEMU_VDE2=y
-    ' >>.config
-    make olddefconfig
-    time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
-    ./output/host/usr/bin/qemu-system-ppc64 -M pseries -cpu POWER7 -m 256 -kernel output/images/vmlinux -append 'console=hvc0 root=/dev/sda' -drive file=output/images/rootfs.ext2,if=scsi,index=0,format=raw -serial stdio -display curses
-      b
     )
 
   ## cd

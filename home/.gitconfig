@@ -58,6 +58,9 @@
 [rerere]
 	enabled = true
 [sendemail]
+	# Locally per project you want:
+	# git config sendemail.to <project@mail.com>
+	annotate = true
 	confirm = always
 	from = Ciro Santilli <ciro.santilli@gmail.com>
 	smtpserver = smtp.gmail.com

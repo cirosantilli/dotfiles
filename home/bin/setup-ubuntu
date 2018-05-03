@@ -43,6 +43,7 @@ curl \
 expect \
 exuberant-ctags \
 git \
+git-email \
 moreutils \
 tmux \
 vim \
