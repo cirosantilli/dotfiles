@@ -28,3 +28,9 @@ set index_format = "%4C %Z %d %-15.15L (%?l?%4l&%4c?) %s"
 # http://www.mutt.org/doc/manual/manual-2.html
 # O status flag:
 # http://unix.stackexchange.com/questions/39228/what-does-it-mean-for-an-email-message-to-be-old
+
+# https://stackoverflow.com/questions/12158201/how-to-change-the-senders-name-or-e-mail-address-in-mutt
+set from="Ciro Santilli <ciro.santilli@gmail.com>"
+
+# https://stackoverflow.com/questions/26978276/mutt-reply-email-from-console
+#set edit_headers=yes

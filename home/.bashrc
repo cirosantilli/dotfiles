@@ -670,7 +670,7 @@
     brmk() (
       unset LD_LIBRARY_PATH
       make qemu_x86_64_defconfig
-      #printf 'BR2_CCACHE=y\n' >>.config
+      printf "${1}\n" >> .config
       make olddefconfig
       time make BR2_JLEVEL="$(nproc)"
       b
@@ -1773,6 +1773,9 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
 
     alias qemu='qemu-system-x86_64'
     alias qemu32='qemu-system-i386'
+    qemumk() (
+      ./configure --enable-debug --enable-trace-backends=simple --target-list=x86_64-softmmu,arm-softmmu,aarch64-softmmu && tmkjb
+    )
     # Debug.
     qemud() {
       qemu-system-x86_64 -hda "$1" -S -s &
@@ -1954,8 +1957,8 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
 
   ## x clipboard
 
-    alias x='xsel -b'
-    y() ( xsel -bi )
+    x() ( xsel -b "$@" )
+    y() ( xsel -bi "$@" )
     alias ya='xsel -ba'
     alias exx='expand | y'
     # Use xclip instead of xsel while I have this bug:
@@ -2048,6 +2051,10 @@ BR2_PACKAGE_HOST_QEMU_VDE2=y
 
   # Travis gem
   f="$HOME/.travis/travis.sh"
+  [ -f "$f" ] && . "$f"
+
+  # Torch
+  f=/mnt/hd/git/torch/install/bin/torch-activate
   [ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.
