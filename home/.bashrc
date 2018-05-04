@@ -698,6 +698,7 @@ ${2:-}
       b
     )
     brmkx() (
+      # brmkx 'BR2_TARGET_ROOTFS_EXT2_SIZE="256M"\nBR2_PACKAGE_LTP_TESTSUITE=y'
       brmk qemu_x86_64_defconfig "${1}"
     )
     brmkA() (
