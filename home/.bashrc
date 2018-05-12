@@ -379,7 +379,7 @@
     # Markdown to asciidoc the way I like it.
     f="$1"
     shift
-    pandoc --atx-headers -o "${f%.*}.adoc" --wrap=none "$f" "$@"
+    pandoc --atx-headers --base-header-level 2 -o "${f%.*}.adoc" --wrap=none "$f" "$@"
   )
   pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
   r() {

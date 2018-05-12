@@ -28,7 +28,7 @@ set smtp_url = 'smtps://ciro.santilli@smtp.gmail.com'
 set record=""
 # Headers also show on editor before sending and can be modified there.
 # https://stackoverflow.com/questions/26978276/mutt-reply-email-from-console
-#set edit_headers=yes
+set edit_headers=yes
 
 # Format for each line of the index.
 set date_format="!%Y %b %d %a %I:%M:%S"
