@@ -229,7 +229,7 @@ augroup END
     endfunction
     autocmd FileType c,cpp,fortran,asm,s,java,haskell call FileTypeCpp()
 
-    autocmd FileType c,cpp,asm setlocal shiftwidth=4 tabstop=4
+    autocmd FileType c,cpp,asm setlocal expandtab shiftwidth=4 tabstop=4
     autocmd BufNew,BufRead *.{l,lex,y} setlocal shiftwidth=4 tabstop=4
     " Because fortran has a max line length.
     autocmd FileType fortran setlocal expandtab shiftwidth=2 tabstop=2

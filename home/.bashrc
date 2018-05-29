@@ -216,9 +216,12 @@
 ## functions
 
   alias a='cat'
-  adoc() ( asciidoctor -s - -v "$@" )
+  adoc() (
+    asciidoctor -s - -v "$@"
+  )
   alias ack='ack-grep --smart-case'
   b() ( cirosantilli-beep "$@" )
+  bao() ( noh baobab "${1:-.}" )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
   cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
@@ -442,6 +445,14 @@
   # to aliases won't give errors.
   alias S='unalias -a && . ~/.bashrc'
   s() ( less "$@"; )
+  syslock() (
+    # https://askubuntu.com/questions/7776/how-do-i-lock-the-desktop-screen-via-command-line
+    gnome-screensaver-command -l
+  )
+  syssus() (
+    # https://askubuntu.com/questions/1792/how-can-i-suspend-hibernate-from-command-line
+    systemctl suspend
+  )
   les() ( s -S "$@"; )
   lesr() ( s -SR "$@"; )
   alias se='sed -r'
@@ -539,7 +550,7 @@
   # Usage: unizipd d.zip
   # Outcome: unzips the content of `a.zip` into a newly created `d` directory
   unzipd() { unzip -d "${1%.*}" "$1"; }
-  z() { zip -r "${1%/}.zip" "$1"; }
+  z() ( zip -r "${1%/}.zip" "$@" )
 
   bdiff() (
     f() (
@@ -684,7 +695,7 @@
 
     brmk() (
       unset LD_LIBRARY_PATH
-      make "${1}"
+      make "${1:-qemu_x86_64_defconfig}"
       printf "
 BR2_CCACHE=y
 BR2_PACKAGE_HOST_QEMU=y
@@ -851,6 +862,22 @@ ${2:-}
     ccanh() ( ccollab addchangelist new HEAD; )
     ccasn() ( ccollab addsvndiffs new; )
 
+  ## crosstool-ng
+
+    ctng() (
+      ./bootstrap
+      ./configure --enable-local
+      mkj
+      ./ct-ng arm-cortex_a15-linux-gnueabihf
+      env -u LD_LIBRARY_PATH time ./ct-ng build -j`nproc`
+      b
+    )
+
+    ctngA() (
+      ./ct-ng aarch64-unknown-linux-gnu
+      env -u LD_LIBRARY_PATH time ./ct-ng build -j`nproc`
+      b
+    )
 
   ## ctags
 
@@ -1272,7 +1299,7 @@ ${2:-}
     alias gmv='git mv'
     alias gnr='git name-rev HEAD'
     alias gppp='git push prod prod'
-    alias gps='git push'
+    alias gps='git push --follow-tags'
     gpsa() ( git push "git@gitlab.com:cirosantilli/$1" )
     gpsu() ( git push "git@github.com:cirosantilli/$1" )
     alias gpsf='git push -f'
@@ -1570,7 +1597,7 @@ ${2:-}
     alias mki='make install'
     alias smki='sudo make install'
     alias mkir='make && sudo make install && make install-run'
-    alias mkj='make -j"$(npro)"'
+    mkj() ( make -j"$(npro)" "$@")
     # Stop background watch.
     alias mkk='make kill'
     # List targets.

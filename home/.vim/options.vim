@@ -659,12 +659,14 @@
 
 " Autosave every N miliseconds or when losing focus.
 
-  set updatetime=1000
-  let g:AutoSaveOn = 1
-  augroup AutoSave
-      autocmd!
-      autocmd! CursorHoldI,CursorHold,BufLeave * if g:AutoSaveOn | silent! :update | endif
-  augroup END
+  " Vim becomes too slow when I'm doing a compilation and editing files at the same time.
+
+  "set updatetime=1000
+  "let g:AutoSaveOn = 1
+  "augroup AutoSave
+      "autocmd!
+      "autocmd! CursorHoldI,CursorHold,BufLeave * if g:AutoSaveOn | silent! :update | endif
+  "augroup END
 
 " # highlight
 
@@ -822,3 +824,6 @@ augroup Cscope
   endfunction
   autocmd BufEnter * call LoadCscope()
 augroup END
+
+" https://stackoverflow.com/questions/18589352/how-to-disable-vim-bells-sounds/41524053#41524053
+set belloff=all
