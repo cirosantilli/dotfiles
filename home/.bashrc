@@ -512,6 +512,7 @@
   alias tree='tree --charset=ascii'
   # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
   alias tsi='ts -i "%.s"'
+  alias tss='ts -s "%.s"'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
   torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop )
@@ -1222,7 +1223,7 @@ ${2:-}
       python -c 'print "\n" + (80 * "=") + "\n"';
       git --no-pager diff ":1:./$1" ":3:./$1";
     }
-    alias gfe='git fetch'
+    alias gfe='git fetch --tags'
     gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
@@ -1363,7 +1364,7 @@ ${2:-}
     alias gsua='git submodule add'
     alias gsuf='git submodule foreach'
     alias gsufp='git submodule foreach git pull'
-    gsuu() ( git submodule update --init --recursive "$@" )
+    gsuu() ( git submodule update --init --progress --recursive "$@" )
     alias gta='git tag'
     alias gtac='git tag --contains'
     # Git TAg Date
