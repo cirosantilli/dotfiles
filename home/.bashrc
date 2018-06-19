@@ -239,12 +239,13 @@
     fi
   )
   alias chmx='chmod +x'
-  # Allow all users to access under a given directory.
-  chmR() (
+  chmod-sane() (
+    # Set sane permissive permissions for all files
+    # and directories under a given directory.
     d="${1:-.}"
-    sudo find "$d" -type d | sudo xargs chmod +755
+    sudo find "$d" -type d | sudo xargs chmod 755
     find "$d" -type f | sudo xargs chmod +644
-    find . -type f -perm /u=x,g=x,o=x | sudo xargs chmod +111
+    find . -type f -perm /u=x,g=x,o=x | sudo xargs -r chmod +111
   )
   # External IP.
   # DropBox Symlink. Move the given file into Dropbox,
@@ -869,7 +870,13 @@ ${2:-}
       ./bootstrap
       ./configure --enable-local
       mkj
-      ./ct-ng arm-cortex_a15-linux-gnueabihf
+      ./ct-ng "${1:-arm-cortex_a15-linux-gnueabihf}"
+      printf "
+CT_LINUX_V_3_2=y
+CT_LINUX_VERSION=\"3.2.101\"
+${2:-}
+" >> .config
+      ./ct-ng oldconfig
       env -u LD_LIBRARY_PATH time ./ct-ng build -j`nproc`
       b
     )
@@ -938,10 +945,11 @@ ${2:-}
 
     alias sdo='sudo docker'
     alias sdob='sudo docker build'
+    alias sdoe='sudo docker exec'
     sdobt() { sudo docker build -t "$1" .; }
     alias sdoh='sudo docker help'
     alias sdoi='sudo docker images'
-    alias sdop='sudo docker ps'
+    alias sdop='sudo docker ps -a'
     alias sdor='sudo docker run'
     sdorit() { sudo docker run -it "$1" /bin/bash; }
     sdorp() { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
@@ -1139,6 +1147,12 @@ ${2:-}
     alias gbire='git bisect reset'
     alias gbl='git blame'
     alias gbr='git branch'
+    gbrc() ( git branch -a --contains "$@" )
+    gbrtac() (
+      # Find all branches or tags that contain a given commit.
+      git --no-pager branch -a --contains "$@"
+      git --no-pager tag --contains "$@"
+    )
     gbrsc() ( gforsc refs/heads refs/remotes )
     gbrscm() (
       # Me.
@@ -1224,6 +1238,7 @@ ${2:-}
       git --no-pager diff ":1:./$1" ":3:./$1";
     }
     alias gfe='git fetch --tags'
+    alias gfea='git fetch --all --tags'
     gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
@@ -1252,8 +1267,8 @@ ${2:-}
     alias glsgi='git ls-files | gi'
     alias glsr='git ls-remote'
     alias glo='git log --decorate --pretty=fuller'
-    alias glog='git log --abbrev-commit --decorate --graph --pretty=oneline'
-    gloG() ( git log --grep="$@" )
+    glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
+    gloG() ( git log --grep "$@" )
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
     alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
@@ -1317,6 +1332,7 @@ ${2:-}
     alias grba='git rebase --abort'
     alias grbc='git rebase --continue'
     alias grbi='git rebase -i'
+    grbih() ( git rebase -i "HEAD~${1:-1}" )
     alias grbm='git rebase master'
     grbo() (
       # Rebase current branch onto another ref.
@@ -1366,7 +1382,7 @@ ${2:-}
     alias gsufp='git submodule foreach git pull'
     gsuu() ( git submodule update --init --progress --recursive "$@" )
     alias gta='git tag'
-    alias gtac='git tag --contains'
+    gtac() ( git tag --contains "$@" )
     # Git TAg Date
     alias gtad='git for-each-ref --sort=taggerdate --format "%(refname) %(taggerdate)" refs/tags'
     gtasc() ( gforsc refs/tags )
@@ -1689,7 +1705,7 @@ ${2:-}
     finh() { find . ! -path . | sed "s|^\./||" | grepb "$1"; }
     # full Path.
     finp() { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
-    fine() ( find . -executable -type f )
+    fine() ( find . -executable -type f -iname "*${1:-*}*" )
 
     # Mass rename refactoring.
     alias mvr='move_regex.py'
