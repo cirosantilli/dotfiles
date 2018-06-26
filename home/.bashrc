@@ -12,6 +12,7 @@
         export DEVBIN="$PROGRAM_DIR/devbin"
         export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
         export LINUX_DIR="$PROGRAM_DIR/linux-cheat"
+        export LKMC_DIR="$PROGRAM_DIR/linux-kernel-module-cheat"
         export JAVA_DIR="$PROGRAM_DIR/java-cheat"
         export NETWORKING_DIR="$PROGRAM_DIR/networking-cheat"
         export NOTES_DIR="$PROGRAM_DIR/notes"
@@ -208,12 +209,16 @@
   # https://askubuntu.com/questions/918169/error-found-while-loading-home-username-profile/970634#970634
   #stty -ixon
 
+  # This hangs up on certain server setups, need to investigate further.
   # For VM SSH development as git user so I can run X programs:
-  xhost + &>/dev/null
+  #xhost + &>/dev/null
 
 ## alias
 
 ## functions
+
+  # Because some useless /etc/* files I don't control might set aliases and they conflict with these definitions.
+  unalias -a
 
   alias a='cat'
   adoc() (
@@ -223,7 +228,7 @@
   b() ( cirosantilli-beep "$@" )
   bao() ( noh baobab "${1:-.}" )
   alias bashx='x | bash'
-  bsu() ( bsub -P "$1" -R "select[rhe6 && mem>4000] rusage[mem=4000] order[cpu]" -Ip -XF -W 720:00 -app FG xterm -e screen; )
+  bsu() ( bsub -P "$1" -R "${2:-rhe6}" -Ip -XF gnome-terminal -e tmux )
   cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
   alias cdG='cd "$MY_GIT_DIR"'
   ccache-watch() ( watch -n1 'ccache -s' )
@@ -444,7 +449,7 @@
   alias robots="robots -ta$(for i in {1..1000}; do echo -n n; done)"
   # Source Bashrc. Unalias first so that conversions of functions
   # to aliases won't give errors.
-  alias S='unalias -a && . ~/.bashrc'
+  alias S='. ~/.bashrc'
   s() ( less "$@"; )
   syslock() (
     # https://askubuntu.com/questions/7776/how-do-i-lock-the-desktop-screen-via-command-line
@@ -1893,6 +1898,7 @@ ${2:-}
     lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
     # TODO ignore all archs except x86.
     #export KBUILD_OUTPUT='../build'
+    lkcon() ( "${LKMC_DIR}/linux/scripts/extract-ikconfig" "$@" )
 
     alias mkold='make oldconfig'
     alias mkdef='make defconfig'
