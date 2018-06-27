@@ -243,6 +243,10 @@
       sed -r 's/(^|_)([a-z])/\U\2/g'
     fi
   )
+  catf() (
+    # Cat with filenames for multiple files.
+    tail -c+1 "$@"
+  )
   alias chmx='chmod +x'
   chmod-sane() (
     # Set sane permissive permissions for all files
@@ -702,7 +706,9 @@
 
     brmk() (
       unset LD_LIBRARY_PATH
-      make "${1:-qemu_x86_64_defconfig}"
+      defconfig="${1:-qemu_x86_64_defconfig}"
+      outdir="output/${defconfig}"
+      make O="$outdir" "$defconfig"
       printf "
 BR2_CCACHE=y
 BR2_PACKAGE_HOST_QEMU=y
@@ -710,9 +716,9 @@ BR2_PACKAGE_HOST_QEMU_LINUX_USER_MODE=n
 BR2_PACKAGE_HOST_QEMU_SYSTEM_MODE=y
 BR2_PACKAGE_HOST_QEMU_VDE2=y
 ${2:-}
-" >> .config
-      make olddefconfig
-      time make BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
+" >> "${outdir}/.config"
+      make O="$outdir" olddefconfig
+      time make O="$outdir" BR2_JLEVEL="$(nproc)" HOST_QEMU_OPTS='--enable-sdl --with-sdlabi=2.0'
       b
     )
     brmkx() (
@@ -726,16 +732,17 @@ ${2:-}
       brmk qemu_ppc64_pseries_defconfig "${1}"
     )
     brq() (
-      img="${1:-output}"
-      qemu-system-x86_64 \
+      outdir="${1:-output/qemu_x86_64_defconfig}"
+      "${outdir}/host/usr/bin/qemu-system-x86_64" \
         -M pc \
-        -append 'root=/dev/vda' \
-        -drive file="${img}/images/rootfs.ext2,if=virtio,format=raw" \
+        -append 'root=/dev/vda console=ttyS0' \
+        -drive file="${outdir}/images/rootfs.ext2,if=virtio,format=raw" \
         -enable-kvm \
-        -kernel "${img}/images/bzImage" \
+        -kernel "${outdir}/images/bzImage" \
         -m 512 \
         -net nic,model=virtio \
         -net user,hostfwd=tcp::2222-:22 \
+      ;
     )
     brqa() (
       # Qemu ARM
@@ -748,12 +755,25 @@ ${2:-}
         -net nic,model=rtl8139 \
         -net user \
         -serial stdio \
+        "$@" \
       ;
     )
     brqA() (
       # QEMU aarch64
       # https://github.com/buildroot/buildroot/blob/master/board/qemu/aarch64-virt/readme.txt
-      ./output/host/usr/bin/qemu-system-aarch64 -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "root=/dev/vda console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0
+      ./output/host/usr/bin/qemu-system-aarch64 \
+        -M virt \
+        -append "root=/dev/vda console=ttyAMA0" \
+        -cpu cortex-a57 \
+        -device virtio-blk-device,drive=hd0
+        -device virtio-net-device,netdev=eth0 \
+        -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 \
+        -kernel output/images/Image \
+        -netdev user,id=eth0 \
+        -nographic \
+        -smp 1 \
+        "$@" \
+      ;
     )
     brqp() (
       qemu-system-ppc64 -M pseries -cpu POWER7 -m 256 -kernel output/images/vmlinux -append 'console=hvc0 root=/dev/sda' -drive file=output/images/rootfs.ext2,if=scsi,index=0,format=raw -serial stdio -display curses
@@ -955,14 +975,16 @@ ${2:-}
     alias sdoh='sudo docker help'
     alias sdoi='sudo docker images'
     alias sdop='sudo docker ps -a'
-    alias sdor='sudo docker run'
-    sdorit() { sudo docker run -it "$1" /bin/bash; }
-    sdorp() { sudo docker run -d -p 127.0.0.1:8000:80 "$1"; }
-    sdornp() { sudo docker run -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
-    sdoru16() ( sudo docker run --name ub16 -it ubuntu:16.04 bash )
+    sdor() ( sudo docker run "$@" )
+    sdorit() { sdor -it "$1" /bin/bash; }
+    sdorp() { sdor -d -p 127.0.0.1:8000:80 "$1"; }
+    sdornp() { sdor -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
+    sdoru() ( sdor --name ub -it ubuntu:18.04 bash )
+    sdorm() ( sudo docker rm "$@" )
+    sdormu() ( sudo docker rm ub )
     alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
     sdos() ( sudo docker start -ai "$@" )
-    sdosu16() ( sdos ub16 )
+    sdosu() ( sdos ub )
 
   ## du
 
@@ -1313,6 +1335,7 @@ ${2:-}
     )
     alias giia='git-is-ancestor'
     alias gmb='git merge-base'
+    alias gmbm='git merge-base HEAD master'
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
@@ -1422,6 +1445,14 @@ ${2:-}
 
           # https://superuser.com/questions/232373/how-to-tell-git-which-private-key-to-use/912281#912281
           git config core.sshCommand 'ssh -i ~/.ssh/id_rsa_lovechina -F /dev/null'
+        )
+
+      ## 2
+
+        gh-2() (
+          git config user.email 'cirosantilli@outlook.com'
+          # https://superuser.com/questions/232373/how-to-tell-git-which-private-key-to-use/912281#912281
+          git config core.sshCommand 'ssh -i ~/.ssh/id_rsa_2 -F /dev/null'
         )
 
     ## Gerrit
@@ -1898,7 +1929,11 @@ ${2:-}
     lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
     # TODO ignore all archs except x86.
     #export KBUILD_OUTPUT='../build'
+<<<<<<< HEAD
     lkcon() ( "${LKMC_DIR}/linux/scripts/extract-ikconfig" "$@" )
+=======
+    alias lkmkA='CROSS_COMPILE=aarch64-linux-gnu- time make ARCH=arm64 -j`nproc`'
+>>>>>>> bak
 
     alias mkold='make oldconfig'
     alias mkdef='make defconfig'
