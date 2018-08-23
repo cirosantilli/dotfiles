@@ -299,7 +299,14 @@
   )
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
   dmes() ( dmesg -T )
-  eclipse() ( noh "$HOME/bin/eclipse/eclipse" )
+  eclipse() (
+    # Installed as:
+    # download latest from: https://www.eclipse.org/cdt/
+    # cd bin
+    # lfmd
+    # ex eclipse-cpp-*.tar.gz
+    noh "$HOME/bin/eclipse/eclipse"
+  )
   alias eip='curl ipecho.net/plain'
   alias enmp='ecryptfs-mount-private'
   alias enup='ecryptfs-umount-private'
@@ -1054,6 +1061,23 @@ ${2:-}
 
   ## gcc
 
+    # Compile and disassemble some arm code.
+    # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
+    asarm() (
+      set -e
+      pref=arm-linux-gnueabihf-
+      name=/tmp/asarm
+      in="${name}.S"
+      o="${name}.o"
+      out="${name}.out"
+      raw="${name}.raw"
+      printf ".section .text\n.global _start\n_start:\n${*}\n" >  "$in"
+      "${pref}as" -o "$o" "$in"
+      "${pref}ld" -o "$out" "$o"
+      "${pref}objcopy" -O binary "$out" "$raw"
+      hd "$raw"
+    )
+
     # GCC from String.
     #
     # Better than crepl.
@@ -1088,6 +1112,20 @@ ${2:-}
       sudo update-alternatives --remove-all g++
       sudo update-alternatives --install /usr/bin/gcc gcc "/usr/bin/gcc-$v" 10
       sudo update-alternatives --install /usr/bin/g++ g++ "/usr/bin/g++-$v" 10
+    )
+
+    # Build GCC from source.
+    gcc-build() (
+      # sudo apt-get build-dep gcc
+      # sudo apt-get install gnat-4.8
+      # git clone git://gcc.gnu.org/git/gcc.git
+      # cd gcc
+      # git checkout gcc-5_1_0-release
+      ./contrib/download_prerequisites
+      mkdir build
+      cd build
+      ../configure --enable-languages=c,c++ --prefix="$(pwd)/install"
+      tmkjb
     )
 
   ## gdb
@@ -1274,7 +1312,8 @@ ${2:-}
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
     gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
-    alias gfp='git format-patch'
+    gfp() ( git format-patch "$@" )
+    gfph() ( gfp "HEAD:~${1:-1}" )
     alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
     gforsc() (
       # For Each Ref Sort Creator.
@@ -1433,7 +1472,7 @@ ${2:-}
     alias gsua='git submodule add'
     alias gsuf='git submodule foreach'
     alias gsufp='git submodule foreach git pull'
-    gsuu() ( git submodule update --init --progress --recursive "$@" )
+    gsuu() ( git submodule update --init --recursive "$@" )
     alias gta='git tag'
     gtac() ( git tag --contains "$@" )
     # Git TAg Date
@@ -1469,6 +1508,7 @@ ${2:-}
           git config http.proxy 'socks5://127.0.0.1:9050'
 
           # https://superuser.com/questions/232373/how-to-tell-git-which-private-key-to-use/912281#912281
+          #ssh-keygen "$HOME/.ssh/id_rsa_lovechina"
           git config core.sshCommand 'ssh -i ~/.ssh/id_rsa_lovechina -F /dev/null'
         )
 
@@ -1692,7 +1732,7 @@ ${2:-}
     tb() { time "$@"; b; }
     alias tmkb='time make; b'
     # Time the build, use many processors, alert me when done.
-    alias tmkjb='time make -j"$(npro)"; b'
+    tmkjb() ( time make -j"$(npro)"; b )
     # Like above, but also do a local `make install`.
     alias tmkjbi='time make -j"$(npro)"; make install; b'
     alias tmkcb='time make check; b'
@@ -1865,17 +1905,21 @@ ${2:-}
         xargs rm -rf < files.txt
         sudo rm -f files.txt
       )
-      alias pii='pip install --user'
-      alias pi3i='pip3 install --user'
-      alias piu='pip uninstall --user'
-      alias pise='pip search'
+      # https://stackoverflow.com/questions/49836676/error-after-upgrading-pip-cannot-import-name-main/51846054#51846054
+      # https://stackoverflow.com/questions/43675074/python3-6-importerror-cannot-import-name-main-linux-rhel6/49994490#49994490
+      # https://github.com/pypa/pip/issues/5447
+      pi() ( python -m pip "$@" )
+      pii() ( pi install --user "$@" )
+      pi3() ( python3 -m pip "$@" )
+      pi3i() ( pip3 install --user "$@" )
+      piu() ( pip uninstall --user "$@" )
+      pise() ( pip search "$@" )
       pif() ( pip freeze | grep -E "${1:-^}")
       pifr() (
         pif "$@" >> requirements.txt
         sort -fu -o requirements.txt requirements.txt
       )
-      alias piin='pip install'
-      alias piir='pip install -r requirements.txt'
+      piir() ( pii -r requirements.txt )
 
     ## virtualenv
 
@@ -1949,6 +1993,7 @@ ${2:-}
   ## linux kernel
 
     lkg() (
+      # Grep the Linux kernel.
       # Ignore the huge arch and drivers.
       # http://stackoverflow.com/questions/10423143/how-to-exclude-certain-directories-files-from-git-grep-search
       # TODO ignore all archs except x86.
@@ -1958,6 +2003,7 @@ ${2:-}
       # Ignore drivers.
       git grep -i "$1" -- './*' ':!drivers/**'
     )
+    # Ignore the huge arch and drivers.
     lkcon() ( "${LKMC_DIR}/linux/scripts/extract-ikconfig" "$@" )
     alias lkmkA='CROSS_COMPILE=aarch64-linux-gnu- time make ARCH=arm64 -j`nproc`'
     alias mkold='make oldconfig'
