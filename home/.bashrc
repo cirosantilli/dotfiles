@@ -892,13 +892,14 @@ ${2:-}
   ## crosstool-ng
 
     ctng() (
+      export CT_PREFIX="$(pwd)/.build/ct_prefix"
       ./bootstrap
       ./configure --enable-local
       mkj
       ./ct-ng "${1:-arm-cortex_a15-linux-gnueabihf}"
       printf "
-CT_LINUX_V_3_2=y
-CT_LINUX_VERSION=\"3.2.101\"
+CT_LINUX_V_4_14=y
+CT_LINUX_VERSION=\"4.14.0\"
 ${2:-}
 " >> .config
       ./ct-ng oldconfig
@@ -916,17 +917,19 @@ ${2:-}
 
     # - R: Recursive
     # - --c-kinds=+p: function prototypes. Because that is where the docs usually are.
+    # - --c-kinds=-m: remove struct member. Too many false positives otherwise.
+    #                 Just go to struct definition first instead.
     # - --extra=f: also generate tags for filenames, that point to the first line.
-    ctagsr() ( ctags -R --c-kinds=+p --c++-kinds=+p --extra=+f "$@" "$(pwd)" )
+    ctagsr() ( ctags -R --c-kinds=+p-m --c++-kinds=+p-m --extra=+f "$@" "$(pwd)" )
     alias cscopr='cscope -Rb'
     alias ctasc='cdg && ctagsr && cscopr && cd -'
 
   ## Development boards
 
     sshr() ( ssh-root "${1}" 'root' )
-    scrs() ( sudo screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
-    scrsr() ( sudo "$(which screen-tty-root)" "$@"; )
-    scrusb() ( sudo screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
+    scrs() ( screen "/dev/ttyS${1:-0}" "${2:-115200}"; )
+    scrsr() ( "$(which screen-tty-root)" "$@"; )
+    scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
 
     losl() (
       # List what each loop device is bound to.
@@ -968,23 +971,24 @@ ${2:-}
 
   ## Docker
 
-    alias sdo='sudo docker'
-    alias sdob='sudo docker build'
-    alias sdoe='sudo docker exec'
-    sdobt() { sudo docker build -t "$1" .; }
-    alias sdoh='sudo docker help'
-    alias sdoi='sudo docker images'
-    alias sdop='sudo docker ps -a'
-    sdor() ( sudo docker run "$@" )
-    sdorit() { sdor -it "$1" /bin/bash; }
-    sdorp() { sdor -d -p 127.0.0.1:8000:80 "$1"; }
-    sdornp() { sdor -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
-    sdoru() ( sdor --name ub -it ubuntu:18.04 bash )
-    sdorm() ( sudo docker rm "$@" )
-    sdormu() ( sudo docker rm ub )
-    alias sdorma='sudo docker rm $(sudo docker ps -aq --no-trunc)'
-    sdos() ( sudo docker start -ai "$@" )
-    sdosu() ( sdos ub )
+    alias dk='docker'
+    alias dkb='docker build'
+    alias dke='docker exec'
+    dkbt() ( docker build -t "$1" . )
+    alias dkh='docker help'
+    alias dki='docker images'
+    alias dkp='docker ps -a'
+    dkr() ( docker run "$@" )
+    dkrit() { dkr -it "$1" /bin/bash; }
+    dkrp() { dkr -d -p 127.0.0.1:8000:80 "$1"; }
+    dkrnp() { dkr -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
+    dkru() ( dkr --name ub -it ubuntu:18.04 bash )
+    dkrm() ( docker rm "$@" )
+    dkrmu() ( docker rm ub )
+    alias dkrma='docker rm $(docker ps -aq --no-trunc)'
+    dks() ( docker start -ai "$@" )
+    dkS() ( docker stop "$@" )
+    dksu() ( dks ub )
 
   ## du
 
@@ -1288,10 +1292,18 @@ ${2:-}
     # Restore deleted file to its latest version.
     # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
     git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
-    alias gls='git ls-files'
-    alias glso='git ls-files --other'
-    alias glsg='git ls-files | g'
-    alias glsgi='git ls-files | gi'
+    gls() ( git ls-files "$@" )
+    glsb()(
+      # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
+      grep -Fvxf <(git grep --cached -Il '') <(git grep --cached -al '')
+    )
+    glsf()(
+      # Git list only regular files: exclude submodules, symlinks, empty files and text files.
+      # https://stackoverflow.com/questions/40165650/how-to-list-all-files-tracked-by-git-excluding-submodules
+      git grep --cached -Il ''
+    )
+    glsfg()( glsf | g "$@" )
+    glsg() ( gls | g "$@" )
     alias glsr='git ls-remote'
     alias glo='git log --decorate --pretty=fuller'
     glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
@@ -1710,7 +1722,7 @@ ${2:-}
     #
     # # Caveats
     #
-    # - will transform symlinks into files
+    # - will transform symlinks into files: https://unix.stackexchange.com/questions/9318/is-there-a-way-to-make-perl-i-not-clobber-symlinks
     # - will add trailing newlines to files that end without them
     #
     mrr() {
@@ -1767,6 +1779,7 @@ ${2:-}
 
   ## music
 
+    alias mcla="nohup vlc \"$MUSIC_DIR/classic\" >/dev/null &"
     alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
     alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
     alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
@@ -1922,19 +1935,18 @@ ${2:-}
 
   ## linux kernel
 
-    # Ignore the huge arch and drivers.
-    # http://stackoverflow.com/questions/10423143/how-to-exclude-certain-directories-files-from-git-grep-search
-    lkg() { git grep -i "$1" -- './*' ':!arch/**' ':!drivers/**';  }
-    # Ignore drivers.
-    lkga() { git grep -i "$1" -- './*' ':!drivers/**'; }
-    # TODO ignore all archs except x86.
-    #export KBUILD_OUTPUT='../build'
-<<<<<<< HEAD
+    lkg() (
+      # Ignore the huge arch and drivers.
+      # http://stackoverflow.com/questions/10423143/how-to-exclude-certain-directories-files-from-git-grep-search
+      # TODO ignore all archs except x86.
+      git grep -i "$1" -- './*' ':!arch/**' ':!drivers/**'
+    )
+    lkga() (
+      # Ignore drivers.
+      git grep -i "$1" -- './*' ':!drivers/**'
+    )
     lkcon() ( "${LKMC_DIR}/linux/scripts/extract-ikconfig" "$@" )
-=======
     alias lkmkA='CROSS_COMPILE=aarch64-linux-gnu- time make ARCH=arm64 -j`nproc`'
->>>>>>> bak
-
     alias mkold='make oldconfig'
     alias mkdef='make defconfig'
     alias mkmen='make menuconfig'
@@ -1972,12 +1984,7 @@ ${2:-}
 
     # Exit with: Ctrl + A then backslash '\'.
     piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3; )
-    pissh() (
-      ip="$(piip)"
-      #ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$ip"
-      user="${1:-pi}"
-    )
-    piss() ( sshpass -p raspberry ssh "pi@${1}"; )
+    pissh() ( sshpass -p raspberry ssh "pi@$(piip)"; )
     pivin() (
       vinagre "$(piip)"
     )

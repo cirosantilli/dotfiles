@@ -41,8 +41,10 @@
   command! Wsudo write !sudo tee %
   " Copy GDB breakpoint specifier to the clipboard.
   command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
-  " Full path to clipboard.
+  " Copy full path to clipboard.
   command! Xp :let @+ = expand('%:p')
+  " Copy relative path of current file relative to the git root to the clipboard.
+  command! Xr :let @+ = substitute(system('git ls-files --full-name ' . expand('%:p')), '\n$', '', '')
 
 " Edit important files:
 

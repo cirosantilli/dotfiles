@@ -2484,3 +2484,10 @@ hackishly
 worktree
 ARMv7
 Newlib
+procfs
+devtmpfs
+debugfs
+kthread
+patchset
+vermagic
+GIC
