@@ -97,10 +97,9 @@
           let g:localvimrc_ask = 0
           let g:localvimrc_sandbox = 0
 
-      " augroup Cpp
-      "   autocmd!
-      "   autocmd FileType c,cpp setlocal noexpandtab
-      " augroup END
+      " if &filetype ==# 'c' || &filetype ==# 'cpp'
+      "   setlocal noexpandtab
+      " endif
 
 " # AutoComplPop
 

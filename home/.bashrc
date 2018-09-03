@@ -1346,6 +1346,19 @@ ${2:-}
       fi
     )
     alias giia='git-is-ancestor'
+    git-tab-to-space() (
+      d="$(mktemp -d)"
+      # https://stackoverflow.com/questions/11094383/how-can-i-convert-tabs-to-spaces-in-every-file-of-a-directory/52136507#52136507
+      git grep --cached -Il '' | grep -E "${1:-.}" | \
+        xargs -I'{}' bash -c '\
+        f="${1}/f" \
+        && expand -t 4 "$0" > "$f" && \
+        chmod --reference="$0" "$f" && \
+        mv "$f" "$0"' \
+        '{}' "$d" \
+      ;
+      rmdir "$d"
+    )
     alias gmb='git merge-base'
     alias gmbm='git merge-base HEAD master'
     alias gme='git merge'
