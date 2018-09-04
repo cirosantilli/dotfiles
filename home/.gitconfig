@@ -43,6 +43,8 @@
 [grep]
 	extendedRegexp = true
 	lineNumber = true
+[http]
+	cookiefile = ~/.gitcookies
 [mergetool]
 	keepBackup = false
 	prompt = false
@@ -76,8 +78,6 @@
 [user]
 	email = ciro.santilli@gmail.com
 	name = Ciro Santilli
-[http]
-	cookiefile = /home/ciro/.gitcookies
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "ssh://git@git.kde.org/"]
