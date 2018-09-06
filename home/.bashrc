@@ -696,6 +696,35 @@
     alias saip='sudo aptitude purge'
     saap() { sudo apt-add-repository -y "$1" && sudo aptitude update; }
 
+  ## awk
+
+    mycolumn() (
+      file="${1:--}"
+      if [ "$file" = - ]; then
+        file="$(mktemp)"
+        cat >"${file}"
+      fi
+      awk '
+      FNR == 1 { if (NR == FNR) next }
+      NR == FNR {
+        for (i = 1; i <= NF; i++) {
+          l = length($i)
+          if (w[i] < l)
+            w[i] = l
+        }
+        next
+      }
+      {
+        for (i = 1; i <= NF; i++)
+          printf "%*s", w[i] + (i > 1 ? 1 : 0), $i
+        print ""
+      }
+      ' "$file" "$file"
+      if [ "$file" = - ]; then
+        rm "$file"
+      fi
+    )
+
   ## Binutils
 
     alias obd='objdump -Cdr'
@@ -1313,7 +1342,7 @@ ${2:-}
     alias gfeumm='git fetch up master:master'
     gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
     gfp() ( git format-patch "$@" )
-    gfph() ( gfp "HEAD:~${1:-1}" )
+    gfph() ( gfp "HEAD~${1:-1}" )
     alias gfpx='git format-patch --stdout HEAD~ | xclip -selection clipboard'
     gforsc() (
       # For Each Ref Sort Creator.
@@ -1781,7 +1810,7 @@ ${2:-}
     mrr() {
       if [ $# -gt 1 ]; then
         if [ "$2" = 'D' ]; then
-          xargs perl -lapi -e "s/$1"
+          xargs perl -pi -e "s/$1"
         fi
       else
         sed "s|^\./||" | xargs -L1 perl -lane '$o = $_; if (s/'"$1"') { print $ARGV . ":" . $. . "\n" . $o . "\n" . $_ . "\n" }'
@@ -1911,7 +1940,7 @@ ${2:-}
       pi() ( python -m pip "$@" )
       pii() ( pi install --user "$@" )
       pi3() ( python3 -m pip "$@" )
-      pi3i() ( pip3 install --user "$@" )
+      pi3i() ( pi3 install --user "$@" )
       piu() ( pip uninstall --user "$@" )
       pise() ( pip search "$@" )
       pif() ( pip freeze | grep -E "${1:-^}")
