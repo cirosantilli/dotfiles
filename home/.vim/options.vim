@@ -151,7 +151,7 @@
 
 " Font size
 
-  set guifont=9
+  set guifont=8
 
 " # number
 

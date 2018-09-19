@@ -1113,9 +1113,9 @@ ${2:-}
 
   ## gcc
 
-    # Compile and disassemble some arm code.
-    # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
     asarm() (
+      # Assemble and disassemble some arm code to see what the bytes are.
+      # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
       set -e
       pref=arm-linux-gnueabihf-
       name=/tmp/asarm
@@ -1123,7 +1123,7 @@ ${2:-}
       o="${name}.o"
       out="${name}.out"
       raw="${name}.raw"
-      printf ".section .text\n.global _start\n_start:\n${*}\n" >  "$in"
+      printf ".section .text\n.global _start\n_start:\n${*}\n" > "$in"
       "${pref}as" -o "$o" "$in"
       "${pref}ld" -o "$out" "$o"
       "${pref}objcopy" -O binary "$out" "$raw"
@@ -1554,7 +1554,7 @@ export GIT_AUTHOR_DATE="$d"
 
       alias ghb='git browse-remote'
       alias ghpb='git push && git browse-remote'
-      ghmail() { curl "https://api.github.com/users/$1/events/public" | grep email; }
+      ghmail() ( curl "https://api.github.com/users/$1/events/public" | grep email )
       alias gpsbr='gps && git browse-remote'
       alias gcmanpsfbr='gcmanpsf && git browse-remote'
       # Pull Request.
