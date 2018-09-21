@@ -336,7 +336,6 @@
     kdevelop
   )
   h() ( "$1" --help | less; )
-  hex() ( printf "%x\n" "$@" )
   j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
@@ -699,6 +698,7 @@
   ## awk
 
     mycolumn() (
+      # https://stackoverflow.com/questions/12768907/how-to-align-the-columns-of-tables-in-bash/52209504#52209504
       file="${1:--}"
       if [ "$file" = - ]; then
         file="$(mktemp)"
@@ -724,6 +724,25 @@
         rm "$file"
       fi
     )
+
+  ## bc
+
+    bcbase() (
+      # Convert between bases.
+      val="$(printf $1 | tr 'a-z' 'A-Z')"
+      if [ $# -ge 2 ]; then
+        ibase=${2:-}
+      else
+        ibase=10
+      fi
+      if [ $# -ge 3 ]; then
+        obase=${3:-}
+      else
+        obase=16
+      fi
+      echo "obase=${obase}; ibase=${ibase}; ${val}" | bc
+    )
+    hex() ( printf "%x\n" "$@" )
 
   ## Binutils
 
@@ -1915,6 +1934,7 @@ ${2:-}
     alias pyv='python --version'
     alias py3='python3'
     alias pyi='ipython'
+    alias pyi3='ipython3'
     alias pyti='touch __init__.py'
     alias pyserve='python -m SimpleHTTPServer'
     alias pyjson='python -m json.tool'
@@ -2251,7 +2271,10 @@ ${2:-}
 
   ## GVM
   f="$HOME/.gvm/scripts/gvm"
-  [ -f "$f" ] && . "$f"
+  if [ -f "$f" ]; then
+    . "$f"
+    gvm use go1.11 2>&1 >/dev/null
+  fi
 
   ## NVM
   #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

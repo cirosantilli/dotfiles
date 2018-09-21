@@ -43,6 +43,8 @@
 [grep]
 	extendedRegexp = true
 	lineNumber = true
+[gpg]
+	program = gpg2
 [http]
 	cookiefile = ~/.gitcookies
 [mergetool]
@@ -78,6 +80,7 @@
 [user]
 	email = ciro.santilli@gmail.com
 	name = Ciro Santilli
+	signingkey = 3E47725ABD373A6F5D300686436CDAFCCFB0D30D
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "ssh://git@git.kde.org/"]

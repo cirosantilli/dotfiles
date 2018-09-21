@@ -156,14 +156,24 @@ if $full; then
     # nodejs
     # https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm/971612#971612
     curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | sh
-    source ~/.nvm/nvm.sh
+    . ~/.nvm/nvm.sh
     nvm install --lts
     nvm use --lts
 
     # https://rvm.io/rvm/install
     gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
     \curl -sSL https://get.rvm.io | bash -s stable --ruby
-  fi
 
+    # Go
+    # https://askubuntu.com/questions/959932/installation-instructions-for-golang-1-9-into-ubuntu-16-04/1075726#1075726
+    # https://github.com/moovweb/gvm/issues/302
+    sudo apt-get install golang-go
+    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+    . ~/.gvm/scripts/gvm
+    v=go1.11
+    gvm install "$v"
+    gvm use "$v"
+
+  fi
   sudo usermod -aG docker $USER
 fi

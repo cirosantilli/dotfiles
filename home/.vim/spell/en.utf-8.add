@@ -2496,3 +2496,6 @@ worktree
 Hypervisors
 hypervisor
 baremetal
+debuggable
+readonly
+SquashFS
