@@ -947,24 +947,28 @@ ${2:-}
   ## crosstool-ng
 
     ctng() (
-      export CT_PREFIX="$(pwd)/.build/ct_prefix"
+      export CT_PREFIX="$(pwd)/.build/install"
+      export PATH="/usr/lib/ccache:${PATH}"
+      config="${1:-arm-cortex_a15-linux-gnueabihf}"
       ./bootstrap
       ./configure --enable-local
       mkj
-      ./ct-ng "${1:-arm-cortex_a15-linux-gnueabihf}"
+      ./ct-ng "$config"
       printf "
 CT_LINUX_V_4_14=y
 CT_LINUX_VERSION=\"4.14.0\"
 ${2:-}
 " >> .config
       ./ct-ng oldconfig
-      env -u LD_LIBRARY_PATH time ./ct-ng build -j`nproc`
+      env -u LD_LIBRARY_PATH time ./ct-ng build CT_JOBS=`nproc`
+      git log -1 --format="%H" | sudo tee "${CT_PREFIX}/${config}/sha"
+      sudo cp .config "${CT_PREFIX}/${config}"
       b
     )
 
     ctngA() (
       ./ct-ng aarch64-unknown-linux-gnu
-      env -u LD_LIBRARY_PATH time ./ct-ng build -j`nproc`
+      env -u LD_LIBRARY_PATH time ./ct-ng build CT_JOBS=`nproc`
       b
     )
 
@@ -1293,12 +1297,25 @@ ${2:-}
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
     alias gcft='git cat-file -t'
-    alias gcm='git commit'
-    alias gcmm='git commit -m'
-    alias gcmbak='git commit -m bak'
-    alias gcmtmp='git commit -m tmp'
-    alias gcma='git commit --amend'
-    alias gcman='git commit --amend --no-edit'
+    git-hide-time() (
+      # Set the time of all commits in inclusive range to midnight. Keep date.
+      first_commit="$1"
+      last_commit="${2:-HEAD}"
+      git filter-branch --env-filter '
+d="$(echo "$GIT_COMMITTER_DATE" | sed "s/T.*//")T00:00:00+0000)"
+export GIT_COMMITTER_DATE="$d"
+export GIT_AUTHOR_DATE="$d"
+' --force "${first_commit}~..${last_commit}"
+    )
+    gcm() (
+      d="$(date '+%Y-%m-%d')T00:00:00+0000"
+      GIT_COMMITTER_DATE="$d" \
+      GIT_AUTHOR_DATE="$d" \
+      git commit "$@"
+    )
+    gcmm() ( gcm -m "$@" )
+    gcma() ( gcm --amend "$@" )
+    gcman() ( gcma --no-edit "$@" )
     alias gcmanpsf='git commit --amend --no-edit && git push -f'
     alias gce='git clean'
     # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.

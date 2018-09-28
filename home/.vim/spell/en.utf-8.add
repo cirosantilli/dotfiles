@@ -2499,3 +2499,7 @@ baremetal
 debuggable
 readonly
 SquashFS
+baremetal
+Semihosting
+semihosting
+crosstool
