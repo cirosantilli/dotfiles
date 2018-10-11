@@ -1030,14 +1030,80 @@ ${2:-}
 
   ## Docker
 
-    alias dk='docker'
-    alias dkb='docker build'
-    alias dke='docker exec'
-    dkbt() ( docker build -t "$1" . )
+    # The typical usage will look as follows.
+    #
+    # Create a new container:
+    #
+    #     dkc
+    #
+    # Start it if not already started, and do stuff in it:
+    #
+    #     dke
+    #
+    # Do it again:
+    #
+    #     dke
+    #
+    # Delete the created container and lose all data from it.
+    #
+    #     dkREMOVE
+
+    # Most important commands.
+    dk() ( sudo docker "$@" )
+    dkc() (
+      target_dir=/host
+      container="${1:-ub}"
+      shift
+      image="${1:-ubuntu:18.04}"
+      shift
+      cmd="${1:-/bin/bash}"
+      shift
+      dk create -it --name "$container" -w "${target_dir}" -v "/:${target_dir}" "$image" "$cmd" "$@"
+    )
+    dkREMOVE() (
+      container="${1:-ub}"
+      shift
+      dk rm "$container" "$@"
+    )
+    dke() (
+      # Run command in an existing container.
+      # Start it if not already started.
+      # By default, run /bin/bash and connect to it.
+      container="${1:-ub}"
+      shift
+      cmd="${1:-/bin/bash}"
+      shift
+      dks "$container"
+      dk exec -it "$container" "$cmd" "$@"
+      dkS
+    )
+    dks() (
+      # Start a container on the background.
+      # It will now appear in docker ps.
+      # You can then connect to it with docker exec.
+      container="${1:-ub}"
+      shift
+      dk start "$container" "$@"
+    )
+    dkS() (
+      # Stop a container.
+      container="${1:-ub}"
+      shift
+      dk stop "$container" "$@"
+    )
+    dkp() (
+      # List running containers.
+      dk ps "$@"
+    )
+    dkpa() (
+      # List all containers, including ones that are not running.
+      dkp -a "$@"
+    )
+
+    # Other commands.
+    dkb() ( docker build "$@" )
+    dkbt() ( dk build -t "$1" . )
     alias dkh='docker help'
-    alias dki='docker images'
-    alias dkp='docker ps -a'
-    dkr() ( docker run "$@" )
     dkrit() { dkr -it "$1" /bin/bash; }
     dkrp() { dkr -d -p 127.0.0.1:8000:80 "$1"; }
     dkrnp() { dkr -d --name "$1" -p 127.0.0.1:8000:80 "$2"; }
@@ -1045,8 +1111,6 @@ ${2:-}
     dkrm() ( docker rm "$@" )
     dkrmu() ( docker rm ub )
     alias dkrma='docker rm $(docker ps -aq --no-trunc)'
-    dks() ( docker start -ai "$@" )
-    dkS() ( docker stop "$@" )
     dksu() ( dks ub )
 
   ## du
@@ -1356,6 +1420,10 @@ export GIT_AUTHOR_DATE="$d"
     alias gcp='git cherry-pick'
     alias gd='git diff'
     alias gdf='git diff'
+    gdfm() (
+      # https://stackoverflow.com/questions/1220309/git-difftool-open-all-diff-files-immediately-not-in-serial/2746292#2746292
+      git difftool --dir-diff --tool=meld "${1:-HEAD~}" "${2:-HEAD}"
+    )
     alias gdfth='git diff trunk...HEAD'
     alias gdfmh='git diff master...HEAD'
     alias gdfc='git diff --cached'
