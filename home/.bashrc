@@ -994,38 +994,42 @@ ${2:-}
       # List what each loop device is bound to.
       sudo losetup -l
     )
-    los() (
+    loop-mount-partitions() (
       # Works both on multi and single partition images.
       # https://askubuntu.com/questions/69363/mount-single-partition-from-image-of-entire-disk-device/673257#673257
-      # https://stackoverflow.com/questions/1419489/loopback-mounting-individual-partitions-from-within-a-file-that-contains-a-parti/39675265#39675265
       # https://superuser.com/questions/117136/how-can-i-mount-a-partition-from-dd-created-image-of-a-block-device-e-g-hdd-u/972020#972020
+      # https://stackoverflow.com/questions/1419489/loopback-mounting-individual-partitions-from-within-a-file-that-contains-a-parti/39675265#39675265
       # https://superuser.com/questions/211338/mounting-a-multi-partition-disk-image-in-linux/1263401#1263401
       # https://unix.stackexchange.com/questions/87183/creating-formatted-partition-from-nothing/229219#229219
       # https://unix.stackexchange.com/questions/9099/reading-a-filesystem-from-a-whole-disk-image/229218#229218
+      set -e
       img="$1"
       dev="$(sudo losetup --show -f -P "$img")"
-      echo "$dev"
+      echo "$dev" | sed -E 's/.*[^[:digit:]]([[:digit:]]+$)/\1/g'
       for part in "${dev}p"*; do
         if [ "$part" = "${dev}p*" ]; then
           # Single partition image.
           part="${dev}"
         fi
         dst="/mnt/$(basename "$part")"
-        echo "$dst"
+        echo "$dst" 1>&2
         sudo mkdir -p "$dst"
         sudo mount "$part" "$dst"
       done
     )
-    losd() (
-      dev="/dev/loop$1"
-      for part in "${dev}p"*; do
-        if [ "$part" = "${dev}p*" ]; then
-          part="${dev}"
-        fi
-        dst="/mnt/$(basename "$part")"
-        sudo umount "$dst"
+    loop-unmount-partitions() (
+      set -e
+      for loop_id in "$@"; do
+        dev="/dev/loop${loop_id}"
+        for part in "${dev}p"*; do
+          if [ "$part" = "${dev}p*" ]; then
+            part="${dev}"
+          fi
+          dst="/mnt/$(basename "$part")"
+          sudo umount "$dst"
+        done
+        sudo losetup -d "$dev"
       done
-      sudo losetup -d "$dev"
     )
 
   ## Docker
@@ -1372,7 +1376,15 @@ export GIT_AUTHOR_DATE="$d"
 ' --force "${first_commit}~..${last_commit}"
     )
     gcm() (
-      d="$(date '+%Y-%m-%d')T00:00:00+0000"
+      last_git_time="$(git log --date=format:'%H:%M:%S' --format='%ad' -n 1)"
+      last_git_date="$(git log --date=format:'%Y-%m-%d' --format='%ad' -n 1)"
+      today="$(date '+%Y-%m-%d')"
+      if [ "$last_git_date" = "$today" ]; then
+        new_time="${last_git_time} + 1 second"
+      else
+        new_time="00:00:00"
+      fi
+      d="$(date --date "$new_time" "+${today}T%H:%M:%S+0000")"
       GIT_COMMITTER_DATE="$d" \
       GIT_AUTHOR_DATE="$d" \
       git commit "$@"

@@ -289,6 +289,9 @@
 
       Plugin 'scrooloose/syntastic'
       let g:syntastic_always_populate_loc_list = 0
+      " Disable asciidoc checks, because the default ones are useless,
+      " and they make saving my huge one file documentations ultra slow.
+      let g:syntastic_asciidoc_checkers = []
 
   " You must then install the external syntax checkers you will use.
 
