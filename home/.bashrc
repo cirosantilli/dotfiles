@@ -728,7 +728,8 @@
   ## bc
 
     bcbase() (
-      # Convert between bases.
+      # Convert between bases:
+      # bcbase inbase [[inbase=10] obase=16]
       val="$(printf $1 | tr 'a-z' 'A-Z')"
       if [ $# -ge 2 ]; then
         ibase=${2:-}
@@ -743,6 +744,7 @@
       echo "obase=${obase}; ibase=${ibase}; ${val}" | bc
     )
     hex() ( printf "%x\n" "$@" )
+    xeh() ( bcbase "$1" 16 10)
 
   ## Binutils
 
@@ -1051,9 +1053,16 @@ ${2:-}
     # Delete the created container and lose all data from it.
     #
     #     dkREMOVE
+    #
+    # To create and use another container, just add
+    # the container name in front of all invocations:
+    #
+    #     dkc ble
+    #     dke ble
+    #     dkREMOVE ble
 
     # Most important commands.
-    dk() ( sudo docker "$@" )
+    dk() ( docker "$@" )
     dkc() (
       target_dir=/host
       container="${1:-ub}"
@@ -1062,7 +1071,7 @@ ${2:-}
       shift
       cmd="${1:-/bin/bash}"
       shift
-      dk create -it --name "$container" -w "${target_dir}" -v "/:${target_dir}" "$image" "$cmd" "$@"
+      dk create -it --name "$container" -w "${target_dir}/$(pwd)" -v "/:${target_dir}" "$image" "$cmd" "$@"
     )
     dkREMOVE() (
       container="${1:-ub}"
@@ -1079,7 +1088,7 @@ ${2:-}
       shift
       dks "$container"
       dk exec -it "$container" "$cmd" "$@"
-      dkS
+      dkS "$container"
     )
     dks() (
       # Start a container on the background.
@@ -1380,11 +1389,13 @@ export GIT_AUTHOR_DATE="$d"
       last_git_date="$(git log --date=format:'%Y-%m-%d' --format='%ad' -n 1)"
       today="$(date '+%Y-%m-%d')"
       if [ "$last_git_date" = "$today" ]; then
-        new_time="${last_git_time} + 1 second"
+        new_time="${last_git_time}"
+        new_delta=' + 1 second'
       else
         new_time="00:00:00"
+        new_delta=
       fi
-      d="$(date --date "$new_time" "+${today}T%H:%M:%S+0000")"
+      d="$(date --date "${today}T${new_time}+0000${new_delta}" "+${today}T%H:%M:%S+0000")"
       GIT_COMMITTER_DATE="$d" \
       GIT_AUTHOR_DATE="$d" \
       git commit "$@"
