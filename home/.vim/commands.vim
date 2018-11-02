@@ -58,6 +58,7 @@
   command! Er tabedit README.md
   command! Et tabedit $NOTES_DIR/TODO.md
   command! Ev tabedit ~/.vimrc
+  command! TrailingSpace %s/\v\s+$//
 
 " Cscope:
 

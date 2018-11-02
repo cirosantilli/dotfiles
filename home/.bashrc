@@ -1990,6 +1990,7 @@ export GIT_AUTHOR_DATE="$d"
 
   ## music
 
+    alias mbra="nohup vlc \"$MUSIC_DIR/brazillian\" >/dev/null &"
     alias mcla="nohup vlc \"$MUSIC_DIR/classic\" >/dev/null &"
     alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
     alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
