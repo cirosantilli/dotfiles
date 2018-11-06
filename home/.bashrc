@@ -1385,6 +1385,7 @@ export GIT_AUTHOR_DATE="$d"
 ' --force "${first_commit}~..${last_commit}"
     )
     gcm() (
+      set -x
       last_git_time="$(git log --date=format:'%H:%M:%S' --format='%ad' -n 1)"
       last_git_date="$(git log --date=format:'%Y-%m-%d' --format='%ad' -n 1)"
       today="$(date '+%Y-%m-%d')"
@@ -1396,6 +1397,7 @@ export GIT_AUTHOR_DATE="$d"
         new_delta=
       fi
       d="$(date --date "${today}T${new_time}+0000${new_delta}" "+${today}T%H:%M:%S+0000")"
+      set +x
       GIT_COMMITTER_DATE="$d" \
       GIT_AUTHOR_DATE="$d" \
       git commit "$@"
