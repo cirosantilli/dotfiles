@@ -1073,11 +1073,6 @@ ${2:-}
       shift
       dk create -it --name "$container" -w "${target_dir}/$(pwd)" -v "/:${target_dir}" "$image" "$cmd" "$@"
     )
-    dkREMOVE() (
-      container="${1:-ub}"
-      shift
-      dk rm "$container" "$@"
-    )
     dke() (
       # Run command in an existing container.
       # Start it if not already started.
@@ -1089,6 +1084,11 @@ ${2:-}
       dks "$container"
       dk exec -it "$container" "$cmd" "$@"
       dkS "$container"
+    )
+    dkREMOVE() (
+      container="${1:-ub}"
+      shift
+      dk rm "$container" "$@"
     )
     dks() (
       # Start a container on the background.
@@ -1385,7 +1385,6 @@ export GIT_AUTHOR_DATE="$d"
 ' --force "${first_commit}~..${last_commit}"
     )
     gcm() (
-      set -x
       last_git_time="$(git log --date=format:'%H:%M:%S' --format='%ad' -n 1)"
       last_git_date="$(git log --date=format:'%Y-%m-%d' --format='%ad' -n 1)"
       today="$(date '+%Y-%m-%d')"
@@ -1397,7 +1396,6 @@ export GIT_AUTHOR_DATE="$d"
         new_delta=
       fi
       d="$(date --date "${today}T${new_time}+0000${new_delta}" "+${today}T%H:%M:%S+0000")"
-      set +x
       GIT_COMMITTER_DATE="$d" \
       GIT_AUTHOR_DATE="$d" \
       git commit "$@"
