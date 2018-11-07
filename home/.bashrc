@@ -2070,9 +2070,9 @@ export GIT_AUTHOR_DATE="$d"
       pii() ( pi install --user "$@" )
       pi3() ( python3 -m pip "$@" )
       pi3i() ( pi3 install --user "$@" )
-      piu() ( pip uninstall --user "$@" )
-      pise() ( pip search "$@" )
-      pif() ( pip freeze | grep -E "${1:-^}")
+      piu() ( pi uninstall --user "$@" )
+      pise() ( pi search "$@" )
+      pif() ( pi freeze | grep -E "${1:-^}")
       pifr() (
         pif "$@" >> requirements.txt
         sort -fu -o requirements.txt requirements.txt
