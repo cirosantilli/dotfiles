@@ -119,6 +119,13 @@ function! CodeToMd(line1, line2, ...)
 endfunction
 command! -range=% -nargs=? CodeToMd call CodeToMd(<line1>, <line2>, <f-args>)
 
+function! CToCppComments()
+  silent! execute 'g/\v^\s*\*\/$/d'
+  silent! execute '%s/\v(^\s*)[ \/]\*( |$)/\1\/\/\2/'
+  silent! execute '%s/\v( |)\*\///'
+endfunction
+command! CToCppComments call CToCppComments()
+
 " Wipe all buffers without corresponding existing files
 " http://stackoverflow.com/questions/8845400/vim-wiping-out-buffers-editing-nonexistent-files
 function! WipeBuffersWithoutFiles()
