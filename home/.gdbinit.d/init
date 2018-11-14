@@ -1,6 +1,7 @@
 # http://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history save
 set history filename ~/.gdb_history
+set history size 16384
 
 set listsize 40
 

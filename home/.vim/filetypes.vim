@@ -175,6 +175,7 @@ augroup END
 
 " # Tcl
 
+  autocmd BufNew,BufRead SConstruct setfiletype python
   augroup Interpreted
     autocmd!
     autocmd BufNew,BufRead Vagrantfile setlocal filetype=ruby
