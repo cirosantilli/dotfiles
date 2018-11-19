@@ -2,14 +2,6 @@
 
 set -ex
 
-doc='
-    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash
-
-Minimal CLI setup:
-
-    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash /dev/stdin -g
-'
-
 full=false
 gui=true
 full=false
@@ -34,6 +26,8 @@ done
 sudo apt-get update
 sudo apt-get install -y aptitude
 sudo aptitude update
+# For add-apt-repository
+sudo aptitude install software-properties-common
 sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
 sudo add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
 

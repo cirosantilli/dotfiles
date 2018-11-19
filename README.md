@@ -1,8 +1,16 @@
 # Dotfiles
 
+Tested on Ubuntu.
+
 This repository is managed with <https://github.com/andsens/homeshick>
 
-Installation of all system dependencies under: `home/bin/setup-ubuntu`.
+GUI setup:
+
+    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash
+
+Minimal CLI setup:
+
+    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash /dev/stdin -g
 
 ## root
 
