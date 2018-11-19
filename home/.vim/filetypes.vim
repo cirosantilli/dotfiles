@@ -175,9 +175,9 @@ augroup END
 
 " # Tcl
 
-  autocmd BufNew,BufRead SConstruct setfiletype python
   augroup Interpreted
     autocmd!
+    autocmd BufNew,BufRead SConstruct,SConscript set filetype=python
     autocmd BufNew,BufRead Vagrantfile setlocal filetype=ruby
     autocmd FileType python,perl setlocal shiftwidth=4 tabstop=4
     autocmd FileType sh,ruby setlocal shiftwidth=2 tabstop=2

@@ -2073,6 +2073,7 @@ export GIT_AUTHOR_DATE="$d"
       piu() ( pi uninstall --user "$@" )
       pise() ( pi search "$@" )
       pif() ( pi freeze | grep -E "${1:-^}")
+      pi3f() ( pi3 freeze | grep -E "${1:-^}")
       pifr() (
         pif "$@" >> requirements.txt
         sort -fu -o requirements.txt requirements.txt
