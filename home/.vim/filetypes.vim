@@ -291,3 +291,10 @@ augroup END
       autocmd!
       autocmd FileType gnuplot noremap <buffer> <F6> :write<cr>:silent !gnuplot -p %<cr>
     augroup END
+
+" # git commits
+"
+    augroup Gitcommit
+      autocmd!
+      autocmd FileType gitcomit setlocal textwidth 72
+    augroup END
