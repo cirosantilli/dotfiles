@@ -1374,7 +1374,14 @@ ${2:-}
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
     alias gcft='git cat-file -t'
+    git-create-test-commit() (
+      d="$(date)"
+      touch "$d"
+      git add "$d"
+      git commit -m "$d"
+    )
     git-hide-time() (
+      # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
       # Set the time of all commits in inclusive range to midnight. Keep date.
       first_commit="$1"
       last_commit="${2:-HEAD}"
@@ -1576,7 +1583,7 @@ export GIT_AUTHOR_DATE="$d"
     alias gplrum='git pull --rebase up master'
     alias gplo='git pull origin'
     alias gplom='git pull origin master'
-    alias grb='git rebase'
+    grb() ( git rebase --committer-date-is-author-date )
     alias grba='git rebase --abort'
     alias grbc='git rebase --continue'
     alias grbi='git rebase -i'

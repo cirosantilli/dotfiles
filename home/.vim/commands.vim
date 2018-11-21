@@ -1,79 +1,76 @@
-" Misc:
-
-  " All Copy.
-  command! Ac normal! ggVG"+y<c-o><c-o>
-  " Cat a given file into buffer.
-  command! -complete=file -nargs=1 Cat silent r! cat <args>
-  command! Chmx silent !chmod +x %
-  command! -range Ex <line1>,<line2>!expand -t4
-  command! -range=% Hd <line1>,<line2>HeaderDecrease
-  command! -range=% Hi <line1>,<line2>HeaderIncrease
-  command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
-  " Search recursively under current directory.
-  " No useless enter confirmation (silent), and open a fullscreen
-  " error list instead of jumping to a match. Command gets pasted into terminal:
-  " - spaces: `Grep a\ b` or `Grep "a b"`
-  " - `-i`: Grep -i a
-  " - restrict file extension: G match *.c
-  command! -nargs=+ G execute 'silent grep! <args>' | tab copen
-  " TODO forward to G instead.
-  command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
-  " fugitive Ggrep (starts from Git toplevel dir), and then open on new tab.
-  command! -nargs=+ Gg execute 'silent Ggrep! <args>' | tab copen
-  " Open ltag on a new tab.
-  " https://stackoverflow.com/questions/14465383/how-to-navigate-multiple-ctags-matches-in-vim/43866918#43866918
-  command! -nargs=1 Ltag silent ltag <args> | execute "normal \<C-o>" | tab lopen
-  " Current path to clipboard.
-  " http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
-  " Delete the curent file.
-  command! Rm !rm %
-  " TODO also somehow wipe the buffer.
-  "command! Rm !rm % | bwipe
-  " Toggle the status bar between mode 0 and 2.
-  command! Sl let &laststatus = ((!&laststatus) * 2)
-  command! Ss set spell!
-  command! St set tabstop=8
-  command! Sw set wrap!
-  command! -nargs=1 Tt tab tag <args>
-  " Search in all files under current directory recursively.
-  command! -nargs=1 Vim vimgrep/\v<args>/ **
-  " Write current file with sudo.
-  command! Wsudo write !sudo tee %
-  " Copy GDB breakpoint specifier to the clipboard.
-  command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
-  " Copy full path to clipboard.
-  command! Xp :let @+ = expand('%:p')
-  " Copy relative path of current file relative to the git root to the clipboard.
-  command! Xr :let @+ = substitute(system('git ls-files --full-name ' . expand('%:p')), '\n$', '', '')
+" All Copy.
+command! Ac normal! ggVG"+y<c-o><c-o>
+" Cat a given file into buffer.
+command! -complete=file -nargs=1 Cat silent r! cat <args>
+command! Chmx silent !chmod +x %
+command! -range Ex <line1>,<line2>!expand -t4
+command! -range=% Hd <line1>,<line2>HeaderDecrease
+command! -range=% Hi <line1>,<line2>HeaderIncrease
+command! Fgc execute '/^\(<<<<<<< \|=======$\|>>>>>>> \)'
+" Search recursively under current directory.
+" No useless enter confirmation (silent), and open a fullscreen
+" error list instead of jumping to a match. Command gets pasted into terminal:
+" - spaces: `Grep a\ b` or `Grep "a b"`
+" - `-i`: Grep -i a
+" - restrict file extension: G match *.c
+command! -nargs=+ G execute 'silent grep! <args>' | tab copen
+" TODO forward to G instead.
+command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
+" fugitive Ggrep (starts from Git toplevel dir), and then open on new tab.
+command! -nargs=+ Gg execute 'silent Ggrep! <args>' | tab copen
+" Open ltag on a new tab.
+" https://stackoverflow.com/questions/14465383/how-to-navigate-multiple-ctags-matches-in-vim/43866918#43866918
+command! -nargs=1 Ltag silent ltag <args> | execute "normal \<C-o>" | tab lopen
+" Current path to clipboard.
+" http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
+" Delete the curent file.
+command! Rm !rm %
+" TODO also somehow wipe the buffer.
+"command! Rm !rm % | bwipe
+" Toggle the status bar between mode 0 and 2.
+command! Sl let &laststatus = ((!&laststatus) * 2)
+command! Ss set spell!
+command! St set tabstop=8
+command! Sw set wrap!
+command! -nargs=1 Tt tab tag <args>
+" Search in all files under current directory recursively.
+command! -nargs=1 Vim vimgrep/\v<args>/ **
+" Write current file with sudo.
+command! Wsudo write !sudo tee %
+" Copy GDB breakpoint specifier to the clipboard.
+command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
+" Copy full path to clipboard.
+command! Xp :let @+ = expand('%:p')
+" Copy relative path of current file relative to the git root to the clipboard.
+command! Xr :let @+ = substitute(system('git ls-files --full-name ' . expand('%:p')), '\n$', '', '')
 
 " Edit important files:
 
-  command! Eb tabedit ~/.bashrc
-  command! EB tabedit ~/.bashrc_local
-  command! Eg tabedit ~/.gitconfig
-  command! Ei tabedit .gitignore
-  command! Em tabedit Makefile
-  command! En tabedit ~/note.md
-  command! Ep tabedit ~/.profile
-  command! Er tabedit README.md
-  command! Et tabedit $NOTES_DIR/TODO.md
-  command! Ev tabedit ~/.vimrc
-  command! TrailingSpace %s/\v\s+$//
+command! Eb tabedit ~/.bashrc
+command! EB tabedit ~/.bashrc_local
+command! Eg tabedit ~/.gitconfig
+command! Ei tabedit .gitignore
+command! Em tabedit Makefile
+command! En tabedit ~/note.md
+command! Ep tabedit ~/.profile
+command! Er tabedit README.md
+command! Et tabedit $NOTES_DIR/TODO.md
+command! Ev tabedit ~/.vimrc
 
 " Cscope:
 
-  " Find where the function under the cursor is called from.
-  function! Csc()
-    cscope find c <cword>
-    tab copen
-  endfunction
-  command! Csc call Csc()
+" Find where the function under the cursor is called from.
+function! Csc()
+  cscope find c <cword>
+  tab copen
+endfunction
+command! Csc call Csc()
 
-  function! Css()
-    cscope find s <cword>
-    tab copen
-  endfunction
-  command! Css call Css()
+function! Css()
+  cscope find s <cword>
+  tab copen
+endfunction
+command! Css call Css()
 
 " Transform well formated selected line commented code to markdown.
 "
@@ -118,13 +115,6 @@ function! CodeToMd(line1, line2, ...)
   silent! execute a:line1 . ',' . a:line2 . 's/\v^\s+([^#])/  \1/'
 endfunction
 command! -range=% -nargs=? CodeToMd call CodeToMd(<line1>, <line2>, <f-args>)
-
-function! CToCppComments()
-  silent! execute 'g/\v^\s*\*\/$/d'
-  silent! execute '%s/\v(^\s*)[ \/]\*( |$)/\1\/\/\2/'
-  silent! execute '%s/\v( |)\*\///'
-endfunction
-command! CToCppComments call CToCppComments()
 
 " Wipe all buffers without corresponding existing files
 " http://stackoverflow.com/questions/8845400/vim-wiping-out-buffers-editing-nonexistent-files
@@ -195,13 +185,24 @@ command! -nargs=1 Locate call Find2('locate ' . shellescape('<args>'))
 
 " http://stackoverflow.com/questions/10884520/move-file-within-vim
 function! Mv(newspec)
-     let old = expand('%')
-     " could be improved:
-     if (old == a:newspec)
-         return 0
-     endif
-     exe 'sav' fnameescape(a:newspec)
-     call delete(old)
+  let old = expand('%')
+  " could be improved:
+  if (old == a:newspec)
+      return 0
+  endif
+  exe 'sav' fnameescape(a:newspec)
+  call delete(old)
 endfunction
+
+" Refactoring commands.
+
+function! CToCppComments()
+  silent! g/\v^\s*\*\/$/d
+  silent! %s/\v(^\s*)[ \/]\*( |$)/\1\/\/\2/
+  silent! %s/\v( |)\*\///
+endfunction
+command! CToCppComments call CToCppComments()
+command! TrailingSpace %s/\v\s+$//
+command! BashMultiline s/ / \\\r  /g
 
 command! -nargs=1 -complete=file -bar Mv call Mv('<args>')

@@ -3,7 +3,7 @@
 application/epub+zip=fbreader.desktop;
 application/x-mobipocket-ebook=fbreader.desktop;
 
-application/pdf=evince.desktop;
+application/pdf=okular.desktop;
 # .pod file.
 application/x-perl=gvim.desktop;
 application/zip=file-roller.desktop;
