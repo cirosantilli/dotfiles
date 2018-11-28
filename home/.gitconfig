@@ -36,6 +36,11 @@
 	pager = less -Xr
 	# Only use pager if the output does not fit to screen.
 	#pager = less -FXr
+
+	# Not using because it prevents hooks under `./.git/hooks` from running:
+	# - https://stackoverflow.com/questions/2293498/applying-a-git-post-commit-hook-to-all-current-and-future-repos/37293198#37293198
+	# - https://stackoverflow.com/questions/1977610/change-default-git-hooks/37293001#37293001
+	# hooksPath = ~/.git_hooks
 [credential]
 	helper = cache --timeout=999999
 [diff]

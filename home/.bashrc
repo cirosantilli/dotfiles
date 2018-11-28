@@ -1530,7 +1530,7 @@ export GIT_AUTHOR_DATE="$d"
     gloS() (
       # Find where that feature entered the code base.
       # https://stackoverflow.com/questions/5816134/finding-a-git-commit-that-introduced-a-string-in-any-branch/31621921#31621921
-      git log -p --reverse -S "$1";
+      git log -p --reverse -S "$1"
     )
     # Get last SHA commit into clipboard.
     glox() (
