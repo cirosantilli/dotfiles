@@ -316,6 +316,15 @@
   f3() { find . -maxdepth 3 -iname "*$1*"; }
   alias fgb='fg;b'
   alias fmmmr='find-music-make-m3u .'
+  files-to-markdown() (
+    # Serialize multiple files to markdown for SO answers.
+    for f in "$@"; do
+      echo "$f"
+      echo
+      sed -r 's/^/    /' "$f"
+      echo
+    done
+  )
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
   alias gnup='gnuplot -p'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
