@@ -1641,13 +1641,6 @@ export GIT_AUTHOR_DATE="$d"
     gsh() ( git show )
     gshm() { git show "master:./$1"; }
     gshmo() { git show "master:./$1" > "old_$1"; }
-    git-show-save() (
-      rev="$1"
-      shift
-      for file in "$@"; do
-        git show "${ref}:${file}" > "${file%.*}.old.${file##*.}"
-      done
-    )
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'

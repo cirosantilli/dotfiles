@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import subprocess
+
+parser = argparse.ArgumentParser()
+parser.add_argument('revision')
+parser.add_argument('files', nargs='+')
+args = parser.parse_args()
+toplevel = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).rstrip().decode()
+for path in args.files:
+    file_relative = os.path.relpath(os.path.abspath(path), toplevel)
+    base, ext = os.path.splitext(path)
+    new_path = base + '.old' + ext
+    with open(new_path, 'w') as f:
+        subprocess.call(['git', 'show', '{}:./{}'.format(args.revision, path)], stdout=f)
