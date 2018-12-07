@@ -381,7 +381,7 @@
   command! -nargs=* Gcob execute '!git checkout -b "<args>"'
 
   " Git add commit and push.
-  command! Gad execute '!git add ' . expand('%:p')
+  command! Gad execute 'silent !git add ' . expand('%:p')
   command! Gacp execute '!git add ' . expand('%:p') . ' && git commit -m bak && git push'
   command! Gadnpsf execute '!git add ' . expand('%:p') . ' && git commit --amend --no-edit && git push -f'
   " Ggrep and open quickfix in a new tab.

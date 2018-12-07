@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # https://stackoverflow.com/questions/2973996/git-rebase-without-changing-commit-timestamps/53516609#53516609
-set -eu
+set -eux
 declare -a olds
 declare -A oldnew
 while IFS= read -r line; do

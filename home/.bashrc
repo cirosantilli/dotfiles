@@ -1502,6 +1502,7 @@ export GIT_AUTHOR_DATE="$d"
     )
     glsfg()( glsf | g "$@" )
     glsg() ( gls | g "$@" )
+    glsgi() ( glsg -i "$@" )
     alias glsr='git ls-remote'
     alias glo='git log --decorate --pretty=fuller'
     glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
@@ -1582,8 +1583,22 @@ export GIT_AUTHOR_DATE="$d"
     grb() ( git rebase --committer-date-is-author-date )
     alias grba='git rebase --abort'
     alias grbc='git rebase --continue'
-    alias grbi='git rebase -i'
+    grbi() ( git rebase -i "$@" )
     grbih() ( git rebase -i "HEAD~${1:-1}" )
+    git-amend-old() (
+      # Stash, apply to past commit, and rebase the current branch on to of the result.
+      # For Gerrit. https://stackoverflow.com/questions/1186535/how-to-modify-a-specified-commit/53597426#53597426
+      current_branch="$(git rev-parse --abbrev-ref HEAD)"
+      apply_to="$1"
+      git stash
+      git checkout "$apply_to"
+      git stash apply
+      git add -u
+      git commit --amend --no-edit
+      new_sha="$(git log --format="%H" -n 1)"
+      git checkout "$current_branch"
+      git rebase --onto "$new_sha" "$apply_to"
+    )
     alias grbm='git rebase master'
     grbo() (
       # Rebase current branch onto another ref.
@@ -1647,6 +1662,8 @@ export GIT_AUTHOR_DATE="$d"
     alias gtag='gta | g'
     alias gtas='git tag | sort -V'
     alias gtr='git ls-tree HEAD'
+    gwtl() ( git worktree list )
+    gwtp() ( git worktree prune )
 
     alias vgig='vim .gitignore'
     alias lngp='latex-new-github-project.sh cirosantilli'

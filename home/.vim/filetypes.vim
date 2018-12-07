@@ -296,5 +296,5 @@ augroup END
 "
     augroup Gitcommit
       autocmd!
-      autocmd FileType gitcomit setlocal textwidth 72
+      autocmd FileType gitcomit setlocal textwidth=72
     augroup END
