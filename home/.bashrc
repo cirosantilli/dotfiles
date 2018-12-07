@@ -1623,9 +1623,16 @@ export GIT_AUTHOR_DATE="$d"
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
     alias gsaa='git stash apply'
-    alias gsh='git show'
+    gsh() ( git show )
     gshm() { git show "master:./$1"; }
     gshmo() { git show "master:./$1" > "old_$1"; }
+    git-show-save() (
+      rev="$1"
+      shift
+      for file in "$@"; do
+        git show "${ref}:${file}" > "${file%.*}.old.${file##*.}"
+      done
+    )
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'
