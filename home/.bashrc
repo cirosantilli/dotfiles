@@ -1491,7 +1491,7 @@ export GIT_AUTHOR_DATE="$d"
     # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
     git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
     gls() ( git ls-files "$@" )
-    glsb()(
+    gls-binary()(
       # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
       grep -Fvxf <(git grep --cached -Il '') <(git grep --cached -al '')
     )
