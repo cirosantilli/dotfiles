@@ -141,7 +141,10 @@
     export LC_TELEPHONE='en_US.UTF-8'
     export LC_TIME='en_US.UTF-8'
     #export PAGER=less
-    export PYTHONPATH="$PYTHONPATH:$PYTHON_DEVPATH_DIR:/var/www/django/devpath"
+    if [ -n "$PYTHONPATH" ]; then
+      export PYTHONPATH="${PYTHONPATH}:"
+    fi
+    PYTHONPATH="${PYTHONPATH}${PYTHON_DEVPATH_DIR}:/var/www/django/devpath"
     export PYTHONSTARTUP="$HOME/.pythonrc.py"
 
     # Linux from scratch home.
@@ -1216,6 +1219,13 @@ ${2:-}
       hd "$raw"
     )
 
+    gcc-pedantic() (
+      # GCC with as many checks as I can make it.
+      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic $@"
+      echo "$cmd"
+      eval "$cmd"
+    )
+
     # GCC from String.
     #
     # Better than crepl.
@@ -1812,9 +1822,14 @@ export GIT_AUTHOR_DATE="$d"
 
     l() ( ls "$@"; )
     ls() ( command ls -A -1 --color=auto --group-directories-first "$@"; )
-    lswc() ( ls -1 "${1:-.}" | wc -l; )
-    lsg() ( ls "${2:-.}" | g "$1"; )
-    lsgi() ( ls "${2:-.}" | gi "$1"; )
+    lswc() ( ls -1 "${1:-.}" | wc -l )
+    lsf() (
+      # List files.
+      # https://stackoverflow.com/questions/10574794/how-to-list-only-files-in-bash/46135507#46135507
+      ls -p "$@" | grep -v /
+    )
+    lsg() ( ls "${2:-.}" | g "$1" )
+    lsgi() ( ls "${2:-.}" | gi "$1" )
     ll() ( ls -hl --time-style="+%Y-%m-%d_%H:%M:%S" "$@"; )
     lll() ( ll --color | s -R; )
     lla() ( ll -A "$@"; )
@@ -2008,12 +2023,12 @@ export GIT_AUTHOR_DATE="$d"
 
   ## music
 
-    alias mbra="nohup vlc \"$MUSIC_DIR/brazillian\" >/dev/null &"
-    alias mcla="nohup vlc \"$MUSIC_DIR/classic\" >/dev/null &"
-    alias mctm="nohup vlc \"$CHINESE_MUSIC_DIR\" >/dev/null &"
-    alias mitm="nohup vlc \"$INDIAN_MUSIC_DIR\" >/dev/null &"
-    alias mjfr="nohup vlc \"$JAZZ_MUSIC_DIR\" >/dev/null &"
-    alias mroc="nohup vlc \"$MUSIC_DIR/rock\" >/dev/null &"
+    alias mbra="nohup vlc --recursive expand \"$MUSIC_DIR/brazillian\" >/dev/null &"
+    alias mcla="nohup vlc --recursive expand \"$MUSIC_DIR/classic\" >/dev/null &"
+    alias mctm="nohup vlc --recursive expand \"$CHINESE_MUSIC_DIR\" >/dev/null &"
+    alias mitm="nohup vlc --recursive expand \"$INDIAN_MUSIC_DIR\" >/dev/null &"
+    alias mjfr="nohup vlc --recursive expand \"$JAZZ_MUSIC_DIR\" >/dev/null &"
+    alias mroc="nohup vlc --recursive expand \"$MUSIC_DIR/rock\" >/dev/null &"
 
   ## Maven
 
@@ -2102,10 +2117,11 @@ export GIT_AUTHOR_DATE="$d"
 
     ## virtualenv
 
-      alias vira='. .venv/bin/activate'
-      alias vird='deactivate'
-      alias vire='echo $VIRTUAL_ENV'
-      alias virp='virtualenv -p python3.5 .venv && . .venv/bin/activate && pip install -r requirements.txt'
+      vira() { . .venv/bin/activate;  }
+      vird() { deactivate; }
+      vire() ( echo "$VIRTUAL_ENV" )
+      virp2() { virtualenv -p python2 .venv && vira;  }
+      virp() { virtualenv -p python3 .venv && vira;  }
 
     ## django
 
