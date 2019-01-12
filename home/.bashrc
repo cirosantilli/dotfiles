@@ -378,6 +378,12 @@
   bakk() { for f in "$@"; do cp -r "${f%/}" "${f%/}.bak"; done; }
   kab() { for f in "$@"; do p="${f%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; done }
   kabb() { for f in "$@"; do p="${f%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; done }
+  markdown-to-adoc() (
+    # Markdown to asciidoc the way I like it.
+    f="$1"
+    shift
+    pandoc --atx-headers --base-header-level 2 -o "${f%.*}.adoc" --wrap=none "$f" "$@"
+  )
   md() ( mkdir -p "$@"; )
   # Make Dir Cd
   mdc() { md "$1" && cd "$1"; }
@@ -410,12 +416,6 @@
     xdg-open "$(find "$dir" -maxdepth 1 -type f | sort | head -n1)"
   }
   alias pdc='pandoc'
-  pdcm2a() (
-    # Markdown to asciidoc the way I like it.
-    f="$1"
-    shift
-    pandoc --atx-headers --base-header-level 2 -o "${f%.*}.adoc" --wrap=none "$f" "$@"
-  )
   pycharm() ( noh "$HOME/bin/pycharm/bin/pycharm.sh" )
   r() {
     ranger --choosedir="$HOME/.rangerdir" "$@"
