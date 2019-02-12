@@ -672,6 +672,7 @@
     gradi() ( ./gradlew uninstallAll && ./gradlew assembleDebug && ./gradlew installDebug )
     gracdi() ( ./gradlew clean && gradi )
 
+    # Repo.
     repover() (
       # Print the revision of all repos.
       # https://stackoverflow.com/questions/14402425/how-do-i-know-the-current-version-in-an-android-repo/48240508#48240508
@@ -1314,6 +1315,14 @@ ${2:-}
       ;
         #-ex "set remote exec-file $myexec" \
     )
+    gdbdis() (
+      # https://stackoverflow.com/questions/22769246/how-to-disassemble-one-single-function-using-objdump/31138400#31138400
+      gdb -batch -ex "disassemble/rs ${2:-main}" "$1"
+    )
+    gdbdis-arm() (
+      # https://stackoverflow.com/questions/22769246/how-to-disassemble-one-single-function-using-objdump/31138400#31138400
+      gdb-multi -batch -ex "disassemble/rs ${2:-main}" "$1"
+    )
 
   ## GNU changelogs from Git
 
@@ -1453,7 +1462,8 @@ export GIT_AUTHOR_DATE="$d"
     alias gcngh='git config user.email "ciro.santilli@gmail.com"'
     # Git config anti-commie.
     alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
-    alias gcp='git cherry-pick'
+    gcp() ( git cherry-pick "$@" )
+    gcpa() ( gcp --abort "$@" )
     alias gd='git diff'
     alias gdf='git diff'
     gdfm() (
@@ -1748,10 +1758,14 @@ export GIT_AUTHOR_DATE="$d"
   ## grep
 
     g() ( grep -E --color=auto "$@"; )
-    gi() ( g -i "$@"; )
-    gr() ( g -R "$@"; )
-    gri() ( gi -R "$@"; )
-    gv() ( g -v "$@"; )
+    gi() ( g -i "$@" )
+    gr() ( g -R "$@" )
+    gri() ( gi -R "$@" )
+    grib() (
+      # Ignore binary files.
+      gri --binary-files without-match "$@"
+    )
+    gv() ( g -v "$@" )
 
   ## grunt
 

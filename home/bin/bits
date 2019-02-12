@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+import sys
+'''
+Print all bits in given integer, one per line with index.
+First bit shows first with high index.
+'''
+bin_str = bin(int(sys.argv[1], base=0))[2:]
+i = len(bin_str) - 1
+for c in bin_str:
+    print('{} {}'.format(i, c))
+    i = i - 1

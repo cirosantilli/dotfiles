@@ -2512,3 +2512,7 @@ NodeJS
 NOPs
 #CSI
 hyperthread
+GTest
+UIO
+VFIO
+PSCI
