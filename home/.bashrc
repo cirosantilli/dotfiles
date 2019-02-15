@@ -1280,6 +1280,13 @@ ${2:-}
       asm-get-bytes aarch64-linux-gnu- "$@"
     )
 
+    gcc-pedantic() (
+      # GCC with as many checks as I can make it.
+      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic $@"
+      echo "$cmd"
+      eval "$cmd"
+    )
+
     # GCC from String.
     #
     # Better than crepl.
