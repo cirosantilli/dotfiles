@@ -1256,6 +1256,29 @@ ${2:-}
       echo "$cmd"
       eval "$cmd"
     )
+    asm-get-bytes() (
+      # Assemble and disassemble some arm code to see what the bytes are.
+      # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
+      set -e
+      pref="$1"
+      shift
+      name=/tmp/asarm
+      in="${name}.S"
+      o="${name}.o"
+      out="${name}.out"
+      raw="${name}.raw"
+      printf ".section .text\n.global _start\n_start:\n${*}\n" > "$in"
+      "${pref}as" -o "$o" "$in"
+      "${pref}ld" -o "$out" "$o"
+      "${pref}objcopy" -O binary "$out" "$raw"
+      hd "$raw"
+    )
+    asm-get-bytes-arm() (
+      asm-get-bytes arm-linux-gnueabihf- "$@"
+    )
+    asm-get-bytes-aarch64() (
+      asm-get-bytes aarch64-linux-gnu- "$@"
+    )
 
     # GCC from String.
     #
@@ -1550,6 +1573,11 @@ export GIT_AUTHOR_DATE="$d"
       # Git list only regular files: exclude submodules, symlinks, empty files and text files.
       # https://stackoverflow.com/questions/40165650/how-to-list-all-files-tracked-by-git-excluding-submodules
       git grep --cached -Il ''
+    )
+    glsd()(
+      # List all directories in a git repository:
+      # https://stackoverflow.com/questions/20247389/how-can-i-make-git-list-only-the-tracked-directories-in-a-folder/54162211#54162211
+      git ls-tree -rt HEAD:./ | awk '{if ($2 == "tree") print $4;}'
     )
     glsfg()( glsf | g "$@" )
     glsg() ( gls | g "$@" )
@@ -2103,9 +2131,9 @@ export GIT_AUTHOR_DATE="$d"
 
   ## npm
 
-    alias npmi='npm install'
-    alias npmis='npm install --save'
-    alias npmisd='npm install --save-dev'
+    npmi() ( npm install "$@" )
+    npmis() ( npm install "$@" )
+    npms() ( npm start "$@" )
 
   ## power management
 
@@ -2465,6 +2493,7 @@ export GIT_AUTHOR_DATE="$d"
   fi
 
   ## NVM
+  # https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm/971612#971612
   #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
   f="$HOME/.nvm/nvm.sh"
   if [ -r "$f" ]; then
