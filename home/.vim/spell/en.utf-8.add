@@ -2516,3 +2516,6 @@ GTest
 UIO
 VFIO
 PSCI
+AVS
+Aarch32
+UAL

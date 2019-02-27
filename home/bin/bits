@@ -9,3 +9,5 @@ i = len(bin_str) - 1
 for c in bin_str:
     print('{} {}'.format(i, c))
     i = i - 1
+    if i % 4 == 3:
+        print()

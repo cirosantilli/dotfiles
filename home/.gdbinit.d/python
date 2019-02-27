@@ -18,7 +18,14 @@ define daasm
     dashboard source -style context 8
     dashboard assembly -style context 8
 end
-dadef
+
+define dadis
+    dashboard -enabled off
+end
+
+define daen
+    dashboard -enabled on
+end
 
 source ~/.gdbinit.py
 

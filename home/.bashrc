@@ -259,6 +259,15 @@
     find "$d" -type f | sudo xargs chmod +644
     find . -type f -perm /u=x,g=x,o=x | sudo xargs -r chmod +111
   )
+  chmod-permissive() (
+    # Workaround for the age-old problem. OMG, Ubuntu.
+    # https://askubuntu.com/questions/12009/solving-permission-problems-when-using-external-ext4-hard-disk-with-multiple-lin
+    # https://askubuntu.com/questions/44534/how-to-set-umask-for-a-specific-folder TODO implement this as well.
+    d="${1:-.}"
+    sudo find "$d" -type d | sudo xargs chmod 777
+    find "$d" -type f | sudo xargs chmod +666
+    find . -type f -perm /u=x,g=x,o=x | sudo xargs -r chmod +111
+  )
   # External IP.
   # DropBox Symlink. Move the given file into Dropbox,
   # and symlink to it from the old location.
@@ -314,11 +323,6 @@
   alias enmp='ecryptfs-mount-private'
   alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
-  f() { find "${2-.}" -iname "*$1*"; }
-  f2() { find . -maxdepth 2 -iname "*$1*"; }
-  f3() { find . -maxdepth 3 -iname "*$1*"; }
-  alias fgb='fg;b'
-  alias fmmmr='find-music-make-m3u .'
   files-to-markdown() (
     # Serialize multiple files to markdown for SO answers.
     for f in "$@"; do
@@ -756,8 +760,14 @@
       fi
       echo "obase=${obase}; ibase=${ibase}; ${val}" | bc
     )
-    hex() ( printf "%x\n" "$@" )
-    xeh() ( bcbase "$1" 16 10)
+    hex() (
+      # Base X to hex.
+      printf "%x\n" "$@"
+    )
+    xeh() (
+      # Base 16 to 10.
+      bcbase "$1" 16 10
+    )
 
   ## Binutils
 
@@ -771,6 +781,30 @@
     alias reh='readelf -h'
     alias reS='readelf -SW'
     alias res='readelf -sW'
+
+    assemble-and-disassemble-arm() (
+      # Assemble and disassemble some arm code to see what the bytes are.
+      # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
+      set -e
+      pref=arm-linux-gnueabihf-
+      name=/tmp/asarm
+      in="${name}.S"
+      o="${name}.o"
+      out="${name}.out"
+      raw="${name}.raw"
+      printf ".section .text\n.global _start\n_start:\n${*}\n" > "$in"
+      "${pref}as" -o "$o" "$in"
+      "${pref}ld" -o "$out" "$o"
+      "${pref}objcopy" -O binary "$out" "$raw"
+      hd "$raw"
+    )
+
+    disassemble-arm() (
+      # TODO.
+      # https://stackoverflow.com/questions/1737095/how-do-i-disassemble-raw-x86-code
+      # https://stackoverflow.com/questions/3859453/using-objdump-for-arm-architecture-disassembling-to-arm
+      :
+    )
 
   ## Buildroot
 
@@ -1189,6 +1223,19 @@ ${2:-}
     }
     alias ex='extract'
 
+  ## find
+
+    f() ( find "${2-.}" -iname "*$1*" )
+    f-depth() ( find . -iname "*$1*" -maxdepth "$2" )
+    f2() ( f-depth "$1" 2 )
+    f3() ( f-depth "$1" 3 )
+    f4() ( f-depth "$1" 4 )
+    f-size() (
+      # Find the largest files in a directory.
+      # https://stackoverflow.com/questions/12522269/bash-how-to-find-the-largest-file-in-a-directory-and-its-subdirectories
+      find . -type f | xargs -I'{}' du -h '{}' | sort -hk1
+    )
+
   ## ffmpeg
 
     # fftrim in.ogv out.ogv 00:10 01:20
@@ -1202,23 +1249,6 @@ ${2:-}
       fir-test() ( noh firefox -no-remote "$@" -P 'test'; )
 
   ## gcc
-
-    asarm() (
-      # Assemble and disassemble some arm code to see what the bytes are.
-      # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
-      set -e
-      pref=arm-linux-gnueabihf-
-      name=/tmp/asarm
-      in="${name}.S"
-      o="${name}.o"
-      out="${name}.out"
-      raw="${name}.raw"
-      printf ".section .text\n.global _start\n_start:\n${*}\n" > "$in"
-      "${pref}as" -o "$o" "$in"
-      "${pref}ld" -o "$out" "$o"
-      "${pref}objcopy" -O binary "$out" "$raw"
-      hd "$raw"
-    )
 
     gcc-pedantic() (
       # GCC with as many checks as I can make it.
@@ -1320,8 +1350,7 @@ ${2:-}
       gdb -batch -ex "disassemble/rs ${2:-main}" "$1"
     )
     gdbdis-arm() (
-      # https://stackoverflow.com/questions/22769246/how-to-disassemble-one-single-function-using-objdump/31138400#31138400
-      gdb-multi -batch -ex "disassemble/rs ${2:-main}" "$1"
+      gdb-multiarch -batch -ex "disassemble/rs ${2:-main}" "$1"
     )
 
   ## GNU changelogs from Git
@@ -1507,9 +1536,11 @@ export GIT_AUTHOR_DATE="$d"
     alias gin='git init'
     # Init Add Commit
     alias ginac='git init && git add . && git commit -m "init"'
-    # Restore deleted file to its latest version.
-    # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
-    git-restore-file() { git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"; }
+    git-restore-file() {
+      # Restore deleted file to its latest version.
+      # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
+      git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
+    }
     gls() ( git ls-files "$@" )
     gls-binary()(
       # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
@@ -1531,7 +1562,6 @@ export GIT_AUTHOR_DATE="$d"
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
     alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
     gloG() ( glo --grep "$@" )
-    # My comimits.
     alias glom='git log --author="$(git config user.name)"'
     alias glop='glo -p'
     glops() (
@@ -1658,9 +1688,7 @@ export GIT_AUTHOR_DATE="$d"
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
     alias gsaa='git stash apply'
-    gsh() ( git show )
-    gshm() { git show "master:./$1"; }
-    gshmo() { git show "master:./$1" > "old_$1"; }
+    gsh() ( git show "$@" )
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'
