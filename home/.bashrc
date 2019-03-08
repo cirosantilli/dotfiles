@@ -397,12 +397,6 @@
   noh() { nohup $@ >/dev/null 2>&1 & }
   # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
   npro() ( printf "$(($(nproc) - 2))" )
-  # od hex address + values, good for grepping.
-  odd() (
-    od -An -t x1 "$1" | tr -d "\n"
-  )
-  # od hex address + values
-  alias ods='od -Ax -tx1'
   alias o='xdg-open'
   # Open First. When you are in a huge directory with tons of
   # files that share a common prefix, and you just want to open one.
@@ -476,7 +470,6 @@
   # Source Bashrc. Unalias first so that conversions of functions
   # to aliases won't give errors.
   alias S='. ~/.bashrc'
-  s() ( less "$@"; )
   syslock() (
     # https://askubuntu.com/questions/7776/how-do-i-lock-the-desktop-screen-via-command-line
     gnome-screensaver-command -l
@@ -485,8 +478,6 @@
     # https://askubuntu.com/questions/1792/how-can-i-suspend-hibernate-from-command-line
     systemctl suspend
   )
-  les() ( s -S "$@"; )
-  lesr() ( s -SR "$@"; )
   alias se='sed -r'
   # Screen TTY.
   alias sha2='sha256sum'
@@ -744,10 +735,29 @@
 
   ## bc
 
-    bcbase() (
-      # Convert between bases:
-      # bcbase inbase [[inbase=10] obase=16]
-      val="$(printf $1 | tr 'a-z' 'A-Z')"
+    # Convert number between two bases.
+    #
+    # Usage:
+    #
+    #     base-convert number [[inbase=10] obase=16]
+    #
+    # Example:
+    #
+    #     base-convert 17 10 16
+    #
+    # Output:
+    #
+    #     11
+    #
+    # Example 2:
+    #
+    #     base-convert 10 10 16
+    #
+    # Output:
+    #
+    #     a
+    base-convert() (
+      val="$(printf $1 | tr a-z A-Z)"
       if [ $# -ge 2 ]; then
         ibase=${2:-}
       else
@@ -758,15 +768,17 @@
       else
         obase=16
       fi
-      echo "obase=${obase}; ibase=${ibase}; ${val}" | bc
+      echo "obase=${obase}; ibase=${ibase}; ${val}" | bc | tr A-Z a-z
     )
+
+    # Convert from base
     hex() (
-      # Base X to hex.
-      printf "%x\n" "$@"
+      base-convert "$1" 10 16
     )
+
+    # Base 16 to 10, the inverse of xhe.
     xeh() (
-      # Base 16 to 10.
-      bcbase "$1" 16 10
+      base-convert "$1" 16 10
     )
 
   ## Binutils
@@ -782,28 +794,83 @@
     alias reS='readelf -SW'
     alias res='readelf -sW'
 
-    assemble-and-disassemble-arm() (
-      # Assemble and disassemble some arm code to see what the bytes are.
-      # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
+    # Convert architecture name to Ubuntu toolchain prefix.
+    arch-to-prefix() (
+      case "$1" in
+        a|arm) echo arm-linux-gnueabihf;;
+        A|aarch64) echo aarch64-linux-gnu;;
+        x|x86_64) echo x86_64-linux-gnu;;
+        *) echo "error: unknown arch: $1"; exit 1;;
+      esac
+    )
+
+    # Get the encoding for a given assembly instruction.
+    #
+    # Usage:
+    #
+    #     encode-asm arm 'add r0, r0, r1'
+    #
+    # Output:
+    #
+    #     01 00 80 e0
+    #
+    # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
+    encode-asm() (
       set -e
-      pref=arm-linux-gnueabihf-
-      name=/tmp/asarm
+      arch="$1"
+      shift
+      pref="$(arch-to-prefix "$arch")-"
+      name="/tmp/encode-asm-$arch"
       in="${name}.S"
       o="${name}.o"
       out="${name}.out"
       raw="${name}.raw"
-      printf ".section .text\n.global _start\n_start:\n${*}\n" > "$in"
+      printf '.section .text\n.global _start\n_start:\n' > "$in"
+      printf '%s ' ${*} >> "$in"
+      printf '\n' >> "$in"
       "${pref}as" -o "$o" "$in"
       "${pref}ld" -o "$out" "$o"
       "${pref}objcopy" -O binary "$out" "$raw"
-      hd "$raw"
+      od-raw "$raw"
     )
 
-    disassemble-arm() (
-      # TODO.
-      # https://stackoverflow.com/questions/1737095/how-do-i-disassemble-raw-x86-code
-      # https://stackoverflow.com/questions/3859453/using-objdump-for-arm-architecture-disassembling-to-arm
-      :
+    # Usage:
+    #
+    #     decode-asm arm 01 00 80 e0
+    #
+    # or equivalently:
+    #
+    #     decode-asm arm 010080e0
+    #     decode-asm arm '01 00 80 e0'
+    #
+    # Output:
+    #
+    #     /tmp/decode-asm-arm:     file format binary
+    #
+    #
+    #     Disassembly of section .data:
+    #
+    #     00000000 <.data>:
+    #        0:   e0800001        add     r0, r0, r1
+    #
+    # Bibliography:
+    #
+    # - https://stackoverflow.com/questions/1737095/how-do-i-disassemble-raw-x86-code
+    # - https://stackoverflow.com/questions/3859453/using-objdump-for-arm-architecture-disassembling-to-arm
+    decode-asm() (
+      set -e
+      arch="$1"
+      shift
+      f="/tmp/decode-asm-$arch"
+      printf '%s' "$@" | xxd -r -p > "$f"
+      if [ "$arch" = arm ] || [ "$arch" = aarch64 ]; then
+        machine="$arch"
+        M=
+      elif [ "$arch" = x86_64 ]; then
+        machine=i386
+        M='-M intel,x86-64'
+      fi
+      "$(arch-to-prefix "$arch")-objdump" -D -b binary $M -m $machine "$f"
     )
 
   ## Buildroot
@@ -1226,7 +1293,7 @@ ${2:-}
   ## find
 
     f() ( find "${2-.}" -iname "*$1*" )
-    f-depth() ( find . -iname "*$1*" -maxdepth "$2" )
+    f-depth() ( find . -maxdepth "$2" -iname "*$1*" )
     f2() ( f-depth "$1" 2 )
     f3() ( f-depth "$1" 3 )
     f4() ( f-depth "$1" 4 )
@@ -1847,6 +1914,50 @@ export GIT_AUTHOR_DATE="$d"
     alias hrkr='heroku run'
     alias gphm='git push heroku master'
 
+  ## hexdump
+
+    # Convert binary file to space separated hex.
+    #
+    # Usage:
+    #
+    #     rm -f f.bin
+    #     for i in `seq 32`; do
+    #       printf '\x12\x34\x56\x78' >> f.bin
+    #     done
+    #     odd f.bin
+    #
+    # Output:
+    #
+    #     12 34 56 78
+    #
+    # repeated a bunch of times in a single long line.
+    #
+    # Portability: POSIX 7.
+    #
+    # Bibliography:
+    # https://stackoverflow.com/questions/2614764/how-to-create-a-hex-dump-of-file-containing-only-the-hex-characters-without-spac/2614831#2614831
+    od-raw() (
+      od -A n -t x1 -v "$@" | tr -d '\n' | cut -c 2-
+    )
+
+    # od with hex address + values
+    #
+    # Usage:
+    #
+    #     dd if=/dev/random of=f.bin count=64 bs=1
+    #     od-hex f.bin
+    #
+    # Sample output:
+    #
+    #     000000 76 ac 12 2e 45 22 0f 3a 73 b4 cd 31 26 31 8b 03
+    #     000010 be 6b c6 85 84 01 ed 42 2d dd ed 5f 6d 97 18 79
+    #     000020 ea 6d d5 7f 6e ef b5 7d 18 56 86 c1 80 ff ee e9
+    #     000030 af 9e 9f 6f 67 86 b7 56 b3 09 9e a8 69 09 0f 3e
+    #     000040
+    od-hex() (
+      od -A x -t x1 "$@"
+    )
+
   ## hg
 
     alias hgg='hg grep'
@@ -1894,6 +2005,17 @@ export GIT_AUTHOR_DATE="$d"
       printf "$(fc -ln -${to} -${to})"
     )
     fcnx() ( fcn | x )
+
+  ## less
+
+    s() (
+      # Desired behaviour:
+      # - never wrap lines
+      # - right key panes
+      # - show colors as colors
+      # https://unix.stackexchange.com/questions/117878/show-colors-and-disable-line-wrap
+      less -FRSX "$@"
+    )
 
   ## ls
 

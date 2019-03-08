@@ -88,7 +88,8 @@
 	signingkey = 3E47725ABD373A6F5D300686436CDAFCCFB0D30D
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
-[url "ssh://git@git.kde.org/"]
-	pushInsteadOf = kde:
-[url "git@git.kde.org:"]
-	pushInsteadOf = kde:
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
