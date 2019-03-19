@@ -1416,6 +1416,7 @@ ${2:-}
     gdbr() ( gdb -ex 'run' -q --args "$@" )
     gdbrb() ( gdb -ex 'run' -ex 'shell cirosantilli-beep' -q --args "$@" )
     gdbs() ( gdb -ex 'start' -q --args "$@" )
+    gdbi() ( gdb -ex 'starti' -q --args "$@" )
     gdbS() ( gdb -ex "break _start" -ex "run" -q --args "$@" )
     gdbx() ( gdb --batch -x "$@" )
     gdbser() (

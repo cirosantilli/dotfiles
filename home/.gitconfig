@@ -33,7 +33,7 @@
 	excludesfile = ~/.gitignore_global
 	quotepath = false
 	# Always use pager, but leave output on screen afterwards.
-	pager = less -Xr
+	pager = less -S
 	# Only use pager if the output does not fit to screen.
 	#pager = less -FXr
 
