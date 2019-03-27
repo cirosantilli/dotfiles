@@ -317,7 +317,7 @@
     # cd bin
     # lfmd
     # ex eclipse-cpp-*.tar.gz
-    noh "$HOME/bin/eclipse/eclipse"
+    noh "$HOME/bin/eclipse/eclipse" "$@"
   )
   alias eip='curl ipecho.net/plain'
   alias enmp='ecryptfs-mount-private'
