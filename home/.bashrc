@@ -27,6 +27,7 @@
         export UBUNTU_DIR="$PROGRAM_DIR/ubuntu-cheat"
       export TEST_DIR="$HOME/test"
     export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
+      export DOTFILES_DCONF="${DOTFILES_REPO}/dconf.conf"
     export DOWNLOAD_DIR="$HOME/down"
     export TMP_DIR="$HOME/tmp"
     export HOME_DIR="$HOME"
@@ -281,8 +282,6 @@
   }
   alias cla11='clang++ -std=c++11'
   check-ip() ( curl 'http://checkip.amazonaws.com'; )
-  alias dconfl='dconf load / <~/.config/dconf/user.conf'
-  alias dconfw='dconf watch /'
   # dD a.img X
   # sudo dd if=a.img of=/dev/sdX
   dD() (
@@ -1684,7 +1683,7 @@ export GIT_AUTHOR_DATE="$d"
     )
     # Get last SHA commit into clipboard.
     glox() (
-      git log -1 --format="%H" $1 | tee >(cat 1>&2) | y
+      git log -1 --format="%H" $1 | tr -d '\n' | tee >(cat 1>&2) | y
     )
     # Also get committer date.
     alias gloxd='git log -1 --format="%H %cd" | y'
@@ -2510,7 +2509,13 @@ export GIT_AUTHOR_DATE="$d"
 
   ## Ubuntu
 
-    ubcon() ( cat "/boot/config-$(uname -r)" )
+    dconf-load() (
+      dconf load / < "$DOTFILES_DCONF"
+    )
+    dconf-watch() (
+      dconf watch /
+    )
+    kernel-config() ( cat "/boot/config-$(uname -r)" )
 
   ## vagrant
 

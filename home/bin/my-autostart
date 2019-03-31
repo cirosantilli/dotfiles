@@ -2,6 +2,8 @@
 
 # This script is run at startup by ~/.config/autostart/my-autostart.desktop.
 
+cirosantilli-gnome-terminal &
+
 #sync-pull
 #dconf load / <"$HOME/.config/dconf/user.conf"
 #xmodmap ~/.Xmodmap

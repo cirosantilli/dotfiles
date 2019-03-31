@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+gnome-terminal --full-screen --hide-menubar --window -- tmux &
