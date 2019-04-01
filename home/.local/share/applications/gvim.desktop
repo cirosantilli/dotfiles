@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=sh -c "gvim-remote %F"
+Exec=gvim
 Icon=gvim
 Name=gvim
 StartupNotify=false

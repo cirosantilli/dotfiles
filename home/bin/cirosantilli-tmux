@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# If a server with a session exists, attach to it. Otherwise, create one.
+# https://unix.stackexchange.com/questions/103898/how-to-start-tmux-with-attach-if-a-session-exists
+tmux new-session -A -s 0 "$@"

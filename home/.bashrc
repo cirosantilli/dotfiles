@@ -2491,9 +2491,13 @@ export GIT_AUTHOR_DATE="$d"
 
   ## tmux
 
-    alias tm='tmux'
-    # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
-    alias tma='tmux attach-session'
+    tm() ( tmux "$@" )
+    tma() (
+      cirosantilli-tmux "$@"
+      # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
+      #tmux attach-session "$@"
+    )
+    tml() ( tmux list-sessions "$@" )
     tms() (
       tmux split-window -h "bash --rcfile <(echo '. ~/.bashrc;$*')"
     )

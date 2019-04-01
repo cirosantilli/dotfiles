@@ -1,8 +1,0 @@
-[Desktop Entry]
-Exec=sh -c "echo a; date >/tmp/test.desktop; sleep 10;"
-Name=test
-StartupNotify=false
-StartupWMClass=gvim
-Terminal=true
-Type=Application
-Version=1.0

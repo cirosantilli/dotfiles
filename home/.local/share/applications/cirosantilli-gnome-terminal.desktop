@@ -1,0 +1,15 @@
+# TODO: in Ubuntu 18.10, this shows on launcher search
+# but even if I open through there, the left dock icon
+# still is for the built-in one.
+#
+# Even copying the default `org.gnome.Terminal.desktop`
+# and modifying it does not work:
+# https://askubuntu.com/questions/610474/can-local-share-applications-override-usr-share-applications#comment1871765_610527
+[Desktop Entry]
+Exec=cirosantilli-gnome-terminal
+Icon=utilities-terminal
+Name=zterminal
+StartupNotify=false
+StartupWMClass=cirosantilli-gnome-terminal
+Type=Application
+Version=1.0
