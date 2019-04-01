@@ -1319,10 +1319,12 @@ ${2:-}
 
     gcc-pedantic() (
       # GCC with as many checks as I can make it.
-      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic $@"
+      c="$1"
+      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic -o "${c%.*}.out" $c"
       echo "$cmd"
       eval "$cmd"
     )
+
     asm-get-bytes() (
       # Assemble and disassemble some arm code to see what the bytes are.
       # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
@@ -1345,13 +1347,6 @@ ${2:-}
     )
     asm-get-bytes-aarch64() (
       asm-get-bytes aarch64-linux-gnu- "$@"
-    )
-
-    gcc-pedantic() (
-      # GCC with as many checks as I can make it.
-      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic $@"
-      echo "$cmd"
-      eval "$cmd"
     )
 
     # GCC from String.
