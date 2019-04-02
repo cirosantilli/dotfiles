@@ -29,9 +29,11 @@
     export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
       export DOTFILES_DCONF="${DOTFILES_REPO}/dconf.conf"
     export DOWNLOAD_DIR="$HOME/down"
-    export TMP_DIR="$HOME/tmp"
-    export HOME_DIR="$HOME"
-    export MY_GIT_DIR="$HOME/git"
+    export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
+    export CIROSANTILLI_BIN_DIR="${HOME}/bin"
+    export CIROSANTILLI_VAR_DIR="${HOME}/var"
+      export CIROSANTILLI_VAR_LOG_DIR="${CIROSANTILLI_VAR_DIR}/log"
+    export CIROSANTILLI_GIT_DIR="$HOME/git"
     export MEDIA_DIR="$HOME/media"
       export MUSIC_DIR="$MEDIA_DIR/music"
         export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
@@ -234,7 +236,6 @@
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "${2:-rhe6}" -Ip -XF gnome-terminal -e tmux )
   cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
-  alias cdG='cd "$MY_GIT_DIR"'
   ccache-watch() ( watch -n1 'ccache -s' )
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
@@ -2085,7 +2086,7 @@ export GIT_AUTHOR_DATE="$d"
       # Move Latest Download to a newly created temporary directory and cd into it.
       # Great when you are going to extract stuff and work on it.
       lfmdd() {
-        dst="${TMP_DIR}/down/$(basename "$(lfg "$DOWNLOAD_DIR")")-$(timestamp)"
+        dst="${CIROSANTILLI_TMP_DIR}/down/$(basename "$(lfg "$DOWNLOAD_DIR")")-$(timestamp)"
         mkdir -p "$dst"
         cd "$dst"
         lfmd

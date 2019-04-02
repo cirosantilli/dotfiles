@@ -1,5 +1,0 @@
-[Desktop Entry]
-Exec=terminator -f -e tmux
-Name=terminator
-Type=Application
-X-GNOME-Autostart-enabled=false

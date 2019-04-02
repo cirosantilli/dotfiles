@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# This script is run at startup by ~/.config/autostart/cirosantilli-autostart.desktop.
+
+nohup date &> "$CIROSANTILLI_VAR_LOG_DIR/my-autostart.log" &
+nohup chromium-browser &> "$CIROSANTILLI_VAR_LOG_DIR/chromium-browser.log" &
+nohup gvim &> "$CIROSANTILLI_VAR_LOG_DIR/gvim.log" &
+nohup cirosantilli-gnome-terminal &> "$CIROSANTILLI_VAR_LOG_DIR/cirosantilli-gnome-terminal.log"
