@@ -29,11 +29,12 @@
     export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
       export DOTFILES_DCONF="${DOTFILES_REPO}/dconf.conf"
     export DOWNLOAD_DIR="$HOME/down"
-    export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
     export CIROSANTILLI_BIN_DIR="${HOME}/bin"
+    export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
+    export CIROSANTILLI_GIT_DIR="$HOME/git"
+    export CIROSANTILLI_GIT_HOOKS_DIR="${HOME}/.git_hooks"
     export CIROSANTILLI_VAR_DIR="${HOME}/var"
       export CIROSANTILLI_VAR_LOG_DIR="${CIROSANTILLI_VAR_DIR}/log"
-    export CIROSANTILLI_GIT_DIR="$HOME/git"
     export MEDIA_DIR="$HOME/media"
       export MUSIC_DIR="$MEDIA_DIR/music"
         export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
@@ -510,9 +511,13 @@
   )
   # Filter tex Errors only:
   alias texe="perl -0777 -ne 'print m/\n! .*?\nl\.\d.*?\n.*?(?=\n)/gs'"
-  alias timestamp='date "+%Y-%m-%d-%H-%M-%S"'
+  timestamp() (
+    # My favorite highly portable yet readable
+    # timestamp format.
+    date "+%Y-%m-%d_%H-%M-%S" "$@"
+  )
   # Unix timtestamp. Seconds since epoch.
-  alias timestampu='date "+%s"'
+  timestampu() ( date "+%s" "$@" )
   topp() (
     # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
     $* &>/dev/null &
@@ -1683,29 +1688,6 @@ export GIT_AUTHOR_DATE="$d"
     )
     # Also get committer date.
     alias gloxd='git log -1 --format="%H %cd" | y'
-    git-is-ancestor() (
-      if git merge-base --is-ancestor "$1" "$2"; then
-          echo 'ancestor'
-      elif git merge-base --is-ancestor "$2" "$1"; then
-          echo 'descendant'
-      else
-          echo 'unrelated'
-      fi
-    )
-    alias giia='git-is-ancestor'
-    git-tab-to-space() (
-      d="$(mktemp -d)"
-      # https://stackoverflow.com/questions/11094383/how-can-i-convert-tabs-to-spaces-in-every-file-of-a-directory/52136507#52136507
-      git grep --cached -Il '' | grep -E "${1:-.}" | \
-        xargs -I'{}' bash -c '\
-        f="${1}/f" \
-        && expand -t 4 "$0" > "$f" && \
-        chmod --reference="$0" "$f" && \
-        mv "$f" "$0"' \
-        '{}' "$d" \
-      ;
-      rmdir "$d"
-    )
     alias gmb='git merge-base'
     alias gmbm='git merge-base HEAD master'
     alias gme='git merge'
@@ -1733,20 +1715,6 @@ export GIT_AUTHOR_DATE="$d"
     alias grbc='git rebase --continue'
     grbi() ( git rebase -i "$@" )
     grbih() ( git rebase -i "HEAD~${1:-1}" )
-    git-amend-old() (
-      # Stash, apply to past commit, and rebase the current branch on to of the result.
-      # For Gerrit. https://stackoverflow.com/questions/1186535/how-to-modify-a-specified-commit/53597426#53597426
-      current_branch="$(git rev-parse --abbrev-ref HEAD)"
-      apply_to="$1"
-      git stash
-      git checkout "$apply_to"
-      git stash apply
-      git add -u
-      git commit --amend --no-edit
-      new_sha="$(git log --format="%H" -n 1)"
-      git checkout "$current_branch"
-      git rebase --onto "$new_sha" "$apply_to"
-    )
     alias grbm='git rebase master'
     grbo() (
       # Rebase current branch onto another ref.
@@ -1804,8 +1772,53 @@ export GIT_AUTHOR_DATE="$d"
     gwtl() ( git worktree list )
     gwtp() ( git worktree prune )
 
-    alias vgig='vim .gitignore'
-    alias lngp='latex-new-github-project.sh cirosantilli'
+    git-amend-old() (
+      # Stash, apply to past commit, and rebase the current branch on to of the result.
+      # For Gerrit. https://stackoverflow.com/questions/1186535/how-to-modify-a-specified-commit/53597426#53597426
+      current_branch="$(git rev-parse --abbrev-ref HEAD)"
+      apply_to="$1"
+      git stash
+      git checkout "$apply_to"
+      git stash apply
+      git add -u
+      git commit --amend --no-edit
+      new_sha="$(git log --format="%H" -n 1)"
+      git checkout "$current_branch"
+      git rebase --onto "$new_sha" "$apply_to"
+    )
+
+    git-install-hooks() (
+      # Per repository workaround because hooksPath is not good enough.
+      hooks_dest_dir="$(git rev-parse --git-dir)/hooks"
+      ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-commit" "${hooks_dest_dir}/post-commit"
+      # Broken.
+      #ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
+    )
+
+    git-is-ancestor() (
+      # https://stackoverflow.com/questions/3005392/how-can-i-tell-if-one-commit-is-a-descendant-of-another-commit/39773696#39773696
+      if git merge-base --is-ancestor "$1" "$2"; then
+          echo 'ancestor'
+      elif git merge-base --is-ancestor "$2" "$1"; then
+          echo 'descendant'
+      else
+          echo 'unrelated'
+      fi
+    )
+
+    git-tab-to-space() (
+      d="$(mktemp -d)"
+      # https://stackoverflow.com/questions/11094383/how-can-i-convert-tabs-to-spaces-in-every-file-of-a-directory/52136507#52136507
+      git grep --cached -Il '' | grep -E "${1:-.}" | \
+        xargs -I'{}' bash -c '\
+        f="${1}/f" \
+        && expand -t 4 "$0" > "$f" && \
+        chmod --reference="$0" "$f" && \
+        mv "$f" "$0"' \
+        '{}' "$d" \
+      ;
+      rmdir "$d"
+    )
 
     # GitHub
 

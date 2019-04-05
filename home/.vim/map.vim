@@ -269,6 +269,9 @@
 
     " Next and previous tab:
 
+    " Only works on GUI: https://stackoverflow.com/questions/1646819/how-can-i-map-ctrl-tab-to-something-in-vim
+    " We also have other shortcuts for terminal usage.
+
       call MapAll('<c-tab>',   ':tabnext<cr>')
       call MapAll('<c-s-tab>', ':tabprevious<cr>')
 
@@ -817,8 +820,8 @@
 
       cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'tab help' : 'h'
 
-      nnoremap <c-h> :tabprevious<cr>
-      nnoremap <c-l> :tabnext<cr>
+      call MapAll('<c-l>', ':tabnext<cr>')
+      call MapAll('<c-h>', ':tabprevious<cr>')
 
   " # j
 
