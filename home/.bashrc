@@ -1330,6 +1330,14 @@ ${2:-}
       eval "$cmd"
     )
 
+    gpp-pedantic() (
+      # GCC with as many checks as I can make it.
+      c="$1"
+      cmd="g++ -ggdb3 -O0 -std=c++11 -Wall -Wextra -pedantic -o "${c%.*}.out" $c"
+      echo "$cmd"
+      eval "$cmd"
+    )
+
     asm-get-bytes() (
       # Assemble and disassemble some arm code to see what the bytes are.
       # https://stackoverflow.com/questions/8482059/how-to-compile-an-assembly-file-to-a-raw-binary-like-dos-com-format-with-gnu/32237064#32237064
@@ -1552,30 +1560,27 @@ export GIT_AUTHOR_DATE="$d"
     gcmm() ( gcm -m "$@" )
     gcma() ( gcm --amend "$@" )
     gcman() ( gcma --no-edit "$@" )
-    alias gcmanpsf='git commit --amend --no-edit && git push -f'
-    alias gce='git clean'
-    # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
-    gcedf() ( git clean -df "${1:-:/}"; )
+    gcmanpsf() ( gcman && git push -f "$@" )
+    gcedf() (
+      # Clean files that are not gitignored. Keeps your built object files, to save a lengthy rebuild.
+      git clean -df "${1:-:/}"
+    )
     gcexdf() (
       # Clean any file not tracked, including gitignored. Restores repo to pristine state.
       git clean -xdf :/
       git submodule foreach --recursive git clean -xdf :/
     )
-    gcmp() (
-      gacm "$1"
-      git push
-    )
     gco() (
       git checkout "$@"
       git submodule update --recursive
     )
-    alias gcob='gco -b'
-    gcobm() { git checkout -b "$1" master; }
+    gcob() ( gco -b "$@" )
+    gcobm() ( git checkout -b "$1" master )
     alias gcod='gco --conflict=diff3'
     alias gcoH='gco HEAD~'
     # Last tag.
     alias gcol='gco "$(git describe --tags --abbrev=0)"'
-    alias gcom='gco master'
+    gcom() ( gco master "$@" )
     # Slash
     alias gcos='gco -'
     # Slash Dot
@@ -1591,8 +1596,7 @@ export GIT_AUTHOR_DATE="$d"
     alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
     gcp() ( git cherry-pick "$@" )
     gcpa() ( gcp --abort "$@" )
-    alias gd='git diff'
-    alias gdf='git diff'
+    gdf() ( git diff "$@" )
     gdfm() (
       # https://stackoverflow.com/questions/1220309/git-difftool-open-all-diff-files-immediately-not-in-serial/2746292#2746292
       git difftool --dir-diff --tool=meld "${1:-HEAD~}" "${2:-HEAD}"
@@ -1628,12 +1632,9 @@ export GIT_AUTHOR_DATE="$d"
       # https://stackoverflow.com/questions/6269927/how-can-i-list-all-tags-in-my-git-repository-by-the-date-they-were-created/34919313#34919313
       git for-each-ref --sort=creatordate --format="%(creatordate:iso) %(refname) %(committeremail) %(subject)" "$@"
     )
-    alias gg='git grep --color'
-    alias ggi='git grep --color -i'
+    gg() ( git grep --color "$@" )
+    ggi() ( gg -i "$@" )
     alias gka='gitk --all'
-    alias gin='git init'
-    # Init Add Commit
-    alias ginac='git init && git add . && git commit -m "init"'
     git-restore-file() {
       # Restore deleted file to its latest version.
       # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
@@ -1788,6 +1789,7 @@ export GIT_AUTHOR_DATE="$d"
     )
 
     git-install-hooks() (
+      set -e
       # Per repository workaround because hooksPath is not good enough.
       hooks_dest_dir="$(git rev-parse --git-dir)/hooks"
       ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-commit" "${hooks_dest_dir}/post-commit"
