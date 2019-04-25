@@ -1,5 +1,6 @@
 # Python dependencies, not available on gdbserver.
 
+dashboard -style max_value_length 1000
 dashboard stack -style compact True
 dashboard stack -style limit 5
 
@@ -8,7 +9,7 @@ define da
 end
 
 define dadef
-    dashboard -layout source stack
+    dashboard -layout stack source
     dashboard source -style context 16
 end
 dadef

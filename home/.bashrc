@@ -476,7 +476,6 @@
     systemctl suspend
   )
   alias se='sed -r'
-  # Screen TTY.
   alias sha2='sha256sum'
   alias sql='sqlite3'
   alias stra='sudo strace -f -s999 -v'
@@ -491,6 +490,15 @@
     done
     tc="$(date +%s%N)";
     echo $(((tc - tp) / 1000000))
+  )
+  stopwatch() (
+    # H:M:S stopwatch. TODO: deciseconds.
+    # https://superuser.com/questions/611538/is-there-a-way-to-display-a-countdown-or-stopwatch-timer-in-a-terminal
+    date1="$(date +%s)"
+    while true; do
+      printf "$(date -u --date @$(($(date +%s) - $date1)) +%H:%M:%S)\r"
+      sleep 0.1
+    done
   )
   # http://serverfault.com/questions/61321/how-to-pass-alias-through-sudo
   alias sudo='sudo '
@@ -796,8 +804,18 @@
     alias res='readelf -sW'
 
     # Convert architecture name to Ubuntu toolchain prefix.
-    arch-to-prefix() (
+    arch-short-to-long() (
+      set -e
       case "$1" in
+        a|arm) echo arm;;
+        A|aarch64) echo aarch64;;
+        x|x86_64) echo x86_64;;
+        *) echo "error: unknown arch: $1"; exit 1;;
+      esac
+    )
+    arch-to-prefix() (
+      set -e
+      case "$(arch-short-to-long "$1")" in
         a|arm) echo arm-linux-gnueabihf;;
         A|aarch64) echo aarch64-linux-gnu;;
         x|x86_64) echo x86_64-linux-gnu;;
@@ -862,6 +880,7 @@
       set -e
       arch="$1"
       shift
+      arch="$(arch-short-to-long "$arch")"
       f="/tmp/decode-asm-$arch"
       printf '%s' "$@" | xxd -r -p > "$f"
       if [ "$arch" = arm ] || [ "$arch" = aarch64 ]; then

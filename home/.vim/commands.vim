@@ -203,6 +203,7 @@ function! CToCppComments()
 endfunction
 command! CToCppComments call CToCppComments()
 command! TrailingSpace %s/\v\s+$//
-command! BashMultiline s/ / \\\r  /g
+command! BashMultiline s/ -/ \\\r  -/g
+command! BashMultilinePos s/ / \\\r  /g
 
 command! -nargs=1 -complete=file -bar Mv call Mv('<args>')
