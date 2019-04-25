@@ -826,4 +826,6 @@ augroup Cscope
 augroup END
 
 " https://stackoverflow.com/questions/18589352/how-to-disable-vim-bells-sounds/41524053#41524053
-set belloff=all
+if exists("&bellof")
+  set belloff=all
+endif
