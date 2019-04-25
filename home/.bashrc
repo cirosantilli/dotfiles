@@ -458,10 +458,6 @@
   alias psg='sudo ps aux | grep -i'
   alias pscpu='sudo ps aux --sort "%cpu"'
   alias psmem='sudo ps aux --sort "%mem"'
-  alias rbul='rename_basename_unidecode_lowercase.py'
-  alias rifr='replace_in_files_regex.py'
-  alias rmd='rmdir'
-  rmext() { rm *".$1"; }
   alias rmrf='rm -rf'
   alias rmrfv='rm -rfv'
   rrc() ( rr record "$@" )
@@ -1865,40 +1861,33 @@ export GIT_AUTHOR_DATE="$d"
 
     ## GitLab
 
-      # Start developping GitLab.
-      dev-gitlab-startup() {
-        guake -e 'cd ~/gitlab-development-kit/ && bundle exec foreman start'
-        guake -n 'server' -e 'cd ~/gitlab && bundle exec foreman start'
-        guake -n 'server' -e 'cd ~/gitlab'
-        guake -n 'server' -e "cd \"$RAILS_DIR\""
-        guake -n 'server' -e 'cd ~/test'
-      }
-
       # Rename Origin from githUb to gitlAb.
-      grtroua() {
+      grtroua() (
         old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
         new_origin="$(echo "$old_origin" | sed -E 's/^git@github/git@gitlab/')"
         git remote set-url origin "$new_origin"
         git remote add gh "$old_origin" &>/dev/null || :
         git remote add gl "$new_origin" &>/dev/null || :
-      }
+      )
 
-      grtroau() {
+      grtroau() (
         old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
         new_origin="$(echo "$old_origin" | sed -E 's/^git@gitlab/git@github/')"
         git remote set-url origin "$new_origin"
         git remote add gl "$old_origin" &>/dev/null || :
         git remote add gh "$new_origin" &>/dev/null || :
-      }
+      )
 
   ## Graphics
 
-    # https://stackoverflow.com/questions/17196117/disable-vertical-sync-for-glxgears
-    alias glxgears-novsyc='__GL_SYNC_TO_VBLANK=0 vblank_mode=0 glxgears'
+    glxgears-novsyc() (
+      # https://stackoverflow.com/questions/17196117/disable-vertical-sync-for-glxgears
+      __GL_SYNC_TO_VBLANK=0 vblank_mode=0 glxgears "$@"
+    )
 
   ## grep
 
-    g() ( grep -E --color=auto "$@"; )
+    g() ( grep -E --color=auto "$@" )
     gi() ( g -i "$@" )
     gr() ( g -R "$@" )
     gri() ( gi -R "$@" )
@@ -2189,6 +2178,27 @@ export GIT_AUTHOR_DATE="$d"
       fi
     }
 
+    # Find and rename on both files and directories recursively.
+    #
+    # Sample usage to replace spaces ' ' with hyphens '-'. Dry run:
+    #
+    #     find-rename-regex ' /-/g'
+    #
+    # Do the replace:
+    #
+    #     find-rename-regex ' /-/g' -v
+    #
+    # Bibliography:
+    # https://stackoverflow.com/questions/16541582/find-multiple-files-and-rename-them-in-linux/54163971#54163971
+    #
+    # Teted on Ubuntu 18.10.
+    find-rename-regex() (
+      set -eu
+      find_and_replace="$1"
+      PATH="$(echo "$PATH" | sed -E 's/(^|:)[^\/][^:]*//g')" \
+        find . -depth -execdir rename "${2:--n}" "s/${find_and_replace}" '{}' \;
+    )
+
     # "grep" only in Basename.
     #
     # Sample usage:
@@ -2208,9 +2218,6 @@ export GIT_AUTHOR_DATE="$d"
     # full Path.
     finp() { find . ! -path . | sed "s|^\./||" | perl -ne "print if m/$1/"; }
     fine() ( find . -executable -type f -iname "*${1:-*}*" )
-
-    # Mass rename refactoring.
-    alias mvr='move_regex.py'
 
   ## mount
 
