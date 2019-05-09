@@ -471,7 +471,7 @@
     # https://askubuntu.com/questions/7776/how-do-i-lock-the-desktop-screen-via-command-line
     gnome-screensaver-command -l
   )
-  syssus() (
+  suspend-ubuntu() (
     # https://askubuntu.com/questions/1792/how-can-i-suspend-hibernate-from-command-line
     systemctl suspend
   )
@@ -956,7 +956,7 @@ ${2:-}
         -M virt \
         -append "root=/dev/vda console=ttyAMA0" \
         -cpu cortex-a57 \
-        -device virtio-blk-device,drive=hd0
+        -device virtio-blk-device,drive=hd0 \
         -device virtio-net-device,netdev=eth0 \
         -drive file=output/images/rootfs.ext4,if=none,format=raw,id=hd0 \
         -kernel output/images/Image \
@@ -2300,13 +2300,6 @@ export GIT_AUTHOR_DATE="$d"
     npmi() ( npm install "$@" )
     npmis() ( npm install "$@" )
     npms() ( npm start "$@" )
-
-  ## power management
-
-    alias pmhi='sudo ps-hibernate'
-    alias pmsh='sudo shutdown'
-    alias pmsu='sudo ps-suspend'
-    alias pmre='sudo reboot'
 
   ## python
 

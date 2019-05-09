@@ -1,0 +1,13 @@
+snippet getop
+	OPTIND=1
+	while getopts ${1:o}: OPT; do
+	  case "$OPT" in
+	  ${1})
+	    ${2}="$OPTARG"
+	    ;;
+	  ?)
+	    exit 2
+	    ;;
+	  esac
+	done
+	shift "$(($OPTIND - 1))"
