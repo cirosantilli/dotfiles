@@ -365,12 +365,13 @@
     ln -s "${d}/$(basename "${f}")" "$f"
   )
   lns-undo() {
-    # Remove a symlink, and move the file linked to to the symlink location.
-    # Usage: cmd symlink-location
-    link_location="$1"
-    link_dest="$(readlink -f "$link_location")"
-    rm "$link_location"
-    mv "$link_dest" "$link_location"
+    for link_location in "$@"; do
+      # Remove a symlink, and move the file linked to to the symlink location.
+      # Usage: cmd symlink-location
+      link_dest="$(readlink -f "$link_location")"
+      rm "$link_location"
+      mv "$link_dest" "$link_location"
+    done
   }
   alias m='man'
   alias m2='man 2'
@@ -877,7 +878,7 @@
     # - https://stackoverflow.com/questions/1737095/how-do-i-disassemble-raw-x86-code
     # - https://stackoverflow.com/questions/3859453/using-objdump-for-arm-architecture-disassembling-to-arm
     decode-asm() (
-      set -e
+      set -ex
       arch="$1"
       shift
       arch="$(arch-short-to-long "$arch")"
@@ -1174,30 +1175,30 @@ ${2:-}
     #
     # Create a new container:
     #
-    #     dkc
+    #     dk-create
     #
     # Start it if not already started, and do stuff in it:
     #
-    #     dke
+    #     dk-execute
     #
     # Do it again:
     #
-    #     dke
+    #     dk-execute
     #
     # Delete the created container and lose all data from it.
     #
-    #     dkREMOVE
+    #     dk-REMOVE
     #
     # To create and use another container, just add
     # the container name in front of all invocations:
     #
-    #     dkc ble
-    #     dke ble
-    #     dkREMOVE ble
+    #     dk-create ble
+    #     dk-execute ble
+    #     dk-REMOVE ble
 
     # Most important commands.
     dk() ( docker "$@" )
-    dkc() (
+    dk-create() (
       target_dir=/host
       container="${1:-ub}"
       shift
@@ -1207,24 +1208,25 @@ ${2:-}
       shift
       dk create -it --name "$container" -w "${target_dir}/$(pwd)" -v "/:${target_dir}" "$image" "$cmd" "$@"
     )
-    dke() (
+    dk-execute() (
       # Run command in an existing container.
       # Start it if not already started.
       # By default, run /bin/bash and connect to it.
+      # When you quit the shell, stop the VM.
       container="${1:-ub}"
       shift
       cmd="${1:-/bin/bash}"
       shift
-      dks "$container"
+      dk-start "$container"
       dk exec -it "$container" "$cmd" "$@"
-      dkS "$container"
+      dk-stop "$container"
     )
-    dkREMOVE() (
+    dk-REMOVE() (
       container="${1:-ub}"
       shift
       dk rm "$container" "$@"
     )
-    dks() (
+    dk-start() (
       # Start a container on the background.
       # It will now appear in docker ps.
       # You can then connect to it with docker exec.
@@ -1232,7 +1234,7 @@ ${2:-}
       shift
       dk start "$container" "$@"
     )
-    dkS() (
+    dk-stop() (
       # Stop a container.
       container="${1:-ub}"
       shift
@@ -1258,7 +1260,7 @@ ${2:-}
     dkrm() ( docker rm "$@" )
     dkrmu() ( docker rm ub )
     alias dkrma='docker rm $(docker ps -aq --no-trunc)'
-    dksu() ( dks ub )
+    dksu() ( dk-start ub )
 
   ## du
 
