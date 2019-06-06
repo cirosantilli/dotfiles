@@ -1,6 +1,9 @@
 [submodule "submodules/gdb-dashboard"]
 	path = submodules/gdb-dashboard
 	url = https://github.com/cyrus-and/gdb-dashboard
+[submodule "submodules/tpm"]
+	path = submodules/tpm
+	url = https://github.com/tmux-plugins/tpm
 [submodule "submodules/Vundle.vim"]
 	path = submodules/Vundle.vim
 	url = https://github.com/gmarik/Vundle.vim

@@ -6,11 +6,11 @@ This repository is managed with <https://github.com/andsens/homeshick>
 
 GUI setup:
 
-    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash
+    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/setup-ubuntu | bash
 
 Minimal CLI setup:
 
-    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/home/bin/setup-ubuntu | bash /dev/stdin -g
+    wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/setup-ubuntu | bash /dev/stdin -g
 
 ## root
 

@@ -24,10 +24,8 @@ while getopts fgh OPT; do
 done
 
 sudo apt-get update
-sudo apt-get install -y aptitude
-sudo aptitude update
 # For add-apt-repository
-sudo aptitude install software-properties-common
+sudo apt install software-properties-common
 sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
 sudo add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
 
@@ -91,7 +89,7 @@ ppa-purge \
   fi
 fi
 
-sudo aptitude install -y $pkgs
+sudo apt install -y $pkgs
 
 # sudo without password.
 sudo sh -c "echo '$(id -un) ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
@@ -118,14 +116,10 @@ if $setup_home_partition; then
   yes | homeshick clone cirosantilli/dotfiles
 
   # Vim
-  git clone https://github.com/gmarik/Vundle.vim "$HOME/.vim/bundle/Vundle.vim"
   # Manual.
   # TODO fails from bash pipe becuase not TTY.
   # http://stackoverflow.com/questions/23322744/vim-run-commands-from-bash-script-and-exit-without-leaving-shell-in-a-bad-state
   #vim +PluginInstall +qall
-
-  # https://github.com/tmux-plugins/tpm
-  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 fi
 
 if $gui; then
