@@ -104,10 +104,6 @@ sudo update-grub
 
 if $setup_home_partition; then
   # Git
-  mkdir ~/bin
-  cd ~/bin
-  curl -O https://raw.github.com/git/git/master/contrib/diff-highlight/diff-highlight
-  chmod +x diff-highlight
   ssh-keygen -b 4096 -C "ciro.santilli@gmail.com" -f "$HOME/.ssh/id_rsa" -t rsa -P ''
 
   # Dotfiles
