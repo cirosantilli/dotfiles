@@ -1,5 +1,37 @@
 #!/usr/bin/awk -f
+
+# Take newline separated input from stdin, and calculate basic statistics over it.
+#
 # http://unix.stackexchange.com/questions/13731/is-there-a-way-to-get-the-min-max-median-and-average-of-a-list-of-numbers-in
+#
+# Sample usage
+#
+#     seq 10 | cirosantilli-stats
+#
+# Output:
+#
+#     mean   = 5.500e+00
+#     cv     = 1.651e+00
+#     median = 4.500e+00
+#     min    = 1.000e+00
+#     max    = 1.000e+01
+#     sum    = 5.500e+01
+#     n      = 1.000e+01
+#
+# Also works with floats:
+#
+#     printf '1.5\n2.5\n' | cirosantilli-stats
+#
+# Output:
+#
+#     mean   = 2.000e+00
+#     cv     = 3.536e-01
+#     median = 7.500e-01
+#     min    = 1.500e+00
+#     max    = 2.500e+00
+#     sum    = 4.000e+00
+#     n      = 2.000e+00
+
 BEGIN {
     sum = 0
 }
