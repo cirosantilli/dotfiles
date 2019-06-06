@@ -232,7 +232,6 @@
     asciidoctor -s - -v "$@"
   )
   alias ack='ack-grep --smart-case'
-  b() ( cirosantilli-beep "$@" )
   bao() ( noh baobab "${1:-.}" )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "${2:-rhe6}" -Ip -XF gnome-terminal -e tmux )
@@ -1045,6 +1044,11 @@ ${2:-}
         cdB() {
           cd "$(pwd | sed -E 's%^(.*)/build(/.*|$)%\1/src/\2%')"
         }
+
+  ## cirosantilli prefixes
+
+    b() ( cirosantilli-beep "$@" )
+    bits() ( cirosantilli-bits "$@" )
 
   ## Chromium
 
