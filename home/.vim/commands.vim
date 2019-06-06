@@ -18,6 +18,7 @@ command! -nargs=+ G execute 'silent grep! <args>' | tab copen
 command! -nargs=+ Gi execute 'silent grep! -i <args>' | tab copen
 " fugitive Ggrep (starts from Git toplevel dir), and then open on new tab.
 command! -nargs=+ Gg execute 'silent Ggrep! <args>' | tab copen
+command! -nargs=+ Ggi execute 'silent Ggrep! -i <args>' | tab copen
 " Open ltag on a new tab.
 " https://stackoverflow.com/questions/14465383/how-to-navigate-multiple-ctags-matches-in-vim/43866918#43866918
 command! -nargs=1 Ltag silent ltag <args> | execute "normal \<C-o>" | tab lopen

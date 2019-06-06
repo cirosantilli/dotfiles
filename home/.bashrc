@@ -235,7 +235,7 @@
   bao() ( noh baobab "${1:-.}" )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "${2:-rhe6}" -Ip -XF gnome-terminal -e tmux )
-  cdg() { cd "$(git rev-parse --show-toplevel)/${1:-}"; }
+  cdg() { cd "$(git-toplevel)/${1:-}"; }
   ccache-watch() ( watch -n1 'ccache -s' )
   # Start bash in a clean test environment.
   alias clean='env -i bash --norc'
@@ -1323,10 +1323,11 @@ ${2:-}
     f2() ( f-depth "$1" 2 )
     f3() ( f-depth "$1" 3 )
     f4() ( f-depth "$1" 4 )
-    f-size() (
+    find-largest-files() (
       # Find the largest files in a directory.
       # https://stackoverflow.com/questions/12522269/bash-how-to-find-the-largest-file-in-a-directory-and-its-subdirectories
-      find . -type f | xargs -I'{}' du -h '{}' | sort -hk1
+      # https://unix.stackexchange.com/questions/140367/finding-all-large-files-in-the-root-filesystem
+      find . -type f "$@" | xargs -I'{}' du -h '{}' | sort -hk1
     )
 
   ## ffmpeg
@@ -1656,11 +1657,15 @@ export GIT_AUTHOR_DATE="$d"
     gg() ( git grep --color "$@" )
     ggi() ( gg -i "$@" )
     alias gka='gitk --all'
+    git-rebase-refs() (
+      "$(git-toplevel)"
+    )
     git-restore-file() {
       # Restore deleted file to its latest version.
       # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
       git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
     }
+    git-toplevel() ( git rev-parse --show-toplevel )
     gls() ( git ls-files "$@" )
     gls-binary()(
       # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
