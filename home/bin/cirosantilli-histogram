@@ -1,10 +1,38 @@
 #!/usr/bin/env bash
-# Input file contains one column of newline separated values.
-# - for stdin.
-# http://stackoverflow.com/questions/2471884/histogram-using-gnuplot
+
+# Generate a histogram PNG with gnuplot from an
+# input file that contains one column of newline separated values.
+#
+# Usage:
+#
+# ....
+# cirosantilli-histogram <input-file> <bin-width>
+# ....
+#
+# Example:
+#
+# ....
+# primes 1 1000 > f
+# cirosantilli-histogram f 100
+# xdg-open f.png
+# ....
+#
+# From stdin:
+#
+# ....
+# cirosantilli-histogram - 100 <f
+# xdg-open stdin.png
+# ....
+#
 # TODO: auto calculate optimal bin width:
 # http://stats.stackexchange.com/questions/798/calculating-optimal-number-of-bins-in-a-histogram
+#
+# Bibliography:
+#
+# * http://stackoverflow.com/questions/2471884/histogram-using-gnuplot
+
 set -eu
+
 if [ ! "$#" -eq 2 ]; then
   echo 'usage: progname <input-file> <bin-size>'
   exit 1
