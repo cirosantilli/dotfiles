@@ -1559,23 +1559,6 @@ ${2:-}
     alias gcf='git cat-file'
     alias gcfp='git cat-file -p'
     alias gcft='git cat-file -t'
-    git-create-test-commit() (
-      d="$(date)"
-      touch "$d"
-      git add "$d"
-      git commit -m "$d"
-    )
-    git-hide-time() (
-      # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
-      # Set the time of all commits in inclusive range to midnight. Keep date.
-      first_commit="$1"
-      last_commit="${2:-HEAD}"
-      git filter-branch --env-filter '
-d="$(echo "$GIT_COMMITTER_DATE" | sed "s/T.*//")T00:00:00+0000)"
-export GIT_COMMITTER_DATE="$d"
-export GIT_AUTHOR_DATE="$d"
-' --force "${first_commit}~..${last_commit}"
-    )
     gcm() (
       git commit "$@"
     )
@@ -1657,15 +1640,6 @@ export GIT_AUTHOR_DATE="$d"
     gg() ( git grep --color "$@" )
     ggi() ( gg -i "$@" )
     alias gka='gitk --all'
-    git-rebase-refs() (
-      "$(git-toplevel)"
-    )
-    git-restore-file() {
-      # Restore deleted file to its latest version.
-      # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
-      git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
-    }
-    git-toplevel() ( git rev-parse --show-toplevel )
     gls() ( git ls-files "$@" )
     gls-binary()(
       # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
@@ -1814,6 +1788,37 @@ export GIT_AUTHOR_DATE="$d"
       git rebase --onto "$new_sha" "$apply_to"
     )
 
+    git-change-email() (
+      # https://stackoverflow.com/questions/750172/how-to-change-the-author-and-committer-name-and-e-mail-of-multiple-commits-in-gi/750182#750182
+      if [ $# -lt 3 ]; then
+        echo 'too few arguments'
+        exit 1
+      fi
+      old_email="${1}~"
+      new_email="$2"
+      first_commit="$3"
+      last_commit="${4:-HEAD}"
+      git filter-branch --env-filter "
+        OLD_EMAIL='${old_email}'
+        CORRECT_EMAIL='${new_email}'
+        if [ \"\$GIT_COMMITTER_EMAIL\" = '${old_email}' ]
+        then
+            export GIT_COMMITTER_EMAIL='${new_email}'
+        fi
+        if [ \"\$GIT_AUTHOR_EMAIL\" = '${old_email}' ]
+        then
+            export GIT_AUTHOR_EMAIL='${new_email}'
+        fi
+        " --force --tag-name-filter cat -- "${first_commit}..${last_commit}"
+    )
+
+    git-create-test-commit() (
+      d="$(date)"
+      touch "$d"
+      git add "$d"
+      git commit -m "$d"
+    )
+
     git-install-hooks() (
       set -e
       # Per repository workaround because hooksPath is not good enough.
@@ -1821,6 +1826,18 @@ export GIT_AUTHOR_DATE="$d"
       ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-commit" "${hooks_dest_dir}/post-commit"
       # Broken.
       #ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
+    )
+
+    git-hide-time() (
+      # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
+      # Set the time of all commits in inclusive range to midnight. Keep date.
+      first_commit="$1"
+      last_commit="${2:-HEAD}"
+      git filter-branch --env-filter '
+d="$(echo "$GIT_COMMITTER_DATE" | sed "s/T.*//")T00:00:00+0000)"
+export GIT_COMMITTER_DATE="$d"
+export GIT_AUTHOR_DATE="$d"
+' --force "${first_commit}~..${last_commit}"
     )
 
     git-is-ancestor() (
@@ -1847,6 +1864,18 @@ export GIT_AUTHOR_DATE="$d"
       ;
       rmdir "$d"
     )
+
+    git-rebase-refs() (
+      "$(git-toplevel)"
+    )
+
+    git-restore-file() (
+      # Restore deleted file to its latest version.
+      # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
+      git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
+    )
+
+    git-toplevel() ( git rev-parse --show-toplevel )
 
     # GitHub
 
