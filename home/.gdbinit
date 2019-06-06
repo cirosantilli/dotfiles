@@ -1,1 +1,1 @@
-../../../../.homesick/repos/dotfiles/home/bin/gdb-dashboard/.gdbinit
+../submodules/gdb-dashboard/.gdbinit
