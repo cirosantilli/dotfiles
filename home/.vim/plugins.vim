@@ -649,6 +649,14 @@
   " Generally, comments look better with the spaces:
 
       let g:NERDSpaceDelims = 1
+      let g:NERDCompactSexyComs = 1
+
+  " The alt here is to easily convert from # which I used in the past to
+  " /* */ which I'm using now.
+
+    let g:NERDCustomDelimiters = {
+        \ 'asm': { 'left': '/*', 'right': '*/', 'leftAlt': '#' },
+    \ }
 
   " But sometimes I want to differentiate comments from neighbouring code,
   " and do that by making the code have no spaces.

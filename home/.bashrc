@@ -2712,7 +2712,9 @@ export GIT_AUTHOR_DATE="$d"
 
   ## RVM
   f="$HOME/.rvm/scripts/rvm"
-  [ -f "$f" ] && . "$f"
+  if [ -f "$f" ]; then
+    . "$f"
+  fi
 
   # Travis gem
   f="$HOME/.travis/travis.sh"
