@@ -233,6 +233,15 @@
   )
   alias ack='ack-grep --smart-case'
   bao() ( noh baobab "${1:-.}" )
+  bench-cmd() (
+    # https://stackoverflow.com/questions/5152858/how-do-i-measure-duration-in-seconds-in-a-shell-script/56609286#56609286
+    logfile=time.log
+    echo "cmd $@" >> "$logfile"
+    printf 'time ' >> "$logfile"
+    bench_cmd="env time --append --format '%e' --output '$logfile' $@"
+    eval "$bench_cmd"
+    echo >> "$logfile"
+  )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "${2:-rhe6}" -Ip -XF gnome-terminal -e tmux )
   cdg() { cd "$(git-toplevel)/${1:-}"; }
@@ -1120,7 +1129,7 @@ ${2:-}
     # - --c-kinds=-m: remove struct member. Too many false positives otherwise.
     #                 Just go to struct definition first instead.
     # - --extra=f: also generate tags for filenames, that point to the first line.
-    ctagsr() ( ctags -R --c-kinds=+p-m --c++-kinds=+p-m --extra=+f "$@" "$(pwd)" )
+    ctagsr() ( ctags --c-kinds=+p-m --c++-kinds=+p-m --extra=+f --recurse "$@" "$(pwd)" )
     alias cscopr='cscope -Rb'
     alias ctasc='cdg && ctagsr && cscopr && cd -'
 
