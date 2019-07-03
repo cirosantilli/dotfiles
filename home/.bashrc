@@ -529,8 +529,14 @@
     # timestamp format.
     date "+%Y-%m-%d_%H-%M-%S" "$@"
   )
-  # Unix timtestamp. Seconds since epoch.
-  timestampu() ( date "+%s" "$@" )
+  timestamp-date() (
+    # Date timestamp for stuff that changes less fast.
+    date "+%Y-%m-%d" "$@"
+  )
+  timestamp-epoch() (
+    # Unix timtestamp. Seconds since epoch.
+    date "+%s" "$@"
+  )
   topp() (
     # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
     $* &>/dev/null &

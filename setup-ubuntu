@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ex
+script_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
 
 full=false
 gui=true
@@ -119,7 +120,7 @@ if $setup_home_partition; then
 fi
 
 if $gui; then
-  dconf load / <~/.config/dconf/user.conf
+  dconf load / < "${script_dir}/user.conf"
 
   # Python
   pip install --user --upgrade pip virtualenv
