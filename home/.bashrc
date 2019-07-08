@@ -887,17 +887,50 @@
     #     00000000 <.data>:
     #        0:   e0800001        add     r0, r0, r1
     #
+    # Other ISAs
+    #
+    #     decode-asm aarch64 01080091
+    #
+    # The output contains:
+    #
+    #        0:   91000801        add     x1, x0, #0x2
+    #
+    # Reverse the input bytes:
+    #
+    #     decode-asm --reverse aarch64 91000801
+    #
+    # Output: same as above.
+    #
     # Bibliography:
     #
     # - https://stackoverflow.com/questions/1737095/how-do-i-disassemble-raw-x86-code
     # - https://stackoverflow.com/questions/3859453/using-objdump-for-arm-architecture-disassembling-to-arm
     decode-asm() (
       set -ex
+      reverse=false
+      parsed=$(getopt -o r -l reverse -- "$@")
+      eval set -- "$parsed"
+      while true; do
+        case "$1" in
+          --reverse)
+            reverse=true
+            shift
+            ;;
+          --)
+            shift
+            break
+            ;;
+        esac
+      done
       arch="$1"
       shift
       arch="$(arch-short-to-long "$arch")"
       f="/tmp/decode-asm-$arch"
       printf '%s' "$@" | xxd -r -p > "$f"
+      if "$reverse"; then
+        bak "$f"
+        python -c 'import sys; sys.stdout.write(sys.stdin.read()[::-1])' < "${f}.bak" > "$f"
+      fi
       if [ "$arch" = arm ] || [ "$arch" = aarch64 ]; then
         machine="$arch"
         M=
