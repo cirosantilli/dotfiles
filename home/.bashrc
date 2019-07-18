@@ -912,7 +912,7 @@
       eval set -- "$parsed"
       while true; do
         case "$1" in
-          --reverse)
+          -r|--reverse)
             reverse=true
             shift
             ;;
