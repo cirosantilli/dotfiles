@@ -1687,6 +1687,7 @@ ${2:-}
     )
     gg() ( git grep --color "$@" )
     ggi() ( gg -i "$@" )
+    gin() ( git init "$@" )
     alias gka='gitk --all'
     gls() ( git ls-files "$@" )
     gls-binary()(
