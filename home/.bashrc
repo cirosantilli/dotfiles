@@ -390,9 +390,19 @@
   kabb() { for f in "$@"; do p="${f%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; done }
   markdown-to-adoc() (
     # Markdown to asciidoc the way I like it.
-    f="$1"
-    shift
-    pandoc --atx-headers --base-header-level 2 -o "${f%.*}.adoc" --wrap=none "$f" "$@"
+    #
+    # --from markdown-smart to prevent conversion of ' to the ugly "typographic apostrophe":
+    # https://stackoverflow.com/questions/53678363/stopping-pandoc-from-escaping-single-quotes-when-converting-from-html-to-markdow
+    for f  in "$@"; do
+      pandoc \
+        --atx-headers \
+        --base-header-level 2 \
+        --from markdown-smart \
+        --output "${f%.*}.adoc" \
+        --wrap=none \
+        "$f" \
+      ;
+    done
   )
   md() ( mkdir -p "$@"; )
   # Make Dir Cd
@@ -480,7 +490,7 @@
     # https://askubuntu.com/questions/7776/how-do-i-lock-the-desktop-screen-via-command-line
     gnome-screensaver-command -l
   )
-  suspend-ubuntu() (
+  ubuntu-suspend() (
     # https://askubuntu.com/questions/1792/how-can-i-suspend-hibernate-from-command-line
     systemctl suspend
   )
@@ -2764,6 +2774,11 @@ export GIT_AUTHOR_DATE="$d"
   if [ -f "$f" ]; then
     . "$f"
   fi
+
+  # OCaml opam configuration
+  # Added by opan init in Ubuntu 19.04 package.
+  f="${HOME}/.opam/opam-init/init.sh"
+  [ -f "$f" ] && . "$f" > /dev/null 2> /dev/null || true
 
   # Travis gem
   f="$HOME/.travis/travis.sh"

@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+'''
+Helper dirty workaround for:
+https://github.com/asciidoctor/asciidoctor/issues/3148
+'''
+
+import sys
+import re
+
+file_path = sys.argv[1]
+id_re = re.compile('[^a-z0-9_]+')
+prefix = sys.argv[2]
+
+with open(file_path) as f:
+    lines = f.readlines()
+previous_line = lines[0]
+for line in lines[1:]:
+    if line.startswith('=='):
+        header_id = line.lstrip('= ').rstrip()
+        if previous_line.startswith('[['):
+            pass
+        else:
+            previous_line = '\n[[{}--{}]]'.format(prefix, id_re.sub('-', header_id.lower()))
+    print(previous_line.rstrip())
+    previous_line = line
+print(previous_line)
