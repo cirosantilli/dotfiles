@@ -1398,7 +1398,15 @@ ${2:-}
   ## Firefox
 
       # Unsafe settings, for quick testing. Don't access any important page with it.
-      fir-test() ( noh firefox -no-remote "$@" -P 'test'; )
+      firefox-test() ( noh firefox -no-remote "$@" -P 'test'; )
+
+      firefox-temp-profile() (
+        # Hopefully like chromium-browser --temp-profile
+        # https://cat-in-136.github.io/2012/12/tip-how-to-run-new-firefox-instance-w.html
+        dir="$(mktemp -p /tmp -d tmp-fx-profile.XXXXXX.d)"
+        firefox -profile "$dir" -no-remote -new-instance
+        rm -rf "$dir"
+      )
 
   ## gcc
 
