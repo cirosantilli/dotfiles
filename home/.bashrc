@@ -603,8 +603,7 @@
   u1pc() { u1sdtool --publish-file "$1" | perl -ple 's/.+\s//' | xclip -selection clipboard; }
   alias xar="xargs -I'{}'"
   alias xar0="xargs -0I'{}'"
-  # wget Mirror. My favorite mirror command:
-  alias wgetm='wget -E -k -l inf -np -p -r'
+
   # Usage: unizipd d.zip
   # Outcome: unzips the content of `a.zip` into a newly created `d` directory
   unzipd() { unzip -d "${1%.*}" "$1"; }
@@ -1234,6 +1233,11 @@ ${2:-}
   ## Docker
 
     # The typical usage will look as follows.
+    #
+    # Before the first usage, enable docker without sudo:
+    # https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo
+    #
+    #     sudo usermod -aG docker $USER
     #
     # Create a new container:
     #
@@ -2677,6 +2681,23 @@ export GIT_AUTHOR_DATE="$d"
     vg() ( v '.gitignore'; )
     vr() ( v 'README.md'; )
     vw() ( v "$(which "$1")"; )
+
+  ## wget
+
+    # Download a page and all of its requesites locally.
+    # Patch downloaded HTML so that the locally downloaded prerequisites will be used.
+    # https://superuser.com/questions/55040/save-a-single-web-page-with-background-images-with-wget/136335#136335
+    # https://stackoverflow.com/questions/6348289/download-a-working-local-copy-of-a-webpage
+    # https://stackoverflow.com/questions/1581551/download-webpage-and-dependencies-including-css-images
+    wget-one() (
+      wget -E -e robots=off -H -K -k --page-requisites "$@"
+    )
+
+    # TODO: download resources across hosts, but don't follow links to other hosts.
+    # https://stackoverflow.com/questions/16780601/wget-span-host-only-for-images-stylesheets-javascript-but-not-links
+    wget-mirror() (
+      wget -E -e robots=off -H -K -k -l inf --no-parent --page-requisites -r "$@"
+    )
 
   ## which
 
