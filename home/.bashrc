@@ -2116,7 +2116,7 @@ export GIT_AUTHOR_DATE="$d"
 
     alias bej='bundle exec jekyll'
     alias bejb='bundle exec jekyll build -It'
-    alias bejs='open http://localhost:4000 && bundle exec jekyll serve -Itw'
+    alias bejs='xdg-open http://localhost:4000 && bundle exec jekyll serve -Itw'
 
   ## Last Command
 
