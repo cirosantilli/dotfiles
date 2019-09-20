@@ -1272,7 +1272,16 @@ ${2:-}
       shift
       cmd="${1:-/bin/bash}"
       shift
-      dk create -it --name "$container" -w "${target_dir}/$(pwd)" -v "/:${target_dir}" "$image" "$cmd" "$@"
+      dk create \
+        --interactive \
+        --tty \
+        --name "$container" \
+        --workdir "${target_dir}/$(pwd)" \
+        --volume "/:${target_dir}" \
+        "$image" \
+        "$cmd" \
+        "$@" \
+      ;
     )
     dk-execute() (
       # Run command in an existing container.
@@ -1284,7 +1293,7 @@ ${2:-}
       cmd="${1:-/bin/bash}"
       shift
       dk-start "$container"
-      dk exec -it "$container" "$cmd" "$@"
+      dk exec --interactive --tty "$container" "$cmd" "$@"
       dk-stop "$container"
     )
     dk-REMOVE() (
@@ -1394,19 +1403,61 @@ ${2:-}
 
   ## ffmpeg
 
+    # Concatenate two files.
+    # ffmpeg-cat in1.ogv in2.ogv out.ogv
+    ffmpeg-cat() (
+      ffmpeg -i concat:"$1|$2" -c copy "$3"
+    )
+
+    # Trim a file.
     # fftrim in.ogv out.ogv 00:10 01:20
-    fftrim() ( ffmpeg -i "$1" -ss "$3" -to "$4" -c copy "$2"; )
-    # ffcat in1.ogv in2.ogv out.ogv
-    ffcat() ( ffmpeg -i concat:"$1|$2" -c copy "$3"; )
+    ffmpeg-trim() (
+      ffmpeg-trim -i "$1" -ss "$3" -to "$4" -c copy "$2"
+    )
+
+    # https://superuser.com/questions/108237/convert-mp4-to-ogg-video
+    #
+    # Usage:
+    #
+    #     ffmpeg-mp4-to-ogv in1.mp4 in2.mp4 ...
+    ffmpeg-mp4-to-ogv() (
+      for f in "$@"; do
+        ffmpeg \
+          -y \
+          -i "$f" \
+          -codec:v libtheora \
+          -qscale:v 3 \
+          -codec:a libvorbis \
+          -qscale:a 3 \
+          -f ogv \
+          "${f%.*}.ogv" \
+        ;
+      done
+    )
+
+    # https://superuser.com/questions/268985/remove-audio-from-video-file-with-ffmpeg
+    ffmpeg-mp4-to-ogv-no-audio() (
+      for f in "$@"; do
+        ffmpeg \
+          -y \
+          -i "$f" \
+          -codec:v libtheora \
+          -qscale:v 3 \
+          -an \
+          -f ogv \
+          "${f%.*}.ogv" \
+        ;
+      done
+    )
 
   ## Firefox
 
       # Unsafe settings, for quick testing. Don't access any important page with it.
       firefox-test() ( noh firefox -no-remote "$@" -P 'test'; )
 
+      # Hopefully like chromium-browser --temp-profile
+      # https://cat-in-136.github.io/2012/12/tip-how-to-run-new-firefox-instance-w.html
       firefox-temp-profile() (
-        # Hopefully like chromium-browser --temp-profile
-        # https://cat-in-136.github.io/2012/12/tip-how-to-run-new-firefox-instance-w.html
         dir="$(mktemp -p /tmp -d tmp-fx-profile.XXXXXX.d)"
         firefox -profile "$dir" -no-remote -new-instance
         rm -rf "$dir"
@@ -1975,12 +2026,13 @@ export GIT_AUTHOR_DATE="$d"
           git config core.sshCommand 'ssh -i ~/.ssh/id_rsa_lovechina -F /dev/null'
         )
 
-      ## 2
+      ## cirosantilli2
 
-        gh-2() (
-          git config user.email 'cirosantilli@outlook.com'
-          # https://superuser.com/questions/232373/how-to-tell-git-which-private-key-to-use/912281#912281
-          git config core.sshCommand 'ssh -i ~/.ssh/id_rsa_2 -F /dev/null'
+        # https://github.com/cirosantilli2
+        # https://superuser.com/questions/232373/how-to-tell-git-which-private-key-to-use/912281#912281
+        github-cirosantilli2() (
+          git config --local user.email 'cirosantilli@outlook.com'
+          git config --local core.sshCommand 'ssh -i ~/.ssh/id_rsa_2 -F /dev/null'
         )
 
     ## Gerrit
@@ -2521,25 +2573,37 @@ export GIT_AUTHOR_DATE="$d"
   ## imagemagick
 
     # Get value of pixel at given location.
-    impx() (
+    #
+    # Usage:
+    #
+    #     image-get-pixel <X> <Y>
+    image-get-pixel() (
       convert "$1" -crop 1x1+${2:-1}+${3:-1} rgba:- | od -An -tx1
+    )
+
+    # https://askubuntu.com/questions/236455/how-can-you-delete-only-gps-metadata-from-a-jpeg-file
+    image-remove-location() (
+      exiftool -gps:all= -xmp:geotag= "$@"
     )
 
   ## linux kernel
 
+    # Grep the Linux kernel.
+    # Ignore the huge arch and drivers.
+    # http://stackoverflow.com/questions/10423143/how-to-exclude-certain-directories-files-from-git-grep-search
+    # TODO ignore all archs except x86.
     lkg() (
-      # Grep the Linux kernel.
-      # Ignore the huge arch and drivers.
-      # http://stackoverflow.com/questions/10423143/how-to-exclude-certain-directories-files-from-git-grep-search
-      # TODO ignore all archs except x86.
       git grep -i "$1" -- './*' ':!arch/**' ':!drivers/**'
     )
+
+    # Ignore drivers.
     lkga() (
-      # Ignore drivers.
       git grep -i "$1" -- './*' ':!drivers/**'
     )
+
     # Ignore the huge arch and drivers.
     lkcon() ( "${LKMC_DIR}/linux/scripts/extract-ikconfig" "$@" )
+
     alias lkmkA='CROSS_COMPILE=aarch64-linux-gnu- time make ARCH=arm64 -j`nproc`'
     alias mkold='make oldconfig'
     alias mkdef='make defconfig'
