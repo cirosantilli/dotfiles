@@ -1,2 +1,8 @@
+snippet arch
+	(`@+`[archive])
+snippet lkmc
+	https://cirosantilli.com/linux-kernel-module-cheat#
+snippet lkmcx
+	https://cirosantilli.com/linux-kernel-module-cheat#`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`
 snippet xref
-	<<`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`>>
+	xref:`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`[]

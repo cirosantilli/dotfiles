@@ -109,6 +109,9 @@
 
 " # swp
 
+  " https://stackoverflow.com/questions/50902264/inotify-watch-files-changes-except-for-files-in-gitignore/57345781#57345781
+  set backupcopy=no
+
   set nobackup
   " set backupdir=~/tmp   "where to create backups if need be so
   " set writebackup
