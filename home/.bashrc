@@ -2676,6 +2676,37 @@ export GIT_AUTHOR_DATE="$d"
     # http://www.askubuntu.com/questions/452826/wireless-networking-not-working-after-resume-in-ubuntu-14-04
     alias ssrf='sudo service nfs-kernel-server restart'
 
+  ## sfdisk
+
+    # Put a raw filesystem file into a disk image with a partition table.
+    #
+    # https://unix.stackexchange.com/questions/209566/how-to-format-a-partition-inside-of-an-img-file/527132#527132
+    #
+    # Usage:
+    #
+    #     sfdisk-fs-to-img root.ext2
+    #
+    # Creates a file:
+    #
+    #     sfdisk-fs-to-img root.ext2.img
+    #
+    sfdisk-fs-to-img() (
+      partition_file_1="$1"
+      img_file="${partition_file_1}.img"
+      block_size=512
+      partition_size_1="$(wc -c "$partition_file_1" | awk '{print $1}')"
+      part_table_offset=$((2**20))
+      cur_offset=0
+      bs=1024
+      dd if=/dev/zero of="$img_file" bs="$bs" count=$((($part_table_offset + $partition_size_1)/$bs)) skip="$(($cur_offset/$bs))"
+      printf "
+      type=83, size=$(($partition_size_1/$block_size))
+      " | sfdisk "$img_file"
+      cur_offset=$(($cur_offset + $part_table_offset))
+      dd if="$partition_file_1" of="$img_file" bs="$bs" seek="$(($cur_offset/$bs))"
+      cur_offset=$(($cur_offset + $partition_size_1))
+    )
+
   ## svn
 
     # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
