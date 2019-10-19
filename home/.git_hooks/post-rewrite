@@ -1,20 +1,32 @@
 #!/usr/bin/env bash
-# https://stackoverflow.com/questions/2973996/git-rebase-without-changing-commit-timestamps/53516609#53516609
-set -eux
-declare -a olds
-declare -A oldnew
-while IFS= read -r line; do
-  old="$(echo "$line" | cut -d ' ' -f1)"
-  new="$(echo "$line" | cut -d ' ' -f2)"
-  oldnew[$old]="$new"
-  olds+=("$old")
-done
-echo git reset --hard "${olds[0]}~"
-for old in "${olds[@]}"; do
-  new="${oldnew[$old]}"
-  echo git cherry-pick "$new"
-  olddate="$(git log --format='%cd' -n 1 "$old")"
-  if [ -z "${GIT_COMMITTER_DATE:-}" ]; then
-    echo GIT_COMMITTER_DATE="$olddate" git commit --amend --no-edit &>/dev/null
-  fi
-done
+# https://stackoverflow.com/questions/28832219/can-i-hide-commits-time-when-i-push-to-github/52887876#52887876
+# https://stackoverflow.com/questions/32699631/can-git-committer-date-be-customized-inside-a-git-hook/53514970#53514970
+set -eu
+echo post-rewrite
+if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
+  declare -a olds
+  declare -A oldnew
+  while IFS= read -r line; do
+    echo "$line"
+    old="$(echo "$line" | cut -d ' ' -f1)"
+    new="$(echo "$line" | cut -d ' ' -f2)"
+    oldnew[$old]="$new"
+    olds+=("$old")
+    news+=("$new")
+  done
+  git reset --hard "${news[0]}~"
+  for old in "${olds[@]}"; do
+    new="${oldnew[$old]}"
+    git cherry-pick "$new" &>/dev/null
+    olddate="$(git log --format='%cd' -n 1 "$old")"
+    CIROSANTILLI_GITHOOKS_DISABLE=1 \
+      GIT_COMMITTER_DATE="$olddate" \
+      git commit \
+      --amend \
+      --no-edit \
+      --no-verify \
+      &>/dev/null \
+    ;
+  done
+  echo
+fi

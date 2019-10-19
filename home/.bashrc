@@ -1946,8 +1946,7 @@ ${2:-}
       # Per repository workaround because hooksPath is not good enough.
       hooks_dest_dir="$(git rev-parse --git-dir)/hooks"
       ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-commit" "${hooks_dest_dir}/post-commit"
-      # Broken.
-      #ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
+      ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
     )
 
     git-hide-time() (
