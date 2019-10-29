@@ -161,4 +161,6 @@ if $full; then
 
   fi
   sudo usermod -aG docker $USER
+
+  sudo snap install pycharm-community --classic
 fi
