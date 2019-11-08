@@ -14,7 +14,7 @@ if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
       new_time="00:00:00"
       new_delta=
     fi
-    d="$(date --date "${today}T${new_time}${new_delta}" "+${today}T%H:%M:%S+0000")"
+    d="$(date --date "${today}T${new_time}+0000${new_delta}" "+${today}T%H:%M:%S+0000")"
     echo "$d"
     CIROSANTILLI_GITHOOKS_DISABLE=1 \
       GIT_COMMITTER_DATE="$d" \
