@@ -111,10 +111,11 @@
 
   " https://stackoverflow.com/questions/50902264/inotify-watch-files-changes-except-for-files-in-gitignore/57345781#57345781
   set backupcopy=no
+  " Without this, symlinks are broken...
+  set nowritebackup
 
   set nobackup
   " set backupdir=~/tmp   "where to create backups if need be so
-  " set writebackup
   " set backupskip=/tmp
 
   set noswapfile
