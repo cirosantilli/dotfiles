@@ -1896,8 +1896,10 @@ ${2:-}
     gwtp() ( git worktree prune )
 
     git-amend-old() (
+      set -ex
       # Stash, apply to past commit, and rebase the current branch on to of the result.
       # For Gerrit. https://stackoverflow.com/questions/1186535/how-to-modify-a-specified-commit/53597426#53597426
+      # If there are stash apply conflicts, the behaviour is not nice though.
       current_branch="$(git rev-parse --abbrev-ref HEAD)"
       apply_to="$1"
       git stash
@@ -2077,6 +2079,15 @@ export GIT_AUTHOR_DATE="$d"
       gri --binary-files without-match "$@"
     )
     gv() ( g -v "$@" )
+    remove-lines() (
+      # Inline version of:
+      # https://stackoverflow.com/questions/4366533/how-to-remove-the-lines-which-appear-on-file-b-from-another-file-a
+      remove_lines="$1"
+      all_lines="$2"
+      tmp_file="$(mktemp)"
+      grep -Fvxf "$remove_lines" "$all_lines" > "$tmp_file"
+      mv "$tmp_file" "$all_lines"
+    )
 
   ## grunt
 
