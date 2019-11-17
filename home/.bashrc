@@ -1468,15 +1468,23 @@ ${2:-}
     gcc-pedantic() (
       # GCC with as many checks as I can make it.
       c="$1"
-      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic -o "${c%.*}.out" $c"
+      out="${c%.*}.out"
+      cmd="gcc -ggdb3 -O0 -std=c99 -Wall -Wextra -pedantic -o "${out}" ${c}"
+      echo "$cmd"
+      eval "$cmd"
+      cmd="./${out}"
       echo "$cmd"
       eval "$cmd"
     )
 
     gpp-pedantic() (
-      # GCC with as many checks as I can make it.
+      # C++ version of gcc.
       c="$1"
-      cmd="g++ -ggdb3 -O0 -std=c++11 -Wall -Wextra -pedantic -o "${c%.*}.out" $c"
+      out="${c%.*}.out"
+      cmd="g++ -ggdb3 -O0 -std=c++11 -Wall -Wextra -pedantic -o ${out} ${c}"
+      echo "$cmd"
+      eval "$cmd"
+      cmd="./${out}"
       echo "$cmd"
       eval "$cmd"
     )
@@ -1896,10 +1904,8 @@ ${2:-}
     gwtp() ( git worktree prune )
 
     git-amend-old() (
-      set -ex
       # Stash, apply to past commit, and rebase the current branch on to of the result.
       # For Gerrit. https://stackoverflow.com/questions/1186535/how-to-modify-a-specified-commit/53597426#53597426
-      # If there are stash apply conflicts, the behaviour is not nice though.
       current_branch="$(git rev-parse --abbrev-ref HEAD)"
       apply_to="$1"
       git stash
