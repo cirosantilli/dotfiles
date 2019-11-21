@@ -18,6 +18,12 @@ set print object on
 # http://stackoverflow.com/questions/1768620/how-do-i-show-what-fields-a-struct-has-in-gdb/42320040#42320040
 set print pretty on
 
+# You don't usually want those while debugging, you only want to inspect modifable state.
+set print static-members off
+
+# Print TODOs:
+# - https://stackoverflow.com/questions/34116651/in-gdb-how-to-print-an-object-so-its-data-members-would-be-listed-in-alphabetic
+
 define bl
     source ~/.gdb.breakpoints
 end

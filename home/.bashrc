@@ -2094,6 +2094,14 @@ export GIT_AUTHOR_DATE="$d"
       grep -Fvxf "$remove_lines" "$all_lines" > "$tmp_file"
       mv "$tmp_file" "$all_lines"
     )
+    remove-matches() (
+      # Like remove-lines but they don't have to be exact line maches.
+      remove_lines="$1"
+      all_lines="$2"
+      tmp_file="$(mktemp)"
+      grep -Fvf "$remove_lines" "$all_lines" > "$tmp_file"
+      mv "$tmp_file" "$all_lines"
+    )
 
   ## grunt
 
