@@ -1771,10 +1771,6 @@ ${2:-}
     gin() ( git init "$@" )
     alias gka='gitk --all'
     gls() ( git ls-files "$@" )
-    gls-binary()(
-      # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
-      grep -Fvxf <(git grep --cached -Il '') <(git grep --cached -al '')
-    )
     glsf()(
       # Git list only regular files: exclude submodules, symlinks, empty files and text files.
       # https://stackoverflow.com/questions/40165650/how-to-list-all-files-tracked-by-git-excluding-submodules
@@ -1788,6 +1784,10 @@ ${2:-}
     glsfg()( glsf | g "$@" )
     glsg() ( gls | g "$@" )
     glsgi() ( glsg -i "$@" )
+    git-list-binary()(
+      # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
+      grep -Fvxf <(git grep --cached -Il '') <(git grep --cached -al '')
+    )
     alias glsr='git ls-remote'
     alias glo='git log --decorate --pretty=fuller'
     glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
@@ -2916,6 +2916,12 @@ export GIT_AUTHOR_DATE="$d"
     . "$f" &>'/dev/null'
     nvm use --lts &>'/dev/null'
   fi
+
+  ## pyenv
+  # TODO link to question
+  export PATH="${HOME}/.pyenv/bin:$PATH"
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
 
   ## RVM
   f="$HOME/.rvm/scripts/rvm"

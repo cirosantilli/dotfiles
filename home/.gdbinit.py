@@ -190,6 +190,26 @@ http://stackoverflow.com/questions/24491516/how-to-step-over-interrupt-calls-whe
         gdb.execute('continue')
 NextInstructionAddress()
 
+class RepeatCmd(gdb.Command):
+    """
+    Repeat a command n times:
+    repeat-cmd <n> <cmd>
+    """
+    def __init__(self):
+        super().__init__(
+            'repeat-cmd',
+            gdb.COMMAND_NONE,
+            gdb.COMPLETE_NONE,
+            False
+        )
+    def invoke(self, arg, from_tty):
+        args = gdb.string_to_argv(arg)
+        n = int(args[0])
+        cmd = ' '.join(args[1:])
+        for i in range(n):
+            gdb.execute(cmd)
+RepeatCmd()
+
 class Pdb(gdb.Command):
  def __init__(self):
          super(self.__class__, self).__init__('pdb', gdb.COMMAND_OBSCURE)
