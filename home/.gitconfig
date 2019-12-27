@@ -50,9 +50,14 @@
 	program = gpg2
 [http]
 	cookiefile = ~/.gitcookies
+[merge]
+	tool = cirosantilli-mergetool
 [mergetool]
 	keepBackup = false
 	prompt = false
+[mergetool "cirosantilli-mergetool"]
+	cmd = cirosantilli-mergetool $BASE $LOCAL $REMOTE
+	trustExitCode = true
 [pager]
 	# less -r to wrap long lines.
 	# TODO make diff-highlight fall back to regular diff if not found.

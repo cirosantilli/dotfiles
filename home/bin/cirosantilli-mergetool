@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+BASE="$1"
+LOCAL="$2"
+REMOTE="$3"
+diff --color -u "$BASE" "$LOCAL"
+diff --color -u "$BASE" "$REMOTE"
+exit 1
