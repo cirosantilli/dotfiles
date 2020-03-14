@@ -67,6 +67,7 @@ Airbnb
 Alibaba
 Allwinner
 Altera
+Amartya
 Amazon
 Amazonas
 Amlogic
@@ -101,8 +102,10 @@ Autosize
 Autotools
 Avahi
 Axilleas
+Axé
 B2B
 BBP
+BCS
 BDD
 BFD
 BFS
@@ -130,12 +133,14 @@ Batsov's
 Beegit
 Bellard
 Benasque
+Benderski
 Berjon
 BibTeX
 BigQuery
 Biggus
 Bimorphic
 Binutils
+Biomakespace
 BitBucket
 BitKeeper
 BitTorrent
@@ -247,9 +252,11 @@ CVS
 CVs
 CWE
 CYK
+Caetano
 Calc
 Calibre
 Calypto
+Capoeira
 CapsLock
 Capybara
 Cardistry
@@ -260,11 +267,13 @@ Carwin
 CasperJS
 Cayley
 CentOS
+Chacha
 Chacon
 Chaitin
 Changelog
 Cheatsheet
 Chengyu
+Chinazi
 Chipworks
 ChkTeX
 Christianism
@@ -275,6 +284,8 @@ Cinelerra
 Cirism
 Ciro
 Ciro's
+Cirodance
+Cirodown
 Cisco
 Citrix
 Clar
@@ -466,6 +477,8 @@ Emoticon
 Emscripten
 Enablement
 EpicEditor
+Eppendorf
+Eppendorfs
 Erastosthenes
 Esc
 Ethereum
@@ -522,6 +535,8 @@ FreeBSD
 Freenode
 Fu
 Fu's
+Futurama
+Futurama's
 G1
 GCC
 GCE
@@ -546,6 +561,7 @@ GIC
 GID
 GIF
 GIFAR
+GIFs
 GIMPLE
 GL
 GLES
@@ -637,7 +653,9 @@ Grugq
 Guake
 Guimet
 Gump
+Guqin
 HD
+HDF5
 HDMI
 HDs
 HEVC
@@ -645,6 +663,7 @@ HFS
 HOLAP
 HPC
 HPET
+HPI
 HSK
 HTLM5
 HTML
@@ -676,6 +695,7 @@ HiPEAC
 Hillenbrand
 Hirschtick
 Hitchin
+Hitlerum
 Hodor
 Holborn
 Holomorphic
@@ -686,6 +706,7 @@ Hoogle
 Hopcroft
 HotSpot
 Hristov
+Huawei
 Hunspell
 Hurd
 Hyett
@@ -743,6 +764,7 @@ ISNB
 ISOs
 ISPs
 ISR
+ISRC
 IVT
 IaaS
 Icaza
@@ -750,7 +772,9 @@ Icaza's
 IceStorm
 IcedTea
 Illumina
+Illumina's
 ImageMagick
+Imgur
 Immediates
 InDesign
 Indago
@@ -762,6 +786,7 @@ Innovus
 Inria
 Instagram
 IntelliJ
+Intepreter
 IoT
 IronPython
 IronRuby
@@ -815,7 +840,9 @@ Jazelle
 Jericoacoara
 JetBrains
 Jetpack
+Jiang
 Jie
+Jingjing
 Jingrun
 Jinping
 Jira
@@ -836,6 +863,7 @@ KDM
 KGDB
 KGDB
 KVM
+KaTeX
 Kaggle
 Kalvus
 Karatsuba
@@ -844,12 +872,14 @@ Kbps
 Kbuild
 Kconfig
 Kempner
+Ketterle
 Khronos
 KiB
 Kindle
 Kingo
 Kishonti
 Kitano
+Kivelson
 Kleene
 Knotski
 Koans
@@ -894,6 +924,8 @@ Leaderboard
 Leakers
 Leandro
 Leanpub
+Leitner
+Leitner's
 Lennart
 Lenovo
 Levenshtein
@@ -926,6 +958,7 @@ MIAOW
 MINIX
 MISRA
 MKL
+MMA
 MMIO
 MMMC
 MMORPG
@@ -940,6 +973,7 @@ MP3
 MPEG
 MR's
 MRs
+MSI
 MSVC
 MTA
 MTU
@@ -961,6 +995,7 @@ Maruku
 Master_PIC
 MathJax
 MathML
+Mathy
 Matiyasevich
 Matplotlib
 Matroska
@@ -971,6 +1006,7 @@ McAffee
 McCrea
 Megamorphic
 Meh
+Mei
 Mellanox
 Merb
 Merced
@@ -987,8 +1023,10 @@ MiKTeX
 Microbit
 Micropolis
 MinGW
+MinION
 Minecraft
 Minitest
+Minkowski
 Mircokernel
 Mishima
 MkDocs
@@ -1001,6 +1039,7 @@ Modals
 Modernizr
 Mojo
 MongoDB
+Monod
 Monomorphic
 MoreUnit
 Mouseless
@@ -1045,6 +1084,7 @@ NVIDIA's
 NVM
 NVS
 NXP
+Nanopore
 Napolitan
 Napster
 NeXT
@@ -1063,6 +1103,7 @@ Newlib
 Nginx
 Nicklas
 NoSQL
+Nobels
 NodeGit
 NodeJS
 Nokogiri
@@ -1086,6 +1127,7 @@ OK
 OLAP
 OLPC
 OLTP
+OMG
 ORM
 OSI
 OSes
@@ -1209,6 +1251,7 @@ Pinboard
 Pingus
 Pixar
 PlayStation
+Pleco
 PnR
 Poettering
 Poincare
@@ -1237,6 +1280,7 @@ Prolog
 PubMed
 PullReview
 PulseAudio
+PuntSeq
 PyPI
 PyPi
 PyPy
@@ -1248,6 +1292,8 @@ QFD
 QFS
 QFT
 QTM
+Qigong
+Qiskit
 Qt
 Quadro
 Qualcomm
@@ -1267,6 +1313,7 @@ README
 READMEs
 REISUB
 REPL
+RER
 RFC2119
 RFC4627
 RFCs
@@ -1307,6 +1354,7 @@ RedHat
 Redcarpet
 Redis
 Redmine
+Reductio
 ReferenceError
 Referer
 Reimann
@@ -1432,6 +1480,7 @@ Shadowgate
 Shakarchi
 ShareAlike
 ShareLaTeX
+Shenzhen
 Shimano
 Shinrikyo
 Shockwave
@@ -1450,6 +1499,7 @@ Siverlight
 Skelix
 Slaby
 SlimerJS
+Slotin
 Slumdog
 SnipMate
 Snowden
@@ -1460,6 +1510,7 @@ SoftBank
 Softcover
 Solaar
 Solaris
+Solexa
 SolvNet
 Sonatype
 Soulseek
@@ -1480,6 +1531,7 @@ Strassen
 Submodules
 Subreddits
 SunOS
+Sunnylands
 SuperH
 Supermassive
 Superscalar
@@ -1537,6 +1589,8 @@ Teatro
 TechCrunch
 Teleport
 Tempus
+Tencent
+Terril
 Tesseract
 Tetris
 Texinfo
@@ -1551,7 +1605,9 @@ ThumbEE
 ThunderBird
 TiB
 Tk
+ToC
 ToS
+Tokaimura
 Tokenizer
 TomDoc
 TomEE
@@ -1563,6 +1619,7 @@ Trac
 Tradeoffs
 Transcoding
 Transifex
+Transilluminator
 Transpiler
 TripAdvisor
 Trovalds
@@ -1604,6 +1661,7 @@ Ubisoft
 Ubuntu
 Ubuntu's
 Ubuntus
+Udacity
 Udemy
 UltiSnip
 UltiSnips
@@ -1611,6 +1669,7 @@ Uncyclopedia
 Undos
 Uninstallable
 Unitless
+Unixer
 Unixes
 Unltd
 Unstar
@@ -1619,6 +1678,9 @@ Urho3D
 Useractions
 Userena
 Utgard
+Uyghur
+Uyghurs
+V
 V8
 VAIO
 VAM
@@ -1650,6 +1712,7 @@ Vagrantfiles
 Valery
 Valgrind
 Valim
+Veloso
 VentureBeat
 Verilator
 Verilog
@@ -1750,12 +1813,14 @@ XcodeGhost
 XeTeX
 Xen
 Xeon
+Xephyr
 Xiaohua
 Xiaohua's
 Xilinx
 Xinjiang
 Xinuous
 Xiph
+Xitler
 Xorg
 Xpath
 Xperia
@@ -1773,6 +1838,9 @@ ZFC
 ZPP
 Zafar
 Zelda
+Zemin
+Zemin's
+Zhihu
 Zimbra
 Zlib's
 Zsh
@@ -1911,6 +1979,7 @@ dev
 devs
 devtmpfs
 df
+diagonalization
 diff
 diffed
 diffeomorphic
@@ -1955,8 +2024,10 @@ emojis
 emoticons
 endian
 endianess
+endosymbiose
 enterprisey
 eog
+epynomous
 evaled
 exe
 ext2
@@ -1966,9 +2037,11 @@ fabless
 fallafel
 fallback
 fastboot
+favela
 favicon
 fdisk
 fdupes
+featureful
 filesystem
 filesystems
 formedness
@@ -2033,6 +2106,7 @@ hda
 heapify
 heapsort
 helicoid
+heredoc
 hexa
 hexdump
 hexdumps
@@ -2120,17 +2194,21 @@ localhost
 logkeys
 logrotate
 lookbehind
+looong
 loopback
 lowRISC
 lsblk
 luc
 lvalues
+makerspace
 manpages
 maskable
 mergeable
 mergesort
 metadata
+metagenomics
 metapackages
+microbiome
 microcontrollers
 microops
 middleware
@@ -2201,12 +2279,15 @@ permalink
 persistency
 pgAdmin
 photorealistic
+photoshops
 phpmyadmin
+pictograms
 pinout
 pipelining
 platformers
 plugin
 plugins
+poeticus
 pointwise
 polychoron
 polychorons
@@ -2221,6 +2302,7 @@ precompiled
 precompiling
 preimage
 preprocess
+presenced
 primality
 printf
 printfs
@@ -2239,6 +2321,7 @@ pseudorandom
 pthread
 pubkey
 px
+pybind11
 pyplot
 qNaN
 qcow2
@@ -2276,6 +2359,7 @@ rerere
 reusability
 reviewability
 ringtone
+roboticist
 roguelike
 root
 rst
@@ -2310,11 +2394,14 @@ sftp
 shader
 shaders
 shapeshift
+shitpost
+shitposts
 shortener
 significand
 significative
 signup
 sinophile
+slangs
 smartphone
 smartphones
 snapshotting
@@ -2360,6 +2447,7 @@ subqueries
 subquery
 subshell
 sudo
+summarizable
 supercontinent
 supermassive
 supertype
@@ -2369,6 +2457,8 @@ symlinked
 symlinking
 symlinks
 symtable
+synesthesia
+synesthesias
 synthesizable
 synthesization
 sysadmin
@@ -2398,6 +2488,7 @@ tracee
 tradeoff
 traiteurs
 transcendentals
+transilluminator
 transpile
 transpiled
 transpiles
@@ -2422,6 +2513,7 @@ uninstall
 uninstalled
 uninstalling
 unmark
+unmergeable
 unmerged
 unmute
 unprotect
@@ -2461,6 +2553,7 @@ visionmedia
 vlog
 vobsub2srt
 von
+vortexing
 w3m
 watchpoint
 webcam
@@ -2472,6 +2565,7 @@ wget
 whitelist
 whitelisted
 whitespaces
+wife
 wiki
 wikibook
 wikis
@@ -2493,6 +2587,8 @@ xinetd
 xkcd
 xterminal
 yay
+youtu
+youtu
 zealotism
 zeroconf
 zlib

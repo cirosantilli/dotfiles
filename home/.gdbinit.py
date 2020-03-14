@@ -31,6 +31,19 @@ http://stackoverflow.com/a/20209911/895245
         BreakStackBreakpoint(*gdb.string_to_argv(argument))
 BreakStack()
 
+class BtFuncOnly(gdb.Command):
+    """Backtrace with function names only
+https://stackoverflow.com/questions/60680813/how-to-do-a-gdb-backtrace-showing-only-function-names-and-nothing-else/60680814#60680814
+"""
+    def __init__(self):
+        super(self.__class__, self).__init__('btf', gdb.COMMAND_FILES)
+    def invoke(self, argument, from_tty):
+        frame = gdb.selected_frame()
+        while frame is not None:
+            gdb.write('{}\n'.format(frame.name()))
+            frame = frame.older()
+BtFuncOnly()
+
 class ContinueI(gdb.Command):
     """Continue until instruction with given opcode.
 
