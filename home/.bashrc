@@ -2920,8 +2920,10 @@ export GIT_AUTHOR_DATE="$d"
   ## pyenv
   # TODO link to question
   export PATH="${HOME}/.pyenv/bin:$PATH"
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
+  if hash foo &> /dev/null; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+  fi
 
   ## RVM
   f="$HOME/.rvm/scripts/rvm"
