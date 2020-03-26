@@ -1110,7 +1110,10 @@ ${2:-}
   ## Chromium
 
     chr() ( noh chromium-browser "$@"; )
-    chrt() ( chr --temp-profile "$@"; )
+    chrt() (
+      # https://askubuntu.com/questions/304293/how-to-start-fresh-chromium-instance
+      chr --temp-profile "$@";
+    )
     # Unsafe settings, for quick testing. Don't access any important page with it.
     chr-test() ( chr --allow-file-access-from-files; )
 
@@ -1455,9 +1458,9 @@ ${2:-}
       # Unsafe settings, for quick testing. Don't access any important page with it.
       firefox-test() ( noh firefox -no-remote "$@" -P 'test'; )
 
-      # Hopefully like chromium-browser --temp-profile
-      # https://cat-in-136.github.io/2012/12/tip-how-to-run-new-firefox-instance-w.html
       firefox-temp-profile() (
+        # Hopefully like chromium-browser --temp-profile
+        # https://cat-in-136.github.io/2012/12/tip-how-to-run-new-firefox-instance-w.html
         dir="$(mktemp -p /tmp -d tmp-fx-profile.XXXXXX.d)"
         firefox -profile "$dir" -no-remote -new-instance
         rm -rf "$dir"
@@ -2916,6 +2919,13 @@ export GIT_AUTHOR_DATE="$d"
     . "$f" &>'/dev/null'
     nvm use --lts &>'/dev/null'
   fi
+
+  # Perl CPAN local install.
+  export PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"
+  export PERL5LIB="${HOME}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
+  export PERL_LOCAL_LIB_ROOT="${HOME}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
+  export PERL_MB_OPT="--install_base \"${HOME}/perl5\""
+  export PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"
 
   ## pyenv
   # TODO link to question
