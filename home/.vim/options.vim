@@ -201,7 +201,14 @@
     " If you use filetype needs and autocommand because most of the default filetypes set this to true.
     " I prefer to highlight long lines and break lines mysefl.
 
-      autocmd Bufenter * set textwidth=0
+      function! TextWidth()
+        if &filetype ==# 'gitcommit'
+          setlocal textwidth=75
+        else
+          setlocal textwidth=0
+        endif
+      endfunction
+      autocmd BufEnter * call TextWidth()
 
   " # wrapmargin
 
