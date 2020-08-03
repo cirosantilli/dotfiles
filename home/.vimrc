@@ -1539,7 +1539,7 @@ endif
 
     " Like `edit`, but focuses on an existing window
     " if any already contains the file opened.
-    
+
   " # bunload
 
     " Unload current but don't remove it from buffer list.

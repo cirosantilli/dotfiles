@@ -664,10 +664,10 @@
       augroup NerdCommenter
       autocmd!
       function! NERDSpaceDelimsOff()
-          let a:NERDSpaceDelimsOld = g:NERDSpaceDelims
+          let NERDSpaceDelimsOld = g:NERDSpaceDelims
           let g:NERDSpaceDelims = 0
           call NERDComment('n', 'toggle')
-          let g:NERDSpaceDelims = a:NERDSpaceDelimsOld
+          let g:NERDSpaceDelims = NERDSpaceDelimsOld
       endfunction
       autocmd Bufenter * noremap <leader>m<space> :call NERDSpaceDelimsOff()<cr>
       augroup END
@@ -696,7 +696,7 @@
 
   " Automatically closes parenthesis, HTML tags, etc., and puts the cursor in the middle.
 
-      Plugin 'Townk/vim-autoclose'
+      "Plugin 'Townk/vim-autoclose'
 
   " Completion is somewhat smart:
 

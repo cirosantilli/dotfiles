@@ -32,6 +32,7 @@
     export CIROSANTILLI_BIN_DIR="${HOME}/bin"
     export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
     export CIROSANTILLI_GIT_DIR="$HOME/git"
+      export CIROSANTILLI_FREEFEM_BIN_DIR="${CIROSANTILLI_GIT_DIR}/FreeFem-install/bin/"
     export CIROSANTILLI_GIT_HOOKS_DIR="${HOME}/.git_hooks"
     export CIROSANTILLI_VAR_DIR="${HOME}/var"
       export CIROSANTILLI_VAR_LOG_DIR="${CIROSANTILLI_VAR_DIR}/log"
@@ -332,6 +333,7 @@
   alias enmp='ecryptfs-mount-private'
   alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
+  alias freefem="PATH=\"${PATH}:${CIROSANTILLI_FREEFEM_BIN_DIR}\" \"${CIROSANTILLI_FREEFEM_BIN_DIR}/FreeFem++\""
   files-to-markdown() (
     # Serialize multiple files to markdown for SO answers.
     for f in "$@"; do
@@ -772,46 +774,48 @@
     #
     # Usage:
     #
-    #     base-convert number [[inbase=10] obase=16]
+    #     base-convert inbase obase number [number...]
     #
     # Example:
     #
-    #     base-convert 17 10 16
+    #     base-convert 10 16 17 18
     #
     # Output:
     #
     #     11
+    #     12
     #
     # Example 2:
     #
-    #     base-convert 10 10 16
+    #     base-convert 10 16 10 11
     #
     # Output:
     #
     #     a
+    #     b
+    #
     base-convert() (
-      val="$(printf $1 | tr a-z A-Z)"
-      if [ $# -ge 2 ]; then
-        ibase=${2:-}
-      else
-        ibase=10
-      fi
-      if [ $# -ge 3 ]; then
-        obase=${3:-}
-      else
-        obase=16
-      fi
-      echo "obase=${obase}; ibase=${ibase}; ${val}" | bc | tr A-Z a-z
+      ibase="$1"
+      shift
+      obase="$1"
+      shift
+      i=$#
+      while [ $i -gt 0 ]; do
+        val="$(printf $1 | tr a-z A-Z)"
+        echo "obase=${obase}; ibase=${ibase}; ${val}" | bc | tr A-Z a-z
+        i=$((i - 1))
+        shift
+      done
     )
 
     # Convert from base
     hex() (
-      base-convert "$1" 10 16
+      base-convert 10 16 "$@"
     )
 
     # Base 16 to 10, the inverse of xhe.
     xeh() (
-      base-convert "$1" 16 10
+      base-convert 16 10 "$@"
     )
 
   ## Binutils
@@ -938,7 +942,7 @@
       printf '%s' "$@" | xxd -r -p > "$f"
       if "$reverse"; then
         bak "$f"
-        python -c 'import sys; sys.stdout.write(sys.stdin.read()[::-1])' < "${f}.bak" > "$f"
+        python -c 'import sys; sys.stdout.buffer.write(sys.stdin.buffer.read()[::-1])' < "${f}.bak" > "$f"
       fi
       if [ "$arch" = arm ] || [ "$arch" = aarch64 ]; then
         machine="$arch"

@@ -291,3 +291,10 @@ augroup END
       autocmd!
       autocmd FileType gnuplot noremap <buffer> <F6> :write<cr>:silent !gnuplot -p %<cr>
     augroup END
+
+" # cirodown
+
+    augroup Cirodown
+      autocmd BufNewFile,BufRead *.ciro set filetype=cirodown
+      autocmd FileType cirodown set shiftwidth=2 tabstop=2
+    augroup END

@@ -209,7 +209,7 @@ class RepeatCmd(gdb.Command):
     repeat-cmd <n> <cmd>
     """
     def __init__(self):
-        super().__init__(
+        super(self.__class__, self).__init__(
             'repeat-cmd',
             gdb.COMMAND_NONE,
             gdb.COMPLETE_NONE,

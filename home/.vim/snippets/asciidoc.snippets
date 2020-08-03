@@ -6,3 +6,10 @@ snippet lkmcx
 	https://cirosantilli.com/linux-kernel-module-cheat#`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`
 snippet xref
 	xref:`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`[]
+snippet xref2
+	xref2:`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`[]
+snippet <<
+	<<`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`>>
+snippet vid
+	.https://youtube.com/watch?v=`@+` ${1}
+	video::`@+`[youtube,height=400,width=600]
