@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# https://github.com/asciidoctor/asciidoctor-vscode
+code --install-extension asciidoctor.asciidoctor-vscode
