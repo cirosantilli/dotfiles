@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 # https://github.com/asciidoctor/asciidoctor-vscode
 code --install-extension asciidoctor.asciidoctor-vscode
+# https://github.com/VSCodeVim/Vim
+code --install-extension vscodevim.vim
+

@@ -2684,8 +2684,14 @@ export GIT_AUTHOR_DATE="$d"
     rec() (
       sleep 2
       #spd-say rec
-      recordmydesktop --stop-shortcut "Control+Mod1+z"
-      b
+      # Ctrl+Alt+Z
+      recordmydesktop --stop-shortcut "Control+Mod1+z" "$@"
+      spd-say done
+    )
+    recw() (
+      # Select window before recording.
+      # https://askubuntu.com/questions/153451/how-can-i-get-the-value-of-window-id/423568#423568
+      rec --windowid "$(xwininfo | grep 'id: 0x' | grep -Eo '0x[a-z0-9]+')"
     )
     screencast() {
       export PS1="$(printf "\033[1;31m%$(tput cols)s\033[0m" | tr ' ' '-')"'\n$ '
@@ -2932,7 +2938,8 @@ export GIT_AUTHOR_DATE="$d"
   export PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"
 
   ## pyenv
-  # TODO link to question
+  # https://stackoverflow.com/questions/10960805/apt-get-install-for-different-python-versions/59268046#59268046
+  # https://stackoverflow.com/questions/2812471/is-there-a-python-equivalent-of-rubys-rvm/59268119#59268119
   export PATH="${HOME}/.pyenv/bin:$PATH"
   if hash foo &> /dev/null; then
     eval "$(pyenv init -)"

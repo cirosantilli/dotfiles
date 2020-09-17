@@ -14,6 +14,8 @@ if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
     olds+=("$old")
     news+=("$new")
   done
+  # Save unstaged changes. Otherwise e.g. git commit --amend destroys them!
+  git stash
   git reset --hard "${news[0]}~"
   for old in "${olds[@]}"; do
     new="${oldnew[$old]}"
@@ -28,5 +30,7 @@ if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
       &>/dev/null \
     ;
   done
+  # Restore unstaged changes.
+  git stash apply
   echo
 fi
