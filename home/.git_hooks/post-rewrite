@@ -15,6 +15,8 @@ if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
     news+=("$new")
   done
   # Save unstaged changes. Otherwise e.g. git commit --amend destroys them!
+  # https://stackoverflow.com/questions/24520791/check-if-git-stash-stashed-anything/38785582#38785582
+  nstash="$(git stash list | wc -l)"
   git stash
   git reset --hard "${news[0]}~"
   for old in "${olds[@]}"; do
@@ -31,6 +33,8 @@ if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
     ;
   done
   # Restore unstaged changes.
-  git stash apply
+  if [ "$(git stash list | wc -l)" -ne "$nstash" ]; then
+    git stash apply
+  fi
   echo
 fi
