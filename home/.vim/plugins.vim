@@ -606,6 +606,13 @@
 
       " Ctrl-p
 
+  " Open in new tabs by default.
+  " https://github.com/kien/ctrlp.vim/issues/646
+  let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
+    \ 'AcceptSelection("t")': ['<cr>'],
+    \ }
+
 " # ack.vim
 
   " Vim ack integration

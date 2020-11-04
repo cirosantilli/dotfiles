@@ -363,6 +363,18 @@
     kdevelop
   )
   h() ( "$1" --help | less; )
+  inorun() (
+    # Run command whenever a given file or a file
+    # in the given directory changes.
+    # inorun <file> <cmd>...
+    file="$1"
+    shift
+    cmd="$@"
+    while true; do \
+      eval "$cmd"
+      inotifywait -qre close_write "$file"
+    done
+  )
   j() ( jobs "$@"; )
   L() ( locate -r "$1"; )
   lob() ( locate -br "$1"; )
@@ -2317,6 +2329,11 @@ export GIT_AUTHOR_DATE="$d"
     # It is better to `make` first without the sudo so that the generated build
     # will not be owned, or else it could only be cleaned with by sudo.
     alias mki='make install'
+    mkino() (
+      # Run make when any file in the directory changes.
+      # https://stackoverflow.com/questions/7539563/is-there-a-smarter-alternative-to-watch-make/23734495#23734495
+      inorun . make "$@"
+    )
     alias smki='sudo make install'
     alias mkir='make && sudo make install && make install-run'
     mkj() ( make -j"$(npro)" "$@")
@@ -2504,7 +2521,7 @@ export GIT_AUTHOR_DATE="$d"
     alias pyi='ipython'
     alias pyi3='ipython3'
     alias pyti='touch __init__.py'
-    alias pyserve='python -m SimpleHTTPServer'
+    alias pyserve='python3 -m http.server'
     alias pyjson='python -m json.tool'
     alias pydoc='python -m doctest'
     # http://stackoverflow.com/questions/24906126/how-to-unpack-pkl-file
@@ -2682,11 +2699,14 @@ export GIT_AUTHOR_DATE="$d"
   ## screencast
 
     # SILENCE YOUR MESSAGING APPS NOW!!!
+    # Ctrl+Alt+Z stops recording.
     rec() (
       sleep 2
       #spd-say rec
-      # Ctrl+Alt+Z
-      recordmydesktop --stop-shortcut "Control+Mod1+z" "$@"
+      # https://askubuntu.com/questions/4428/how-can-i-record-my-screen/4430#4430
+      #
+      # https://askubuntu.com/questions/1039299/ubuntu-16-04-nvidia-obs-studio-screen-flickering-gt1030
+      recordmydesktop --on-the-fly-encoding --stop-shortcut "Control+Mod1+z" "$@"
       spd-say done
     )
     recw() (
@@ -2942,7 +2962,7 @@ export GIT_AUTHOR_DATE="$d"
   # https://stackoverflow.com/questions/10960805/apt-get-install-for-different-python-versions/59268046#59268046
   # https://stackoverflow.com/questions/2812471/is-there-a-python-equivalent-of-rubys-rvm/59268119#59268119
   export PATH="${HOME}/.pyenv/bin:$PATH"
-  if hash foo &> /dev/null; then
+  if hash pyenv &> /dev/null; then
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
   fi

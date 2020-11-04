@@ -31,6 +31,7 @@
 " # modeline
 
   " If on, Vim will read options from one of the first comment `modelines` lines (default 5)
+
   " at the top of the file.
 
   " This is specially useful for setting filetypes on files without extension not shebang
@@ -155,7 +156,23 @@
 
 " Font size
 
+  " https://blog.codinghorror.com/progamming-fonts/
+  " https://stackoverflow.com/questions/1539861/what-is-the-good-gvim-guifont-for-c-c-programming/1543757
+  " On guifont=8 I spent 1 hour+ debugging a comma vs dot difference in fucking JavaScript!!!
+  " Critical pairs:
+  " - ,.: comma dot
+  " - Il: upper case I and lower case el
+  " - 0O: zero and oh
+  " el and I identical, command and dot too close, 74 lines visible. TODO what is the name of the default font?
+  " From guifong=* it looks a lot like MathJax vector_regular. Unless that one is being unrecognized as dummy.
   set guifont=8
+  " Fonts that are not installed get ignored, it's terrible.
+  "set guifont=Proggy\ 8
+  " 68 lines visible. Very narrow, 8 is also 74 line visible, but not confortable. TODO I can't find any font that
+  " is not super narrow and still differentiates characters!
+  "set guifont=Inconsolata\ 9
+  " Appears to be the same.
+  "set guifont=Consolas\ 9
 
 " # number
 

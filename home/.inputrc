@@ -4,6 +4,7 @@
 
 # By default EMACS-like shortcuts are provided.
 # Use vi instead.
+# https://unix.stackexchange.com/questions/4870/is-it-possible-to-have-vim-key-bindings-in-terminal
 set editing-mode vi
 set keymap vi
 
