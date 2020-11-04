@@ -1797,6 +1797,7 @@ ${2:-}
     )
     alias glsr='git ls-remote'
     alias glo='git log --decorate --pretty=fuller'
+    alias gloo='git log --oneline'
     glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
     gloG() ( git log --grep "$@" )
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
