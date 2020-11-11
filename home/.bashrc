@@ -1385,41 +1385,8 @@ ${2:-}
 
     ecry() (
       # Mount ecryptfs.
-      #
-      # Usage:
-      #
-      # ecryptfs-mount
-      # echo AAAA > ~/ecryptfs/aaaa
-      # echo BBBB > ~/ecryptfs/bbbb
-      # echo CCCC > ~/ecryptfs/cccc
-      #
-      # ecryptfs-umount
-      # ls -l ~/ecryptfs
-      # # Empty.
-      #
-      # ls -l ~/.ecryptfs-data
-      # # Three files. Timestamps leaked TODO prevent?
-      # # And the files are no 12KB each, so expect large bloat
-      # # for lots of small files like this.
-      # grep aaaa ~/.ecryptfs-data/*
-      # grep AAAA ~/.ecryptfs-data/*
-      # # No matches, encrypted.
-      #
-      # ecryptfs-mount
-      # # If you enter the wrong passwords, files just simply don't show.
-      # sudo cat /root/.ecryptfs/sig-cache.txt contains a list of known FNEK
-      # hashes which won't warn as unknown.
-
-      # To prevent "Filename Encryption Key (FNEK) Signature" confirmation every time:
-      # https://askubuntu.com/questions/860290/how-to-automatically-specify-the-filename-encryption-key-with-ecryptfs
-      # -o ecryptfs_fnek_sig=
-      # This depends on your password. TODO could it get cracked if published online with weak password?
-      # `cat /proc/mounts`
-
-      # https://wiki.archlinux.org/index.php/ECryptfs#Raw_mount_command
-      # Actual data.
+      # https://askubuntu.com/questions/104542/how-to-encrypt-individual-folders/1291482#1291482
       mkdir -m 700 -p ~/.ecryptfs-data
-      # Unencrypted mount.
       mkdir -m 500 -p ~/ecryptfs
 
       if ! mountpoint -q "$ECRYPTFS_DIR"; then
