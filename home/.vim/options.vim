@@ -149,6 +149,11 @@
     set undodir=$HOME/.vim/undo " Where to save undo histories
     set undolevels=1000         " How many undos
     set undoreload=10000        " Number of lines to save for undo
+    augroup Undofile
+      autocmd!
+      autocmd BufNewFile,BufRead ~/ecryptfs/* setlocal noundofile
+      autocmd BufNewFile,BufRead ~/Private/* setlocal noundofile
+    augroup END
 
 " Maintains at least 4 lines in view from the cursor
 

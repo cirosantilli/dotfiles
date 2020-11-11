@@ -29,6 +29,8 @@
     export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
       export DOTFILES_DCONF="${DOTFILES_REPO}/dconf.conf"
     export DOWNLOAD_DIR="$HOME/down"
+    export ECRYPTFS_DIR="$HOME/ecryptfs"
+    export ECRYPTFS_DATA_DIR="$HOME/.ecryptfs-data"
     export CIROSANTILLI_BIN_DIR="${HOME}/bin"
     export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
     export CIROSANTILLI_GIT_DIR="$HOME/git"
@@ -43,6 +45,9 @@
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
       export GAME_DIR="$MEDIA_DIR/game"
     export GOPATH="$HOME/.go"
+    export MNT_MEDIA_DIR="/media/${USER}"
+    # Unencrypted ext4.
+    export MNT_MEDIA_DIR_POLY8D="${MNT_MEDIA_DIR}/poly8d"
 
     # Single char shortcuts for directory structure.
 
@@ -330,8 +335,6 @@
     noh "$HOME/bin/eclipse/eclipse" "$@"
   )
   alias eip='curl ipecho.net/plain'
-  alias enmp='ecryptfs-mount-private'
-  alias enup='ecryptfs-umount-private'
   alias envg='env | grep -E'
   alias freefem="PATH=\"${PATH}:${CIROSANTILLI_FREEFEM_BIN_DIR}\" \"${CIROSANTILLI_FREEFEM_BIN_DIR}/FreeFem++\""
   files-to-markdown() (
@@ -1378,10 +1381,74 @@ ${2:-}
     alias ecp='echo "$PATH"'
     alias ecpt='echo "$PATH" | tr : "\n"'
 
+  ## ecryptfs
+
+    ecry() (
+      # Mount ecryptfs.
+      #
+      # Usage:
+      #
+      # ecryptfs-mount
+      # echo AAAA > ~/ecryptfs/aaaa
+      # echo BBBB > ~/ecryptfs/bbbb
+      # echo CCCC > ~/ecryptfs/cccc
+      #
+      # ecryptfs-umount
+      # ls -l ~/ecryptfs
+      # # Empty.
+      #
+      # ls -l ~/.ecryptfs-data
+      # # Three files. Timestamps leaked TODO prevent?
+      # # And the files are no 12KB each, so expect large bloat
+      # # for lots of small files like this.
+      # grep aaaa ~/.ecryptfs-data/*
+      # grep AAAA ~/.ecryptfs-data/*
+      # # No matches, encrypted.
+      #
+      # ecryptfs-mount
+      # # If you enter the wrong passwords, files just simply don't show.
+      # sudo cat /root/.ecryptfs/sig-cache.txt contains a list of known FNEK
+      # hashes which won't warn as unknown.
+
+      # To prevent "Filename Encryption Key (FNEK) Signature" confirmation every time:
+      # https://askubuntu.com/questions/860290/how-to-automatically-specify-the-filename-encryption-key-with-ecryptfs
+      # -o ecryptfs_fnek_sig=
+      # This depends on your password. TODO could it get cracked if published online with weak password?
+      # `cat /proc/mounts`
+
+      # https://wiki.archlinux.org/index.php/ECryptfs#Raw_mount_command
+      # Actual data.
+      mkdir -m 700 -p ~/.ecryptfs-data
+      # Unencrypted mount.
+      mkdir -m 500 -p ~/ecryptfs
+
+      if ! mountpoint -q "$ECRYPTFS_DIR"; then
+        sudo mount -t ecryptfs \
+          -o key=passphrase,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=yes \
+          "$ECRYPTFS_DATA_DIR" \
+          "$ECRYPTFS_DIR"
+      fi
+    )
+    ecryu() (
+      # unmount ecryptfs.
+      sudo umount "$ECRYPTFS_DIR"
+    )
+    ecryb() (
+      # backup
+      mkdir -p "${MNT_MEDIA_DIR_POLY8D}/.ecryptfs-data"
+      rsync -av --delete "${ECRYPTFS_DATA_DIR}/" "${MNT_MEDIA_DIR_POLY8D}/.ecryptfs-data/"
+      # TODO this sync takes a long time. 1GB data encrypted/unencrypted. sync times:
+      # unencrypted to unencrypted: 3m41.257s
+      # ecryptfs to raw ext4: 4m49.994s
+      time sync
+    )
+
   ## extract
 
     extract () {
-      # Decompress anything. https://xkcd.com/1168/
+      # Decompress anything. Don't delete compressed one. https://xkcd.com/1168/
+      # https://askubuntu.com/questions/338758/how-to-quickly-extract-all-kinds-of-archived-files-from-command-line
+      # https://unix.stackexchange.com/questions/316951/a-generic-command-to-extract-archive-files
       # TODO: add a decompress to stdout mode. Ones I know:
       # unzip -p >f
       case $1 in
@@ -1394,14 +1461,14 @@ ${2:-}
         *.rar)       rar x "$1";;
         *.tar)       tar xvf "$1";;
         *.tar.bz2)   tar xvjf "$1";;
-        *.bz2)       bunzip2 "$1";;
+        *.bz2)       bunzip2 --keep "$1";;
         *.tar.gz)    tar xvzf "$1";;
         *.gz)        gunzip --keep "$1";;
         *.tbz2)      tar xvjf "$1";;
         *.tgz)       tar xvzf "$1";;
         *.tar.xz)    unxz "$1"; extract "${1%.*}";;
         *.xz)        unxz "$1";;
-        *)           echo "error: unknown extension: $1";;
+        *)           echo "error: unknown extension: $1"; exit 1;;
       esac
     }
     alias ex='extract'
@@ -2332,7 +2399,7 @@ export GIT_AUTHOR_DATE="$d"
     mkino() (
       # Run make when any file in the directory changes.
       # https://stackoverflow.com/questions/7539563/is-there-a-smarter-alternative-to-watch-make/23734495#23734495
-      inorun . make "$@"
+      inorun . make -j`nproc` "$@"
     )
     alias smki='sudo make install'
     alias mkir='make && sudo make install && make install-run'
