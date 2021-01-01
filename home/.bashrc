@@ -31,6 +31,7 @@
     export DOWNLOAD_DIR="$HOME/down"
     export ECRYPTFS_DIR="$HOME/ecryptfs"
     export ECRYPTFS_DATA_DIR="$HOME/.ecryptfs-data"
+    export LUKS_DIR="$HOME/luks"
     export CIROSANTILLI_BIN_DIR="${HOME}/bin"
     export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
     export CIROSANTILLI_GIT_DIR="$HOME/git"
@@ -169,6 +170,7 @@
 \[\033[01;32m\]@\
 \[\033[01;34m\]\h\
 \[\033[00m\]\$ "
+    #export PROMPT_COMMAND='history -a' #this command is executed once when shell is ready
 
     ## Bash history
 
@@ -180,14 +182,16 @@
       export HISTFILESIZE=10000000
       #export HISTFILE=~/.new_bash_history
       export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S '
-      # Expressions that match will not be put on ~/.bash_history
+      # Expressions that match will not be put on ~/.bash_history and
+      # not saved on live session memory either.
       # and will not reappear on current bash session after <UP>.
       # TODO ignore anything that contains only whitespace, not just space.
       # Could be achieved with `HISTCONTROL=ignorespace`, but I copy paste
       # from Markdown indented code blocks too often. ` *` does not work
       # as it is BRE that does the same as `ignorespace.`
-      export HISTIGNORE=' :  :   :    :ls:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*'
-      #export PROMPT_COMMAND='history -a' #this command is executed once when shell is ready
+      #export HISTIGNORE=' :  :   :    :ls:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*'
+      # Disable bash history.
+      unset HISTFILE
 
   ## OSX
   export CLICOLOR=1
@@ -298,9 +302,17 @@
   }
   alias cla11='clang++ -std=c++11'
   check-ip() ( curl 'http://checkip.amazonaws.com'; )
-  # dD a.img X
-  # sudo dd if=a.img of=/dev/sdX
+  count() (
+    i=0
+    while true; do
+      echo "$i"
+      sleep 1
+      i="$(($i+1))"
+    done
+  )
   dD() (
+    # dD a.img X
+    # sudo dd if=a.img of=/dev/sdX
     if [ ! "$#" -eq 2 ]; then
       echo 'error'
       exit 1
@@ -342,11 +354,18 @@
     for f in "$@"; do
       echo "$f"
       echo
-      sed -r 's/^/    /' "$f"
+      echo '```'
+      cat "$f"
+      echo '```'
       echo
     done
   )
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
+  generate-password() (
+    # https://unix.stackexchange.com/questions/230673/how-to-generate-a-random-string
+    </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c "${1:-25}"
+    echo
+  )
   alias gnup='gnuplot -p'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   kdev() (
@@ -366,6 +385,14 @@
     kdevelop
   )
   h() ( "$1" --help | less; )
+  inks() (
+    # SVG to PNG, white background.
+    # https://stackoverflow.com/questions/9853325/how-to-convert-a-svg-to-a-png-with-imagemagick
+    # https://superuser.com/questions/598849/imagemagick-convert-how-to-produce-sharp-resized-png-files-from-svg-files
+    f="$1"
+    h="$2"
+    inkscape -b FFF -e "${f%.*}.png" -h "$h" "$f"
+  )
   inorun() (
     # Run command whenever a given file or a file
     # in the given directory changes.
@@ -476,7 +503,6 @@
   alias rl='readlink'
   alias rlf='readlink -f'
   rlw() ( readlink -f "$(which "$1")" )
-  viw() ( v "$(which "$1")" )
   # Run N times. Parallel programming tests.
   runn() {
     n="$1"
@@ -1210,18 +1236,30 @@ ${2:-}
     scrsr() ( "$(which screen-tty-root)" "$@"; )
     scrusb() ( screen "/dev/ttyUSB${1:-0}" "${2:-115200}"; )
 
-    losl() (
-      # List what each loop device is bound to.
-      sudo losetup -l
-    )
-    loop-mount-partitions() (
+    los() (
+      # loop mount all partitions of a given image.
+      #
       # Works both on multi and single partition images.
-      # https://askubuntu.com/questions/69363/mount-single-partition-from-image-of-entire-disk-device/673257#673257
-      # https://superuser.com/questions/117136/how-can-i-mount-a-partition-from-dd-created-image-of-a-block-device-e-g-hdd-u/972020#972020
-      # https://stackoverflow.com/questions/1419489/loopback-mounting-individual-partitions-from-within-a-file-that-contains-a-parti/39675265#39675265
-      # https://superuser.com/questions/211338/mounting-a-multi-partition-disk-image-in-linux/1263401#1263401
-      # https://unix.stackexchange.com/questions/87183/creating-formatted-partition-from-nothing/229219#229219
-      # https://unix.stackexchange.com/questions/9099/reading-a-filesystem-from-a-whole-disk-image/229218#229218
+      #
+      # Usage:
+      #
+      #     los file.img
+      #
+      # This outputs someting like:
+      #
+      #     5
+      #     /mnt/loop5p1
+      #     /mnt/loop5p2
+      #
+      # which indicates that the image had two partitions, and they are now mounted
+      # at /mnt/loop5p1 and /mnt/loop5p2.
+      #
+      # - https://askubuntu.com/questions/69363/mount-single-partition-from-image-of-entire-disk-device/673257#673257
+      # - https://superuser.com/questions/117136/how-can-i-mount-a-partition-from-dd-created-image-of-a-block-device-e-g-hdd-u/972020#972020
+      # - https://stackoverflow.com/questions/1419489/loopback-mounting-individual-partitions-from-within-a-file-that-contains-a-parti/39675265#39675265
+      # - https://superuser.com/questions/211338/mounting-a-multi-partition-disk-image-in-linux/1263401#1263401
+      # - https://unix.stackexchange.com/questions/87183/creating-formatted-partition-from-nothing/229219#229219
+      # - https://unix.stackexchange.com/questions/9099/reading-a-filesystem-from-a-whole-disk-image/229218#229218
       set -e
       img="$1"
       dev="$(sudo losetup --show -f -P "$img")"
@@ -1237,7 +1275,21 @@ ${2:-}
         sudo mount "$part" "$dst"
       done
     )
-    loop-unmount-partitions() (
+    losl() (
+      # List what each loop device is bound to.
+      sudo losetup -l
+    )
+    losu() (
+      # Cleanup mounts and loop devices after `los`.
+      #
+      # `los` prints the loop number as in:
+      #
+      #     38
+      #     /mnt/loop38p1
+      #
+      # So to clean up afterwards, you can do:
+      #
+      #     losu 38
       set -e
       for loop_id in "$@"; do
         dev="/dev/loop${loop_id}"
@@ -1401,13 +1453,36 @@ ${2:-}
       sudo umount "$ECRYPTFS_DIR"
     )
     ecryb() (
+      ecry
       # backup
-      mkdir -p "${MNT_MEDIA_DIR_POLY8D}/.ecryptfs-data"
-      rsync -av --delete "${ECRYPTFS_DATA_DIR}/" "${MNT_MEDIA_DIR_POLY8D}/.ecryptfs-data/"
+      rsync -av --delete "${ECRYPTFS_DIR}/" "${MNT_MEDIA_DIR_POLY8D}/ecryptfs/"
       # TODO this sync takes a long time. 1GB data encrypted/unencrypted. sync times:
       # unencrypted to unencrypted: 3m41.257s
       # ecryptfs to raw ext4: 4m49.994s
       time sync
+    )
+
+  ## luks partition
+
+    luks() (
+      set -e
+      if ! mountpoint -q "$LUKS_DIR"; then
+        sudo cryptsetup luksOpen /dev/sda2 myluks
+        sudo mkdir -p "$LUKS_DIR"
+        sudo chown "${USER}:${USER}" "$LUKS_DIR"
+        sudo mount /dev/mapper/myluks "$LUKS_DIR"
+      fi
+    )
+    luksb() (
+      luks
+      tgt="${MNT_MEDIA_DIR_POLY8D}/luks/bak"
+      mkdir -p "$tgt"
+      rsync -av --delete "${LUKS_DIR}/bak/" "${tgt}/"
+      time sync
+    )
+    luksu() (
+      sudo umount "$LUKS_DIR"
+      sudo cryptsetup luksClose myluks
     )
 
   ## extract
@@ -1501,6 +1576,14 @@ ${2:-}
           "${f%.*}.ogv" \
         ;
       done
+    )
+
+    ffmpeg-audio-to-image() (
+      # https://stackoverflow.com/questions/4468157/how-can-i-create-a-waveform-image-of-an-mp3-in-linux/63869342#63869342
+      f="$1"
+      ffmpeg -i "$f" -f lavfi -i color=c=black:s=640x320 -filter_complex \
+        "[0:a]showwavespic=s=640x320:colors=white[fg];[1:v][fg]overlay=format=auto" \
+        -frames:v 1 "${f%.*}.png"
     )
 
   ## Firefox
@@ -2724,8 +2807,9 @@ export GIT_AUTHOR_DATE="$d"
   ## raspberry pi
 
     # Exit with: Ctrl + A then backslash '\'.
-    piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3; )
-    pissh() ( sshpass -p raspberry ssh "pi@$(piip)"; )
+    piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3 | head -n1 )
+    pissh() ( sshpass -p raspberry pisshp )
+    pisshp() ( ssh "pi@$(piip)" )
     pivin() (
       vinagre "$(piip)"
     )
@@ -2868,6 +2952,7 @@ export GIT_AUTHOR_DATE="$d"
     vg() ( v '.gitignore'; )
     vr() ( v 'README.md'; )
     vw() ( v "$(which "$1")"; )
+    vn() ( vim -u NONE "$@"; )
 
   ## wget
 

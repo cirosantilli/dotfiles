@@ -149,10 +149,18 @@
     set undodir=$HOME/.vim/undo " Where to save undo histories
     set undolevels=1000         " How many undos
     set undoreload=10000        " Number of lines to save for undo
-    augroup Undofile
+    augroup Private
       autocmd!
       autocmd BufNewFile,BufRead ~/ecryptfs/* setlocal noundofile
       autocmd BufNewFile,BufRead ~/Private/* setlocal noundofile
+      execute 'autocmd BufUnload ' . $LUKS_DIR . 'echo expand("%")'
+    augroup END
+
+    augroup MyVimLeavePre
+      autocmd!
+      " TODO not firing.
+      " https://vi.stackexchange.com/questions/8869/autocmd-vimleave-event-not-firing
+      "autocmd VimLeavePre call writefile([strftime('%c')], $HOME . '/.vim/test', 'w')
     augroup END
 
 " Maintains at least 4 lines in view from the cursor
@@ -700,6 +708,24 @@
       "autocmd!
       "autocmd! CursorHoldI,CursorHold,BufLeave * if g:AutoSaveOn | silent! :update | endif
   "augroup END
+  "
+" Change dirctory automatically to the current dir:
+let g:netrw_keepdir=0
+
+" # gx
+
+  " Open URL (local file / internet) under cursor using appropriate program.
+
+  " This is decided by the netrw built-in plugin.
+
+  " Uses netrw.
+
+  " Configured with:
+
+      let g:netrw_browsex_viewer = 'setsid xdg-open'
+
+  " setsid Ubuntu 17.10 GVIM GNOME:
+  " https://vi.stackexchange.com/questions/5032/gx-not-opening-url-in-gvim-but-works-in-terminal/5034#5034
 
 " # highlight
 
@@ -839,9 +865,6 @@ set grepprg=grep\ -HIRns\ $*
 
 " Semicolon makes vim search all parent directories, don't remove it.
 set tags=tags;
-
-" Change dirctory automatically to the current dir:
-let g:netrw_keepdir=0
 
 " http://stackoverflow.com/questions/12243233/how-to-auto-load-cscope-out-in-vim
 augroup Cscope

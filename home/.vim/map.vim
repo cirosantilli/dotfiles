@@ -769,21 +769,6 @@
 
         " help path
 
-    " # gx
-
-      " Open URL (local file / internet) under cursor using appropriate program.
-
-      " This is decided by the netrw built-in plugin.
-
-      " Uses netrw.
-
-      " Configured with:
-
-          let g:netrw_browsex_viewer = 'setsid xdg-open'
-
-      " setsid Ubuntu 17.10 GVIM GNOME:
-      " https://vi.stackexchange.com/questions/5032/gx-not-opening-url-in-gvim-but-works-in-terminal/5034#5034
-
     " # gt
 
       " Go to the first tab:
