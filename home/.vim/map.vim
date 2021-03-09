@@ -1047,6 +1047,7 @@
     " very magic is more useful than normal:
 
       nn / /\v
+      nn ? ?\v
 
   " # directionals
 

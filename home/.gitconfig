@@ -50,6 +50,8 @@
 	program = gpg2
 [http]
 	cookiefile = ~/.gitcookies
+[init]
+	defaultBranch = master
 [merge]
 	tool = cirosantilli-mergetool
 [mergetool]

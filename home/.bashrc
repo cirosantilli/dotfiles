@@ -29,6 +29,7 @@
     export DOTFILES_REPO="$HOME/.homesick/repos/dotfiles"
       export DOTFILES_DCONF="${DOTFILES_REPO}/dconf.conf"
     export DOWNLOAD_DIR="$HOME/down"
+      export BITCOIN_DOWN_DIR="${DOWNLOAD_DIR}/bitcoin"
     export ECRYPTFS_DIR="$HOME/ecryptfs"
     export ECRYPTFS_DATA_DIR="$HOME/.ecryptfs-data"
     export LUKS_DIR="$HOME/luks"
@@ -46,9 +47,10 @@
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
       export GAME_DIR="$MEDIA_DIR/game"
     export GOPATH="$HOME/.go"
-    export MNT_MEDIA_DIR="/media/${USER}"
-    # Unencrypted ext4.
-    export MNT_MEDIA_DIR_POLY8D="${MNT_MEDIA_DIR}/poly8d"
+    export HD_DIR="/mnt/sda3"
+      # Unencrypted ext4.
+      export MNT_MEDIA_DIR_POLY8D="${MNT_MEDIA_DIR}/poly8d"
+      export BITCOIN_DATA_DIR="${HD_DIR}/.bitcoin"
 
     # Single char shortcuts for directory structure.
 
@@ -103,8 +105,7 @@
       PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${ANDROID_NDK}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${PATH}"
       PATH="/usr/local/heroku/bin:$PATH"
       PATH="./node_modules/.bin:$PATH"
-      PATH="$PATH:$HOME/.rvm/bin"
-      PATH="$PATH:$HOME/anaconda2/bin"
+      PATH="${BITCOIN_DOWN_DIR}/bin:$PATH"
 
       # osx vim
       if [ -x '/Applications/MacVim.app/Contents/MacOS/Vim' ]; then
@@ -122,6 +123,8 @@
 
       # https://github.com/cirosantilli/runlinux
       PATH="$PATH:$PROGRAM_DIR/runlinux"
+      PATH="$PATH:$HOME/.rvm/bin"
+      PATH="$PATH:$HOME/anaconda2/bin"
 
       export PATH
 
@@ -189,7 +192,7 @@
       # Could be achieved with `HISTCONTROL=ignorespace`, but I copy paste
       # from Markdown indented code blocks too often. ` *` does not work
       # as it is BRE that does the same as `ignorespace.`
-      #export HISTIGNORE=' :  :   :    :ls:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*'
+      #export HISTIGNORE=' :  :   :    :ls:ll:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*:luks*:torbrowser:vn *:'
       # Disable bash history.
       unset HISTFILE
 
@@ -361,11 +364,6 @@
     done
   )
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
-  generate-password() (
-    # https://unix.stackexchange.com/questions/230673/how-to-generate-a-random-string
-    </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c "${1:-25}"
-    echo
-  )
   alias gnup='gnuplot -p'
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   kdev() (
@@ -993,6 +991,36 @@
         M='-M intel,x86-64'
       fi
       "$(arch-to-prefix "$arch")-objdump" -D -b binary $M -m $machine "$f"
+    )
+
+  ## Bitcoin
+
+    btc() (
+      bitcoin-cli -datadir="$BITCOIN_DATA_DIR" "$@"
+    )
+    btcq() (
+      noh bitcoin-qt -datadir="$BITCOIN_DATA_DIR" "$@"
+    )
+    bitcoin-tx-in-scripts() (
+      for h in "$@"; do
+        # Dump data contained in out scripts. Remove first 3 last 2 bytes of
+        # standard transaction boilerplate.
+        curl "https://blockchain.info/tx/${h}?format=json" |
+          jq '.inputs[].script' |
+          sed 's/"76a914//;s/88ac"//' |
+          xxd -r -p > "${h}.bin"
+      done
+    )
+
+    bitcoin-tx-out-scripts() (
+      for h in "$@"; do
+        # Dump data contained in out scripts. Remove first 3 last 2 bytes of
+        # standard transaction boilerplate.
+        curl "https://blockchain.info/tx/${h}?format=json" |
+          jq '.out[].script' |
+          sed 's/"76a914//;s/88ac"//' |
+          xxd -r -p > "${h}.bin"
+      done
     )
 
   ## Buildroot
@@ -1746,6 +1774,31 @@ ${2:-}
       gdb-multiarch -batch -ex "disassemble/rs ${2:-main}" "$1"
     )
 
+  ## generate-password
+
+    generate-password() (
+      # https://unix.stackexchange.com/questions/230673/how-to-generate-a-random-string
+      </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c "${1:-25}"
+      echo
+    )
+    generate-password-alpha() (
+      # https://unix.stackexchange.com/questions/230673/how-to-generate-a-random-string
+      </dev/urandom tr -dc 'A-Za-z0-9' | head -c "${1:-25}"
+      echo
+    )
+    generate-username() (
+      min=${1:-10}
+      max=${2:-20}
+      </dev/urandom tr -dc 'A-Za-z0-9' | head -c "$(($min+$RANDOM%$(($max-$min+1))))"
+      echo
+    )
+    generate-password-obfuscate() (
+      min=${1:-20}
+      max=${2:-30}
+      </dev/urandom tr -dc 'A-Za-z0-9!@#$%^&*()_' | head -c "$(($min+$RANDOM%$(($max-$min+1))))"
+      echo
+    )
+
   ## GNU changelogs from Git
 
     # Helper.
@@ -2065,6 +2118,7 @@ ${2:-}
       new_email="$2"
       first_commit="$3"
       last_commit="${4:-HEAD}"
+      FILTER_BRANCH_SQUELCH_WARNING=1 \
       git filter-branch --env-filter "
         OLD_EMAIL='${old_email}'
         CORRECT_EMAIL='${new_email}'
@@ -2845,7 +2899,8 @@ export GIT_AUTHOR_DATE="$d"
     sst() ( sudo service "$1" status; )
     ssta() ( sudo service --status-all; )
     alias ssra='sudo service apache2 restart'
-    alias ssrn='sudo service network-manager restart'
+    # https://superuser.com/questions/1423959/ubuntu-server-fail-to-restart-networking-service-unit-network-service-not-foun#comment2480939_1502414
+    alias ssrn='sudo service NetworkManager restart'
     alias ssrl='sudo service lightdm restart'
 
     # Edit /etc/exports and then run this.
@@ -3103,6 +3158,12 @@ export GIT_AUTHOR_DATE="$d"
 
   # Torch
   f=/mnt/hd/git/torch/install/bin/torch-activate
+  [ -f "$f" ] && . "$f"
+
+  # Rust
+  # Installed with:
+  # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  f="$HOME/.cargo/env"
   [ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.

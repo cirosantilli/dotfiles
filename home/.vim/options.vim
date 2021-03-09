@@ -708,7 +708,13 @@
       "autocmd!
       "autocmd! CursorHoldI,CursorHold,BufLeave * if g:AutoSaveOn | silent! :update | endif
   "augroup END
-  "
+
+" # netrw. AKA BUGGY HELLHOLE.
+
+  " Workaround, things broke after updating to Ubuntu 20.10:
+  " https://vi.stackexchange.com/questions/22459/gx-doesnt-open-the-url-and-complains-netrw-no-line-in-buffer/22505#22505
+  nnoremap gx :!xdg-open <cWORD> &<CR><CR>
+
 " Change dirctory automatically to the current dir:
 let g:netrw_keepdir=0
 

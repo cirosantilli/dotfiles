@@ -1,0 +1,2 @@
+# https://stackoverflow.com/questions/6240887/how-can-i-make-ipdb-show-more-lines-of-context-while-debugging/66474153#66474153
+context = 30
