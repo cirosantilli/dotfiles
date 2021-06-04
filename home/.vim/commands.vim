@@ -203,7 +203,7 @@ function! CToCppComments()
   silent! %s/\v( |)\*\///
 endfunction
 command! CToCppComments call CToCppComments()
-command! TrailingSpace %s/\v\s+$//
+command! -range=% TrailingSpace <line1>,<line2>s/\v\s+$//
 command! BashMultiline s/ -/ \\\r  -/g
 command! BashMultilinePos s/ / \\\r  /g
 

@@ -63,9 +63,9 @@ augroup END
 
     augroup Javascript
       autocmd!
-      autocmd FileType coffee setlocal shiftwidth=2 tabstop=2
+      autocmd BufEnter,BufNew *.ciro setlocal expandtab shiftwidth=2 tabstop=2
       autocmd FileType coffee call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("coffee " . expand(''%''))<cr>')
-      autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+      autocmd FileType coffee,javascript,typescript,typescriptreact setlocal expandtab shiftwidth=2 tabstop=2
       autocmd FileType javascript call MapAllBuff('<F6>', ':write<cr>:call RedirStdoutNewTabSingle("node " . expand(''%''))<cr>')
       autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
     augroup END

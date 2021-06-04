@@ -104,7 +104,8 @@
       PATH="$DEVBIN:$PATH"
       PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${ANDROID_NDK}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${PATH}"
       PATH="/usr/local/heroku/bin:$PATH"
-      PATH="./node_modules/.bin:$PATH"
+      # This is bad for reproducibility.
+      #PATH="./node_modules/.bin:$PATH"
       PATH="${BITCOIN_DOWN_DIR}/bin:$PATH"
 
       # osx vim
@@ -192,7 +193,7 @@
       # Could be achieved with `HISTCONTROL=ignorespace`, but I copy paste
       # from Markdown indented code blocks too often. ` *` does not work
       # as it is BRE that does the same as `ignorespace.`
-      #export HISTIGNORE=' :  :   :    :ls:ll:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*:luks*:torbrowser:vn *:'
+      #export HISTIGNORE=' :  :   :    :ls:ll:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*:luks*:torbrowser:vn *:o *:less *:eog *'
       # Disable bash history.
       unset HISTFILE
 
@@ -1180,6 +1181,10 @@ ${2:-}
     b() ( cirosantilli-beep "$@" )
     bits() ( cirosantilli-bits "$@" )
 
+  ## cirodown
+
+    ci() ( cirodown . )
+
   ## Chromium
 
     chr() ( noh chromium-browser "$@"; )
@@ -1562,7 +1567,10 @@ ${2:-}
     # Concatenate two files.
     # ffmpeg-cat in1.ogv in2.ogv out.ogv
     ffmpeg-cat() (
-      ffmpeg -i concat:"$1|$2" -c copy "$3"
+      #echo ffmpeg -i concat:"$1|$2" -c copy "$3"
+      # Broken Ubuntu 20.10: https://stackoverflow.com/questions/49686244/ffmpeg-too-many-packets-buffered-for-output-stream-01
+      echo ffmpeg -f -i "$1" -i "$2" -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" "$3"
+      #ffmpeg    -i "$1" -i "$2" -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" output.mkv
     )
 
     # Trim a file.
@@ -1915,8 +1923,6 @@ ${2:-}
     alias gcn='git config'
     alias gcng='git config --global'
     alias gcngh='git config user.email "ciro.santilli@gmail.com"'
-    # Git config anti-commie.
-    alias gcnac='git config user.name "Ciro Santilli 六四事件 法轮功"'
     gcp() ( git cherry-pick "$@" )
     gcpa() ( gcp --abort "$@" )
     gdf() ( git diff "$@" )
@@ -1981,11 +1987,10 @@ ${2:-}
     alias glo='git log --decorate --pretty=fuller'
     alias gloo='git log --oneline'
     glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
-    gloG() ( git log --grep "$@" )
+    gloG() ( git log -p -G "$@" )
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
     alias glogs='git log --abbrev-commit --decorate --graph --pretty=oneline --simplify-by-decoration'
-    gloG() ( glo --grep "$@" )
     alias glom='git log --author="$(git config user.name)"'
     alias glop='glo -p'
     glops() (
@@ -2064,7 +2069,11 @@ ${2:-}
     alias grtv='git remote -v'
     alias grtr='git remote rename'
     alias grtro='git remote rename origin'
-    grtrou() ( git remote rename origin up && git remote add origin "$1" && git branch --set-upstream-to 'origin/master'; )
+    grtrou() (
+      git remote rename origin up &&
+        git remote add origin "$1" &&
+        git branch --set-upstream-to origin master
+    )
     grtrhs() (
       # HTTP to SSH
       old_origin="$(git remote -v | awk '/^origin\t/' | head -n1 | awk '{ print $2; }')"
@@ -2140,6 +2149,10 @@ ${2:-}
       git commit -m "$d"
     )
 
+    git-email-ccp() (
+      git config user.name "Ciro Santilli 六四事件 法轮功"
+    )
+
     git-install-hooks() (
       set -e
       # Per repository workaround because hooksPath is not good enough.
@@ -2153,7 +2166,7 @@ ${2:-}
       # Set the time of all commits in inclusive range to midnight. Keep date.
       first_commit="$1"
       last_commit="${2:-HEAD}"
-      git filter-branch --env-filter '
+      FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter '
 d="$(echo "$GIT_COMMITTER_DATE" | sed "s/T.*//")T00:00:00+0000)"
 export GIT_COMMITTER_DATE="$d"
 export GIT_AUTHOR_DATE="$d"
@@ -2171,6 +2184,21 @@ export GIT_AUTHOR_DATE="$d"
       fi
     )
 
+    git-rebase-refs() (
+      "$(git-toplevel)"
+    )
+
+    git-restore-file() (
+      # Restore deleted file to its latest version.
+      # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
+      git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
+    )
+
+    git-setup() (
+      git-email-ccp
+      git-install-hooks
+    )
+
     git-tab-to-space() (
       d="$(mktemp -d)"
       # https://stackoverflow.com/questions/11094383/how-can-i-convert-tabs-to-spaces-in-every-file-of-a-directory/52136507#52136507
@@ -2183,16 +2211,6 @@ export GIT_AUTHOR_DATE="$d"
         '{}' "$d" \
       ;
       rmdir "$d"
-    )
-
-    git-rebase-refs() (
-      "$(git-toplevel)"
-    )
-
-    git-restore-file() (
-      # Restore deleted file to its latest version.
-      # http://stackoverflow.com/questions/953481/restore-a-deleted-file-in-a-git-repo
-      git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
     )
 
     git-toplevel() ( git rev-parse --show-toplevel )
@@ -2680,9 +2698,13 @@ export GIT_AUTHOR_DATE="$d"
 
   ## npm
 
+    npmb() ( npmr build "$@" )
+    npmd() ( npmr dev "$@" )
     npmi() ( npm install "$@" )
     npmis() ( npm install "$@" )
+    npmr() ( npm run "$@" )
     npms() ( npm start "$@" )
+    npmt() ( npm test "$@" )
 
   ## python
 
@@ -2938,6 +2960,10 @@ export GIT_AUTHOR_DATE="$d"
       cur_offset=$(($cur_offset + $partition_size_1))
     )
 
+  ## systemctl
+
+    sct () ( sudo systemctl "" )
+
   ## svn
 
     # http://stackoverflow.com/questions/239340/automatically-remove-subversion-unversioned-files/239358#239358
@@ -3004,10 +3030,10 @@ export GIT_AUTHOR_DATE="$d"
   ## vim
 
     v() ( gvim-remote "$@"; )
-    vg() ( v '.gitignore'; )
-    vr() ( v 'README.md'; )
-    vw() ( v "$(which "$1")"; )
-    vn() ( vim -u NONE "$@"; )
+    vimg() ( v '.gitignore'; )
+    vimr() ( v 'README.md'; )
+    vimw() ( v "$(which "$1")"; )
+    vimn() ( vim -u NONE "$@"; )
 
   ## wget
 
@@ -3119,6 +3145,7 @@ export GIT_AUTHOR_DATE="$d"
   ## NVM
   # https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm/971612#971612
   #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  # nvm install --lts
   f="$HOME/.nvm/nvm.sh"
   if [ -r "$f" ]; then
     . "$f" &>'/dev/null'

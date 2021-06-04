@@ -146,8 +146,13 @@ if $full; then
     nvm use --lts
 
     # https://rvm.io/rvm/install
+    #
+    # Ubuntu 20.10
+    # https://unix.stackexchange.com/questions/399027/gpg-keyserver-receive-failed-server-indicated-a-failure/632238#632238
+    # gpgconf --kill dirmngr
     gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
     \curl -sSL https://get.rvm.io | bash -s stable --ruby
+    bundle update --bundler
 
     # Go
     # https://askubuntu.com/questions/959932/installation-instructions-for-golang-1-9-into-ubuntu-16-04/1075726#1075726
