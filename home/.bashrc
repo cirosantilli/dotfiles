@@ -8,6 +8,7 @@
         export ANDROID_DIR="$PROGRAM_DIR/android-cheat"
         export ART_DIR="$PROGRAM_DIR/art"
         export BASH_DIR="$PROGRAM_DIR/bash-cheat"
+        export CHINA_DICTATORSHIP_DIR="$PROGRAM_DIR/china-dictatorship"
         export CPP_DIR="$PROGRAM_DIR/cpp-cheat"
         export DEVBIN="$PROGRAM_DIR/devbin"
         export LATEX_BIN_DIR="$PROGRAM_DIR/latex"
@@ -1134,7 +1135,8 @@ ${2:-}
     C() { cd; }
     alias cda='c "$ART_DIR"'
     alias cdA='c "$ANDROID_DIR"'
-    alias cdc='c "$CPP_DIR"'
+    alias cdc='c "$CHINA_DICTATORSHIP_DIR"'
+    alias cdC='c "$CPP_DIR"'
     alias cdD='c "$DOWNLOAD_DIR" && lfl'
     # cd Dot
     alias cdd='c ..'
@@ -3034,6 +3036,11 @@ export GIT_AUTHOR_DATE="$d"
     vimr() ( v 'README.md'; )
     vimw() ( v "$(which "$1")"; )
     vimn() ( vim -u NONE "$@"; )
+    vimp() (
+      # Privacy focused vim session.
+      # Play with fire.
+      vim -u "${HOME}/.vimrc.private" "$@"
+    )
 
   ## wget
 

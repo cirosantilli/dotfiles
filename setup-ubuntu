@@ -93,7 +93,11 @@ telegram-desktop \
 fi
 
 sudo apt install -y $pkgs
-sudo snap install $snaps
+for snap in $snaps; do
+  # 21.04
+  # https://askubuntu.com/questions/1008731/how-to-install-multiple-snaps-simultaneously/1344260#1344260
+  sudo snap install $snap
+done
 if $gui; then
   sudo snap install pycharm-community --classic
 fi

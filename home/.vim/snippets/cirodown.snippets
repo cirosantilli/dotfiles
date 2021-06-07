@@ -1,2 +1,4 @@
+snippet {p
+	{parent=`substitute(tolower(@+), '[^a-z0-9_]\\+', '-', 'g')`}
 snippet \x
-	\\x[`substitute(tolower(@+), '[^a-z0-9_]\+', '-', 'g')`]
+	\\x[`substitute(tolower(@+), '[^a-z0-9_]\\+', '-', 'g')`]
