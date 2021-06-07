@@ -215,6 +215,8 @@
 
   " - fork, more active.
 
+      let g:snipMate = {}
+      let g:snipMate.snippet_version = 1
       Plugin 'MarcWeber/vim-addon-mw-utils'
       Plugin 'tomtom/tlib_vim'
       Plugin 'garbas/vim-snipmate'

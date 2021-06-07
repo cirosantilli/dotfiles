@@ -3,15 +3,10 @@
 set -ex
 script_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
 
-full=false
 gui=true
-full=false
 setup_home_partition=true
 while getopts fgh OPT; do
   case "$OPT" in
-    f)
-      full=true
-      ;;
     g)
       gui=false
       ;;
@@ -27,8 +22,10 @@ done
 sudo apt-get update
 # For add-apt-repository
 sudo apt install software-properties-common
-sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
-sudo add-apt-repository "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
+sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
+sudo add-apt-repository -y "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
+
+snaps=""
 
 pkgs="\
 cscope \
@@ -37,6 +34,8 @@ expect \
 exuberant-ctags \
 git \
 git-email \
+python \
+python3-pip \
 moreutils \
 tmux \
 vim \
@@ -47,17 +46,29 @@ if $gui; then
 acpi \
 apt-file \
 apt-rdepends \
+docker \
+ibus-pinyin \
+net-tools \
 ppa-purge \
+vlc \
+"
+
+  snaps="$snaps \
+signal-desktop \
+telegram-desktop \
 "
 
   # Usefull stuff that does not come by default or Canonical would have to pay royalties.
   # MANUAL accept ncurses confirmation
+  # https://askubuntu.com/questions/16225/how-can-i-accept-the-microsoft-eula-agreement-for-ttf-mscorefonts-installer/25614#25614
+  echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
   pkgs="$pkgs ubuntu-restricted-extras"
 
   # Browser
   pkgs="$pkgs chromium-browser"
   # 14.04
-  pkgs="$pkgs flashplugin-installer"
+  # 14.04 < 21.04
+  #pkgs="$pkgs flashplugin-installer"
 
   # X utils
   pkgs="$pkgs wmctrl xbacklight xsel"
@@ -67,7 +78,9 @@ ppa-purge \
   # http://askubuntu.com/questions/33260/difference-between-vim-gtk-and-vim-gnome
   #pkgs="$pkgs vim-gtk"
   #" < 17.04
-  pkgs="$pkgs vim-gnome"
+  #pkgs="$pkgs vim-gnome"
+  #" > 21.04
+  pkgs="$pkgs vim-gtk"
 
   # LXCE does not have a toolbar.
   # https://askubuntu.com/questions/69556/how-to-check-battery-status-using-terminal
@@ -77,23 +90,29 @@ ppa-purge \
   wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
   sudo sh -c 'echo "deb http://dl.google.com/linux/talkplugin/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
   pkgs="$pkgs google-talkplugin"
-
-  # chinese-input
-  pkgs="$pkgs ibus-pinyin"
-
-  if $full; then
-    pkgs="$pkgs net-tools vlc"
-    # python
-    pkgs="$pkgs python-pip"
-    pkgs="$pkgs openjdk-8-dbg openjdk-8-jdk"
-    pkgs="$pkgs docker"
-  fi
 fi
 
 sudo apt install -y $pkgs
+sudo snap install $snaps
+if $gui; then
+  sudo snap install pycharm-community --classic
+fi
+
+## System settings.
+
+# Not needed and privacy concern.
+# https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux
+sudo swapoff -a
+sudo sed -i '/\tswap\t/d' /etc/fstab
+sed /fstab
 
 # sudo without password.
 sudo sh -c "echo '$(id -un) ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+
+# Disable suspend on lid close.
+# https://askubuntu.com/questions/15520/how-can-i-tell-ubuntu-to-do-nothing-when-i-close-my-laptop-lid/830653#830653
+sudo sed -i '/HandleLidSwitch/d' /etc/systemd/logind.conf >/dev/null 1&>2
+echo 'HandleLidSwitch=ignore' | sudo tee -a /etc/systemd/logind.conf
 
 # TTY without sudo
 # https://askubuntu.com/questions/133235/how-do-i-allow-non-root-access-to-ttyusb0-on-12-04
@@ -105,22 +124,45 @@ sudo update-grub
 
 if $setup_home_partition; then
   # Git
-  ssh-keygen -b 4096 -C "ciro.santilli@gmail.com" -f "$HOME/.ssh/id_rsa" -t rsa -P ''
+  f="$HOME/.ssh/id_rsa"
+  if [ ! -f "$f" ]; then
+    ssh-keygen -b 4096 -C "ciro.santilli@gmail.com" -f "$f" -t rsa -P ''
+  fi
 
   # Dotfiles
-  git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+  if [ ! -e $HOME/.homesick/repos/homeshick ]; then
+    git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+  fi
   . "$HOME/.homesick/repos/homeshick/homeshick.sh"
-  yes | homeshick clone cirosantilli/dotfiles
+  if [ ! -e "${HOME}/.homesick/repos/dotfiles" ]; then
+    yes | homeshick clone cirosantilli/dotfiles
+  fi
 
   # Vim
   # Manual.
   # TODO fails from bash pipe becuase not TTY.
   # http://stackoverflow.com/questions/23322744/vim-run-commands-from-bash-script-and-exit-without-leaving-shell-in-a-bad-state
   #vim +PluginInstall +qall
+
+  # nodejs
+  # https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm/971612#971612
+  curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | sh
+  . ~/.nvm/nvm.sh
+  nvm install --lts
+  nvm use --lts
+
+  # https://rvm.io/rvm/install
+  #
+  # Ubuntu 20.10
+  # https://unix.stackexchange.com/questions/399027/gpg-keyserver-receive-failed-server-indicated-a-failure/632238#632238
+  # gpgconf --kill dirmngr
+  gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+  \curl -sSL https://get.rvm.io | bash -s stable --ruby
+  bundle update --bundler
 fi
 
 if $gui; then
-  dconf load / < "${script_dir}/user.conf"
+  dconf load / < "${script_dir}/dconf.conf"
 
   # Python
   pip install --user --upgrade pip virtualenv
@@ -134,38 +176,31 @@ if $gui; then
   sudo dpkg-reconfigure unattended-upgrades
 
   sudo apt-file update
+
+  # TODO terminal background color from purple to black.
+  # I think I had researched and it was impossible to automate, but lost thread now.
 fi
 
-if $full; then
-  if $setup_home_partition; then
-    # nodejs
-    # https://askubuntu.com/questions/594656/how-to-install-the-latest-versions-of-nodejs-and-npm/971612#971612
-    curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | sh
-    . ~/.nvm/nvm.sh
-    nvm install --lts
-    nvm use --lts
-
-    # https://rvm.io/rvm/install
-    #
-    # Ubuntu 20.10
-    # https://unix.stackexchange.com/questions/399027/gpg-keyserver-receive-failed-server-indicated-a-failure/632238#632238
-    # gpgconf --kill dirmngr
-    gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
-    \curl -sSL https://get.rvm.io | bash -s stable --ruby
-    bundle update --bundler
-
-    # Go
-    # https://askubuntu.com/questions/959932/installation-instructions-for-golang-1-9-into-ubuntu-16-04/1075726#1075726
-    # https://github.com/moovweb/gvm/issues/302
-    sudo apt-get install golang-go
-    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-    . ~/.gvm/scripts/gvm
-    v=go1.11
-    gvm install "$v"
-    gvm use "$v"
-
-  fi
-  sudo usermod -aG docker $USER
-
-  sudo snap install pycharm-community --classic
+if false; then
+  # Go
+  # https://askubuntu.com/questions/959932/installation-instructions-for-golang-1-9-into-ubuntu-16-04/1075726#1075726
+  # https://github.com/moovweb/gvm/issues/302
+  sudo apt-get install golang-go
+  bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+  . ~/.gvm/scripts/gvm
+  v=go1.11
+  gvm install "$v"
+  gvm use "$v"
 fi
+
+## Settings post install
+
+sudo usermod -aG docker $USER
+
+## Nome dependant
+
+. ~/.bashrc
+mkdir -p \
+  "$MEDIA_DIR" \
+  "$PROGRAM_DIR" \
+;

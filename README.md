@@ -8,7 +8,7 @@ GUI setup:
 
     wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/setup-ubuntu | bash
 
-Minimal CLI setup:
+CLI-only setup without GUI software:
 
     wget -O- https://raw.githubusercontent.com/cirosantilli/dotfiles/master/setup-ubuntu | bash /dev/stdin -g
 

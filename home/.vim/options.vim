@@ -667,11 +667,11 @@
 
   if has('gui_running')
 
-      " TODO Maximize screen at startup.
-      " http://stackoverflow.com/questions/4722684/how-do-i-start-gvim-with-a-maximized-window
-      " Possibilities:
-      " - `gvim -geometry 9999x9999` but on Ubuntu 12.04 cannot launch Vim from command line.
-      " - `set lines=999 columns=999`, but this crashes vim on Ubun1u 12.04.
+    " TODO Maximize screen at startup.
+    " http://stackoverflow.com/questions/4722684/how-do-i-start-gvim-with-a-maximized-window
+    " Possibilities:
+    " - `gvim -geometry 9999x9999` but on Ubuntu 12.04 cannot launch Vim from command line.
+    " - `set lines=999 columns=999`, but this crashes vim on Ubun1u 12.04.
 
       set guioptions-=m  " Remove menu bar.
       set guioptions-=T  " Remove toolbar.

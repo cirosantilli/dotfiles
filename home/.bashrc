@@ -770,12 +770,12 @@
     alias dplg='dpkg -l | grep -Ei'
     # Build package downloaded with apt-get source after cd into it.
     dpkgb() ( dpkg-buildpackage -rfakeroot -uc -b )
-    alias saig='sudo aptitude upgrade'
-    alias saii='sudo aptitude install'
-    alias sair='sudo aptitude remove'
-    alias sais='sudo aptitude source'
-    alias saiu='sudo aptitude update'
-    alias saip='sudo aptitude purge'
+    alias saig='sudo apt upgrade'
+    alias saii='sudo apt install'
+    alias sair='sudo apt remove'
+    alias sais='sudo apt source'
+    alias saiu='sudo apt update'
+    alias saip='sudo apt purge'
     saap() { sudo apt-add-repository -y "$1" && sudo aptitude update; }
 
   ## awk
@@ -3190,8 +3190,8 @@ export GIT_AUTHOR_DATE="$d"
   # Rust
   # Installed with:
   # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  f="$HOME/.cargo/env"
-  [ -f "$f" ] && . "$f"
+  #f="$HOME/.cargo/env"
+  #[ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.
 if [ -r "$HOME/.bashrc_local" ]; then
