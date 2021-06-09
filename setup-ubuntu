@@ -201,10 +201,14 @@ fi
 
 sudo usermod -aG docker $USER
 
-## Nome dependant
+## Home dependant
 
 . ~/.bashrc
 mkdir -p \
+  "$CIROSANTILLI_BIN_DIR" \
+  "$CIROSANTILLI_TMP_DIR" \
+  "$DOWNLOAD_DIR" \
   "$MEDIA_DIR" \
   "$PROGRAM_DIR" \
+  "$TEST_DIR" \
 ;

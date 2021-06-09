@@ -676,7 +676,7 @@
       set guioptions-=m  " Remove menu bar.
       set guioptions-=T  " Remove toolbar.
       set guioptions-=r  " Remove right-hand scroll bar.
-      set guioptions-=b  " Remove right-hand scroll bar.
+      set guioptions-=b  " Remove bottom scroll bar.
 
     " Normally, pressing alt focuses on the menu in gvim, but vim needs NO menu:
     " Vim only needs vimrc!

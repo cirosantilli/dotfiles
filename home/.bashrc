@@ -3197,8 +3197,8 @@ export GIT_AUTHOR_DATE="$d"
   # Rust
   # Installed with:
   # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-  #f="$HOME/.cargo/env"
-  #[ -f "$f" ] && . "$f"
+  f="$HOME/.cargo/env"
+  [ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.
 if [ -r "$HOME/.bashrc_local" ]; then
