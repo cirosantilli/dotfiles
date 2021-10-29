@@ -27,6 +27,8 @@
   " Must come after vundle#end.
 
     silent! colorscheme vividchalk
+    " https://github.com/AlessandroYorba/Alduin
+    "silent! colorscheme alduin
 
 " # modeline
 
@@ -99,12 +101,15 @@
 
   set autochdir
 
-" Disable vim mouse capture.
-" All mouse clicks to the terminal instead.
-" Because the mouse is for newbs, and it breaks copy paste over putty,
-" where +* registers are just broken.
-
-  set mouse=
+  if has('gui_running')
+    set mouse=a
+  else
+    " Disable vim mouse capture.
+    " All mouse clicks to the terminal instead.
+    " Because the mouse is for newbs, and it breaks copy paste over putty,
+    " where +* registers are just broken.
+    set mouse=
+  endif
 
 " # backup
 
@@ -171,22 +176,42 @@
 
   " https://blog.codinghorror.com/progamming-fonts/
   " https://stackoverflow.com/questions/1539861/what-is-the-good-gvim-guifont-for-c-c-programming/1543757
+  "
   " On guifont=8 I spent 1 hour+ debugging a comma vs dot difference in fucking JavaScript!!!
+  "
   " Critical pairs:
+  "
   " - ,.: comma dot
   " - Il: upper case I and lower case el
   " - 0O: zero and oh
-  " el and I identical, command and dot too close, 74 lines visible. TODO what is the name of the default font?
-  " From guifong=* it looks a lot like MathJax vector_regular. Unless that one is being unrecognized as dummy.
-  set guifont=8
+
+  " 188x74, el and I identical, command and dot too close.
+  " Characters are very wide. This allows it to be quite short in height, but still recognizable.
+  " TODO what is the name of the default font?
+  " From guifont=* it looks a lot like MathJax vector_regular. Unless that one is being unrecognized as dummy.
+  "set guifont=8
+
   " Fonts that are not installed get ignored, it's terrible.
   "set guifont=Proggy\ 8
-  " 68 lines visible. Very narrow, 8 is also 74 line visible, but not confortable. TODO I can't find any font that
-  " is not super narrow and still differentiates characters!
+
+  " 270x68 lines visible.
+  " All characters clearly different.
+  " Feels confortable.
+  " I can't find any font that is not super narrow and still differentiates characters!
+  set guifont=Monospace\ 9
+  " Same, likely some fallback.
   "set guifont=Inconsolata\ 9
-  " Appears to be the same.
+
+  " 270x68 lines visible.
+  " Feels confortable.
+  " TODO I can't find any font that is not super narrow and still differentiates characters!
+  "set guifont=Inconsolata\ 8
+
+  " Appears to be the same as Inconsolata.
   "set guifont=Consolas\ 9
 
+  " Messes up colors completely.
+  "set guifont=Courier\ New\ 10
 " # number
 
 " # LineNr
@@ -864,6 +889,11 @@ let g:netrw_keepdir=0
     " Defines syntax rules.
 
     " Does a bunch of different things depending on the subcommand you give it, so watch out.
+
+    " Trying to fix reternally randomly broken syntax on larger files.
+    " This makes everything too slow for large files.
+    "autocmd BufEnter * syntax sync fromstart
+    syntax sync minlines=5000
 
 " - -s to skip errors like symlinks with missing targets
 " - recursive by default, but if you pass filenames to it it won't recurse

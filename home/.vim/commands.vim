@@ -22,8 +22,6 @@ command! -nargs=+ Ggi execute 'silent Ggrep! -i <args>' | tab copen
 " Open ltag on a new tab.
 " https://stackoverflow.com/questions/14465383/how-to-navigate-multiple-ctags-matches-in-vim/43866918#43866918
 command! -nargs=1 Ltag silent ltag <args> | execute "normal \<C-o>" | tab lopen
-" Current path to clipboard.
-" http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
 " Delete the curent file.
 command! Rm !rm %
 " TODO also somehow wipe the buffer.
@@ -41,6 +39,7 @@ command! Wsudo write !sudo tee %
 " Copy GDB breakpoint specifier to the clipboard.
 command! Xg :let @+ = 'b ' . expand('%:p') . ':' . line('.')
 " Copy full path to clipboard.
+" http://vi.stackexchange.com/questions/3686/copy-the-full-path-of-current-buffer-to-clipboard
 command! Xp :let @+ = expand('%:p')
 " Copy relative path of current file relative to the git root to the clipboard.
 command! Xr :let @+ = substitute(system('git ls-files --full-name ' . expand('%:p')), '\n$', '', '')

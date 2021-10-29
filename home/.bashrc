@@ -17,6 +17,7 @@
         export JAVA_DIR="$PROGRAM_DIR/java-cheat"
         export NETWORKING_DIR="$PROGRAM_DIR/networking-cheat"
         export NOTES_DIR="$PROGRAM_DIR/notes"
+        export NOTES_PRIVATE_DIR="$PROGRAM_DIR/notes-private"
         export PYTHON_BASE_DIR="$PROGRAM_DIR/python"
           export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath"
         export PYTHON_DIR="$PROGRAM_DIR/python-cheat"
@@ -48,10 +49,11 @@
         export JAZZ_MUSIC_DIR="$MUSIC_DIR/jazz"
       export GAME_DIR="$MEDIA_DIR/game"
     export GOPATH="$HOME/.go"
+    # Unencrypted ext4.
     export HD_DIR="/mnt/sda3"
-      # Unencrypted ext4.
-      export MNT_MEDIA_DIR_POLY8D="${MNT_MEDIA_DIR}/poly8d"
       export BITCOIN_DATA_DIR="${HD_DIR}/.bitcoin"
+    export MNT_MEDIA_DIR="/media/${USER}"
+      export MNT_MEDIA_DIR_POLY8D="${MNT_MEDIA_DIR}/poly8d"
 
     # Single char shortcuts for directory structure.
 
@@ -194,7 +196,7 @@
       # Could be achieved with `HISTCONTROL=ignorespace`, but I copy paste
       # from Markdown indented code blocks too often. ` *` does not work
       # as it is BRE that does the same as `ignorespace.`
-      #export HISTIGNORE=' :  :   :    :ls:ll:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*:luks*:torbrowser:vn *:o *:less *:eog *'
+      #export HISTIGNORE=' :  :   :    :ls:ll:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*:luks*:torbrowser:vn *:o *:less *:eog *:vimp *'
       # Disable bash history.
       unset HISTFILE
 
@@ -307,6 +309,10 @@
   }
   alias cla11='clang++ -std=c++11'
   check-ip() ( curl 'http://checkip.amazonaws.com'; )
+  chinese-simplily() (
+    # sudo apt install opencc
+    opencc -i "$1" -o "$2" -c t2s.json
+  )
   count() (
     i=0
     while true; do
@@ -1149,6 +1155,8 @@ ${2:-}
     alias cdq='c "$QUARTET_DIR"'
     # cd Slash
     alias cds='c -'
+    # To refresh cwd when it gets nuked and rebuilt.
+    alias cdss='cds;cds'
     alias cdt='c "$TEST_DIR"'
     alias cdu='c "$UBUNTU_DIR"'
     alias cdr='c "$RTL_DIR"'
@@ -1350,22 +1358,22 @@ ${2:-}
     #
     # Create a new container:
     #
-    #     dk-create
+    #     dk-create [container-name [image [default-cmd]]]
     #
     # Start it if not already started, and do stuff in it:
     #
-    #     dk-execute
+    #     dk-execute [container-name]
     #
     # Do it again:
     #
-    #     dk-execute
+    #     dk-execute [container-name]
     #
     # Delete the created container and lose all data from it.
     #
-    #     dk-REMOVE
+    #     dk-REMOVE [container-name]
     #
     # To create and use another container, just add
-    # the container name in front of all invocations:
+    # the container name in front of all invocations, e.g.:
     #
     #     dk-create ble
     #     dk-execute ble
@@ -1513,6 +1521,7 @@ ${2:-}
       tgt="${MNT_MEDIA_DIR_POLY8D}/luks/bak"
       mkdir -p "$tgt"
       rsync -av --delete "${LUKS_DIR}/bak/" "${tgt}/"
+      rsync -av --delete "${NOTES_PRIVATE_DIR}/" "${MNT_MEDIA_DIR_POLY8D}/notes-private"
       time sync
     )
     luksu() (
@@ -1908,6 +1917,7 @@ ${2:-}
       git submodule update --recursive
     )
     gcob() ( gco -b "$@" )
+    gcoB() ( gco -B "$@" )
     gcobm() ( git checkout -b "$1" master )
     alias gcod='gco --conflict=diff3'
     alias gcoH='gco HEAD~'
@@ -2826,8 +2836,9 @@ export GIT_AUTHOR_DATE="$d"
     )
 
     # https://askubuntu.com/questions/236455/how-can-you-delete-only-gps-metadata-from-a-jpeg-file
-    image-remove-location() (
-      exiftool -gps:all= -xmp:geotag= "$@"
+    # https://stackoverflow.com/questions/2654281/how-to-remove-exif-data-without-recompressing-the-jpeg
+    image-remove-metadata() (
+      exiftool -all= "$@"
     )
 
   ## linux kernel
@@ -3155,8 +3166,11 @@ export GIT_AUTHOR_DATE="$d"
   # nvm install --lts
   f="$HOME/.nvm/nvm.sh"
   if [ -r "$f" ]; then
-    . "$f" &>'/dev/null'
-    nvm use --lts &>'/dev/null'
+    . "$f" &>/dev/null
+    # I think the --lts breaks every time there's a minor update.
+    # forcing a reinstall.
+    #nvm use --lts &>'/dev/null'
+    nvm use v14.17.0 &>/dev/null
   fi
 
   # Perl CPAN local install.

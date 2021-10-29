@@ -211,4 +211,5 @@ mkdir -p \
   "$MEDIA_DIR" \
   "$PROGRAM_DIR" \
   "$TEST_DIR" \
+  "$CIROSANTILLI_VAR_LOG_DIR" \
 ;

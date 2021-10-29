@@ -822,7 +822,10 @@
 
 " # node
 
-  Plugin 'moll/vim-node'
+  " Overrides my <c-w> mapping on <c-w>f and I don't have the
+  " fucking patience to understand how prevent it. why.
+  " https://github.com/moll/vim-node/blob/ede047791792b9530ba1ae73ed86e9671cdd96b8/autoload/node.vim#L43
+  "Plugin 'moll/vim-node'
 
 " # sparkup
 
@@ -831,7 +834,8 @@
 
 " # latex
 
-  Plugin 'git://git.code.sf.net/p/vim-latex/vim-latex'
+  " Nevermind this, taking forever to clone.
+  "Plugin 'git://git.code.sf.net/p/vim-latex/vim-latex'
 
   " Docs: http://vim-latex.sourceforge.net/documentation/latex-suite.html#section-mappings
 
@@ -894,6 +898,11 @@
   " Therefore this should come before user highlight modifications.
 
       Plugin 'tpope/vim-vividchalk'
+
+      " Contrast too low.
+      "Plugin 'AlessandroYorba/Alduin'
+
+
       " Using colorscheme here does not work. Must do it after vundle#end().
 
 " # Vader
