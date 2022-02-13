@@ -42,6 +42,7 @@
     export CIROSANTILLI_GIT_HOOKS_DIR="${HOME}/.git_hooks"
     export CIROSANTILLI_VAR_DIR="${HOME}/var"
       export CIROSANTILLI_VAR_LOG_DIR="${CIROSANTILLI_VAR_DIR}/log"
+    export LOCAL_DIR="$HOME/.local"
     export MEDIA_DIR="$HOME/media"
       export MUSIC_DIR="$MEDIA_DIR/music"
         export CHINESE_MUSIC_DIR="$MUSIC_DIR/chinese traditional"
@@ -95,6 +96,12 @@
     export ANDROID_JAVA_HOME="$JAVA_HOME"
     export ANDROID_STUDIO="$HOME/android-studio/"
     export USE_CCACHE=1
+
+    ## Node.js
+
+    # How can a programming language be so shit? You tell me.
+    # https://stackoverflow.com/questions/7697038/more-than-10-lines-in-a-node-js-stack-error
+    export NODE_OPTIONS=--stack-trace-limit=999999
 
   ## PATH
 
@@ -261,6 +268,11 @@
   )
   alias bashx='x | bash'
   bsu() ( bsub -P "$1" -R "${2:-rhe6}" -Ip -XF gnome-terminal -e tmux )
+  cdda() ( noh cataclysm-tiles )
+  cdda-scum() (
+    d="${LOCAL_DIR}/share/cataclysm-dda/save"
+    rsync -av "${d}/" "${d}.$(timestamp)/"
+  )
   cdg() { cd "$(git-toplevel)/${1:-}"; }
   ccache-watch() ( watch -n1 'ccache -s' )
   # Start bash in a clean test environment.
@@ -348,7 +360,12 @@
       <(tr "$sep" '\n' <"$2")
   )
   dpx() ( dropbox puburl "$1" | xclip -selection clipboard; )
-  dmes() ( dmesg -T )
+  dmes-last() (
+    # Get dmesg from last boot.
+    # https://unix.stackexchange.com/questions/181067/how-to-read-dmesg-from-previous-session-dmesg-0
+    journalctl -o short-precise -k -b -1
+  )
+  dmes() ( sudo dmesg -T )
   eclipse() (
     # Installed as:
     # download latest from: https://www.eclipse.org/cdt/
@@ -406,6 +423,8 @@
     file="$1"
     shift
     cmd="$@"
+    # Run the command once when we start.
+    eval "$cmd"
     while true; do \
       eval "$cmd"
       inotifywait -qre close_write "$file"
@@ -463,7 +482,7 @@
   alias my-shutdown='sync-push && sudo shutdown'
   alias nets='sudo netstat -tupan'
   alias netsg='nets | grep -Ei'
-  alias ncl="while true; do printf '' | nc -l localhost 8000; done"
+  ncl() ( while true; do printf '' | nc -l localhost "${1:-8000}"; done )
   noh() { nohup $@ >/dev/null 2>&1 & }
   # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
   npro() ( printf "$(($(nproc) - 2))" )
@@ -546,6 +565,7 @@
   alias se='sed -r'
   alias sha2='sha256sum'
   alias sql='sqlite3'
+  alias sqlf='sql-formatter -l postgresql'
   alias stra='sudo strace -f -s999 -v'
   stdouttime() (
     # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
@@ -1920,7 +1940,7 @@ ${2:-}
     gcoB() ( gco -B "$@" )
     gcobm() ( git checkout -b "$1" master )
     alias gcod='gco --conflict=diff3'
-    alias gcoH='gco HEAD~'
+    gcoH() ( gco HEAD~${1:-} )
     # Last tag.
     alias gcol='gco "$(git describe --tags --abbrev=0)"'
     gcom() ( gco master "$@" )
@@ -2708,6 +2728,12 @@ export GIT_AUTHOR_DATE="$d"
     #prepop() { eval "$1=$(printf "$1" | sed -E 's/^[^:]*://')"; }
     prepop() { eval "$1=\${$1#*:}"; }
 
+  ## nodejs
+
+    nodi() ( node inspect "$@" )
+    nods() ( NODE_OPTIONS=--unhandled-rejections=strict "$@" )
+    nodS() ( env NODE_OPTIONS='--unhandled-rejections=strict' "$@" )
+
   ## npm
 
     npmb() ( npmr build "$@" )
@@ -2717,6 +2743,8 @@ export GIT_AUTHOR_DATE="$d"
     npmr() ( npm run "$@" )
     npms() ( npm start "$@" )
     npmt() ( npm test "$@" )
+    npmtg() ( npm test -- -g "$*" )
+    npmtgi() ( npm run testi -- -g "$*" )
 
   ## python
 

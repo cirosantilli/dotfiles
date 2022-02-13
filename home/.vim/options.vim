@@ -329,20 +329,18 @@
 
   " Enable / disable statusline:
 
-      set laststatus=0
+      "set laststatus=0
+      set laststatus=2
 
   " Disable because it takes on extra line. If only I could format the *command line* instead.
 
   " Set what you want it to contain. Accepts % substitutions.
 
-  " Filename:
-
-      " set statusline+=%f
-
-  " Current highlight group name:
-
-      " set laststatus=2
-      set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
+      set statusline=
+      " Full path.
+      set statusline+=%1*\ %F\ %l,%c
+      hi User1 guibg=#000000 guifg=#00AA00
+      "hi StatusLine ctermbg=000000 ctermfg=00AA00
 
 " # tabwindow
 
@@ -817,7 +815,8 @@ let g:netrw_keepdir=0
 
   " http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor
 
-  "     set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
+     " set laststatus=2
+     " set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   " # match
 
@@ -874,7 +873,7 @@ let g:netrw_keepdir=0
     " Add it to your status line. Great way to make small syntax developments:
 
       " set laststatus=2
-      set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
+      "set statusline=%{synIDattr(synID(line('.'),col('.'),1),'name')}
 
   " # syntax
 
