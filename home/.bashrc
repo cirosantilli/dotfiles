@@ -565,7 +565,12 @@
   alias se='sed -r'
   alias sha2='sha256sum'
   alias sql='sqlite3'
+  # npm install -g sql-formatter
   alias sqlf='sql-formatter -l postgresql'
+  psql() (
+    # https://stackoverflow.com/questions/39850860/disable-wrapping-in-psql-output
+    PAGER="less -S" command psql "$@"
+  )
   alias stra='sudo strace -f -s999 -v'
   stdouttime() (
     # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
@@ -592,6 +597,12 @@
   alias sudo='sudo '
   surd() ( sudo update-rc.d "$1" disable; )
   alias t='type'
+  tsr() (
+    # ts Run
+    f="$1"
+    npx tsc "$f"
+    node "${f%.*}.js"
+  )
   # TODO: also cat stdout and stderr.
   testprogs() (
     for f in "$@"; do
@@ -617,19 +628,32 @@
     date "+%s" "$@"
   )
   topp() (
-    # http://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
+    # https://stackoverflow.com/questions/1221555/how-can-i-get-the-cpu-usage-and-memory-usage-of-a-single-process-on-linux-ubunt/40576129#40576129
+    # https://unix.stackexchange.com/questions/554/how-to-monitor-cpu-memory-usage-of-a-single-process/322992#322992
+    if [ -n "$O" ]; then
+      $* &
+    else
+      $* &>/dev/null &
+    fi
+    pid="$!"
+    trap "kill $pid" SIGINT
+    o='%cpu,%mem,vsz,rss'
+    printf '%s\n' "$o"
+    i=0
+    while s="$(ps --no-headers -o "$o" -p "$pid")"; do
+      #cat /proc/$pid/status
+      printf "$i $s\n"
+      i=$(($i + 1))
+      sleep "${T:-0.1}"
+    done
+  )
+  toppp() (
     $* &>/dev/null &
     pid="$!"
-    #top -p "$pid"
-    #watch -n 1 ps --no-headers -p "$pid" -o '%cpu,%mem'
-
-    # Without trap, the background process does not get killed.
-    # TODO why `trap '' INT` does not work?
-    trap ':' INT
-    echo 'CPU  MEM'
-    while sleep 1; do ps --no-headers -o '%cpu,%mem' -p "$pid"; done
-
-    kill "$pid"
+    trap "kill $pid" SIGINT
+    i=1
+    top -b n1 -d "${T:-0.1}" -n1 -p "$pid"
+    while true; do top -b n1 -d "${T:-0.1}" -n1 -p "$pid"  | tail -1; printf "$i "; i=$(($i + 1)); done
   )
   # tr Colon to newline. To see paths better.
   alias trc="tr ':' '\n'"
@@ -1382,11 +1406,11 @@ ${2:-}
     #
     # Start it if not already started, and do stuff in it:
     #
-    #     dk-execute [container-name]
+    #     dk-exec [container-name]
     #
     # Do it again:
     #
-    #     dk-execute [container-name]
+    #     dk-exec [container-name]
     #
     # Delete the created container and lose all data from it.
     #
@@ -1396,7 +1420,7 @@ ${2:-}
     # the container name in front of all invocations, e.g.:
     #
     #     dk-create ble
-    #     dk-execute ble
+    #     dk-exec ble
     #     dk-REMOVE ble
 
     # Most important commands.
@@ -1405,14 +1429,16 @@ ${2:-}
       target_dir=/host
       container="${1:-ub}"
       shift
-      image="${1:-ubuntu:18.04}"
+      image="${1:-ubuntu:20.04}"
       shift
       cmd="${1:-/bin/bash}"
       shift
+      set -x
       dk create \
         --interactive \
         --tty \
         --name "$container" \
+        --user root:root \
         --workdir "${target_dir}/$(pwd)" \
         --volume "/:${target_dir}" \
         "$image" \
@@ -1420,7 +1446,7 @@ ${2:-}
         "$@" \
       ;
     )
-    dk-execute() (
+    dk-exec() (
       # Run command in an existing container.
       # Start it if not already started.
       # By default, run /bin/bash and connect to it.
@@ -1921,6 +1947,7 @@ ${2:-}
     )
     gcmm() ( gcm -m "$@" )
     gcma() ( gcm --amend "$@" )
+    gcmb() ( gcmm bak )
     gcman() ( gcma --no-edit "$@" )
     gcmanpsf() ( gcman && git push -f "$@" )
     gcedf() (
@@ -2139,6 +2166,10 @@ ${2:-}
       # For Gerrit. https://stackoverflow.com/questions/1186535/how-to-modify-a-specified-commit/53597426#53597426
       current_branch="$(git rev-parse --abbrev-ref HEAD)"
       apply_to="$1"
+      if ! git cat-file -t "$apply_to" &>/dev/null; then
+        echo 'Commit not found' >&2
+        exit 1
+      fi
       git stash
       git checkout "$apply_to"
       git stash apply
@@ -2730,7 +2761,11 @@ export GIT_AUTHOR_DATE="$d"
 
   ## nodejs
 
-    nodi() ( node inspect "$@" )
+    nodi() (
+      executable="$1"
+      shift
+      node inspect "$(which $executable)" "$@"
+    )
     nods() ( NODE_OPTIONS=--unhandled-rejections=strict "$@" )
     nodS() ( env NODE_OPTIONS='--unhandled-rejections=strict' "$@" )
 
@@ -3198,7 +3233,7 @@ export GIT_AUTHOR_DATE="$d"
     # I think the --lts breaks every time there's a minor update.
     # forcing a reinstall.
     #nvm use --lts &>'/dev/null'
-    nvm use v14.17.0 &>/dev/null
+    nvm use v16.14.2 &>/dev/null
   fi
 
   # Perl CPAN local install.

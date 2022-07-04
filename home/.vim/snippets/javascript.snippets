@@ -1,4 +1,8 @@
-snippet log
+snippet l
 	console.log(${1});
-snippet err
+snippet e
 	console.error(${1});
+snippet ee
+	console.error({${1}});
+snippet i
+	console.error(require('util').inspect(${1}));
