@@ -1,5 +1,13 @@
+# https://unix.stackexchange.com/questions/114373/starting-screen-without-welcome-screen
+startup_message off
+
 hardstatus alwayslastline
 hardstatus string "%{= g} %{= w}%-Lw%{=r}%n%f* %t%{-}%+LW"
 # https://stackoverflow.com/questions/8760346/how-do-i-increase-the-scrollback-buffer-in-a-running-screen-session/8760452#8760452
 # https://unix.stackexchange.com/questions/351115/increase-buffer-size-while-running-screen#comment967516_351139
 defscrollback 100000
+
+# Not ideal as it does not scrool screen itself, but I'll take it?
+# https://superuser.com/a/177407/128124
+termcapinfo xterm ti@:te@
+termcapinfo xterm-color ti@:te@

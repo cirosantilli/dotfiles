@@ -122,7 +122,7 @@
 
 " # cscope
 
-  Plugin 'vim-scripts/cscope.vim'
+  " Plugin 'vim-scripts/cscope.vim'
 
 " # taglist
 
@@ -924,6 +924,8 @@
 
   " trim-space automatically removes trailine whitespaces on :w!
   " Too intrusive!
+
+Plugin 'cirosantilli/ourbigbook', {'rtp': 'vim'}
 
 call vundle#end()
 filetype plugin indent on

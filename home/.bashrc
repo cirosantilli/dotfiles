@@ -525,6 +525,9 @@
     ) | tee >(xclip -selection clipboard)
   }
   alias R='R --no-save'
+  alias rbtp='rbt post'
+  alias rbtpu='rbt post -u'
+  alias rbta='rbt patch -C'
   alias rl='readlink'
   alias rlf='readlink -f'
   rlw() ( readlink -f "$(which "$1")" )
@@ -700,6 +703,10 @@
   # Usage: unizipd d.zip
   # Outcome: unzips the content of `a.zip` into a newly created `d` directory
   unzipd() { unzip -d "${1%.*}" "$1"; }
+  vs() (
+    # https://stackoverflow.com/questions/41377489/how-to-open-a-file-from-the-integrated-terminal-in-visual-studio-code
+    code -r "$@"
+  )
   z() ( zip -r "${1%/}.zip" "$@" )
 
   bdiff() (
@@ -1232,7 +1239,7 @@ ${2:-}
 
   ## cirosantilli prefixes
 
-    b() ( cirosantilli-beep "$@" )
+    b() ( cirosantilli-beep "$?" "$@" )
     bits() ( cirosantilli-bits "$@" )
 
   ## cirodown
@@ -1429,7 +1436,7 @@ ${2:-}
       target_dir=/host
       container="${1:-ub}"
       shift
-      image="${1:-ubuntu:20.04}"
+      image="${1:-ubuntu:22.04}"
       shift
       cmd="${1:-/bin/bash}"
       shift
@@ -1906,7 +1913,7 @@ ${2:-}
     alias gadrbc='git add -A . && git rebase --continue'
     alias garcp='git add --ignore-errors README.md index.html index.md && commit --amend --no-edit && push -f'
     alias gbi='git bisect'
-    alias gbib='git bisect start && git bisect bad'
+    alias gbib='git bisect bad'
     alias gbig='git bisect good'
     alias gbil='git bisect log'
     alias gbir='git bisect run'
@@ -1957,6 +1964,7 @@ ${2:-}
     gcexdf() (
       # Clean any file not tracked, including gitignored. Restores repo to pristine state.
       git clean -xdf :/
+      # https://stackoverflow.com/questions/51963783/what-is-the-workflow-to-clean-git-submodules-on-clones
       git submodule foreach --recursive git clean -xdf :/
     )
     gco() (
@@ -1985,6 +1993,7 @@ ${2:-}
     gcp() ( git cherry-pick "$@" )
     gcpa() ( gcp --abort "$@" )
     gdf() ( git diff "$@" )
+    gdfr() ( git diff --submodule=diff "$@" )
     gdfm() (
       # https://stackoverflow.com/questions/1220309/git-difftool-open-all-diff-files-immediately-not-in-serial/2746292#2746292
       git difftool --dir-diff --tool=meld "${1:-HEAD~}" "${2:-HEAD}"
@@ -2006,6 +2015,7 @@ ${2:-}
     }
     alias gfe='git fetch --tags'
     alias gfea='git fetch --all --tags'
+    gfer() ( git fetch && gsuf git fetch )
     gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
@@ -2022,6 +2032,7 @@ ${2:-}
     )
     gg() ( git grep --color "$@" )
     ggi() ( gg -i "$@" )
+    ggr() ( gg --recurse-submodules "$@" )
     gin() ( git init "$@" )
     alias gka='gitk --all'
     gls() ( git ls-files "$@" )
@@ -2037,6 +2048,7 @@ ${2:-}
     )
     glsfg()( glsf | g "$@" )
     glsg() ( gls | g "$@" )
+    glsgr() ( gls --recurse-submodules | g "$@" )
     glsgi() ( glsg -i "$@" )
     git-list-binary()(
       # https://stackoverflow.com/questions/30689384/find-all-binary-files-in-git-head/32267369#32267369
@@ -2100,7 +2112,9 @@ ${2:-}
     alias grbc='git rebase --continue'
     grbi() ( git rebase -i "$@" )
     grbih() ( git rebase -i "HEAD~${1:-1}" )
+    grbim() ( grbi "master" )
     alias grbm='git rebase master'
+    alias grbom='git rebase origin/master'
     grbo() (
       # Rebase current branch onto another ref.
       # Useful to rebase a feature branch of a feature branch
@@ -2142,14 +2156,27 @@ ${2:-}
     alias grts='git remote set-url'
     alias grtso='git remote set-url origin'
     alias gsa='git stash'
+    gsar() ( git stash && gsuf git stash )
+    gsaar() ( git stash apply && gsuf 'git stash apply || true' )
     alias gsaa='git stash apply'
     gsh() ( git show "$@" )
     alias gst='git status'
     alias gsu='git submodule'
     alias gsua='git submodule add'
-    alias gsuf='git submodule foreach'
-    alias gsufp='git submodule foreach git pull'
-    gsuu() ( git submodule update --init --recursive "$@" )
+    gsuf() ( git submodule foreach "$@" )
+    gsufp() (
+      git pull
+      git submodule foreach git pull
+    )
+    gsuu() (
+      git submodule sync --recursive &>/dev/null
+      git submodule update --init --recursive --progress "$@"
+    )
+    gsuur() (
+      # https://stackoverflow.com/questions/1030169/pull-latest-changes-for-all-git-submodules
+      git submodule update --recursive --remote "$@"
+    )
+    gsus() ( git submodule status "$@" )
     alias gta='git tag'
     gtac() ( git tag --contains "$@" )
     # Git TAg Date

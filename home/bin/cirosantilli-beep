@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 # Beep. Notify after a long command. Usage:
 # long-command;b
-zenity --info --text "$(date);$(pwd)" &
-spd-say 'done'
+zenity --info --text "status: ${1}\ndate: $(date)\npwd: $(pwd)" --width=400 &>/dev/null &
+spd-say 'done' &>/dev/null

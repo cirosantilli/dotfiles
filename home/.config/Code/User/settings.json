@@ -1,4 +1,22 @@
 {
     "editor.minimap.enabled": false,
-    "keyboard.dispatch": "keyCode"
+    "keyboard.dispatch": "keyCode",
+    "workbench.colorTheme": "Default Dark+",
+    "vim.handleKeys": {
+        "<C-k>": false,
+        "<C-E>": false,
+        "<C-f>": false,
+        "<C-w>": false
+    },
+    "vim.normalModeKeyBindings": [
+        {
+            "before": ["H"],
+            "after": ["^"]
+        },
+        {
+            "before": ["L"],
+            "after": ["$"]
+        }
+    ],
+    "files.insertFinalNewline": true
 }
