@@ -11,3 +11,5 @@ defscrollback 100000
 # https://superuser.com/a/177407/128124
 termcapinfo xterm ti@:te@
 termcapinfo xterm-color ti@:te@
+
+escape ^Jj

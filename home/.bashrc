@@ -178,7 +178,7 @@
   ## Bash
 
     export PS1="\[\033[01;31m\]\w\n\
-\[\033[01;34m\]\$(timestamp)\
+\[\033[01;34m\]\$('timestamp')\
 \[\033[01;32m\]@\
 \[\033[01;34m\]\u\
 \[\033[01;32m\]@\
@@ -525,8 +525,24 @@
     ) | tee >(xclip -selection clipboard)
   }
   alias R='R --no-save'
-  alias rbtp='rbt post'
-  alias rbtpu='rbt post -u'
+  # Reviewboard.
+  rbtp() (
+    # Post new review.
+    rbt post -g "$@"
+  )
+  rbtpu() (
+    # Update review, autoguess from commit message parsing.
+    rbtp -u "$@"
+  )
+  rbtpr() (
+    # Update review given by ID.
+    # Usage: rbtpr 1234 HEAD
+    rbtp -r "$@"
+  )
+  rbtprh() (
+    # Usage: rbtpr 1234 HEAD
+    rbtpr "$1" HEAD
+  )
   alias rbta='rbt patch -C'
   alias rl='readlink'
   alias rlf='readlink -f'
@@ -1584,7 +1600,7 @@ ${2:-}
 
   ## extract
 
-    extract () {
+    extract () (
       # Decompress anything. Don't delete compressed one. https://xkcd.com/1168/
       # https://askubuntu.com/questions/338758/how-to-quickly-extract-all-kinds-of-archived-files-from-command-line
       # https://unix.stackexchange.com/questions/316951/a-generic-command-to-extract-archive-files
@@ -1596,7 +1612,7 @@ ${2:-}
         *.a)         ar vx "$1";;
         *.cpio)      cpio -i <"$1";;
         *.deb)       dpkg-deb -R "$1" .;;
-        *.jar|*.zip) unzip "$1";;
+        *.jar|*.xsa|*.zip) unzip "$1";;
         *.rar)       rar x "$1";;
         *.tar)       tar xvf "$1";;
         *.tar.bz2)   tar xvjf "$1";;
@@ -1609,7 +1625,7 @@ ${2:-}
         *.xz)        unxz "$1";;
         *)           echo "error: unknown extension: $1"; exit 1;;
       esac
-    }
+    )
     alias ex='extract'
 
   ## find
@@ -2166,7 +2182,7 @@ ${2:-}
     gsuf() ( git submodule foreach "$@" )
     gsufp() (
       git pull
-      git submodule foreach git pull
+      git submodule foreach 'git pull && git submodule sync --recursive && git submodule update --init --recursive --progress'
     )
     gsuu() (
       git submodule sync --recursive &>/dev/null

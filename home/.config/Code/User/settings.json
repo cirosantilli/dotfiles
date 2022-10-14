@@ -6,7 +6,10 @@
         "<C-k>": false,
         "<C-E>": false,
         "<C-f>": false,
-        "<C-w>": false
+        "<C-t>": false,
+        "<C-w>": false,
+        "<C-x>": false,
+        "<tab>": false
     },
     "vim.normalModeKeyBindings": [
         {
@@ -18,5 +21,12 @@
             "after": ["$"]
         }
     ],
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "mesonbuild.configureOnOpen": false,
+    "files.autoSave": "onFocusChange",
+    "search.useParentIgnoreFiles": true,
+    "editor.wordWrap": "off",
+    "[shellscript]": {
+        "editor.tabSize": 2
+    },
 }
