@@ -2,7 +2,17 @@ snippet l
 	console.log(${1});
 snippet e
 	console.error(${1});
+snippet ec
+	console.error('${`@+`: ' + `@+`);
 snippet ee
 	console.error({${1}});
+snippet ep
+	console.error('${`@`: ' + require('util').inspect(`@`));
+snippet epp
+	console.error('${`@`: ' + require('util').inspect(`@`, { depth: null }));
 snippet i
-	console.error(require('util').inspect(${1}));
+	console.error('${1}: ' + require('util').inspect(${1}));
+snippet ii
+	console.error('${1}: ' + require('util').inspect(${1}, { depth: null }));
+snippet t
+	console.trace()

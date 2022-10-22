@@ -544,6 +544,14 @@
     rbtpr "$1" HEAD
   )
   alias rbta='rbt patch -C'
+  random-image() (
+    cd "${CHINA_DICTATORSHIP_DIR}-media"
+    printf "$(pwd)/$(git ls-files | grep -E 'jpe?g|png|webp|svg' | shuf -n1)" | x
+  )
+  random-links() (
+    cd "$CHINA_DICTATORSHIP_DIR"
+    ./random-links | x
+  )
   alias rl='readlink'
   alias rlf='readlink -f'
   rlw() ( readlink -f "$(which "$1")" )
@@ -672,7 +680,11 @@
     trap "kill $pid" SIGINT
     i=1
     top -b n1 -d "${T:-0.1}" -n1 -p "$pid"
-    while true; do top -b n1 -d "${T:-0.1}" -n1 -p "$pid"  | tail -1; printf "$i "; i=$(($i + 1)); done
+    while true; do
+      top -b n1 -d "${T:-0.1}" -n1 -p "$pid" | tail -1
+      printf "$i "
+      i=$(($i + 1))
+    done
   )
   # tr Colon to newline. To see paths better.
   alias trc="tr ':' '\n'"
@@ -1426,6 +1438,10 @@ ${2:-}
     # Create a new container:
     #
     #     dk-create [container-name [image [default-cmd]]]
+    #
+    # e.g.:
+    #
+    #     dk-create microbit ghcr.io/carlosperate/microbit-toolchain:latest
     #
     # Start it if not already started, and do stuff in it:
     #
@@ -2562,10 +2578,14 @@ export GIT_AUTHOR_DATE="$d"
 
       # Last File Ls -l. Sort by olest ctime first. So newest shows first on terminal.
       lfl() ( command ls --color=auto -Achlrt "${1-.}"; )
+      lfx() (
+        # Absolute path of last modified file in dir to clipboard.
+        lfg "$@" | x
+      )
       lfll() ( ll "$(lfg "$1")"; )
       lflcd() { cd "$(lfg "$1")"; }
-      # Get absolute path to last modified path in given directory.
       lfg() (
+        # Get absolute path to last modified path in given directory.
         dir="${1:-.}"
         grep="${2:-}"
         echo "$(cd "$dir" && pwd)/$(command ls -ct "${dir:-.}" | grep "$grep" | head -n1)";
@@ -2610,6 +2630,9 @@ export GIT_AUTHOR_DATE="$d"
         mkdir -p "$dst"
         cd "$dst"
         lfmd
+      }
+      lfmp() {
+        lfm ~/Pictures "$@"
       }
 
   ## make
@@ -2772,6 +2795,7 @@ export GIT_AUTHOR_DATE="$d"
     alias mitm="nohup vlc --recursive expand \"$INDIAN_MUSIC_DIR\" >/dev/null &"
     alias mjfr="nohup vlc --recursive expand \"$JAZZ_MUSIC_DIR\" >/dev/null &"
     alias mroc="nohup vlc --recursive expand \"$MUSIC_DIR/rock\" >/dev/null &"
+    alias music="nohup vlc --recursive expand \"$MUSIC_DIR\" >/dev/null &"
 
   ## Maven
 
@@ -3002,11 +3026,27 @@ export GIT_AUTHOR_DATE="$d"
   ## raspberry pi
 
     # Exit with: Ctrl + A then backslash '\'.
-    piip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3 | head -n1 )
-    pissh() ( sshpass -p raspberry pisshp )
-    pisshp() ( ssh "pi@$(piip)" )
-    pivin() (
+    rpiip() ( cat /var/lib/misc/dnsmasq.leases | cut -d ' ' -f 3 | head -n1 )
+    rpissh() ( sshpass -p raspberry pisshp )
+    rpisshp() ( ssh "pi@$(piip)" )
+    rpivin() (
       vinagre "$(piip)"
+    )
+    rpipr() (
+      # RPI Pico Rshell.
+      rshell -p /dev/ttyACM0 --buffer-size 512 "$@"
+    )
+    rpiprc() (
+      # RPI Pico Rshell copy as main.
+      rpipr cp "$1" /pyboard/main.py
+    )
+    rpipu() (
+      # RPI Pico UART
+      screen /dev/ttyACM0 115200
+    )
+    rpipfw() (
+      # Install a firmware UF2 to a Pico pluged win while holding BOOTSEL.
+      cp "$1" /media/$USER/RPI-RP2/
     )
 
   ## screencast

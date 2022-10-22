@@ -675,7 +675,7 @@
       function! NERDSpaceDelimsOff()
           let NERDSpaceDelimsOld = g:NERDSpaceDelims
           let g:NERDSpaceDelims = 0
-          call NERDComment('n', 'toggle')
+          call nerdcommenter#Comment('n', 'toggle')
           let g:NERDSpaceDelims = NERDSpaceDelimsOld
       endfunction
       autocmd Bufenter * noremap <leader>m<space> :call NERDSpaceDelimsOff()<cr>
