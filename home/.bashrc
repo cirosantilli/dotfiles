@@ -528,15 +528,25 @@
   # Reviewboard.
   rbtp() (
     # Post new review.
-    rbt post -g "$@"
+    # Post just the latest commit:
+    #   rbtp HEAD
+    # Post a range of commits up to the latest
+    #   rbtp <SHA>~ HEAD
+    # Note how you have to start one commit before the first one you want to push.
+    rbt post "$@"
   )
   rbtpu() (
-    # Update review, autoguess from commit message parsing.
+    # Update review, autoguess from commit message stamp parsing.
+    # If there is no commit message stamp, this will fail, and you
+    # will have to use rbtpr with an explicit ID instead.
     rbtp -u "$@"
   )
   rbtpr() (
     # Update review given by ID.
-    # Usage: rbtpr 1234 HEAD
+    # Usage: single latest commit:
+    #   rbtpu 1234 HEAD
+    # Range:
+    #   rbtpu 1234 <SHA>~ HEAD
     rbtp -r "$@"
   )
   rbtprh() (
@@ -561,11 +571,11 @@
     shift
     i=0
     while [ "$i" -lt "$n" ]; do
-        if ! $*; then
-          echo "FAIL i = $i"
-          break
-        fi
-        i="$(($i + 1))"
+      if ! $*; then
+        echo "FAIL i = $i"
+        break
+      fi
+      i="$(($i + 1))"
     done
   }
   alias pingg='ping google.com'
@@ -2065,6 +2075,7 @@ ${2:-}
     gg() ( git grep --color "$@" )
     ggi() ( gg -i "$@" )
     ggr() ( gg --recurse-submodules "$@" )
+    ggri() ( gg -i --recurse-submodules "$@" )
     gin() ( git init "$@" )
     alias gka='gitk --all'
     gls() ( git ls-files "$@" )
@@ -2090,6 +2101,7 @@ ${2:-}
     alias glo='git log --decorate --pretty=fuller'
     alias gloo='git log --oneline'
     glog() ( git log --abbrev-commit --decorate --graph --pretty=oneline "$@" )
+    glogom() ( glog HEAD origin/master )
     gloG() ( git log -p -G "$@" )
     alias gloga='git log --abbrev-commit --decorate --graph --pretty=oneline --all'
     alias glogas='git log --abbrev-commit --decorate --graph --pretty=oneline --all --simplify-by-decoration'
@@ -2117,8 +2129,12 @@ ${2:-}
     )
     # Also get committer date.
     alias gloxd='git log -1 --format="%H %cd" | y'
-    alias gmb='git merge-base'
-    alias gmbm='git merge-base HEAD master'
+    gmb() ( 
+      # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
+      git merge-base "$@"
+    )
+    gmbm() ( gmb HEAD master )
+    gmbom() ( gmb HEAD origin/master "$@" )
     alias gme='git merge'
     alias gmea='git merge --abort'
     alias gmem='git merge master'
@@ -2145,6 +2161,7 @@ ${2:-}
     grbi() ( git rebase -i "$@" )
     grbih() ( git rebase -i "HEAD~${1:-1}" )
     grbim() ( grbi "master" )
+    grbiom() ( grbi "origin/master" )
     alias grbm='git rebase master'
     alias grbom='git rebase origin/master'
     grbo() (
@@ -2159,7 +2176,6 @@ ${2:-}
     alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk && git submodule update'
     alias grs='git reset'
     # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
-    # http://stackoverflow.com/questions/1549146/find-common-ancestor-of-two-branches
     alias grssm='git reset --soft "$(git merge-base master HEAD)"'
     alias grsst='git reset --soft "$(git merge-base trunk HEAD)"'
     alias grsh='git reset --hard'
@@ -2204,9 +2220,8 @@ ${2:-}
       git submodule sync --recursive &>/dev/null
       git submodule update --init --recursive --progress "$@"
     )
-    gsuur() (
-      # https://stackoverflow.com/questions/1030169/pull-latest-changes-for-all-git-submodules
-      git submodule update --recursive --remote "$@"
+    gsuud() (
+      gsuu --depth 1
     )
     gsus() ( git submodule status "$@" )
     alias gta='git tag'

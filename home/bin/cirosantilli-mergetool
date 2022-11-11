@@ -2,6 +2,8 @@
 BASE="$1"
 LOCAL="$2"
 REMOTE="$3"
+echo '== UPSTREAM ==============================================='
 diff --color -u "$BASE" "$LOCAL"
+echo '== OUR CHANGE ============================================='
 diff --color -u "$BASE" "$REMOTE"
 exit 1
