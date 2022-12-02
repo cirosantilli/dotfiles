@@ -321,6 +321,17 @@
   }
   alias cla11='clang++ -std=c++11'
   check-ip() ( curl 'http://checkip.amazonaws.com'; )
+  curl-netperf() (
+    # Get come important timing related statistics from cURL.
+    # Usage:
+    #   curl-netperf https://google.com
+    # https://stackoverflow.com/questions/18215389/how-do-i-measure-request-and-response-times-at-once-using-curl
+     curl -o /dev/null -s -w 'time_connect: %{time_connect}s
+time_starttransfer: %{time_starttransfer}s
+time_total: %{time_total}s
+size_download: %{size_download}
+' "$@"
+  )
   chinese-simplily() (
     # sudo apt install opencc
     opencc -i "$1" -o "$2" -c t2s.json
@@ -1850,6 +1861,21 @@ ${2:-}
       "$@"
       gdb --batch -ex 'bt' "$1" 'core'
     )
+    gdbbt() (
+      # https://stackoverflow.com/questions/3899870/print-call-stack-in-c-or-c/54365144#54365144
+      fn="$1"
+      shift
+      gdb -ex start \
+          -ex "break $fn" \
+          -ex commands \
+          -ex silent \
+          -ex backtrace \
+          -ex 'printf "\n"' \
+          -ex continue \
+          -ex end \
+          -ex continue \
+          -args "$@"
+    )
     gdbr() ( gdb -ex 'run' -q --args "$@" )
     gdbrb() ( gdb -ex 'run' -ex 'shell cirosantilli-beep' -q --args "$@" )
     gdbs() ( gdb -ex 'start' -q --args "$@" )
@@ -2296,6 +2322,10 @@ ${2:-}
       hooks_dest_dir="$(git rev-parse --git-dir)/hooks"
       ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-commit" "${hooks_dest_dir}/post-commit"
       ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
+    )
+
+    git-commit-notime() (
+      GIT_COMMITTER_DATE='2000-01-01T00:00:00+0000' git commit --date '2000-01-01T00:00:00+0000' "$@"
     )
 
     git-hide-time() (

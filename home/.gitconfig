@@ -54,6 +54,7 @@
 	defaultBranch = master
 [merge]
 	tool = cirosantilli-mergetool
+	conflictstyle = diff3
 [mergetool]
 	keepBackup = false
 	prompt = false

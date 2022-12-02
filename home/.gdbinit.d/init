@@ -1,1 +1,1 @@
-set startup-quietly on
+set history filename ~/.gdb_history
