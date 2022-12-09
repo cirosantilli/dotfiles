@@ -1763,7 +1763,7 @@ ${2:-}
       eval "$cmd"
       cmd="./${out}"
       echo "$cmd"
-      eval "$cmd"
+      exec "$cmd"
     )
 
     gpp-pedantic() (
@@ -1775,7 +1775,7 @@ ${2:-}
       eval "$cmd"
       cmd="./${out}"
       echo "$cmd"
-      eval "$cmd"
+      exec "$cmd"
     )
 
     asm-get-bytes() (
