@@ -261,6 +261,12 @@
   adoc() (
     asciidoctor -s - -v "$@"
   )
+  addr2lines() (
+    # addr2line that works on multiple lines from stdin having glibc_symbols_fd format.
+    # https://stackoverflow.com/questions/3899870/print-call-stack-in-c-or-c/54365144#54365144
+    # Works with both -rdynamic (function + offset) format, with without (absolute address only).
+    perl -ne '$m = s/(.*).*\(([^)]*)\).*/gdb -q -batch -ex "info line *\2" \1/;print $_ if $m' | bash
+  )
   alias ack='ack-grep --smart-case'
   bao() ( noh baobab "${1:-.}" )
   bench-cmd() (
@@ -1764,6 +1770,7 @@ ${2:-}
   ## gcc
 
     gcc-pedantic() (
+      set -eu
       # GCC with as many checks as I can make it.
       c="$1"
       out="${c%.*}.out"
@@ -1776,7 +1783,8 @@ ${2:-}
     )
 
     gpp-pedantic() (
-      # C++ version of gcc.
+      set -eu
+      # C++ version of gcc-pedantic.
       c="$1"
       out="${c%.*}.out"
       cmd="g++ -ggdb3 -O0 -std=c++11 -Wall -Wextra -pedantic -o ${out} ${c}"
@@ -3482,3 +3490,4 @@ export GIT_AUTHOR_DATE="$d"
 if [ -r "$HOME/.bashrc_local" ]; then
   . "$HOME/.bashrc_local"
 fi
+. "$HOME/.cargo/env"
