@@ -294,6 +294,8 @@
       " Disable asciidoc checks, because the default ones are useless,
       " and they make saving my huge one file documentations ultra slow.
       let g:syntastic_asciidoc_checkers = []
+      " Too slow, every :w takes 2 seconds. Impossible like that.
+      let g:syntastic_python_checkers = []
 
   " You must then install the external syntax checkers you will use.
 

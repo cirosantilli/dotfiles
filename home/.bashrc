@@ -252,6 +252,12 @@
   unalias -a
 
   alias a='cat'
+  addr2lines() (
+    # addr2line that works on multiple lines from stdin having glibc_symbols_fd format.
+    # https://stackoverflow.com/questions/3899870/print-call-stack-in-c-or-c/54365144#54365144
+    # Works with both -rdynamic (function + offset) format, with without (absolute address only).
+    perl -ne '$m = s/(.*).*\(([^)]*)\).*/gdb -nh -q -batch -ex "info line *\2" \1/;print $_ if $m' | bash
+  )
   adoc() (
     asciidoctor -s - -v "$@"
   )
@@ -1863,18 +1869,22 @@ ${2:-}
     )
     gdbbt() (
       # https://stackoverflow.com/questions/3899870/print-call-stack-in-c-or-c/54365144#54365144
+      tmpfile=$(mktemp /tmp/gdbbt.XXXXXX)
       fn="$1"
       shift
-      gdb -ex start \
-          -ex "break $fn" \
-          -ex commands \
-          -ex silent \
-          -ex backtrace \
-          -ex 'printf "\n"' \
-          -ex continue \
-          -ex end \
-          -ex continue \
-          -args "$@"
+      printf '%s' "
+start
+break $fn
+commands
+  silent
+  backtrace
+  printf \"\n\"
+  continue
+end
+continue
+" > "$tmpfile"
+      gdb -nh -batch -x "$tmpfile" -args "$@"
+      rm -f "$tmpfile"
     )
     gdbr() ( gdb -ex 'run' -q --args "$@" )
     gdbrb() ( gdb -ex 'run' -ex 'shell cirosantilli-beep' -q --args "$@" )
@@ -2517,7 +2527,9 @@ export GIT_AUTHOR_DATE="$d"
     # Portability: POSIX 7.
     #
     # Bibliography:
-    # https://stackoverflow.com/questions/2614764/how-to-create-a-hex-dump-of-file-containing-only-the-hex-characters-without-spac/2614831#2614831
+    #
+    # - https://stackoverflow.com/questions/2614764/how-to-create-a-hex-dump-of-file-containing-only-the-hex-characters-without-spac/2614831#2614831
+    # - https://stackoverflow.com/questions/12847328/bash-ascii-to-hex/74760924#74760924
     od-raw() (
       od -A n -t x1 -v "$@" | tr -d '\n' | cut -c 2-
     )
