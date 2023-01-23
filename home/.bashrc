@@ -606,6 +606,12 @@ size_download: %{size_download}
   }
   alias pingg='ping google.com'
   alias psg='sudo ps aux | grep -i'
+  psl() (
+    # ps Last.
+    # Sort by first launched first.
+    # https://serverfault.com/questions/27887/how-to-sort-ps-output-by-process-start-time
+    ps -ef --sort=start_time
+  )
   alias pscpu='sudo ps aux --sort "%cpu"'
   alias psmem='sudo ps aux --sort "%mem"'
   alias rmrf='rm -rf'
@@ -2063,6 +2069,7 @@ continue
     gcob() ( gco -b "$@" )
     gcoB() ( gco -B "$@" )
     gcobm() ( git checkout -b "$1" master )
+    gcoom() ( git checkout origin/master )
     alias gcod='gco --conflict=diff3'
     gcoH() ( gco HEAD~${1:-} )
     # Last tag.
@@ -2093,7 +2100,7 @@ continue
     alias gdfh='git diff HEAD'
     alias gdfhh='git diff HEAD~ HEAD'
     alias gdfhhs='git diff --stat HEAD~ HEAD'
-    alias gdfst='git diff --stat'
+    alias gdfs='git diff --stat'
     alias gdfx='git diff | y'
     gdf12() { git diff ":1:./$1" ":2:./$1"; }
     gdf13() { git diff ":1:./$1" ":3:./$1"; }
@@ -2256,7 +2263,8 @@ continue
     gsaar() ( git stash apply && gsuf 'git stash apply || true' )
     alias gsaa='git stash apply'
     gsh() ( git show "$@" )
-    alias gst='git status'
+    gst() { git status "$@"; }
+    gsti() { gst --ignore-submodules "$@"; }
     alias gsu='git submodule'
     alias gsua='git submodule add'
     gsuf() ( git submodule foreach "$@" )
