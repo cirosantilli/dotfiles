@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# https://stackoverflow.com/questions/2973996/git-rebase-without-changing-commit-timestamps/53516609#53516609
+set -eu
+echo post-commit
+if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
+  if [ -z "${GIT_COMMITTER_DATE:-}" ]; then
+    last_git_time="$(git log --date=format:'%Y-%m-%dT%H:%M:%S+0000' --format='%ad' -n 1 --skip 1)"
+    d="$(date --date "${last_git_time} + 1 second" "+%Y-%m-%dT%H:%M:%S+0000")"
+    echo "$d"
+    CIROSANTILLI_GITHOOKS_DISABLE=1 \
+      GIT_COMMITTER_DATE="$d" \
+      git commit \
+      --amend \
+      --date "$d" \
+      --no-edit \
+      --no-verify \
+      &>/dev/null \
+    ;
+  fi
+  echo
+fi

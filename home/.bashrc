@@ -314,6 +314,9 @@
     find "$d" -type f | sudo xargs chmod +666
     find . -type f -perm /u=x,g=x,o=x | sudo xargs -r chmod +111
   )
+  d() {
+    code "$@"
+  }
   # External IP.
   # DropBox Symlink. Move the given file into Dropbox,
   # and symlink to it from the old location.
@@ -2334,13 +2337,46 @@ continue
       ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
     )
 
+    git-install-hooks() (
+      set -e
+      # Per repository workaround because hooksPath is not good enough.
+      hooks_dest_dir="$(git rev-parse --git-dir)/hooks"
+      ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-commit-time-plus-one" "${hooks_dest_dir}/post-commit"
+      ln -sf "${CIROSANTILLI_GIT_HOOKS_DIR}/post-rewrite" "${hooks_dest_dir}/post-rewrite"
+    )
+
     git-commit-notime() (
       GIT_COMMITTER_DATE='2000-01-01T00:00:00+0000' git commit --date '2000-01-01T00:00:00+0000' "$@"
     )
 
-    git-hide-time() (
+    git-hide-date() (
+      # Keep first commit unmodified, then rewrite history make commit times of every
+      # following commit to be exactly one second after the last commit.
       # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
+      first_commit="$1"
+      last_commit="${2:-HEAD}"
+      FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter '
+d="$(date 2000-01-01T00:00:00+0000)"
+export GIT_COMMITTER_DATE="$d"
+export GIT_AUTHOR_DATE="$d"
+' --force "${first_commit}~..${last_commit}"
+    )
+
+    git-hide-date0() (
+      # Set the time of all commits in inclusive range to the first second of the year 2000.
+      # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
+      first_commit="$1"
+      last_commit="${2:-HEAD}"
+      FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter '
+d="2000-01-01T00:00:00+0000"
+export GIT_COMMITTER_DATE="$d"
+export GIT_AUTHOR_DATE="$d"
+' --force "${first_commit}~..${last_commit}"
+    )
+
+    git-hide-time() (
       # Set the time of all commits in inclusive range to midnight. Keep date.
+      # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
       first_commit="$1"
       last_commit="${2:-HEAD}"
       FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter '

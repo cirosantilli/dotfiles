@@ -33,6 +33,28 @@
             "after": ["$"]
         }
     ],
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [",", "e"],
+            "after": [":", "e", " "]
+        },
+        {
+            "before": ["J"],
+            "after": ["5", "j"]
+        },
+        {
+            "before": ["K"],
+            "after": ["5", "k"]
+        },
+        {
+            "before": ["H"],
+            "after": ["^"]
+        },
+        {
+            "before": ["L"],
+            "after": ["$"]
+        }
+    ],
     "files.insertFinalNewline": true,
     "mesonbuild.configureOnOpen": false,
     "files.autoSave": "onFocusChange",
@@ -53,4 +75,12 @@
     "workbench.startupEditor": "none",
     "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
     "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "workbench.colorCustomizations": {
+        // https://stackoverflow.com/questions/42780975/visual-studio-code-status-bar-color
+        "statusBar.background" : "#303030",
+        "statusBar.noFolderBackground" : "#222225",
+        "statusBar.debuggingBackground": "#511f1f"
+    },
+    "workbench.sideBar.location": "right",
+    "window.menuBarVisibility": "toggle"
 }
