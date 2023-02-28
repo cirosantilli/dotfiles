@@ -101,3 +101,5 @@
 	required = true
 [safe]
 	directory = /root/lkmc
+[submodule]
+	recurse = false

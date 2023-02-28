@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# TODO this is blowing up rebases.
 # https://stackoverflow.com/questions/28832219/can-i-hide-commits-time-when-i-push-to-github/52887876#52887876
 # https://stackoverflow.com/questions/32699631/can-git-committer-date-be-customized-inside-a-git-hook/53514970#53514970
 set -eu

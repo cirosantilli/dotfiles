@@ -15,7 +15,7 @@ if [ ! "${CIROSANTILLI_GITHOOKS_DISABLE:-0}" = 1 ]; then
       new_delta=
     fi
     d="$(date --date "${today}T${new_time}+0000${new_delta}" "+${today}T%H:%M:%S+0000")"
-    echo "$d"
+    echo "post-commit $d"
     CIROSANTILLI_GITHOOKS_DISABLE=1 \
       GIT_COMMITTER_DATE="$d" \
       git commit \

@@ -2214,6 +2214,7 @@ continue
     # Rebase trunk Updated.
     alias grbtu='git checkout trunk && git pull && git checkout - && git rebase trunk && git submodule update'
     alias grs='git reset'
+    alias grsom='git reset origin/master'
     # http://stackoverflow.com/questions/7275508/is-there-a-way-to-squash-a-number-of-commits-non-interactively
     alias grssm='git reset --soft "$(git merge-base master HEAD)"'
     alias grsst='git reset --soft "$(git merge-base trunk HEAD)"'
@@ -2304,18 +2305,35 @@ continue
       first_commit="$3"
       last_commit="${4:-HEAD}"
       FILTER_BRANCH_SQUELCH_WARNING=1 \
-      git filter-branch --env-filter "
-        OLD_EMAIL='${old_email}'
-        CORRECT_EMAIL='${new_email}'
-        if [ \"\$GIT_COMMITTER_EMAIL\" = '${old_email}' ]
-        then
-            export GIT_COMMITTER_EMAIL='${new_email}'
-        fi
-        if [ \"\$GIT_AUTHOR_EMAIL\" = '${old_email}' ]
-        then
-            export GIT_AUTHOR_EMAIL='${new_email}'
-        fi
-        " --force --tag-name-filter cat -- "${first_commit}..${last_commit}"
+      git filter-branch --env-filter "\
+OLD_EMAIL='${old_email}'
+CORRECT_EMAIL='${new_email}'
+if [ \"\$GIT_COMMITTER_EMAIL\" = '${old_email}' ]; then
+  export GIT_COMMITTER_EMAIL='${new_email}'
+fi
+if [ \"\$GIT_AUTHOR_EMAIL\" = '${old_email}' ]; then
+  export GIT_AUTHOR_EMAIL='${new_email}'
+fi
+" --force --tag-name-filter cat -- "${first_commit}..${last_commit}"
+    )
+
+    git-set-name-and-email() (
+      # https://stackoverflow.com/questions/750172/how-to-change-the-author-and-committer-name-and-e-mail-of-multiple-commits-in-gi/750182#750182
+      if [ $# -lt 3 ]; then
+        echo 'too few arguments'
+        exit 1
+      fi
+      name="$1"
+      email="$2"
+      first_commit="$3"
+      last_commit="${4:-HEAD}"
+      FILTER_BRANCH_SQUELCH_WARNING=1 \
+      git filter-branch --env-filter "\
+export GIT_COMMITTER_NAME='${name}'
+export GIT_AUTHOR_NAME='${name}'
+export GIT_COMMITTER_EMAIL='${email}'
+export GIT_AUTHOR_EMAIL='${email}'
+" --force --tag-name-filter cat -- "${first_commit}..${last_commit}"
     )
 
     git-create-test-commit() (
@@ -2325,11 +2343,12 @@ continue
       git commit -m "$d"
     )
 
-    git-email-ccp() (
+    git-config-china() (
+      # China settings.
       git config user.name "Ciro Santilli 六四事件 法轮功"
     )
 
-    git-install-hooks() (
+    git-install-hooks-hide-time() (
       set -e
       # Per repository workaround because hooksPath is not good enough.
       hooks_dest_dir="$(git rev-parse --git-dir)/hooks"
@@ -2355,11 +2374,17 @@ continue
       # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
       first_commit="$1"
       last_commit="${2:-HEAD}"
+      first_git_time="$(git log --date=format:'%Y-%m-%dT%H:%M:%S+0000' --format='%ad' -n 1 $first_commit)"
+      echo "$first_git_time"
       FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter '
-d="$(date 2000-01-01T00:00:00+0000)"
+n="$(git log --oneline '$first_commit'..$GIT_COMMIT  | wc -l)"
+echo
+echo $n
+d="$(date --date "'${first_git_time}' + ${n} second" "+%Y-%m-%dT%H:%M:%S+0000")"
+echo "$d"
 export GIT_COMMITTER_DATE="$d"
 export GIT_AUTHOR_DATE="$d"
-' --force "${first_commit}~..${last_commit}"
+' --force "${first_commit}..${last_commit}"
     )
 
     git-hide-date0() (

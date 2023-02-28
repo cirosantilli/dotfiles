@@ -1,86 +1,268 @@
 {
+    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "[shellscript]": {
+        "editor.tabSize": 2
+    },
     "editor.minimap.enabled": false,
+    "editor.wordWrap": "off",
+    "extensions.autoCheckUpdates": false,
+    "extensions.autoUpdate": false,
+    "files.autoSave": "onFocusChange",
+    "files.insertFinalNewline": true,
     "keyboard.dispatch": "keyCode",
-    "workbench.colorTheme": "Default Dark+",
+    "mesonbuild.configureOnOpen": false,
+    "search.useParentIgnoreFiles": true,
+    "terminal.integrated.allowChords": false,
+    "terminal.integrated.customGlyphs": false,
+    "vim.commandLineModeKeyBindings": [],
+    "vim.easymotion": true,
     "vim.handleKeys": {
-        "<C-k>": false,
         "<C-E>": false,
         "<C-f>": false,
+        "<C-k>": false,
         "<C-t>": false,
         "<C-w>": false,
         "<C-x>": false,
         "<tab>": false
     },
-    "vim.normalModeKeyBindings": [
-        {
-            "before": [",", "e"],
-            "after": [":", "e", " "]
-        },
-        {
-            "before": ["J"],
-            "after": ["5", "j"]
-        },
-        {
-            "before": ["K"],
-            "after": ["5", "k"]
-        },
-        {
-            "before": ["H"],
-            "after": ["^"]
-        },
-        {
-            "before": ["L"],
-            "after": ["$"]
-        }
-    ],
-    "vim.visualModeKeyBindings": [
-        {
-            "before": [",", "e"],
-            "after": [":", "e", " "]
-        },
-        {
-            "before": ["J"],
-            "after": ["5", "j"]
-        },
-        {
-            "before": ["K"],
-            "after": ["5", "k"]
-        },
-        {
-            "before": ["H"],
-            "after": ["^"]
-        },
-        {
-            "before": ["L"],
-            "after": ["$"]
-        }
-    ],
-    "files.insertFinalNewline": true,
-    "mesonbuild.configureOnOpen": false,
-    "files.autoSave": "onFocusChange",
-    "search.useParentIgnoreFiles": true,
-    "editor.wordWrap": "off",
-    "[shellscript]": {
-        "editor.tabSize": 2
-    },
-    "vim.easymotion": true,
     "vim.leader": ",",
-    "search.exclude": {
-        "smartnic_cmodel/build/**": true,
-        "smartnic_fw/build/**": true,
-        "smartnic-snapper/build/**": true
-    },
-    "terminal.integrated.allowChords": false,
-    "terminal.integrated.customGlyphs": false,
-    "workbench.startupEditor": "none",
-    "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
-    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "after": [],
+            "before": [
+                ",",
+                "e"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.files.openFile"
+                }
+            ]
+        },
+        {
+            "after": [
+                "5",
+                "j"
+            ],
+            "before": [
+                "J"
+            ]
+        },
+        {
+            "after": [
+                "5",
+                "k"
+            ],
+            "before": [
+                "K"
+            ]
+        },
+        {
+            "after": [
+                "^"
+            ],
+            "before": [
+                "H"
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "u"
+            ],
+            "commands": [
+                {
+                    "command": "undo",
+                }
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "<C-r>"
+            ],
+            "commands": [
+                {
+                    "command": "redo",
+                }
+            ]
+        },
+        {
+            "after": [
+                "$"
+            ],
+            "before": [
+                "L"
+            ]
+        },
+        {
+            "after": [
+                "v"
+            ],
+            "before": [
+                "V"
+            ]
+        },
+        {
+            "after": [
+                "V"
+            ],
+            "before": [
+                "v"
+            ]
+        },
+        {
+            // Copy to clipboard.
+            "after": [
+                "\"",
+                "+",
+                "y"
+            ],
+            "before": [
+                "Y"
+            ]
+        },
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "after": [],
+            "before": [
+                ",",
+                "e"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.files.openFile"
+                }
+            ]
+        },
+        {
+            "after": [
+                "5",
+                "j"
+            ],
+            "before": [
+                "J"
+            ]
+        },
+        {
+            "after": [
+                "5",
+                "k"
+            ],
+            "before": [
+                "K"
+            ]
+        },
+        {
+            "after": [
+                "^"
+            ],
+            "before": [
+                "H"
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "u"
+            ],
+            "commands": [
+                {
+                    "command": "undo"
+                }
+            ]
+        },
+        {
+            // Make C-v paste rather than to into block visual mode.
+            "after": [],
+            "before": [
+                "<C-v>"
+            ],
+            "commands": [
+                {
+                    "command": "editor.action.clipboardPasteAction"
+                }
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "<C-r>"
+            ],
+            "commands": [
+                {
+                    "command": "redo"
+                }
+            ]
+        },
+        {
+            "after": [
+                "$"
+            ],
+            "before": [
+                "L"
+            ]
+        },
+        {
+            // Replace text under cursor. The initial replacement is set to the orinal text.
+            "after": [
+                "\"",
+                "z",
+                "y",
+                ":",
+                "%",
+                "s",
+                "/",
+                "<c-r>",
+                "z",
+                "/",
+                "<c-r>",
+                "z",
+                "/",
+                "g",
+                "<left>",
+                "<left>"
+            ],
+            "before": [
+                "s"
+            ]
+        },
+        {
+            // Copy to clipboard.
+            "after": [
+                "\"",
+                "+",
+                "y"
+            ],
+            "before": [
+                "Y"
+            ]
+        },
+    ],
+    "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
         // https://stackoverflow.com/questions/42780975/visual-studio-code-status-bar-color
-        "statusBar.background" : "#303030",
-        "statusBar.noFolderBackground" : "#222225",
-        "statusBar.debuggingBackground": "#511f1f"
+        "statusBar.background": "#303030",
+        "statusBar.debuggingBackground": "#511f1f",
+        "statusBar.noFolderBackground": "#222225"
     },
+    "workbench.colorTheme": "Default Dark+",
     "workbench.sideBar.location": "right",
-    "window.menuBarVisibility": "toggle"
+    "workbench.startupEditor": "none",
+    "editor.renderWhitespace": "trailing",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
+    "remote.SSH.remotePlatform": {
+        "xcbl-rtl01": "linux",
+        "lockhart5": "linux",
+        "lockhart6": "linux"
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "terminal.integrated.rightClickBehavior": "nothing",
+    "python.autoComplete.extraPaths": [],
+    "security.workspace.trust.untrustedFiles": "open",
+    "python.analysis.extraPaths": [],
+    "terminal.integrated.enableMultiLinePasteWarning": false
 }

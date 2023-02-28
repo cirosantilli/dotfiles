@@ -21,14 +21,6 @@
         "when": "canNavigateForward"
     },
     {
-        "key": "ctrl+l",
-        "command": "workbench.action.nextEditor"
-    },
-    {
-        "key": "ctrl+h",
-        "command": "workbench.action.previousEditor"
-    },
-    {
         "key": "ctrl+q",
         "command": "workbench.action.quickOpen"
     },
@@ -49,11 +41,6 @@
     {
         "key": "ctrl+shift+s",
         "command": "extension.searchUnderCursor"
-    },
-    {
-        "key": "ctrl+shift+q",
-        "command": "workbench.view.explorer",
-        "when": "viewContainer.workbench.view.explorer.enabled"
     },
     {
         "key": "ctrl+shift+g c",
@@ -88,24 +75,53 @@
         "command": "editor.action.joinLines"
     },
     {
-        "key": "ctrl+2",
-        "command": "workbench.explorer.fileView.focus"
+        "key": "ctrl+alt+c",
+        "command": "-copyFilePath",
+        "when": "!editorFocus"
     },
     {
-        "key": "ctrl+n",
-        "command": "-extension.vim_ctrl+n",
-        "when": "editorTextFocus && vim.active && vim.use<C-n> && !inDebugRepl || vim.active && vim.use<C-n> && !inDebugRepl && vim.mode == 'CommandlineInProgress' || vim.active && vim.use<C-n> && !inDebugRepl && vim.mode == 'SearchInProgressMode'"
+        "key": "ctrl+shift+c",
+        "command": "-workbench.action.terminal.openNativeConsole",
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+c",
+        "command": "copyRelativeFilePath",
+        "when": "editorFocus"
+    },
+    {
+        "key": "ctrl+k ctrl+shift+alt+c",
+        "command": "-copyRelativeFilePath",
+        "when": "editorFocus"
+    },
+    {
+        "key": "ctrl+2",
+        "command": "-workbench.action.focusSecondEditorGroup"
     },
     {
         "key": "ctrl+3",
         "command": "-workbench.action.focusThirdEditorGroup"
     },
     {
+        "key": "ctrl+shift+e",
+        "command": "-workbench.view.explorer",
+        "when": "viewContainer.workbench.view.explorer.enabled"
+    },
+    {
+        "key": "ctrl+2",
+        "command": "workbench.files.action.showActiveFileInExplorer"
+    },
+    {
         "key": "ctrl+3",
         "command": "outline.focus"
     },
     {
-        "key": "ctrl+2",
-        "command": "-workbench.action.focusSecondEditorGroup"
+        "key": "ctrl+shift+`",
+        "command": "workbench.action.toggleMaximizedPanel"
+    },
+    {
+        "key": "ctrl+shift+`",
+        "command": "-workbench.action.terminal.new",
+        "when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
     }
 ]
