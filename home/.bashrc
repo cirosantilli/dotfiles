@@ -571,7 +571,7 @@ size_download: %{size_download}
     # Update review given by ID.
     # Usage: single latest commit:
     #   rbtpu 1234 HEAD
-    # Range:
+    # Range from SHA to HEAD:
     #   rbtpu 1234 <SHA>~ HEAD
     rbtp -r "$@"
   )
@@ -606,6 +606,13 @@ size_download: %{size_download}
   }
   alias pingg='ping google.com'
   alias psg='sudo ps aux | grep -i'
+  psm() (
+    # ps Mine
+    ps -fu "$USER"
+  )
+  psmg() (
+    psm | gi "$@"
+  )
   psl() (
     # ps Last.
     # Sort by first launched first.
@@ -2068,8 +2075,8 @@ continue
     )
     gcob() ( gco -b "$@" )
     gcoB() ( gco -B "$@" )
-    gcobm() ( git checkout -b "$1" master )
-    gcoom() ( git checkout origin/master )
+    gcobm() ( gco -b "$1" master )
+    gcoom() ( gco origin/master )
     alias gcod='gco --conflict=diff3'
     gcoH() ( gco HEAD~${1:-} )
     # Last tag.
@@ -2113,6 +2120,15 @@ continue
     alias gfea='git fetch --all --tags'
     gfer() ( git fetch && gsuf git fetch )
     gferh() { git fetch "$@" && git reset --hard FETCH_HEAD; }
+    gfecoom() {
+      gfeom
+      gcoom
+    }
+    gferbom() {
+      gfeom
+      grbom
+    }
+    gfeom() ( git fetch origin master )
     alias gfeomm='git fetch origin master:master'
     alias gfeumm='git fetch up master:master'
     gfeommcob() { git fetch origin master:master && git checkout -b "$1" master; }
@@ -2209,15 +2225,18 @@ continue
     alias gplrum='git pull --rebase up master'
     alias gplo='git pull origin'
     alias gplom='git pull origin master'
-    grb() ( git rebase --committer-date-is-author-date )
+    grb() (
+      git rebase --committer-date-is-author-date "$@"
+      gsuu
+    )
     alias grba='git rebase --abort'
     alias grbc='git rebase --continue'
     grbi() ( git rebase -i "$@" )
-    grbih() ( git rebase -i "HEAD~${1:-1}" )
+    grbih() ( grbi "HEAD~${1:-1}" )
     grbim() ( grbi "master" )
     grbiom() ( grbi "origin/master" )
-    alias grbm='git rebase master'
-    alias grbom='git rebase origin/master'
+    grbm() ( grb master )
+    grbom() ( grb origin/master )
     grbo() (
       # Rebase current branch onto another ref.
       # Useful to rebase a feature branch of a feature branch
@@ -3282,6 +3301,9 @@ export GIT_AUTHOR_DATE="$d"
       cirosantilli-tmux "$@"
       # https://superuser.com/questions/878890/attach-a-tmux-session-to-a-remote-machine/912400#912400
       #tmux attach-session "$@"
+    )
+    tmA() (
+      tmux new-session -A -s "$@"
     )
     tml() ( tmux list-sessions "$@" )
     tms() (

@@ -69,10 +69,20 @@
     "explorer.confirmDelete": false,
     "window.menuBarVisibility": "toggle",
     "workbench.sideBar.location": "right",
-
     "python.defaultInterpreterPath": "python3",
     "[python]": {
         "editor.formatOnType": true
     },
     "gitlens.codeLens.authors.enabled": false,
+    "remote.SSH.remotePlatform": {
+        "lockhart5": "linux",
+        "xcbciros41x": "linux",
+        "xcbl-rtl01": "linux"
+    },
+    "editor.accessibilitySupport": "off",
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "terminal.integrated.persistentSessionReviveProcess": "onExitAndWindowClose",
+    "terminal.integrated.enableBell": true,
+    "audioCues.volume": 100,
+    "terminal.integrated.bellDuration": 5000,
 }

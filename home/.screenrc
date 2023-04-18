@@ -12,4 +12,5 @@ defscrollback 100000
 termcapinfo xterm ti@:te@
 termcapinfo xterm-color ti@:te@
 
-escape ^Jj
+# Change escape from A to J
+# escape ^Jj

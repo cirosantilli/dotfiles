@@ -3,3 +3,4 @@
 # long-command;b
 zenity --info --text "status: ${1}\ndate: $(date)\npwd: $(pwd)" --width=400 &>/dev/null &
 spd-say 'done' &>/dev/null
+printf '\a'
