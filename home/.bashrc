@@ -406,12 +406,14 @@ size_download: %{size_download}
   files-to-markdown() (
     # Serialize multiple files to markdown for SO answers.
     for f in "$@"; do
-      echo "$f"
-      echo
-      echo '```'
-      cat "$f"
-      echo '```'
-      echo
+      if [ -f "$f" ]; then
+        echo "$f"
+        echo
+        echo '```'
+        cat "$f"
+        echo '```'
+        echo
+      fi
     done
   )
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
