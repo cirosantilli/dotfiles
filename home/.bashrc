@@ -553,12 +553,14 @@ size_download: %{size_download}
   alias R='R --no-save'
   # Reviewboard.
   rbtp() (
-    # Post new review.
-    # Post just the latest commit:
-    #   rbtp HEAD
-    # Post a range of commits up to the latest
-    #   rbtp <SHA>~ HEAD
-    # Note how you have to start one commit before the first one you want to push.
+    doc='
+Post new review.
+Post just the latest commit:
+  rbtp HEAD
+Post a range of commits up to the latest
+  rbtp <SHA>~ HEAD
+Note how you have to start one commit before the first one you want to push.
+'
     rbt post "$@"
   )
   rbtpu() (
@@ -568,11 +570,13 @@ size_download: %{size_download}
     rbtp -u "$@"
   )
   rbtpr() (
-    # Update review given by ID.
-    # Usage: single latest commit:
-    #   rbtpu 1234 HEAD
-    # Range from SHA to HEAD:
-    #   rbtpu 1234 <SHA>~ HEAD
+    doc='
+Update review given by ID.
+Usage: single latest commit:
+  rbtpr 1234 HEAD
+Range from SHA to HEAD:
+  rbtpr 1234 <SHA>~ HEAD
+'
     rbtp -r "$@"
   )
   rbtprh() (
@@ -2096,6 +2100,7 @@ continue
     gcp() ( git cherry-pick "$@" )
     gcpa() ( gcp --abort "$@" )
     gdf() ( git diff "$@" )
+    gdfi() { gdf --ignore-submodules "$@"; }
     gdfr() ( git diff --submodule=diff "$@" )
     gdfm() (
       # https://stackoverflow.com/questions/1220309/git-difftool-open-all-diff-files-immediately-not-in-serial/2746292#2746292
