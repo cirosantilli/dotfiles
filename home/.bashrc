@@ -3527,4 +3527,3 @@ export GIT_AUTHOR_DATE="$d"
 if [ -r "$HOME/.bashrc_local" ]; then
   . "$HOME/.bashrc_local"
 fi
-. "$HOME/.cargo/env"
