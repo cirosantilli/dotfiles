@@ -653,6 +653,12 @@ Range from SHA to HEAD:
     # https://stackoverflow.com/questions/39850860/disable-wrapping-in-psql-output
     PAGER="less -S" command psql "$@"
   )
+  psqll() {
+    s /var/log/postgresql/postgresql-13-main.log
+  }
+  psqlf() {
+    tail -f /var/log/postgresql/postgresql-13-main.log
+  }
   alias stra='sudo strace -f -s999 -v'
   stdouttime() (
     # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
