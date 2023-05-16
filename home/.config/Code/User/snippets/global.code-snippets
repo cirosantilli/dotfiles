@@ -1,0 +1,17 @@
+{
+	"snippet test": {
+		"prefix": "snpt",
+		"body": [
+			"${CLIPBOARD/^(.*)$/1 - $1 - SOME TEXT/gm}",
+		],
+		"description": "Log output to console"
+	},
+	"docs.ourbigbook.com": {
+		"prefix": "bigb",
+		"body": [
+			// https://stackoverflow.com/questions/58740859/vs-code-snippet-with-multiple-transforms
+			"https://docs.ourbigbook.com/${CLIPBOARD/([a-zA-Z0-9]+)([^a-zA-Z0-9]+)/${1:/downcase}${2:+-}/g}",
+		],
+		"description": "Log output to console"
+	},
+}

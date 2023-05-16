@@ -3012,6 +3012,7 @@ export GIT_AUTHOR_DATE="$d"
     npms() ( npm start "$@" )
     npmt() ( npm test "$@" )
     npmtg() ( npm test -- -g "$*" )
+    npmtpg() ( npm run test-pg -- -g "$*" )
     npmtgi() ( npm run testi -- -g "$*" )
 
   ## python

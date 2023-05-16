@@ -1,6 +1,4 @@
 {
-    "C_Cpp.default.intelliSenseMode": "linux-gcc-x86",
-    "C_Cpp.intelliSenseEngine": "Tag Parser",
     "[python]": {
         "editor.formatOnType": true
     },
@@ -8,6 +6,10 @@
         "editor.tabSize": 2
     },
     "editor.minimap.enabled": false,
+    "editor.quickSuggestions": {
+        "comments": true,
+        "strings": true
+    },
     "editor.renderWhitespace": "trailing",
     "editor.wordWrap": "off",
     "extensions.autoCheckUpdates": false,
@@ -15,6 +17,8 @@
     "files.autoSave": "onFocusChange",
     "files.insertFinalNewline": true,
     "keyboard.dispatch": "keyCode",
+    "merge-conflict.codeLens.enabled": false,
+    "merge-conflict.decorators.enabled": false,
     "mesonbuild.configureOnOpen": false,
     "python.analysis.extraPaths": [],
     "python.autoComplete.extraPaths": [],
