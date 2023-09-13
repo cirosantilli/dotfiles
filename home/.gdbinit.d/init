@@ -1,6 +1,13 @@
 # https://stackoverflow.com/questions/3176800/how-can-i-make-gdb-save-the-command-history
 set history filename ~/.gdb_history
+
 # Otherwise it asks every time:
 # Enable debuginfod for this session? (y or [n])
 # God how can they screw up a design so bad?
 set debuginfod enabled off
+
+# Otherwise asks if you really want to quit after ctrl + d.
+# https://stackoverflow.com/questions/4355978/get-rid-of-quit-anyway-prompt-using-gdb-just-kill-the-process-and-quit
+define hook-quit
+    set confirm off
+end

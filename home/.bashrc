@@ -557,7 +557,7 @@ size_download: %{size_download}
   rbtp() (
     doc='
 Post new review.
-Post just the latest commit:
+Post just one commit, e.g. HEAD:
   rbtp HEAD
 Post a range of commits up to the latest
   rbtp <SHA>~ HEAD
@@ -1024,6 +1024,8 @@ Range from SHA to HEAD:
       case "$1" in
         a|arm) echo arm;;
         A|aarch64) echo aarch64;;
+        r|riscv32) echo riscv32;;
+        R|riscv64) echo riscv64;;
         x|x86_64) echo x86_64;;
         *) echo "error: unknown arch: $1"; exit 1;;
       esac
@@ -1034,6 +1036,8 @@ Range from SHA to HEAD:
         a|arm) echo arm-linux-gnueabihf;;
         A|aarch64) echo aarch64-linux-gnu;;
         x|x86_64) echo x86_64-linux-gnu;;
+        r|riscv32) echo riscv32-linux-gnu;;
+        R|riscv64) echo riscv64-linux-gnu;;
         *) echo "error: unknown arch: $1"; exit 1;;
       esac
     )
@@ -1131,12 +1135,12 @@ Range from SHA to HEAD:
         bak "$f"
         python -c 'import sys; sys.stdout.buffer.write(sys.stdin.buffer.read()[::-1])' < "${f}.bak" > "$f"
       fi
-      if [ "$arch" = arm ] || [ "$arch" = aarch64 ]; then
-        machine="$arch"
-        M=
-      elif [ "$arch" = x86_64 ]; then
+      if [ "$arch" = x86_64 ]; then
         machine=i386
         M='-M intel,x86-64'
+      else
+        machine="$arch"
+        M=
       fi
       "$(arch-to-prefix "$arch")-objdump" -D -b binary $M -m $machine "$f"
     )
