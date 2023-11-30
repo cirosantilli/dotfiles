@@ -583,8 +583,16 @@ Usage: single latest commit:
   rbtpr 1234 HEAD
 Range from SHA to HEAD:
   rbtpr 1234 <SHA>~ HEAD
+Range from origin/master + 1 to HEAD:
+  rbtpr 1234
 '
-    rbtp -r "$@"
+    rid="$1"
+    shift
+    if [ $# -eq 0 ]; then
+      rbtp -r "$rid" origin/master HEAD
+    else
+      rbtp -r "$rid" "$@"
+    fi
   )
   rbtprh() (
     # Usage: rbtpr 1234 HEAD
