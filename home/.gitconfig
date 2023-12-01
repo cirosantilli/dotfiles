@@ -65,9 +65,9 @@
 	# less -r to wrap long lines.
 	# TODO make diff-highlight fall back to regular diff if not found.
 	# diff = "if diff-highlight &>/tmp/git-diff.out; then cat /tmp/git-diff.out; else echo fail; fi | less -R"
-	diff = diff-highlight | less -XRr
-	log = diff-highlight | less -XRr
-	show = diff-highlight | less -XRr
+	diff = diff-highlight | less -XR
+	log = diff-highlight | less -XR
+	show = diff-highlight | less -XR
 [pull]
 	# https://stackoverflow.com/questions/13846300/how-to-make-git-pull-use-rebase-by-default-for-all-my-repositories
 	rebase = true

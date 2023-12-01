@@ -109,6 +109,18 @@
       nnoremap <leader>gg :Gg 
       nnoremap <leader>gr :G 
 
+      "open word under cursor on wayback machine
+      function! Wayback()
+        "exec "silent !chromium-browser 'https://web.archive.org/web/20230000000000*/" . expand("<cWORD>") . "'"
+        exec "silent !chromium-browser 'https://web.archive.org/web/0/" . expand("<cWORD>") . "'"
+      endfunction
+      nnoremap gw :call Wayback()<cr>
+      function! WaybackDel()
+        call Wayback()
+        exec 'normal dd'
+      endfunction
+      nnoremap gq :call WaybackDel()<cr>
+
     " <leader>eX opens :e SOME_DIRECTORY,
     " where SOME_DIRECTORY is given as an environment variable.
 

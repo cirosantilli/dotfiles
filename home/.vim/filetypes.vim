@@ -70,6 +70,13 @@ augroup END
       autocmd FileType coffee,javascript call MapAllBuff('<F7>', ':write<cr>:call RedirStdoutNewTabSingle("grunt")<cr>')
     augroup END
 
+  " # JSON
+
+    augroup Json
+      autocmd!
+      autocmd BufEnter,BufNew *.json setlocal expandtab shiftwidth=2 tabstop=2
+    augroup END
+
   " # YAML
 
     augroup Yaml

@@ -81,9 +81,14 @@
 
     ## Java
     #export JAVA_HOME='/usr/lib/jvm/java-7-openjdk-amd64'
-    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
+    export JAVA_HOME='/usr/lib/jvm/java-22-openjdk-amd64'
     #export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
     #export CATALINA_HOME=''
+
+      # https://stackoverflow.com/questions/41959550/cli-tool-ala-csvsql-for-sparql-and-ttl-n3-files-hello-world-example-for/77574355#77574355
+      # https://jena.apache.org/documentation/tools/
+      export JENA_HOME="$DOWNLOAD_DIR/apache-jena-4.10.0"
+      export PATH="$PATH:$JENA_HOME/bin"
 
     # Android
 
@@ -194,7 +199,7 @@
       export HISTCONTROL='ignoredups:erasedups'
       export HISTSIZE=1000000
       export HISTFILESIZE=10000000
-      #export HISTFILE=~/.new_bash_history
+      HISTFILE=~/.bash_history
       export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S '
       # Expressions that match will not be put on ~/.bash_history and
       # not saved on live session memory either.
@@ -205,7 +210,7 @@
       # as it is BRE that does the same as `ignorespace.`
       #export HISTIGNORE=' :  :   :    :ls:ll:cd*:[bf]g:exit:history:sudo reboot*:sudo shutdown*:*ecryptfs*:ecry*:luks*:torbrowser:vn *:o *:less *:eog *:vimp *'
       # Disable bash history.
-      unset HISTFILE
+      #unset HISTFILE
 
   ## OSX
   export CLICOLOR=1
@@ -644,9 +649,16 @@ Range from SHA to HEAD:
     # https://askubuntu.com/questions/1792/how-can-i-suspend-hibernate-from-command-line
     systemctl suspend
   )
+  ubuntu-restart-sound() {
+    # https://superuser.com/questions/17312/restart-ubuntu-sound-processes-via-command-line/1813547#1813547
+    systemctl --user restart pipewire.service
+    systemctl --user restart pipewire-pulse.service
+  }
   alias se='sed -r'
   alias sha2='sha256sum'
-  alias sql='sqlite3'
+  sq() { sqlite3 "$@"; }
+  sqd() { sq "$@" .dump; }
+  sqs() { sq "$@" .schema; }
   # npm install -g sql-formatter
   alias sqlf='sql-formatter -l postgresql'
   psql() (
@@ -659,6 +671,23 @@ Range from SHA to HEAD:
   psqlf() {
     tail -f /var/log/postgresql/postgresql-13-main.log
   }
+  psql-killall() {
+    # https://stackoverflow.com/questions/11291456/terminate-hung-query-idle-in-transaction/72221841#72221841
+    psql -c "SELECT pg_cancel_backend(pid) FROM pg_stat_activity WHERE state = 'active';"
+  }
+  psql-ls() {
+    # List all running queries.
+    # https://stackoverflow.com/questions/12641676/how-to-get-a-status-of-a-running-query-in-postgresql-database
+    psql <<'EOF'
+SELECT datname, pid, state, query, age(clock_timestamp(), query_start) AS age 
+FROM pg_stat_activity
+WHERE "state" <> 'idle'
+  AND "state" <> 'idle in transaction'
+  AND query NOT LIKE '% FROM pg_stat_activity %'
+ORDER BY age;
+EOF
+  }
+
   alias stra='sudo strace -f -s999 -v'
   stdouttime() (
     # https://stackoverflow.com/questions/49797246/how-to-monitor-for-how-much-time-each-line-of-stdout-was-the-last-output-line-in/49797547#49797547
@@ -763,6 +792,10 @@ Range from SHA to HEAD:
     # https://tor.stackexchange.com/questions/16326/how-to-use-multiple-profiles-with-tor
     cd ~/bin/tor-browser_en-US-hist
     ./start-tor-browser.desktop
+  )
+  torbrowser-lfmd() (
+    # Copy last downloaded file from tor downloads.
+    lfm ~/bin/tor-browser_en-US/Browser/Downloads/ "$@"
   )
   u() (
     if [ ! "$#" -eq 1 ]; then
@@ -1682,30 +1715,34 @@ ${2:-}
   ## extract
 
     extract () (
-      # Decompress anything. Don't delete compressed one. https://xkcd.com/1168/
-      # https://askubuntu.com/questions/338758/how-to-quickly-extract-all-kinds-of-archived-files-from-command-line
-      # https://unix.stackexchange.com/questions/316951/a-generic-command-to-extract-archive-files
-      # TODO: add a decompress to stdout mode. Ones I know:
-      # unzip -p >f
-      case $1 in
-        *.7z)        7z x "$1";;
-        *.Z)         uncompress "$1";;
-        *.a)         ar vx "$1";;
-        *.cpio)      cpio -i <"$1";;
-        *.deb)       dpkg-deb -R "$1" .;;
-        *.jar|*.xsa|*.zip) unzip "$1";;
-        *.rar)       rar x "$1";;
-        *.tar)       tar xvf "$1";;
-        *.tar.bz2)   tar xvjf "$1";;
-        *.bz2)       bunzip2 --keep "$1";;
-        *.tar.gz)    tar xvzf "$1";;
-        *.gz)        gunzip --keep "$1";;
-        *.tbz2)      tar xvjf "$1";;
-        *.tgz)       tar xvzf "$1";;
-        *.tar.xz)    unxz "$1"; extract "${1%.*}";;
-        *.xz)        unxz "$1";;
-        *)           echo "error: unknown extension: $1"; exit 1;;
-      esac
+      while [ $# -gt 0 ]; do
+        echo $1
+        # Decompress anything. Don't delete compressed one. https://xkcd.com/1168/
+        # https://askubuntu.com/questions/338758/how-to-quickly-extract-all-kinds-of-archived-files-from-command-line
+        # https://unix.stackexchange.com/questions/316951/a-generic-command-to-extract-archive-files
+        # TODO: add a decompress to stdout mode. Ones I know:
+        # unzip -p >f
+        case $1 in
+          *.7z)        7z x "$1";;
+          *.Z)         uncompress "$1";;
+          *.a)         ar vx "$1";;
+          *.cpio)      cpio -i <"$1";;
+          *.deb)       dpkg-deb -R "$1" .;;
+          *.jar|*.xsa|*.zip) unzip "$1";;
+          *.rar)       rar x "$1";;
+          *.tar)       tar xvf "$1";;
+          *.tar.bz2)   tar xvjf "$1";;
+          *.bz2)       bunzip2 --keep "$1";;
+          *.tar.gz)    tar xvzf "$1";;
+          *.gz)        gunzip --keep "$1";;
+          *.tbz2)      tar xvjf "$1";;
+          *.tgz)       tar xvzf "$1";;
+          *.tar.xz)    unxz --keep "$1"; extract "${1%.*}";;
+          *.xz)        unxz --keep "$1";;
+          *)           echo "error: unknown extension: $1"; exit 1;;
+        esac
+        shift
+      done
     )
     alias ex='extract'
 
@@ -2073,6 +2110,15 @@ continue
     gcmm() ( gcm -m "$@" )
     gcma() ( gcm --amend "$@" )
     gcmb() ( gcmm bak )
+    gcmbot() (
+      export GIT_COMMITTER_EMAIL='bot@mail.com'
+      export GIT_COMMITTER_NAME='Mr. Bot'
+      export GIT_COMMITTER_DATE="2000-01-01T00:00:00+0000"
+      export GIT_AUTHOR_EMAIL="$GIT_COMMITTER_EMAIL"
+      export GIT_AUTHOR_NAME="$GIT_COMMITTER_NAME"
+      export GIT_AUTHOR_DATE="$GIT_COMMITTER_DATE"
+      git commit --author "${GIT_COMMITTER_NAME} <${GIT_COMMITTER_EMAIL}>" -m 'Autogenerated commit' "$@"
+    )
     gcman() ( gcma --no-edit "$@" )
     gcmanpsf() ( gcman && git push -f "$@" )
     gcedf() (
@@ -2791,7 +2837,7 @@ export GIT_AUTHOR_DATE="$d"
           echo 'Download not finished'
           exit 1
         fi
-        lfm "$DOWNLOAD_DIR" .
+        lfm "$DOWNLOAD_DIR" "${1:-.}"
       )
       # Move Latest Download to a newly created temporary directory and cd into it.
       # Great when you are going to extract stuff and work on it.
@@ -2803,6 +2849,9 @@ export GIT_AUTHOR_DATE="$d"
       }
       lfmp() {
         lfm ~/Pictures "$@"
+      }
+      lfms() {
+        lfm ~/Pictures/Screenshots "$@"
       }
 
   ## make
@@ -3049,10 +3098,10 @@ export GIT_AUTHOR_DATE="$d"
       # https://stackoverflow.com/questions/43675074/python3-6-importerror-cannot-import-name-main-linux-rhel6/49994490#49994490
       # https://github.com/pypa/pip/issues/5447
       pi() ( python -m pip "$@" )
-      pii() ( pi install --user "$@" )
+      pii() ( pi install "$@" )
       pi3() ( python3 -m pip "$@" )
-      pi3i() ( pi3 install --user "$@" )
-      piu() ( pi uninstall --user "$@" )
+      pi3i() ( pi3 install "$@" )
+      piu() ( pi uninstall "$@" )
       pise() ( pi search "$@" )
       pif() ( pi freeze | grep -E "${1:-^}")
       pi3f() ( pi3 freeze | grep -E "${1:-^}")
@@ -3141,6 +3190,23 @@ export GIT_AUTHOR_DATE="$d"
     image-remove-metadata() (
       exiftool -all= "$@"
     )
+
+  ## ip2num
+
+  #https://stackoverflow.com/questions/10768160/ip-address-converter
+  ipv42int() {
+    echo "$1" | tr . '\n' | awk '{s = s*256 + $1} END{print s}'
+  }
+  int2ipv4() {
+    local ip
+    for ip in "$@"; do
+      local s=''
+      for i in {1..4}; do
+        s='.'$((ip%256))$s && ((ip>>=8))
+      done
+      echo ${s:1}
+    done
+  }
 
   ## linux kernel
 

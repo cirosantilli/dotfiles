@@ -25,7 +25,8 @@
     "remote.SSH.remotePlatform": {
         "lockhart5": "linux",
         "lockhart6": "linux",
-        "xcbl-rtl01": "linux"
+        "xcbl-rtl01": "linux",
+        "lockhart12": "linux"
     },
     "search.useParentIgnoreFiles": true,
     "security.workspace.trust.untrustedFiles": "open",
@@ -47,16 +48,10 @@
     "vim.leader": ",",
     "vim.normalModeKeyBindingsNonRecursive": [
         {
-            "after": [],
-            "before": [
-                ",",
-                "e"
-            ],
-            "commands": [
-                {
-                    "command": "workbench.action.files.openFile"
-                }
-            ]
+            // Paste normal mode
+            // https://stackoverflow.com/questions/58306002/vs-code-vim-extension-copy-and-paste
+            "before": ["<C-a>"], 
+            "after":  ["\"", "+", "p"]
         },
         {
             "after": [
@@ -74,6 +69,24 @@
             ],
             "before": [
                 "K"
+            ]
+        },
+        {
+            "after": [
+                "g",
+                "j"
+            ],
+            "before": [
+                "j"
+            ]
+        },
+        {
+            "after": [
+                "g",
+                "k"
+            ],
+            "before": [
+                "k"
             ]
         },
         {
@@ -175,6 +188,24 @@
         },
         {
             "after": [
+                "g",
+                "j"
+            ],
+            "before": [
+                "j"
+            ]
+        },
+        {
+            "after": [
+                "g",
+                "k"
+            ],
+            "before": [
+                "k"
+            ]
+        },
+        {
+            "after": [
                 "^"
             ],
             "before": [
@@ -259,7 +290,6 @@
             ]
         }
     ],
-    "window.menuBarVisibility": "toggle",
     "workbench.colorCustomizations": {
         // https://stackoverflow.com/questions/42780975/visual-studio-code-status-bar-color
         "statusBar.background": "#303030",
@@ -268,5 +298,14 @@
     },
     "workbench.colorTheme": "Default Dark+",
     "workbench.sideBar.location": "right",
-    "workbench.startupEditor": "none"
+    "workbench.startupEditor": "none",
+    "settingsSync.keybindingsPerPlatform": false,
+    "git.openRepositoryInParentFolders": "never",
+    "cmake.configureOnOpen": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.commandCenter": false,
+    "workbench.layoutControl.enabled": false,
+    "window.menuBarVisibility": "toggle",
+    "explorer.confirmDelete": false,
+    "clangd.detectExtensionConflicts": false,
 }

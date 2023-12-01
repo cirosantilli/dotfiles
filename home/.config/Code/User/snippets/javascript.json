@@ -14,7 +14,7 @@
 	"Print clipboard expression to console": {
 		"prefix": "ll",
 		"body": [
-			"console.log(`${CLIPBOARD}: \\${require('util').inspect(${CLIPBOARD})}`)"
+			"console.log(`${CLIPBOARD}: \\${require('util').inspect(${CLIPBOARD}, { depth: null })}`)"
 		],
 		"description": "Log output to console"
 	},

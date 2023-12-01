@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+
+import argparse
+from argparse import RawTextHelpFormatter
+import fileinput
+import sys
+
+parser = argparse.ArgumentParser(
+    description='uniq but with a memory of the n previous distinct lines rather than just one',
+    epilog="""Useful if you know that duplicate lines in an input file are nearby to one another, but not necessarily immediately one afte the other.
+
+This command was about 3x slower than uniq, and becomes highly CPU (?) bound even on rotating disks. We need to make a C++ version one day, or try PyPy/Cython""",
+    formatter_class=RawTextHelpFormatter,
+)
+parser.add_argument("-k", default=None, type=int, help='if given consider only the selected column')
+parser.add_argument("-n", default=10, type=int, help='how many previous different lines to consider')
+parser.add_argument("file", nargs='?', default=[])
+args = parser.parse_args()
+k = args.k
+
+lastlines = {}
+for line in fileinput.input(args.file):
+    line = line.rstrip('\r\n')
+    if k is not None:
+        orig = line
+        line = line.split()[k]
+    else:
+        orig = line
+    if not line in lastlines:
+        print(orig)
+    lastlines.pop(line, None)
+    lastlines[line] = True
+    if len(lastlines) == args.n + 1:
+        del lastlines[next(iter(lastlines))]

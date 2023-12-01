@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# https://stackoverflow.com/questions/14321214/how-to-run-multiple-tor-processes-at-once-with-different-exit-ips/34213834#34213834
+set -eux
+n=${1:-10}
+config_dir=~/etc/tor
+rm -rf "$config_dir"
+mkdir -p "$config_dir"
+cd "${config_dir}"
+for i in `seq $n`; do
+  cp /etc/tor/torrc torrc_$i
+  sed -i "s/^#SocksPort 9050.*/SocksPort $((9050+${i}))/;s|^#DataDirectory /var/lib/tor|DataDirectory /var/lib/tor${i}|" torrc_$i
+  cp /etc/tor/torsocks.conf torsocks_$i.conf
+  sed -i "s/server_port = 9050/server_port = $((9050+${i}))/" torsocks_${i}.conf
+  sudo mkdir -p /var/lib/tor$i
+  sudo chmod -R --reference /var/lib/tor /var/lib/tor${i}
+  sudo chown -R $USER:$USER /var/lib/tor${i}
+done
+for i in `seq $n`; do
+  echo $i
+  nohup tor -f "${config_dir}/torrc_$i" >$i.log 2>&1 &
+done
