@@ -623,6 +623,10 @@ Range from origin/master + 1 to HEAD:
       i="$(($i + 1))"
     done
   }
+  p4log () {
+    # https://stackoverflow.com/questions/22503860/p4-command-line-equivalent-to-git-log-p
+    p4 changes "$1" | cut -d ' ' -f 2 | xargs -i p4 describe -du {} | less -F
+  }
   alias pingg='ping google.com'
   alias psg='sudo ps aux | grep -i'
   psm() (
@@ -2214,6 +2218,8 @@ continue
       git for-each-ref --sort=creatordate --format="%(creatordate:iso) %(refname) %(committeremail) %(subject)" "$@"
     )
     gg() ( git grep --color "$@" )
+    ggc() ( git grep --color "$@" -- '*.c' )
+    ggh() ( git grep --color "$@" -- '*.h' )
     ggi() ( gg -i "$@" )
     ggr() ( gg --recurse-submodules "$@" )
     ggri() ( gg -i --recurse-submodules "$@" )
