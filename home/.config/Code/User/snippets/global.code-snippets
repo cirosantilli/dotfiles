@@ -14,4 +14,50 @@
 		],
 		"description": "Log output to console"
 	},
+	"docs.ourbigbook.com": {
+		"prefix": "bigb",
+		"body": [
+			// https://stackoverflow.com/questions/58740859/vs-code-snippet-with-multiple-transforms
+			"https://docs.ourbigbook.com/${CLIPBOARD/([a-zA-Z0-9]+)([^a-zA-Z0-9]+)/${1:/downcase}${2:+-}/g}",
+		],
+		"description": "Log output to console"
+	},
+	"js Print to console": {
+		"scope": "javascript,typescript,javascriptreact,typescriptreact",
+		"prefix": "l",
+		"body": [
+			"console.log($1)"
+		],
+		"description": "Log output to console",
+	},
+	"js Print clipboard expression to console": {
+		"scope": "javascript,typescript,javascriptreact,typescriptreact",
+		"prefix": "ll",
+		"body": [
+			"console.log(`${CLIPBOARD}: \\${require('util').inspect(${CLIPBOARD}, { depth: null })}`)"
+		],
+		"description": "Log output to console"
+	},
+	"js Print expression to console": {
+		"scope": "javascript,typescript,javascriptreact,typescriptreact",
+		"prefix": "lll",
+		"body": [
+			"console.log(`${1}: \\${require('util').inspect(${1})}`)"
+		],
+		"description": "Log output to console"
+	},
+	"js Print to stderr": {
+		"scope": "javascript,typescript,javascriptreact,typescriptreact",
+		"prefix": "e",
+		"body": [
+			"console.error($1)"
+		],
+	},
+	"js Print clipboard expression to stderr": {
+		"scope": "javascript,typescript,javascriptreact,typescriptreact",
+		"prefix": "ee",
+		"body": [
+			"console.error(`${CLIPBOARD}: \\${require('util').inspect(${CLIPBOARD})}`)"
+		],
+	}
 }

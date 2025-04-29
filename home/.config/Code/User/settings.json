@@ -5,7 +5,25 @@
     "[shellscript]": {
         "editor.tabSize": 2
     },
+    "[javascript]": {
+        "editor.tabSize": 2,
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[javascriptreact]": {
+        "editor.tabSize": 2
+    },
+    "[typescript]": {
+        "editor.tabSize": 2
+    },
+    "[scss]": {
+        "editor.tabSize": 2
+    },
+    "[typescriptreact]": {
+        "editor.tabSize": 2
+    },
+    "editor.detectIndentation": false,
     "editor.minimap.enabled": false,
+    "editor.insertSpaces": true,
     "editor.quickSuggestions": {
         "comments": true,
         "strings": true
@@ -22,12 +40,6 @@
     "mesonbuild.configureOnOpen": false,
     "python.analysis.extraPaths": [],
     "python.autoComplete.extraPaths": [],
-    "remote.SSH.remotePlatform": {
-        "lockhart5": "linux",
-        "lockhart6": "linux",
-        "xcbl-rtl01": "linux",
-        "lockhart12": "linux"
-    },
     "search.useParentIgnoreFiles": true,
     "security.workspace.trust.untrustedFiles": "open",
     "terminal.integrated.allowChords": false,
@@ -40,6 +52,7 @@
         "<C-E>": false,
         "<C-f>": false,
         "<C-k>": false,
+        "<C-p>": false,
         "<C-t>": false,
         "<C-w>": false,
         "<C-x>": false,
@@ -51,7 +64,7 @@
             // Paste normal mode
             // https://stackoverflow.com/questions/58306002/vs-code-vim-extension-copy-and-paste
             "before": ["<C-a>"], 
-            "after":  ["\"", "+", "p"]
+            "after":  ["\"", "+", "P"]
         },
         {
             "after": [
@@ -255,7 +268,7 @@
             ]
         },
         {
-            // Replace text under cursor. The initial replacement is set to the orinal text.
+            // Replace text under cursor. The initial replacement is set to the original text.
             "after": [
                 "\"",
                 "z",
@@ -304,8 +317,114 @@
     "cmake.configureOnOpen": false,
     "diffEditor.ignoreTrimWhitespace": false,
     "window.commandCenter": false,
+    "window.restoreWindows": "all",
     "workbench.layoutControl.enabled": false,
     "window.menuBarVisibility": "toggle",
     "explorer.confirmDelete": false,
     "clangd.detectExtensionConflicts": false,
+    "cmake.showOptionsMovedNotification": false,
+    "cSpell.userWords": [
+        "Amidei",
+        "Antihydra",
+        "backlinks",
+        "baremetal",
+        "Bouldering",
+        "Brasileira",
+        "Bukowski",
+        "Capoeira",
+        "Chiharu",
+        "chiptune",
+        "Ciro",
+        "cirosantilli",
+        "closurism",
+        "cofounded",
+        "Collatz",
+        "Decompilation",
+        "Decompiler",
+        "deletionism",
+        "downvote",
+        "downvoter",
+        "downvoting",
+        "École",
+        "EMBII",
+        "exilee",
+        "Farey",
+        "FOREX",
+        "Hassan",
+        "Heavyside",
+        "Hentai",
+        "Hongzhi",
+        "incentivizes",
+        "Inspiron",
+        "Jericoacoara",
+        "Jinping",
+        "Kaminsky",
+        "kenorb",
+        "Linoff",
+        "lkmc",
+        "mathy",
+        "Monero",
+        "multiuser",
+        "Música",
+        "neurodiverse",
+        "omics",
+        "OSINT",
+        "ourbigbook",
+        "Photodetector",
+        "pingable",
+        "Polytechnique",
+        "POSIX",
+        "presencial",
+        "Quora",
+        "Rafal",
+        "realworld",
+        "recontextualized",
+        "rederive",
+        "Santilli",
+        "Saylor",
+        "scammy",
+        "Schwalbe",
+        "Segrè",
+        "Sequelize",
+        "Shehnai",
+        "Sidemount",
+        "slacktivist",
+        "Snowden",
+        "Sorenson",
+        "subqueries",
+        "summatory",
+        "suona",
+        "Tanpura",
+        "telepresence",
+        "Thiel",
+        "toplevel",
+        "totient",
+        "undoable",
+        "upvote",
+        "upvoted",
+        "upvotes",
+        "Urho",
+        "userland",
+        "Vimscript",
+        "Zuckerberg"
+    ],
+    "cSpell.enableFiletypes": [
+        "ourbigbook"
+    ],
+    "debug.onTaskErrors": "abort",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "[ourbigbook]": {
+        "editor.detectIndentation": false
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.detectIndentation": false,
+        "editor.tabSize": 2
+    },
+    "cSpell.enabled": true,
+    "[c]": {
+        "prettier.useTabs": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    },
 }

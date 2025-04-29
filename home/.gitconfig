@@ -19,6 +19,7 @@
 	# Command is always run from the toplevel.
 	sh = "!exec "
 	pushall = "!for i in `git remote`; do git push --all $i; done;"
+	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch -f --env-filter \"if [ \\\"$`echo $VAR`\\\" = '$OLD' ]; then export $VAR='$NEW'; fi\" $@; }; f"
 [branch]
 	# autosetuprebase = always
 	rebase = true
@@ -89,7 +90,7 @@
 [status]
 	short = true
 [user]
-	email = ciro.santilli@gmail.com
+	email = cirosantilli@proton.me
 	name = Ciro Santilli
 	signingkey = 3E47725ABD373A6F5D300686436CDAFCCFB0D30D
 [url "git://anongit.kde.org/"]
@@ -101,5 +102,6 @@
 	required = true
 [safe]
 	directory = /root/lkmc
+	directory = *
 [submodule]
 	recurse = false

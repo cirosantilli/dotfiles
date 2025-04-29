@@ -23,7 +23,7 @@ sudo apt-get update
 # For add-apt-repository
 sudo apt install software-properties-common
 sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
-sudo add-apt-repository -y "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
+#sudo add-apt-repository -y "deb http://archive.canonical.com/ubuntu $(lsb_release -sc) partner"
 
 snaps=""
 
@@ -34,7 +34,6 @@ expect \
 exuberant-ctags \
 git \
 git-email \
-python \
 python3-pip \
 moreutils \
 tmux \
@@ -80,16 +79,16 @@ telegram-desktop \
   #" < 17.04
   #pkgs="$pkgs vim-gnome"
   #" > 21.04
-  pkgs="$pkgs vim-gtk"
+  #pkgs="$pkgs vim-gtk"
 
   # LXCE does not have a toolbar.
   # https://askubuntu.com/questions/69556/how-to-check-battery-status-using-terminal
   pkgs="$pkgs acpi"
 
-  # Google talk.
-  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-  sudo sh -c 'echo "deb http://dl.google.com/linux/talkplugin/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-  pkgs="$pkgs google-talkplugin"
+  ## Google talk.
+  #wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+  #sudo sh -c 'echo "deb http://dl.google.com/linux/talkplugin/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+  #pkgs="$pkgs google-talkplugin"
 fi
 
 sudo apt install -y $pkgs
@@ -102,13 +101,13 @@ if $gui; then
   sudo snap install pycharm-community --classic
 fi
 
+
 ## System settings.
 
 # Not needed and privacy concern.
 # https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux
 sudo swapoff -a
 sudo sed -i '/\tswap\t/d' /etc/fstab
-sed /fstab
 
 # sudo without password.
 sudo sh -c "echo '$(id -un) ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"

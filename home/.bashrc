@@ -18,6 +18,7 @@
         export NETWORKING_DIR="$PROGRAM_DIR/networking-cheat"
         export NOTES_DIR="$PROGRAM_DIR/notes"
         export NOTES_PRIVATE_DIR="$PROGRAM_DIR/notes-private"
+        export OURBIGBOOK_BASE_DIR="$PROGRAM_DIR/ourbigbook"
         export PYTHON_BASE_DIR="$PROGRAM_DIR/python"
           export PYTHON_DEVPATH_DIR="$PYTHON_BASE_DIR/devpath"
         export PYTHON_DIR="$PROGRAM_DIR/python-cheat"
@@ -36,6 +37,7 @@
     export ECRYPTFS_DATA_DIR="$HOME/.ecryptfs-data"
     export LUKS_DIR="$HOME/luks"
     export CIROSANTILLI_BIN_DIR="${HOME}/bin"
+      export TORBROWSER_DIR="$CIROSANTILLI_BIN_DIR/tor-browser/Browser"
     export CIROSANTILLI_TMP_DIR="${HOME}/tmp"
     export CIROSANTILLI_GIT_DIR="$HOME/git"
       export CIROSANTILLI_FREEFEM_BIN_DIR="${CIROSANTILLI_GIT_DIR}/FreeFem-install/bin/"
@@ -52,7 +54,7 @@
     export GOPATH="$HOME/.go"
     # Unencrypted ext4.
     export HD_DIR="/mnt/sda3"
-      export BITCOIN_DATA_DIR="${HD_DIR}/.bitcoin"
+      export BITCOIN_DATA_DIR="${HOME}/snap/bitcoin-core/common/.bitcoin"
     export MNT_MEDIA_DIR="/media/${USER}"
       export MNT_MEDIA_DIR_POLY8D="${MNT_MEDIA_DIR}/poly8d"
 
@@ -81,14 +83,15 @@
 
     ## Java
     #export JAVA_HOME='/usr/lib/jvm/java-7-openjdk-amd64'
-    export JAVA_HOME='/usr/lib/jvm/java-22-openjdk-amd64'
+    #export JAVA_HOME='/usr/lib/jvm/java-22-openjdk-amd64'
+    export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
     #export JAVA_HOME='/usr/lib/jvm/java-8-oracle'
     #export CATALINA_HOME=''
 
       # https://stackoverflow.com/questions/41959550/cli-tool-ala-csvsql-for-sparql-and-ttl-n3-files-hello-world-example-for/77574355#77574355
       # https://jena.apache.org/documentation/tools/
       export JENA_HOME="$DOWNLOAD_DIR/apache-jena-4.10.0"
-      export PATH="$PATH:$JENA_HOME/bin"
+      #export PATH="$PATH:$JENA_HOME/bin"
 
     # Android
 
@@ -116,6 +119,7 @@
       ## Texlive
       PATH="/usr/local/texlive/2013/bin/$(uname -i)-linux:$PATH"
       PATH="$HOME/bin:$PATH"
+      PATH="$HOME/bin/monero:$PATH"
       PATH="$DEVBIN:$PATH"
       PATH="$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:${ANDROID_STUDIO}/bin:${ANDROID_NDK}:${ANDROID_NDK}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${PATH}"
       PATH="/usr/local/heroku/bin:$PATH"
@@ -141,6 +145,9 @@
       PATH="$PATH:$PROGRAM_DIR/runlinux"
       PATH="$PATH:$HOME/.rvm/bin"
       PATH="$PATH:$HOME/anaconda2/bin"
+      PATH="$PATH:$HOME/miniconda/bin"
+      PATH="$PATH:$HOME/miniconda3/bin"
+      PATH="$PATH:$HOME/.cargo/bin"
 
       export PATH
 
@@ -300,8 +307,18 @@
     if [ "$#" -eq 0 ]; then
       sed -r 's/([A-Z])/_\L\1/g' | sed 's/^_//'
     else
-      sed -r 's/(^|_)([a-z])/\U\2/g'
+      sed -r 's/(_)([a-z])/\U\2/g'
     fi
+  )
+  git-camel2under() (
+    s="$1"
+    shift
+    glsf | mrr "\b${s}\b/$(printf '%s' "$s" | camel2under)/g" "$@"
+  )
+  git-under2camel() (
+    s="$1"
+    shift
+    glsf | mrr "\b${s}\b/$(printf '%s' "$s" | camel2under 1)/g" "$@"
   )
   catf() (
     # Cat with filenames for multiple files.
@@ -325,6 +342,22 @@
     find "$d" -type f | sudo xargs chmod +666
     find . -type f -perm /u=x,g=x,o=x | sudo xargs -r chmod +111
   )
+  conda-init() {
+    # Sources conda on current c
+    # Copied from:
+    # conda --init --all
+    __conda_setup="$("$HOME/miniconda3/bin/conda" 'shell.bash' 'hook' 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+      eval "$__conda_setup"
+    else
+      if [ -f "${HOME}/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "${HOME}/miniconda3/etc/profile.d/conda.sh"  # commented out by conda initialize
+      else
+        export PATH="${HOME}/miniconda3/bin:$PATH"  # commented out by conda initialize
+      fi
+    fi
+    unset __conda_setup
+  }
   d() {
     code "$@"
   }
@@ -351,6 +384,18 @@ time_starttransfer: %{time_starttransfer}s
 time_total: %{time_total}s
 size_download: %{size_download}
 ' "$@"
+  )
+  china-random-image() (
+    cd "${CHINA_DICTATORSHIP_DIR}-media"
+    printf "$(pwd)/$(git ls-files | grep -E 'jpe?g|png|webp|svg' | shuf -n1)" | x
+  )
+  china-random-images() (
+    cd "$CHINA_DICTATORSHIP_DIR"
+    ./images.js 20 | x
+  )
+  china-random-links() (
+    cd "$CHINA_DICTATORSHIP_DIR"
+    ./random-links | x
   )
   chinese-simplily() (
     # sudo apt install opencc
@@ -483,9 +528,6 @@ size_download: %{size_download}
       mv "$link_dest" "$link_location"
     done
   }
-  alias m='man'
-  alias m2='man 2'
-  alias m3='man 3'
   bak() { for f in "$@"; do mv "${f%/}" "${f%/}.bak"; done; }
   bakk() { for f in "$@"; do cp -r "${f%/}" "${f%/}.bak"; done; }
   kab() { for f in "$@"; do p="${f%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; done }
@@ -506,16 +548,34 @@ size_download: %{size_download}
       ;
     done
   )
+  alias m='man'
+  alias m2='man 2'
+  alias m3='man 3'
   md() ( mkdir -p "$@"; )
   # Make Dir Cd
   mdc() { md "$1" && cd "$1"; }
+  monero() { noh monero-wallet-gui; }
   alias mupen='mupen64plus --fullscreen'
   mvc() { mv "$1" "$2" && cd "$2"; }
   # Shutdown but run some scripts it.
   alias my-shutdown='sync-push && sudo shutdown'
+  ncdur() (
+    # ncdu root
+    # https://unix.stackexchange.com/questions/67806/how-to-recursively-find-the-amount-stored-in-directory/723950#723950
+    ncdu --exclude-kernfs -x /
+  )
   alias nets='sudo netstat -tupan'
   alias netsg='nets | grep -Ei'
-  ncl() ( while true; do printf '' | nc -l localhost "${1:-8000}"; done )
+  ncl() { while true; do printf '' | nc -l localhost "${1:-8000}"; done }
+  nclt() {
+    # nc listen and reply with time
+    # https://stackoverflow.com/questions/5725430/http-test-server-accepting-get-post-requests/52351480#52351480
+    while true; do
+      resp=$"$(date): hello\n"
+      len="$(printf '%s' "$resp" | wc -c)"
+      printf "HTTP/1.1 200 OK\r\nContent-Length: $len\r\n\r\n${resp}\n" | nc -Nl 8000
+    done
+  }
   noh() { nohup $@ >/dev/null 2>&1 & }
   # Use all processors, but leave 2 unused if we have that many. TODO: consider case 2 or 1 processors.
   npro() ( printf "$(($(nproc) - 2))" )
@@ -599,14 +659,6 @@ Range from origin/master + 1 to HEAD:
     rbtpr "$1" HEAD
   )
   alias rbta='rbt patch -C'
-  random-image() (
-    cd "${CHINA_DICTATORSHIP_DIR}-media"
-    printf "$(pwd)/$(git ls-files | grep -E 'jpe?g|png|webp|svg' | shuf -n1)" | x
-  )
-  random-links() (
-    cd "$CHINA_DICTATORSHIP_DIR"
-    ./random-links | x
-  )
   alias rl='readlink'
   alias rlf='readlink -f'
   rlw() ( readlink -f "$(which "$1")" )
@@ -673,6 +725,7 @@ Range from origin/master + 1 to HEAD:
   sqs() { sq "$@" .schema; }
   # npm install -g sql-formatter
   alias sqlf='sql-formatter -l postgresql'
+  alias sqlfs='sql-formatter -l sqlite'
   psql() (
     # https://stackoverflow.com/questions/39850860/disable-wrapping-in-psql-output
     PAGER="less -S" command psql "$@"
@@ -697,6 +750,19 @@ WHERE "state" <> 'idle'
   AND "state" <> 'idle in transaction'
   AND query NOT LIKE '% FROM pg_stat_activity %'
 ORDER BY age;
+EOF
+  }
+  psql-largest() {
+    # Largest tables.
+    # https://stackoverflow.com/questions/21738408/postgresql-list-and-order-tables-by-size
+    psql "$@" <<'EOF'
+select
+table_name,
+pg_size_pretty(pg_total_relation_size(quote_ident(table_name))),
+pg_total_relation_size(quote_ident(table_name))
+from information_schema.tables
+where table_schema = 'public'
+order by 3 desc;
 EOF
   }
 
@@ -798,7 +864,7 @@ EOF
   alias tss='ts -s "%.s"'
   # http://stackoverflow.com/questions/1969958/how-to-change-tor-exit-node-programmatically/
   alias tornewip='sudo killall -HUP tor'
-  torbrowser() ( cd ~/bin/tor-browser_en-US && ./start-tor-browser.desktop )
+  torbrowser() ( cd "$TORBROWSER_DIR" && noh ./start-tor-browser )
   torbrowser-hist() (
     # A profile that remembers browsing history and logins.
     # https://tor.stackexchange.com/questions/16326/how-to-use-multiple-profiles-with-tor
@@ -807,7 +873,7 @@ EOF
   )
   torbrowser-lfmd() (
     # Copy last downloaded file from tor downloads.
-    lfm ~/bin/tor-browser_en-US/Browser/Downloads/ "$@"
+    lfm "$TORBROWSER_DIR/Downloads" "$@"
   )
   u() (
     if [ ! "$#" -eq 1 ]; then
@@ -841,6 +907,15 @@ EOF
     # https://stackoverflow.com/questions/41377489/how-to-open-a-file-from-the-integrated-terminal-in-visual-studio-code
     code -r "$@"
   )
+  vs-install-exts() {
+    ext install streetsidesoftware.code-spell-checker
+  }
+  vsc() {
+    code --new-window "$WEBSITE_DIR/cirosantilli.github.io.code-workspace"
+  }
+  vso() {
+    code --new-window "$OURBIGBOOK_BASE_DIR/ourbigbook.code-workspace"
+  }
   z() ( zip -r "${1%/}.zip" "$@" )
 
   bdiff() (
@@ -963,7 +1038,7 @@ EOF
     # Build package downloaded with apt-get source after cd into it.
     dpkgb() ( dpkg-buildpackage -rfakeroot -uc -b )
     alias saig='sudo apt upgrade'
-    alias saii='sudo apt install'
+    alias saii='sudo apt install -y'
     alias sair='sudo apt remove'
     alias sais='sudo apt source'
     alias saiu='sudo apt update'
@@ -1192,11 +1267,35 @@ EOF
 
   ## Bitcoin
 
+    btcd() {
+      bitcoin-core.daemon "$@"
+    }
     btc() (
-      bitcoin-cli -datadir="$BITCOIN_DATA_DIR" "$@"
+      bitcoin-core.cli -datadir="$BITCOIN_DATA_DIR" "$@"
+    )
+    btcrt() (
+      help='BTC Raw Transaction.
+      Get a transaction data disassembled, sample usage:
+      btcrt 818e95dc37d54e7c36e2a91591f1549b38c578115c76cac613ba9b17a8938b19'
+      btc getrawtransaction "$1" true
+    )
+    btcrtx() (
+      btcrt `x` | s
+    )
+    btcrtr() (
+      help='btcrt but raw'
+      btc getrawtransaction "$1"
+    )
+    btcds() (
+      help='BTC Raw Transaction.
+      Disassemble script from hex.
+      btcrt 818e95dc37d54e7c36e2a91591f1549b38c578115c76cac613ba9b17a8938b19
+      https://bitcoin.stackexchange.com/questions/85675/how-to-disassemble-a-bitcoin-script
+      '
+      btc decodescript "$1"
     )
     btcq() (
-      noh bitcoin-qt -datadir="$BITCOIN_DATA_DIR" "$@"
+      noh bitcoin-core.qt -datadir="$BITCOIN_DATA_DIR" "$@"
     )
     bitcoin-tx-in-scripts() (
       for h in "$@"; do
@@ -1330,13 +1429,14 @@ ${2:-}
     C() { cd; }
     alias cda='c "$ART_DIR"'
     alias cdA='c "$ANDROID_DIR"'
-    alias cdc='c "$CHINA_DICTATORSHIP_DIR"'
+    alias cdc='c "$WEBSITE_DIR"'
     alias cdC='c "$CPP_DIR"'
     alias cdD='c "$DOWNLOAD_DIR" && lfl'
     # cd Dot
     alias cdd='c ..'
     alias cddd='c ../..'
     alias cdddd='c ../../..'
+    alias cdh='c "$CHINA_DICTATORSHIP_DIR"'
     alias cdj='c "$JAVA_DIR"'
     alias cdl='c "$LINUX_DIR"'
     alias cdn='c "$NOTES_DIR"'
@@ -1346,10 +1446,11 @@ ${2:-}
     alias cds='c -'
     # To refresh cwd when it gets nuked and rebuilt.
     alias cdss='cds;cds'
-    alias cdt='c "$TEST_DIR"'
-    alias cdu='c "$UBUNTU_DIR"'
+    alias cdo='c "$OURBIGBOOK_BASE_DIR"'
     alias cdr='c "$RTL_DIR"'
     alias cdx='c "$(x)"'
+    alias cdt='c "$TEST_DIR"'
+    alias cdu='c "$UBUNTU_DIR"'
     alias cdy='c "$PYTHON_DIR"'
     alias cdw='c "$WEBSITE_DIR"'
 
@@ -1552,6 +1653,7 @@ ${2:-}
     # e.g.:
     #
     #     dk-create microbit ghcr.io/carlosperate/microbit-toolchain:latest
+    #     dk-create ub18 ubuntu:18.04
     #
     # Start it if not already started, and do stuff in it:
     #
@@ -1578,7 +1680,7 @@ ${2:-}
       target_dir=/host
       container="${1:-ub}"
       shift
-      image="${1:-ubuntu:22.04}"
+      image="${1:-ubuntu:24.04}"
       shift
       cmd="${1:-/bin/bash}"
       shift
@@ -1590,6 +1692,23 @@ ${2:-}
         --user root:root \
         --workdir "${target_dir}/$(pwd)" \
         --volume "/:${target_dir}" \
+        "$image" \
+        "$cmd" \
+        "$@" \
+      ;
+    )
+    dk-create-safe() (
+      container="${1:-ubs}"
+      shift
+      image="${1:-ubuntu:24.04}"
+      shift
+      cmd="${1:-/bin/bash}"
+      shift
+      set -x
+      dk create \
+        --interactive \
+        --tty \
+        --name "$container" \
         "$image" \
         "$cmd" \
         "$@" \
@@ -1774,6 +1893,9 @@ ${2:-}
 
   ## ffmpeg
 
+    ffp() {
+      ffplay -autoexit "$@"
+    }
     # Concatenate two files.
     # ffmpeg-cat in1.ogv in2.ogv out.ogv
     ffmpeg-cat() (
@@ -1832,6 +1954,11 @@ ${2:-}
         -frames:v 1 "${f%.*}.png"
     )
 
+    ffmpeg-image-and-audio-to-video() (
+      # https://superuser.com/questions/1041816/combine-one-image-one-audio-file-to-make-one-video-using-ffmpeg
+      ffmpeg -loop 1 -i "$1" -i "$2" -shortest "${3:-out.mp4}"
+    )
+
   ## Firefox
 
       # Unsafe settings, for quick testing. Don't access any important page with it.
@@ -1864,8 +1991,9 @@ ${2:-}
       set -eu
       # C++ version of gcc-pedantic.
       c="$1"
+      std="${2:-20}"
       out="${c%.*}.out"
-      cmd="g++ -ggdb3 -O0 -std=c++11 -Wall -Wextra -pedantic -o ${out} ${c}"
+      cmd="g++ -ggdb3 -O0 -std=c++${std} -Wall -Wextra -pedantic -o ${out} ${c}"
       echo "$cmd"
       eval "$cmd"
       cmd="./${out}"
@@ -2067,12 +2195,13 @@ continue
     alias gad='git add -A'
     alias gada='git add -A .'
     alias gadcm='git add -A . && git commit'
+    alias gadcmb='git add -A . && git commit -m bak'
     alias gadcman='git add . && gcman'
     alias gadcmanpsf='git add . && gcmanpsf'
     alias gadcmm='git add -A . && git commit -m'
-    alias gadcmt='git add -A . && git commit -m publish'
-    alias gadcmtps='git add -A . && git commit -m publish && git push'
-    alias gadcmt='git add -A . && git commit -m tmp'
+    alias gadcm='git add -A . && git commit -m publish'
+    alias gadcmps='git add -A . && git commit -m publish && git push'
+    alias gadcm='git add -A . && git commit -m tmp'
     alias gadcp='git add -A . && git commit && git push'
     gadcmp() { git add . && git commit -m "${1:-bak}" && git push; }
     alias gadu='git add -u :/'
@@ -2182,6 +2311,7 @@ continue
     alias gdfh='git diff HEAD'
     alias gdfhh='git diff HEAD~ HEAD'
     alias gdfhhs='git diff --stat HEAD~ HEAD'
+    alias gdfhhy='gdfhh | ydiff -s'
     alias gdfs='git diff --stat'
     alias gdfx='git diff | y'
     gdf12() { git diff ":1:./$1" ":2:./$1"; }
@@ -2426,7 +2556,7 @@ fi
 if [ \"\$GIT_AUTHOR_EMAIL\" = '${old_email}' ]; then
   export GIT_AUTHOR_EMAIL='${new_email}'
 fi
-" --force --tag-name-filter cat -- "${first_commit}..${last_commit}"
+" --force --tag-name-filter cat -- "${first_commit}~..${last_commit}"
     )
 
     git-set-name-and-email() (
@@ -2445,7 +2575,23 @@ export GIT_COMMITTER_NAME='${name}'
 export GIT_AUTHOR_NAME='${name}'
 export GIT_COMMITTER_EMAIL='${email}'
 export GIT_AUTHOR_EMAIL='${email}'
-" --force --tag-name-filter cat -- "${first_commit}..${last_commit}"
+" --force --tag-name-filter cat -- "${first_commit}~..${last_commit}"
+    )
+
+    git-set-email() (
+      # https://stackoverflow.com/questions/750172/how-to-change-the-author-and-committer-name-and-e-mail-of-multiple-commits-in-gi/750182#750182
+      if [ $# -lt 2 ]; then
+        echo 'too few arguments'
+        exit 1
+      fi
+      email="$1"
+      first_commit="$2"
+      last_commit="${3:-HEAD}"
+      FILTER_BRANCH_SQUELCH_WARNING=1 \
+      git filter-branch --env-filter "\
+export GIT_COMMITTER_EMAIL='${email}'
+export GIT_AUTHOR_EMAIL='${email}'
+" --force --tag-name-filter cat -- "${first_commit}~..${last_commit}"
     )
 
     git-create-test-commit() (
@@ -2479,6 +2625,24 @@ export GIT_AUTHOR_EMAIL='${email}'
     git-commit-notime() (
       GIT_COMMITTER_DATE='2000-01-01T00:00:00+0000' git commit --date '2000-01-01T00:00:00+0000' "$@"
     )
+    git-commit-epoch() (
+      # https://stackoverflow.com/questions/19742345/what-is-the-format-for-date-parameter-of-git-commit/29289807#29289807
+      d="@0 +0000"
+      GIT_COMMITTER_DATE="$d" git commit --date "$d" "$@"
+    )
+    git-commit-epoch-an() (
+      git-commit-epoch --amend --allow-empty --no-edit "$@"
+    )
+    git-commit-future-max() (
+      # https://stackoverflow.com/questions/19742345/what-is-the-format-for-date-parameter-of-git-commit/29289807#29289807
+      d="@$(python -c 'print(2**63-1)') +0000"
+      GIT_COMMITTER_DATE="$d" git commit --date "$d" "$@"
+    )
+    git-commit-future-max-autogen() (
+      name=a
+      email=a@a.a
+      GIT_COMMITTER_NAME="$name" GIT_AUTHOR_NAME="$name" GIT_COMMITTER_EMAIL="$email" GIT_AUTHOR_EMAIL="$email" git-commit-future-max "$@"
+    )
 
     git-hide-date() (
       # Keep first commit unmodified, then rewrite history make commit times of every
@@ -2499,16 +2663,20 @@ export GIT_AUTHOR_DATE="$d"
 ' --force "${first_commit}..${last_commit}"
     )
 
-    git-hide-date0() (
+    git-hide-date-fixed() (
       # Set the time of all commits in inclusive range to the first second of the year 2000.
       # https://stackoverflow.com/questions/454734/how-can-one-change-the-timestamp-of-an-old-commit-in-git
       first_commit="$1"
       last_commit="${2:-HEAD}"
-      FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter '
-d="2000-01-01T00:00:00+0000"
+      d="${3:-2000-01-01T00:00:00+0000}"
+      FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch -f --env-filter '
+d="'"$d"'"
 export GIT_COMMITTER_DATE="$d"
 export GIT_AUTHOR_DATE="$d"
-' --force "${first_commit}~..${last_commit}"
+' --force "${first_commit}..${last_commit}"
+    )
+    git-hide-date-epoch() (
+      git-hide-date-fixed "$1" "$2" "@0 +0000"
     )
 
     git-hide-time() (
@@ -2678,6 +2846,15 @@ export GIT_AUTHOR_DATE="$d"
     alias hrko='heroku open'
     alias hrkr='heroku run'
     alias gphm='git push heroku master'
+
+  h2b() {
+    # Hex to binary
+    xxd -r -p
+  }
+  b2h() {
+    # Binary to hex
+    xxd -p | tr -d '\n'
+  }
 
   ## hexdump
 
@@ -3072,6 +3249,7 @@ export GIT_AUTHOR_DATE="$d"
   ## npm
 
     npmb() ( npmr build "$@" )
+    npmbs() ( npmb && npms "$@" )
     npmd() ( npmr dev "$@" )
     npmi() ( npm install "$@" )
     npmis() ( npm install "$@" )
@@ -3123,7 +3301,7 @@ export GIT_AUTHOR_DATE="$d"
         pif "$@" >> requirements.txt
         sort -fu -o requirements.txt requirements.txt
       )
-      piir() ( pii -r requirements.txt )
+      piir() ( pii -r "${1:-requirements.txt}" )
 
     ## virtualenv
 
@@ -3198,7 +3376,10 @@ export GIT_AUTHOR_DATE="$d"
     image-get-pixel() (
       convert "$1" -crop 1x1+${2:-1}+${3:-1} rgba:- | od -An -tx1
     )
-
+    image-transparent-to-white() (
+      # https://stackoverflow.com/questions/2322750/replace-transparency-in-png-image-with-white-background
+      convert "$1" -background white -alpha remove -alpha off "$2"
+    )
     # https://askubuntu.com/questions/236455/how-can-you-delete-only-gps-metadata-from-a-jpeg-file
     # https://stackoverflow.com/questions/2654281/how-to-remove-exif-data-without-recompressing-the-jpeg
     image-remove-metadata() (
@@ -3417,6 +3598,8 @@ export GIT_AUTHOR_DATE="$d"
       tms "$@"
     )
 
+  tor-refresh-ips() { sudo killall -HUP tor; }
+
   ## Ubuntu
 
     dconf-load() (
@@ -3477,12 +3660,21 @@ export GIT_AUTHOR_DATE="$d"
 
   ## x clipboard
 
-    x() ( xsel -b "$@" )
+    x() (
+      # Use xclip instead of xsel while I have this bug:
+      # http://askubuntu.com/questions/652254/xsel-output-contains-trash-at-the-end-if-a-long-input-is-piped-into-it-to-set-th
+      xsel -b "$@"
+    )
+    ximg() (
+      # Paste image from clipboard to file. Images can be added to the clipboard e.g. via:
+      # - Ubuntu screenshot
+      # - Chrome "copy image"
+      # https://unix.stackexchange.com/questions/145131/copy-image-from-clipboard-to-file
+      xclip -selection clipboard -t image/png -o > "${1:-tmp.png}"
+    )
     y() ( xsel -bi "$@" )
     alias ya='xsel -ba'
     alias exx='expand | y'
-    # Use xclip instead of xsel while I have this bug:
-    # http://askubuntu.com/questions/652254/xsel-output-contains-trash-at-the-end-if-a-long-input-is-piped-into-it-to-set-th
     alias xex='x | expand | y'
     # Add 4 spaces to every line and save to clipboard.
     # For markdown, so also expand.
@@ -3585,8 +3777,10 @@ export GIT_AUTHOR_DATE="$d"
   # https://stackoverflow.com/questions/2812471/is-there-a-python-equivalent-of-rubys-rvm/59268119#59268119
   export PATH="${HOME}/.pyenv/bin:$PATH"
   if hash pyenv &> /dev/null; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
+    # TODO this breaks virtualenv activate if there is a .python-version file in cwd...
+    #eval "$(pyenv init -)"
+    #eval "$(pyenv virtualenv-init -)"
+    :
   fi
 
   ## RVM

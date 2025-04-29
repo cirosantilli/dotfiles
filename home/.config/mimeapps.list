@@ -18,6 +18,7 @@ video/x-ogm+ogg=vlc.desktop
 video/mp4=vlc.desktop;
 video/mpeg=vlc.desktop;
 video/ogg=vlc.desktop;
+video/webm=vlc.desktop;
 video/x-matroska=vlc.desktop;
 video/x-msvideo=vlc.desktop;
 video/x-ogm+ogg=vlc.desktop;

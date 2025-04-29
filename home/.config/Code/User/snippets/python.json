@@ -10,5 +10,12 @@
 			"print(${CLIPBOARD})"
 		],
 		"description": "Log output to console"
+	},
+	"Print variable to console": {
+		"prefix": "pp",
+		"body": [
+			"print('${CLIPBOARD} = ' + str(${CLIPBOARD}))"
+		],
+		"description": "Log variable to console"
 	}
 }

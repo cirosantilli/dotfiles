@@ -270,7 +270,7 @@
     {
         "key": "shift+alt+r",
         "command": "workbench.action.reloadWindow",
-        "when": "isDevelopment"
+        "when": "editorFocus"
     },
     {
         "key": "ctrl+r",

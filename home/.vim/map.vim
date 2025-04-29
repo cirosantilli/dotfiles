@@ -121,6 +121,11 @@
       endfunction
       nnoremap gq :call WaybackDel()<cr>
 
+      function! BitcoinTx()
+        exec "silent !chromium-browser 'https://www.blockchain.com/explorer/transactions/btc/" . expand("<cword>") . "'"
+      endfunction
+      nnoremap gb :call BitcoinTx()<cr>
+
     " <leader>eX opens :e SOME_DIRECTORY,
     " where SOME_DIRECTORY is given as an environment variable.
 
