@@ -468,6 +468,20 @@ size_download: %{size_download}
   )
   alias gaz='GAZEBO_PLUGIN_PATH="${GAZEBO_PLUGIN_PATH}:build" gazebo'
   alias gnup='gnuplot -p'
+  gnup-line() (
+    # Input: a file with two columns e.g.:
+    # 1 1
+    # 2 4
+    # 3 9
+    # Output: a .png with a plot.
+    in="$1"
+    out="${1%.*}.png"
+    gnuplot <<EOF
+set term png
+set output "$out"
+plot '$in' using 1:2 with linespoints notitle
+EOF
+  )
   alias golly='env UBUNTU_MENUPROXY=0 golly'
   kdev() (
     # http://kfunk.org/2016/02/16/building-kdevelop-5-from-source-on-ubuntu-15-10/
@@ -532,6 +546,10 @@ size_download: %{size_download}
   bakk() { for f in "$@"; do cp -r "${f%/}" "${f%/}.bak"; done; }
   kab() { for f in "$@"; do p="${f%/}"; mv "$p" "${p%.bak}" || mv "$p.bak" "${p}"; done }
   kabb() { for f in "$@"; do p="${f%/}"; cp "$p" "${p%.bak}" || cp -r "$p.bak" "${p}"; done }
+  kden() {
+    # https://flathub.org/apps/org.kde.kdenlive
+    flatpak run org.kde.kdenlive "$@"
+  }
   markdown-to-adoc() (
     # Markdown to asciidoc the way I like it.
     #
@@ -912,6 +930,9 @@ EOF
   }
   vsc() {
     code --new-window "$WEBSITE_DIR/cirosantilli.github.io.code-workspace"
+  }
+  vsl() {
+    code --new-window "$LKMC_DIR/kernel_modules.code-workspace"
   }
   vso() {
     code --new-window "$OURBIGBOOK_BASE_DIR/ourbigbook.code-workspace"
@@ -1650,7 +1671,7 @@ ${2:-}
     #
     #     dk-create [container-name [image [default-cmd]]]
     #
-    # e.g.:
+    # e.g. either:
     #
     #     dk-create microbit ghcr.io/carlosperate/microbit-toolchain:latest
     #     dk-create ub18 ubuntu:18.04
@@ -1685,6 +1706,7 @@ ${2:-}
       cmd="${1:-/bin/bash}"
       shift
       set -x
+      # TODO what was --user root:root for?
       dk create \
         --interactive \
         --tty \
@@ -1697,7 +1719,10 @@ ${2:-}
         "$@" \
       ;
     )
+    # Same as dk-create but only shares the host cwd on guest /host with container
+    # rather than root, this way untrusted software can't read and exfiltrate your files.
     dk-create-safe() (
+      target_dir=/host
       container="${1:-ubs}"
       shift
       image="${1:-ubuntu:24.04}"
@@ -1709,6 +1734,8 @@ ${2:-}
         --interactive \
         --tty \
         --name "$container" \
+        --workdir "${target_dir}" \
+        --volume "$(pwd):${target_dir}" \
         "$image" \
         "$cmd" \
         "$@" \
@@ -1903,6 +1930,11 @@ ${2:-}
       # Broken Ubuntu 20.10: https://stackoverflow.com/questions/49686244/ffmpeg-too-many-packets-buffered-for-output-stream-01
       echo ffmpeg -f -i "$1" -i "$2" -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" "$3"
       #ffmpeg    -i "$1" -i "$2" -filter_complex "[0:v] [0:a] [1:v] [1:a] [2:v] [2:a] concat=n=3:v=1:a=1 [v] [a]" -map "[v]" -map "[a]" output.mkv
+    )
+
+    ffmeg-twitter() (
+      # https://stackoverflow.com/questions/59056863/i-cant-upload-this-video-file-mp4-to-twitter
+      ffmpeg -i "$1" -c:v libx264 -crf 20 -preset slow -vf format=yuv420p -c:a aac -movflags +faststart "$2"
     )
 
     # Trim a file.
@@ -3044,6 +3076,14 @@ export GIT_AUTHOR_DATE="$d"
       lfms() {
         lfm ~/Pictures/Screenshots "$@"
       }
+      lfsx() {
+        # Image to clipboard.
+        lfg ~/Pictures/Screenshots "$@" | x
+      }
+      lfxs() {
+        # Image to clipboard.
+        cat "`lfg ~/Pictures/Screenshots "$@"`" |  xclip -selection clipboard -t image/png 
+      }
 
   ## make
 
@@ -3380,6 +3420,10 @@ export GIT_AUTHOR_DATE="$d"
       # https://stackoverflow.com/questions/2322750/replace-transparency-in-png-image-with-white-background
       convert "$1" -background white -alpha remove -alpha off "$2"
     )
+    image-transparent-to-white-mogrify() (
+      # https://stackoverflow.com/questions/2322750/replace-transparency-in-png-image-with-white-background
+      mogrify -background white -alpha remove -alpha off "$1"
+    )
     # https://askubuntu.com/questions/236455/how-can-you-delete-only-gps-metadata-from-a-jpeg-file
     # https://stackoverflow.com/questions/2654281/how-to-remove-exif-data-without-recompressing-the-jpeg
     image-remove-metadata() (
@@ -3689,7 +3733,8 @@ export GIT_AUTHOR_DATE="$d"
     ## Clipboard path operations
 
       # Absolute path.
-      xab() ( printf "$(pwd)/$1" | y; )
+      xab() ( realpath "$1" | head -c -1 | y; )
+      xabcv() ( printf '%s\n' "$NOTES_PRIVATE_DIR/cv/cv.pdf" | y; )
       xmv() ( mv "$(x)" "${1:-.}"; )
       xcp() ( cp -r "$(x)" "${1:-.}"; )
       xpw() ( pwd | y; )
@@ -3806,6 +3851,9 @@ export GIT_AUTHOR_DATE="$d"
   # Installed with:
   # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   f="$HOME/.cargo/env"
+  [ -f "$f" ] && . "$f"
+
+  f="$HOME/.elan/env"
   [ -f "$f" ] && . "$f"
 
 ## Untracked local dotfiles. Mus come last.
